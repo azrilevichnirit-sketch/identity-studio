@@ -1,11 +1,14 @@
 import { useEffect } from 'react';
 import { useGameState } from '@/hooks/useGameState';
+import { DimensionSelect } from '@/components/DimensionSelect';
+import { ComingSoon } from '@/components/ComingSoon';
 import { AvatarSelect } from '@/components/AvatarSelect';
 import { IntroScreen } from '@/components/IntroScreen';
 import { PlayScreen } from '@/components/PlayScreen';
 import { LeadForm } from '@/components/LeadForm';
 import { SummaryScreen } from '@/components/SummaryScreen';
 import { DebugPanel } from '@/components/DebugPanel';
+import type { Dimension } from '@/types/identity';
 
 const Index = () => {
   const {
@@ -18,6 +21,7 @@ const Index = () => {
     isMainComplete,
     canUndo,
     setPhase,
+    setDimension,
     setAvatarGender,
     selectOption,
     undo,
@@ -44,6 +48,20 @@ const Index = () => {
     }
   }, [state.phase, state.tieChoiceMade, setPhase]);
 
+  const handleDimensionSelect = (dimension: Dimension) => {
+    setDimension(dimension);
+    if (dimension === 'surprise' || dimension === 'farm') {
+      setPhase('coming-soon');
+    } else {
+      setPhase('avatar');
+    }
+  };
+
+  const handleBackToDimension = () => {
+    setDimension(null);
+    setPhase('dimension');
+  };
+
   const handleAvatarSelect = (gender: 'female' | 'male') => {
     setAvatarGender(gender);
     setPhase('intro');
@@ -60,6 +78,14 @@ const Index = () => {
 
   return (
     <div className="min-h-screen pb-12">
+      {state.phase === 'dimension' && (
+        <DimensionSelect onSelect={handleDimensionSelect} />
+      )}
+
+      {state.phase === 'coming-soon' && (
+        <ComingSoon onBack={handleBackToDimension} />
+      )}
+
       {state.phase === 'avatar' && (
         <AvatarSelect onSelect={handleAvatarSelect} />
       )}

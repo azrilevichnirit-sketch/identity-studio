@@ -1,10 +1,11 @@
 import { useState, useCallback, useMemo } from 'react';
-import type { GameState, Phase, AvatarGender, HollandCode, PickRecord, UndoEvent, Mission, LeadFormData, CountsFinal } from '@/types/identity';
+import type { GameState, Phase, AvatarGender, Dimension, HollandCode, PickRecord, UndoEvent, Mission, LeadFormData, CountsFinal } from '@/types/identity';
 import missionsMain from '@/data/missions_studio_main.json';
 import missionsTie from '@/data/missions_studio_tie.json';
 
 const initialState: GameState = {
-  phase: 'avatar',
+  phase: 'dimension',
+  dimension: null,
   avatarGender: null,
   mainIndex: 0,
   firstPicksByMissionId: {},
@@ -43,6 +44,10 @@ export function useGameState() {
 
   const setPhase = useCallback((phase: Phase) => {
     setState((prev) => ({ ...prev, phase }));
+  }, []);
+
+  const setDimension = useCallback((dimension: Dimension) => {
+    setState((prev) => ({ ...prev, dimension }));
   }, []);
 
   const setAvatarGender = useCallback((avatarGender: AvatarGender) => {
@@ -197,6 +202,7 @@ export function useGameState() {
     isMainComplete,
     canUndo,
     setPhase,
+    setDimension,
     setAvatarGender,
     selectOption,
     undo,
