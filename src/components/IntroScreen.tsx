@@ -1,6 +1,6 @@
 import type { AvatarGender } from '@/types/identity';
 import { getAvatarImage } from '@/lib/assetUtils';
-import studioEntranceBg from '@/assets/backgrounds/studio_in_entrance_view_bg.webp';
+import studioEntryBg from '@/assets/backgrounds/studio_entry_inside_bg.png';
 import bubbleRightAsset from '@/assets/ui/ui_bubble_right_1600x900.webp';
 
 interface IntroScreenProps {
@@ -15,7 +15,7 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
     <div 
       className="absolute inset-0"
       style={{
-        backgroundImage: `url(${studioEntranceBg})`,
+        backgroundImage: `url(${studioEntryBg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center bottom',
         filter: 'saturate(1.18) contrast(1.08)',
