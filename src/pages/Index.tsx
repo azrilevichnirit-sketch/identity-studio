@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useGameState } from '@/hooks/useGameState';
+import { GameStage } from '@/components/GameStage';
 import { DimensionSelect } from '@/components/DimensionSelect';
 import { ComingSoon } from '@/components/ComingSoon';
 import { AvatarSelect } from '@/components/AvatarSelect';
@@ -82,62 +83,64 @@ const Index = () => {
   }, [state.finalPicksByMissionId]);
 
   return (
-    <div className="min-h-screen pb-12">
-      {state.phase === 'dimension' && (
-        <DimensionSelect onSelect={handleDimensionSelect} />
-      )}
+    <>
+      <GameStage>
+        {state.phase === 'dimension' && (
+          <DimensionSelect onSelect={handleDimensionSelect} />
+        )}
 
-      {state.phase === 'coming-soon' && (
-        <ComingSoon onBack={handleBackToDimension} />
-      )}
+        {state.phase === 'coming-soon' && (
+          <ComingSoon onBack={handleBackToDimension} />
+        )}
 
-      {state.phase === 'avatar' && (
-        <AvatarSelect onSelect={handleAvatarSelect} />
-      )}
+        {state.phase === 'avatar' && (
+          <AvatarSelect onSelect={handleAvatarSelect} />
+        )}
 
-      {state.phase === 'intro' && (
-        <IntroScreen avatarGender={state.avatarGender} onStart={handleStart} />
-      )}
+        {state.phase === 'intro' && (
+          <IntroScreen avatarGender={state.avatarGender} onStart={handleStart} />
+        )}
 
-      {state.phase === 'main' && currentMission && (
-        <VisualPlayScreen
-          mission={currentMission}
-          currentIndex={state.mainIndex}
-          totalMissions={mainMissions.length}
-          isTieBreaker={false}
-          canUndo={canUndo}
-          avatarGender={state.avatarGender}
-          placedProps={placedProps}
-          onSelect={selectOption}
-          onUndo={undo}
-        />
-      )}
+        {state.phase === 'main' && currentMission && (
+          <VisualPlayScreen
+            mission={currentMission}
+            currentIndex={state.mainIndex}
+            totalMissions={mainMissions.length}
+            isTieBreaker={false}
+            canUndo={canUndo}
+            avatarGender={state.avatarGender}
+            placedProps={placedProps}
+            onSelect={selectOption}
+            onUndo={undo}
+          />
+        )}
 
-      {state.phase === 'tie' && currentMission && (
-        <VisualPlayScreen
-          mission={currentMission}
-          currentIndex={mainMissions.length}
-          totalMissions={mainMissions.length + 1}
-          isTieBreaker={true}
-          canUndo={canUndo}
-          avatarGender={state.avatarGender}
-          placedProps={placedProps}
-          onSelect={selectOption}
-          onUndo={undo}
-        />
-      )}
+        {state.phase === 'tie' && currentMission && (
+          <VisualPlayScreen
+            mission={currentMission}
+            currentIndex={mainMissions.length}
+            totalMissions={mainMissions.length + 1}
+            isTieBreaker={true}
+            canUndo={canUndo}
+            avatarGender={state.avatarGender}
+            placedProps={placedProps}
+            onSelect={selectOption}
+            onUndo={undo}
+          />
+        )}
 
-      {state.phase === 'lead' && (
-        <LeadForm onSubmit={handleLeadSubmit} />
-      )}
+        {state.phase === 'lead' && (
+          <LeadForm onSubmit={handleLeadSubmit} />
+        )}
 
-      {state.phase === 'summary' && (
-        <SummaryScreen
-          state={state}
-          countsFinal={countsFinal}
-          leaders={leaders}
-        />
-      )}
+        {state.phase === 'summary' && (
+          <SummaryScreen
+            state={state}
+            countsFinal={countsFinal}
+            leaders={leaders}
+          />
+        )}
+      </GameStage>
 
       <DebugPanel
         state={state}
@@ -145,7 +148,7 @@ const Index = () => {
         leaders={leaders}
         historyLength={historyLength}
       />
-    </div>
+    </>
   );
 };
 

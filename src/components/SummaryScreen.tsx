@@ -1,4 +1,5 @@
 import type { GameState, CountsFinal, HollandCode } from '@/types/identity';
+import studioEntranceBg from '@/assets/backgrounds/studio_in_entrance_view_bg.webp';
 
 interface SummaryScreenProps {
   state: GameState;
@@ -31,15 +32,34 @@ export function SummaryScreen({ state, countsFinal, leaders }: SummaryScreenProp
   const maxCount = Math.max(...Object.values(countsFinal));
 
   return (
-    <div className="screen-container">
-      <div className="w-full max-w-sm">
-        <div className="card-surface mb-4 text-center">
-          <div className="text-4xl mb-3">🎉</div>
-          <h1 className="text-2xl font-bold mb-2">התוצאות שלך!</h1>
+    <div 
+      className="absolute inset-0 flex items-center justify-center overflow-hidden"
+      style={{
+        backgroundImage: `url(${studioEntranceBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center bottom',
+        filter: 'saturate(1.1) contrast(1.05)',
+      }}
+    >
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/50" />
+      
+      {/* Content - horizontal layout */}
+      <div className="relative z-10 flex gap-6 animate-fade-in px-8">
+        {/* Results card */}
+        <div 
+          className="p-6 rounded-2xl w-[320px]"
+          style={{
+            background: 'rgba(255, 252, 245, 0.95)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+          }}
+        >
+          <div className="text-4xl mb-3 text-center">🎉</div>
+          <h1 className="text-2xl font-bold mb-4 text-center text-foreground">התוצאות שלך!</h1>
           
           {leaders.length > 0 && (
             <div className="mb-4">
-              <p className="text-muted-foreground text-sm mb-2">הפרופיל המוביל שלך:</p>
+              <p className="text-muted-foreground text-sm mb-2 text-center">הפרופיל המוביל שלך:</p>
               <div className="flex flex-wrap gap-2 justify-center">
                 {leaders.map((code) => (
                   <span
@@ -52,33 +72,39 @@ export function SummaryScreen({ state, countsFinal, leaders }: SummaryScreenProp
               </div>
             </div>
           )}
-        </div>
 
-        {/* Scores breakdown */}
-        <div className="card-surface mb-4">
-          <h2 className="text-sm font-semibold mb-3 text-muted-foreground">חלוקת הניקוד</h2>
-          <div className="space-y-2">
-            {(Object.keys(countsFinal) as HollandCode[]).map((code) => (
-              <div key={code} className="flex items-center gap-3">
-                <span className="text-xs w-24 truncate">{HOLLAND_LABELS[code]}</span>
-                <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-primary transition-all duration-500"
-                    style={{
-                      width: maxCount > 0 ? `${(countsFinal[code] / maxCount) * 100}%` : '0%',
-                    }}
-                  />
+          {/* Scores breakdown */}
+          <div className="mt-4 pt-4 border-t border-border">
+            <h2 className="text-sm font-semibold mb-3 text-muted-foreground">חלוקת הניקוד</h2>
+            <div className="space-y-2">
+              {(Object.keys(countsFinal) as HollandCode[]).map((code) => (
+                <div key={code} className="flex items-center gap-2">
+                  <span className="text-xs w-20 truncate text-foreground">{HOLLAND_LABELS[code].split(' ')[0]}</span>
+                  <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-primary transition-all duration-500"
+                      style={{
+                        width: maxCount > 0 ? `${(countsFinal[code] / maxCount) * 100}%` : '0%',
+                      }}
+                    />
+                  </div>
+                  <span className="text-xs font-medium w-4 text-foreground">{countsFinal[code]}</span>
                 </div>
-                <span className="text-xs font-medium w-4 text-left">{countsFinal[code]}</span>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* JSON output */}
-        <div className="card-surface">
+        {/* JSON output card */}
+        <div 
+          className="p-6 rounded-2xl w-[400px] max-h-[500px] overflow-hidden flex flex-col"
+          style={{
+            background: 'rgba(255, 252, 245, 0.95)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+          }}
+        >
           <h2 className="text-sm font-semibold mb-3 text-muted-foreground">JSON Export</h2>
-          <pre className="text-xs bg-muted rounded-lg p-3 overflow-auto max-h-48 text-left" dir="ltr">
+          <pre className="text-xs bg-white/50 rounded-lg p-3 overflow-auto flex-1 text-left text-foreground" dir="ltr">
             {JSON.stringify(exportData, null, 2)}
           </pre>
         </div>
