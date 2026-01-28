@@ -1,0 +1,377 @@
+[
+  {
+    "world": "studio",
+    "phase": "tb",
+    "mission_id": "studio_tie_01",
+    "sequence": 1,
+    "view": "in",
+    "task_heb": "\"בום! המכונה המרכזית הושבתה בדיוק בשיא הלחץ. מה עושים עכשיו?\"",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "r",
+        "asset": "studio_tie_01_a",
+        "tooltip_heb": "ארגז כלי עבודה",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "i",
+        "asset": "studio_tie_01_b",
+        "tooltip_heb": "טאבלט דיגיטלי לאבחון נתונים",
+        "view": "in"
+      }
+    ],
+    "pair_key": "i_r"
+  },
+  {
+    "world": "studio",
+    "phase": "tb",
+    "mission_id": "studio_tie_02",
+    "sequence": 2,
+    "view": "in",
+    "task_heb": "\"פרויקט חדש יוצא לדרך! מה הדבר הראשון שנביא לסטודיו כדי להתחיל?\"",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "r",
+        "asset": "studio_tie_02_a",
+        "tooltip_heb": "ערימת קרשים",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "a",
+        "asset": "studio_tie_02_b",
+        "tooltip_heb": "קיר השראה/Moodboard)",
+        "view": "in"
+      }
+    ],
+    "pair_key": "a_r"
+  },
+  {
+    "world": "studio",
+    "phase": "tb",
+    "mission_id": "studio_tie_03",
+    "sequence": 3,
+    "view": "in",
+    "task_heb": "\"אנחנו רוצים שמי שנכנס לסטודיו ירגיש מיד את האנרגיה שלנו. מה יהיה בלב המקום?\"",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "r",
+        "asset": "studio_tie_03_a",
+        "tooltip_heb": "שולחן עבודה מרכזי",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "s",
+        "asset": "studio_tie_03_b",
+        "tooltip_heb": "קיר 'הסיפור שלנו'",
+        "view": "in"
+      }
+    ],
+    "pair_key": "r_s"
+  },
+  {
+    "world": "studio",
+    "phase": "tb",
+    "mission_id": "studio_tie_04",
+    "sequence": 4,
+    "view": "in",
+    "task_heb": "\"הסטודיו מתרחב! מה הצעד המקצועי הבא שהכי חשוב לנו להוסיף עכשיו?\"",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "r",
+        "asset": "studio_tie_04_a",
+        "tooltip_heb": "מכונת CNC תעשייתית",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "e",
+        "asset": "studio_tie_04_b",
+        "tooltip_heb": "חלל פרזנטציה יוקרתי",
+        "view": "in"
+      }
+    ],
+    "pair_key": "e_r"
+  },
+  {
+    "world": "studio",
+    "phase": "tb",
+    "mission_id": "studio_tie_05",
+    "sequence": 5,
+    "view": "in",
+    "task_heb": "\"היום טס והמשימות נערמות. אני מרגיש קצת אבוד איך נחזיר את השליטה בסטודיו?\"",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "r",
+        "asset": "studio_tie_05_a",
+        "tooltip_heb": "לוח משימות שטח",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "c",
+        "asset": "studio_tie_05_b",
+        "tooltip_heb": "עמדת ניהול פרוייקטים, זמנים ותקציב",
+        "view": "in"
+      }
+    ],
+    "pair_key": "c_r"
+  },
+  {
+    "world": "studio",
+    "phase": "tb",
+    "mission_id": "studio_tie_06",
+    "sequence": 6,
+    "view": "in",
+    "task_heb": "\"קיבלנו בקשה לעיצוב פסיכי שעוד לא נעשה. עם מה נתחיל?\"",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "i",
+        "asset": "studio_tie_06_a",
+        "tooltip_heb": "עמדת מיקרוסקופ",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "a",
+        "asset": "studio_tie_06_b",
+        "tooltip_heb": "פינת צבע וניסוי",
+        "view": "in"
+      }
+    ],
+    "pair_key": "a_i"
+  },
+  {
+    "world": "studio",
+    "phase": "tb",
+    "mission_id": "studio_tie_07",
+    "sequence": 7,
+    "view": "in",
+    "task_heb": "\"צברנו מלא ידע בפרויקט האחרון. איך נשמור אותו לדורות הבאים?\"",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "i",
+        "asset": "studio_tie_07_a",
+        "tooltip_heb": "ארון שרתים לשמירה על הדאטה והידע הדיגיטלי.",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "s",
+        "asset": "studio_tie_07_b",
+        "tooltip_heb": "לוח טיפים שיתופי לשיתוף ידע",
+        "view": "in"
+      }
+    ],
+    "pair_key": "i_s"
+  },
+  {
+    "world": "studio",
+    "phase": "tb",
+    "mission_id": "studio_tie_08",
+    "sequence": 8,
+    "view": "in",
+    "task_heb": "\"ההמצאה שלנו מוכנה לפריצה לעולם! איך נכריז עליה?\"",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "i",
+        "asset": "studio_tie_08_a",
+        "tooltip_heb": "אב-טיפוס בתיבת זכוכית",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "e",
+        "asset": "studio_tie_08_b",
+        "tooltip_heb": "פודיום למסיבת עיתונאים",
+        "view": "in"
+      }
+    ],
+    "pair_key": "e_i"
+  },
+  {
+    "world": "studio",
+    "phase": "tb",
+    "mission_id": "studio_tie_09",
+    "sequence": 9,
+    "view": "in",
+    "task_heb": "\"רגע לפני שהכל נשלח, איך נוודא שהעבודה יצאה מושלמת?\"",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "i",
+        "asset": "studio_tie_09_a",
+        "tooltip_heb": "סורק ידני לבדיקת איכות",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "c",
+        "asset": "studio_tie_09_b",
+        "tooltip_heb": "אזור אריזה",
+        "view": "in"
+      }
+    ],
+    "pair_key": "c_i"
+  },
+  {
+    "world": "studio",
+    "phase": "tb",
+    "mission_id": "studio_tie_10",
+    "sequence": 10,
+    "view": "in",
+    "task_heb": "\"ערב הגאלה המקצועי שלנו כאן! מה יהיה ה-Wow של האירוע?\"",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "a",
+        "asset": "studio_tie_10_a",
+        "tooltip_heb": "מיצב תאורה אמנותי",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "s",
+        "asset": "studio_tie_10_b",
+        "tooltip_heb": "שולחנות בר  מרחב לנטוורקינג",
+        "view": "in"
+      }
+    ],
+    "pair_key": "a_s"
+  },
+  {
+    "world": "studio",
+    "phase": "tb",
+    "mission_id": "studio_tie_11",
+    "sequence": 11,
+    "view": "in",
+    "task_heb": "\"לקוח רציני בפתח. איך נראה לו מי אנחנו באמת?\"",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "a",
+        "asset": "studio_tie_11_a",
+        "tooltip_heb": "ציור קיר מלא",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "e",
+        "asset": "studio_tie_11_b",
+        "tooltip_heb": "קיר 'ההצלחות שלנו'",
+        "view": "in"
+      }
+    ],
+    "pair_key": "a_e"
+  },
+  {
+    "world": "studio",
+    "phase": "tb",
+    "mission_id": "studio_tie_12",
+    "sequence": 12,
+    "view": "in",
+    "task_heb": "\"הגיע הזמן לרענן את הסטודיו. מה נראהלך שכדי לעשות?\"",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "a",
+        "asset": "studio_tie_12_a",
+        "tooltip_heb": "החלפת תערוכה בגלריה (קומה 2)",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "c",
+        "asset": "studio_tie_12_b",
+        "tooltip_heb": "לוח ציר זמן להצגת הדרך שעברנו.",
+        "view": "in"
+      }
+    ],
+    "pair_key": "a_c"
+  },
+  {
+    "world": "studio",
+    "phase": "tb",
+    "mission_id": "studio_tie_13",
+    "sequence": 13,
+    "view": "in",
+    "task_heb": "\"החלטנו להתרחב מעבר לסטודיו! מה יהיה המהלך הבא שלנו?\"",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "s",
+        "asset": "studio_tie_13_a",
+        "tooltip_heb": "מיזם קהילתי בר-קיימה",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "e",
+        "asset": "studio_tie_13_b",
+        "tooltip_heb": "חנות דגל ממותגת",
+        "view": "in"
+      }
+    ],
+    "pair_key": "e_s"
+  },
+  {
+    "world": "studio",
+    "phase": "tb",
+    "mission_id": "studio_tie_14",
+    "sequence": 14,
+    "view": "in",
+    "task_heb": "\"הסטודיו עמוס במבקרים ונוצר בלגן בחוץ. איך ננהל את זה?\"",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "s",
+        "asset": "studio_tie_14_a",
+        "tooltip_heb": "אזור ישיבה בדלפק הקבלה",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "c",
+        "asset": "studio_tie_14_b",
+        "tooltip_heb": "אפליקציית ניהול תורים",
+        "view": "in"
+      }
+    ],
+    "pair_key": "c_s"
+  },
+  {
+    "world": "studio",
+    "phase": "tb",
+    "mission_id": "studio_tie_15",
+    "sequence": 15,
+    "view": "in",
+    "task_heb": "\"לקוח ענק רוצה הוכחה שאנחנו אמינים. מה נציג לו?\"",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "e",
+        "asset": "studio_tie_15_a",
+        "tooltip_heb": "מסך מדדי הצלחה ורווחיות",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "c",
+        "asset": "studio_tie_15_b",
+        "tooltip_heb": "קלסר תכנית עבודה מפורט",
+        "view": "in"
+      }
+    ],
+    "pair_key": "c_e"
+  }
+]
