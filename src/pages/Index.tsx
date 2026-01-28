@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useGameState } from '@/hooks/useGameState';
 import { DimensionSelect } from '@/components/DimensionSelect';
 import { ComingSoon } from '@/components/ComingSoon';
 import { AvatarSelect } from '@/components/AvatarSelect';
 import { IntroScreen } from '@/components/IntroScreen';
-import { PlayScreen } from '@/components/PlayScreen';
+import { VisualPlayScreen } from '@/components/VisualPlayScreen';
 import { LeadForm } from '@/components/LeadForm';
 import { SummaryScreen } from '@/components/SummaryScreen';
 import { DebugPanel } from '@/components/DebugPanel';
@@ -76,6 +76,11 @@ const Index = () => {
     setPhase('summary');
   };
 
+  // Convert finalPicksByMissionId to array for placed props display
+  const placedProps = useMemo(() => {
+    return Object.values(state.finalPicksByMissionId);
+  }, [state.finalPicksByMissionId]);
+
   return (
     <div className="min-h-screen pb-12">
       {state.phase === 'dimension' && (
@@ -95,24 +100,28 @@ const Index = () => {
       )}
 
       {state.phase === 'main' && currentMission && (
-        <PlayScreen
+        <VisualPlayScreen
           mission={currentMission}
           currentIndex={state.mainIndex}
           totalMissions={mainMissions.length}
           isTieBreaker={false}
           canUndo={canUndo}
+          avatarGender={state.avatarGender}
+          placedProps={placedProps}
           onSelect={selectOption}
           onUndo={undo}
         />
       )}
 
       {state.phase === 'tie' && currentMission && (
-        <PlayScreen
+        <VisualPlayScreen
           mission={currentMission}
           currentIndex={mainMissions.length}
           totalMissions={mainMissions.length + 1}
           isTieBreaker={true}
           canUndo={canUndo}
+          avatarGender={state.avatarGender}
+          placedProps={placedProps}
           onSelect={selectOption}
           onUndo={undo}
         />
