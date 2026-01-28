@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { X, Bug } from 'lucide-react';
 import type { GameState, CountsFinal, HollandCode } from '@/types/identity';
 
 interface DebugPanelProps {
@@ -22,20 +23,40 @@ export function DebugPanel({ state, countsFinal, leaders, historyLength }: Debug
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
+      {/* Toggle button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="px-3 py-1.5 rounded-lg bg-card border border-border text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors shadow-lg"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card border border-border text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors shadow-lg"
       >
-        {isOpen ? '✕ Close' : '🐛 Debug'}
+        {isOpen ? (
+          <>
+            <X className="w-3.5 h-3.5" />
+            <span>סגור</span>
+          </>
+        ) : (
+          <>
+            <Bug className="w-3.5 h-3.5" />
+            <span>Debug</span>
+          </>
+        )}
       </button>
       
       {isOpen && (
         <div className="absolute bottom-10 right-0 w-72 bg-card border border-border rounded-lg shadow-xl p-3 text-xs" dir="ltr">
-          <div className="grid grid-cols-2 gap-x-3 gap-y-1">
+          {/* Close button inside panel */}
+          <button
+            onClick={() => setIsOpen(false)}
+            className="absolute top-2 right-2 p-1 rounded hover:bg-muted transition-colors"
+          >
+            <X className="w-3.5 h-3.5 text-muted-foreground" />
+          </button>
+          
+          <div className="grid grid-cols-2 gap-x-3 gap-y-1 pr-6">
             <div><strong>phase:</strong> {state.phase}</div>
             <div><strong>dimension:</strong> {state.dimension || 'null'}</div>
             <div><strong>avatarGender:</strong> {state.avatarGender || 'null'}</div>
             <div><strong>mainIndex:</strong> {state.mainIndex}</div>
+            <div><strong>mission:</strong> {state.mainIndex + 1}/{12}</div>
             <div><strong>historyLength:</strong> {historyLength}</div>
             <div><strong>undoEvents:</strong> {state.undoEvents.length}</div>
             <div><strong>tieChoiceMade:</strong> {String(state.tieChoiceMade)}</div>
