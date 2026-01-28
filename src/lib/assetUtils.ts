@@ -9,6 +9,7 @@ import studioGalleryBg from '@/assets/backgrounds/studio_in_gallery_bg.webp';
 import studioGalleryWallBg from '@/assets/backgrounds/studio_in_gallery_wall_bg.webp';
 import studioStorageBg from '@/assets/backgrounds/studio_in_storage_bg.webp';
 import studioWorkshopBg from '@/assets/backgrounds/studio_in_workshop_bg.webp';
+import studioEntryInsideBg from '@/assets/backgrounds/studio_entry_inside_bg.png';
 
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
@@ -134,9 +135,9 @@ const toolAssets: Record<string, string> = {
 
 // Background mapping based on mission sequence
 const backgroundsBySequence: Record<number, string> = {
-  1: studioWorkshopBg,
-  2: studioWorkshopBg,
-  3: studioGalleryBg,
+  1: studioEntryInsideBg,
+  2: studioEntryInsideBg,
+  3: studioEntryInsideBg,
   4: studioGalleryWallBg,
   5: studioFrontBg,
   6: studioGalleryWallBg,
