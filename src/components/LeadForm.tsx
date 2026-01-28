@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { LeadFormData } from '@/types/identity';
+import studioEntranceBg from '@/assets/backgrounds/studio_in_entrance_view_bg.webp';
 
 interface LeadFormProps {
   onSubmit: (data: LeadFormData) => void;
@@ -44,65 +45,85 @@ export function LeadForm({ onSubmit }: LeadFormProps) {
   };
 
   return (
-    <div className="screen-container">
-      <div className="card-surface w-full max-w-sm">
-        <h1 className="text-2xl font-bold mb-2 text-center">כמעט סיימנו!</h1>
-        <p className="text-muted-foreground mb-6 text-center">
-          מלא/י את הפרטים כדי לקבל את התוצאות
-        </p>
-        
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">שם מלא</label>
-            <input
-              type="text"
-              value={formData.fullName}
-              onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-              className="w-full px-4 py-3 rounded-lg bg-secondary border border-border focus:border-primary focus:outline-none transition-colors"
-              placeholder="הכנס/י שם מלא"
-            />
-            {errors.fullName && (
-              <p className="text-destructive text-xs mt-1">{errors.fullName}</p>
-            )}
-          </div>
+    <div 
+      className="absolute inset-0 flex flex-col items-center justify-center"
+      style={{
+        backgroundImage: `url(${studioEntranceBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center bottom',
+        filter: 'saturate(1.1) contrast(1.05)',
+      }}
+    >
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/50" />
+      
+      {/* Content */}
+      <div className="relative z-10 animate-fade-in">
+        <div 
+          className="p-8 rounded-2xl w-[400px]"
+          style={{
+            background: 'rgba(255, 252, 245, 0.95)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+          }}
+        >
+          <h1 className="text-2xl font-bold mb-2 text-center text-foreground">כמעט סיימנו!</h1>
+          <p className="text-muted-foreground mb-6 text-center">
+            מלא/י את הפרטים כדי לקבל את התוצאות
+          </p>
           
-          <div>
-            <label className="block text-sm font-medium mb-1">אימייל</label>
-            <input
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-4 py-3 rounded-lg bg-secondary border border-border focus:border-primary focus:outline-none transition-colors"
-              placeholder="example@email.com"
-              dir="ltr"
-            />
-            {errors.email && (
-              <p className="text-destructive text-xs mt-1">{errors.email}</p>
-            )}
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium mb-1">טלפון</label>
-            <input
-              type="tel"
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full px-4 py-3 rounded-lg bg-secondary border border-border focus:border-primary focus:outline-none transition-colors"
-              placeholder="050-0000000"
-              dir="ltr"
-            />
-            {errors.phone && (
-              <p className="text-destructive text-xs mt-1">{errors.phone}</p>
-            )}
-          </div>
-          
-          <button
-            type="submit"
-            className="w-full py-4 rounded-xl bg-primary text-primary-foreground font-semibold text-lg hover:bg-primary/90 transition-colors mt-6"
-          >
-            הצג תוצאות
-          </button>
-        </form>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1 text-foreground">שם מלא</label>
+              <input
+                type="text"
+                value={formData.fullName}
+                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg bg-white border border-border focus:border-primary focus:outline-none transition-colors text-foreground"
+                placeholder="הכנס/י שם מלא"
+              />
+              {errors.fullName && (
+                <p className="text-destructive text-xs mt-1">{errors.fullName}</p>
+              )}
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-1 text-foreground">אימייל</label>
+              <input
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg bg-white border border-border focus:border-primary focus:outline-none transition-colors text-foreground"
+                placeholder="example@email.com"
+                dir="ltr"
+              />
+              {errors.email && (
+                <p className="text-destructive text-xs mt-1">{errors.email}</p>
+              )}
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-1 text-foreground">טלפון</label>
+              <input
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg bg-white border border-border focus:border-primary focus:outline-none transition-colors text-foreground"
+                placeholder="050-0000000"
+                dir="ltr"
+              />
+              {errors.phone && (
+                <p className="text-destructive text-xs mt-1">{errors.phone}</p>
+              )}
+            </div>
+            
+            <button
+              type="submit"
+              className="w-full py-4 rounded-xl bg-primary text-primary-foreground font-semibold text-lg hover:bg-primary/90 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] mt-4"
+            >
+              הצג תוצאות
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
