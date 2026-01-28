@@ -1,0 +1,290 @@
+[
+  {
+    "world": "studio",
+    "phase": "main",
+    "mission_id": "studio_01",
+    "sequence": 1,
+    "view": "in",
+    "task_heb": "המקום ענקי ויש לנו המון עבודה, אז עם מה נתחיל?",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "r",
+        "asset": "studio_01_a",
+        "tooltip_heb": "דליי צבע ומברשות",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "i",
+        "asset": "studio_01_b",
+        "tooltip_heb": "ערכת שרטוט",
+        "view": "in"
+      }
+    ]
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "mission_id": "studio_02",
+    "sequence": 2,
+    "view": "in",
+    "task_heb": "הבסיס מאחורינו. מה הדרך הכי טובה לקבוע איפה כל דבר יעמוד פה?",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "i",
+        "asset": "studio_02_a",
+        "tooltip_heb": "סורק לייזר טכנולוגי",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "c",
+        "asset": "studio_02_b",
+        "tooltip_heb": "לוח ניהול פרויקטים",
+        "view": "in"
+      }
+    ]
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "mission_id": "studio_03",
+    "sequence": 3,
+    "view": "in",
+    "task_heb": "בלאגן אטומי פה. חייבים לארגן את המקום כדי שנתחיל ליצור. איך נעצב את הלב של הסטודיו?",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "s",
+        "asset": "studio_03_a",
+        "tooltip_heb": "שולחן יצירה קבוצתי",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "r",
+        "asset": "studio_03_b",
+        "tooltip_heb": "עמדת סאונד עם אוזניות",
+        "view": "in"
+      }
+    ]
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "mission_id": "studio_04",
+    "sequence": 4,
+    "view": "in",
+    "task_heb": "וואו, אנחנו תלויים רק באור מבחוץ ועוד מעט מחשיך. מה נעשה?",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "r",
+        "asset": "studio_04_a",
+        "tooltip_heb": "גופי תאורה תעשייתיים",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "a",
+        "asset": "studio_04_b",
+        "tooltip_heb": "פסלי תאורה מעוצבים",
+        "view": "in"
+      }
+    ]
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "mission_id": "studio_05",
+    "sequence": 5,
+    "view": "out",
+    "task_heb": "הסטודיו מתחיל לקבל צורה, אבל אף אחד לא יודע שאנחנו קיימים. איך נראה להם?",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "e",
+        "asset": "studio_05_a",
+        "tooltip_heb": "שלט ניאון ממותג",
+        "view": "out"
+      },
+      {
+        "key": "b",
+        "holland_code": "s",
+        "asset": "studio_05_b",
+        "tooltip_heb": "עמדת קפה ואירוח בחוץ",
+        "view": "out"
+      }
+    ]
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "mission_id": "studio_06",
+    "sequence": 6,
+    "view": "in",
+    "task_heb": "התקרה פה ממש גבוהה ויש הד מטורף שקשה לי להתרכז. איך מטפלים בזה?",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "a",
+        "asset": "studio_06_a",
+        "tooltip_heb": "פאנלים אקוסטיים גיאומטריים",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "s",
+        "asset": "studio_06_b",
+        "tooltip_heb": "פינת לאונג' וספות",
+        "view": "in"
+      }
+    ]
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "mission_id": "studio_07",
+    "sequence": 7,
+    "view": "front",
+    "task_heb": "אוקיי, הסטודיו מפוצץ בעבודות גמורות וזה מתחיל להיערם בכל פינה. מה עושים?",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "c",
+        "asset": "studio_07_a",
+        "tooltip_heb": "חדר ארכיון ואחסון",
+        "view": "front"
+      },
+      {
+        "key": "b",
+        "holland_code": "e",
+        "asset": "studio_07_b",
+        "tooltip_heb": "חלון ראווה ותצוגת מכירות",
+        "view": "front"
+      }
+    ]
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "mission_id": "studio_08",
+    "sequence": 8,
+    "view": "in",
+    "task_heb": "הסטודיו כבר מרגיש כמו הבית השני שלנו. איך נשמור על הוייב של הצוות?",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "s",
+        "asset": "studio_08_a",
+        "tooltip_heb": "פינת זולה ושולחן סנוקר",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "a",
+        "asset": "studio_08_b",
+        "tooltip_heb": "קיר השראה ענקי",
+        "view": "in"
+      }
+    ]
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "mission_id": "studio_09",
+    "sequence": 9,
+    "view": "in",
+    "task_heb": "סיוט בסטודיו. הגג התחיל לנזול ישר על העבודות הכי יקרות שלנו. מה עושים?",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "c",
+        "asset": "studio_09_a",
+        "tooltip_heb": "רשימת נזקים וארגון מחדש",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "i",
+        "asset": "studio_09_b",
+        "tooltip_heb": "עמדת שיקום ורסטורציה",
+        "view": "in"
+      }
+    ]
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "mission_id": "studio_10",
+    "sequence": 10,
+    "view": "in",
+    "task_heb": "יש המון התעניינות בסטודיו והביקוש לעבודות גדל בטירוף. איך נעמוד בקצב?",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "r",
+        "asset": "studio_10_a",
+        "tooltip_heb": "מכונת חיתוך לייזר תעשייתית",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "e",
+        "asset": "studio_10_b",
+        "tooltip_heb": "מסך מחשב עם אתר אי-קומרס",
+        "view": "in"
+      }
+    ]
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "mission_id": "studio_11",
+    "sequence": 11,
+    "view": "out",
+    "task_heb": "וואו, המהלך הזה הצליח לנו ובגדול, אנחנו יכולים להיות הדבר הבא. איך נעשה?",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "e",
+        "asset": "studio_11_a",
+        "tooltip_heb": "פסטיבל רחוב",
+        "view": "out"
+      },
+      {
+        "key": "b",
+        "holland_code": "c",
+        "asset": "studio_11_b",
+        "tooltip_heb": "תכנית פריסה לסניפים חדשים",
+        "view": "out"
+      }
+    ]
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "mission_id": "studio_12",
+    "sequence": 12,
+    "view": "in",
+    "task_heb": "אנחנו השם הכי חם בעיר! מה המהלך הגדול שיעיף את הסטודיו לרמה הבאה?",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "i",
+        "asset": "studio_12_a",
+        "tooltip_heb": "עמדת הדמיה הולוגרפית",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "a",
+        "asset": "studio_12_b",
+        "tooltip_heb": "יצירת מופת במרכז החלל",
+        "view": "in"
+      }
+    ]
+  }
+]
