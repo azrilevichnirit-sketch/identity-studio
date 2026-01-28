@@ -46,14 +46,14 @@ export function VisualPlayScreen({
           backgroundSize: 'cover',
           backgroundPosition: 'center 80%',
           backgroundRepeat: 'no-repeat',
-          filter: 'saturate(1.15) contrast(1.08)',
+          filter: 'saturate(1.2) contrast(1.1) brightness(1.05)',
         }}
       />
 
       {/* Progress bar - minimal top overlay */}
       <div className="absolute top-0 left-0 right-0 z-20 p-3">
         <div className="max-w-xs mx-auto">
-          <div className="h-2 bg-background/40 rounded-full overflow-hidden backdrop-blur-sm shadow-inner">
+          <div className="h-2 bg-white/30 rounded-full overflow-hidden backdrop-blur-sm shadow-inner">
             <div 
               className="h-full bg-primary transition-all duration-300 ease-out rounded-full"
               style={{ width: `${progress}%` }}
@@ -62,56 +62,69 @@ export function VisualPlayScreen({
         </div>
       </div>
 
-      {/* Content layer */}
-      <div className="relative z-10 min-h-screen flex flex-col justify-end pb-4 px-3">
-        
-        {/* Avatar + Speech Bubble area */}
-        <div className="flex items-end gap-2 mb-4">
-          {/* Avatar - bottom-left anchored, scaled up */}
-          {avatarImage && (
-            <div className="flex-shrink-0 relative">
-              <img 
-                src={avatarImage} 
-                alt="Your avatar"
-                className="h-40 sm:h-52 w-auto object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.4)]"
-              />
-            </div>
-          )}
-          
-          {/* Speech bubble with tail pointing to avatar */}
-          <div className="relative flex-1 max-w-sm mb-8">
-            {/* Bubble tail */}
-            <div 
-              className="absolute -left-3 bottom-4 w-0 h-0"
-              style={{
-                borderTop: '12px solid transparent',
-                borderBottom: '12px solid transparent',
-                borderRight: '16px solid hsl(var(--card))',
-                filter: 'drop-shadow(-2px 0 2px rgba(0,0,0,0.1))',
-              }}
-            />
-            {/* Bubble content */}
-            <div className="bg-card/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-border/30">
-              <p className="text-base sm:text-lg font-medium leading-relaxed text-foreground">
-                {mission.task_heb}
-              </p>
-            </div>
-          </div>
+      {/* Avatar - anchored bottom-right, never overlaps tray */}
+      {avatarImage && (
+        <div 
+          className="absolute z-10 drop-shadow-[0_10px_20px_rgba(0,0,0,0.35)]"
+          style={{
+            right: '24px',
+            bottom: '96px',
+          }}
+        >
+          <img 
+            src={avatarImage} 
+            alt="Your avatar"
+            className="h-64 sm:h-80 w-auto object-contain"
+          />
         </div>
+      )}
 
-        {/* Tool tray area */}
-        <div className="w-full max-w-md mx-auto space-y-3">
+      {/* Speech bubble - positioned above tray, tail points toward avatar (right side) */}
+      <div 
+        className="absolute z-15"
+        style={{
+          left: '16px',
+          right: '140px',
+          bottom: '180px',
+        }}
+      >
+        <div className="relative max-w-xs">
+          {/* Bubble content */}
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-lg border border-white/50">
+            <p className="text-base sm:text-lg font-medium leading-relaxed text-foreground">
+              {mission.task_heb}
+            </p>
+          </div>
+          {/* Bubble tail - pointing right toward avatar */}
+          <div 
+            className="absolute -right-3 bottom-4 w-0 h-0"
+            style={{
+              borderTop: '10px solid transparent',
+              borderBottom: '10px solid transparent',
+              borderLeft: '14px solid rgba(255,255,255,0.9)',
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Tool tray - light semi-transparent panel at bottom */}
+      <div className="absolute bottom-0 left-0 right-0 z-20">
+        <div 
+          className="mx-2 mb-2 rounded-2xl px-4 py-3"
+          style={{
+            background: 'rgba(255, 252, 245, 0.7)',
+            backdropFilter: 'blur(8px)',
+            boxShadow: '0 -2px 20px rgba(0,0,0,0.08)',
+          }}
+        >
           {/* Tool tiles - two options side by side */}
-          <div className="flex gap-4 justify-center">
-            {/* Option A */}
+          <div className="flex gap-4 justify-center mb-2">
             <ToolTile
               image={toolAImage}
               tooltip={optionA.tooltip_heb}
               onClick={() => onSelect(mission.mission_id, 'a', optionA.holland_code as HollandCode)}
               variant="a"
             />
-
-            {/* Option B */}
             <ToolTile
               image={toolBImage}
               tooltip={optionB.tooltip_heb}
@@ -122,7 +135,7 @@ export function VisualPlayScreen({
 
           {/* Undo button */}
           <button
-            className="w-full py-2.5 px-4 rounded-xl text-sm font-medium transition-all duration-200 bg-muted/70 backdrop-blur-sm text-muted-foreground hover:bg-secondary hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
+            className="w-full py-2 px-4 rounded-xl text-sm font-medium transition-all duration-200 bg-white/60 text-muted-foreground hover:bg-white/80 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
             onClick={onUndo}
             disabled={!canUndo}
           >
@@ -142,9 +155,8 @@ interface ToolTileProps {
 }
 
 function ToolTile({ image, tooltip, onClick, variant }: ToolTileProps) {
-  const borderColor = variant === 'a' ? 'border-option-a' : 'border-option-b';
-  const hoverShadow = variant === 'a' ? 'hover:shadow-option-a/30' : 'hover:shadow-option-b/30';
-  const glowColor = variant === 'a' ? 'bg-option-a' : 'bg-option-b';
+  const accentColor = variant === 'a' ? 'bg-option-a' : 'bg-option-b';
+  const borderAccent = variant === 'a' ? 'border-option-a/40' : 'border-option-b/40';
 
   return (
     <div className="relative">
@@ -152,7 +164,7 @@ function ToolTile({ image, tooltip, onClick, variant }: ToolTileProps) {
       <Popover>
         <PopoverTrigger asChild>
           <button 
-            className={`absolute -top-1 -right-1 z-10 w-6 h-6 rounded-full ${glowColor} flex items-center justify-center shadow-md transition-transform hover:scale-110`}
+            className={`absolute -top-1 -right-1 z-10 w-6 h-6 rounded-full ${accentColor} flex items-center justify-center shadow-sm transition-transform hover:scale-110`}
             onClick={(e) => e.stopPropagation()}
           >
             <Info className="w-3.5 h-3.5 text-primary-foreground" />
@@ -160,17 +172,21 @@ function ToolTile({ image, tooltip, onClick, variant }: ToolTileProps) {
         </PopoverTrigger>
         <PopoverContent 
           side="top" 
-          className="w-48 text-sm text-center p-3"
+          className="w-48 text-sm text-center p-3 bg-white/95 backdrop-blur-sm"
           onClick={(e) => e.stopPropagation()}
         >
           {tooltip}
         </PopoverContent>
       </Popover>
 
-      {/* Tool tile button */}
+      {/* Tool tile button - light background with subtle shadow */}
       <button
         onClick={onClick}
-        className={`w-28 h-28 sm:w-32 sm:h-32 group relative overflow-hidden rounded-2xl border-3 ${borderColor} bg-card/85 backdrop-blur-sm transition-all duration-200 hover:scale-105 ${hoverShadow} hover:shadow-xl active:scale-95`}
+        className={`w-24 h-24 sm:w-28 sm:h-28 group relative overflow-hidden rounded-xl border-2 ${borderAccent} transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95`}
+        style={{
+          background: 'rgba(255, 255, 255, 0.85)',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+        }}
       >
         <div className="w-full h-full p-2 flex items-center justify-center">
           {image ? (
@@ -180,8 +196,8 @@ function ToolTile({ image, tooltip, onClick, variant }: ToolTileProps) {
               className="w-full h-full object-contain"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-muted/50 rounded-lg">
-              <span className="text-4xl">{variant === 'a' ? '🔧' : '🎨'}</span>
+            <div className="w-full h-full flex items-center justify-center bg-muted/30 rounded-lg">
+              <span className="text-3xl">{variant === 'a' ? '🔧' : '🎨'}</span>
             </div>
           )}
         </div>
