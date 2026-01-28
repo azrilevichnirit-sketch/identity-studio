@@ -2,7 +2,9 @@ export type HollandCode = 'r' | 'i' | 'a' | 's' | 'e' | 'c';
 
 export type AvatarGender = 'female' | 'male' | null;
 
-export type Phase = 'avatar' | 'intro' | 'main' | 'tie' | 'lead' | 'summary';
+export type Dimension = 'studio' | 'farm' | 'surprise' | null;
+
+export type Phase = 'dimension' | 'avatar' | 'intro' | 'main' | 'tie' | 'lead' | 'summary' | 'coming-soon';
 
 export interface MissionOption {
   key: 'a' | 'b';
@@ -38,6 +40,7 @@ export interface PickRecord {
 
 export interface GameState {
   phase: Phase;
+  dimension: Dimension;
   avatarGender: AvatarGender;
   mainIndex: number;
   firstPicksByMissionId: Record<string, PickRecord>;
