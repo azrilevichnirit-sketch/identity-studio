@@ -1,6 +1,8 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import type { Mission, HollandCode, AvatarGender, PickRecord } from '@/types/identity';
 import { getToolImage, getBackgroundForMission, getAvatarImage } from '@/lib/assetUtils';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Info } from 'lucide-react';
 
 interface VisualPlayScreenProps {
   mission: Mission;
@@ -34,152 +36,156 @@ export function VisualPlayScreen({
   const toolAImage = getToolImage(optionA.asset);
   const toolBImage = getToolImage(optionB.asset);
 
-  // Get recent placed props (last 4 for display)
-  const recentProps = useMemo(() => {
-    return placedProps.slice(-4).map(pick => ({
-      ...pick,
-      image: getToolImage(
-        mission.world === 'studio' 
-          ? `studio_${pick.missionId.replace('studio_', '')}_${pick.key}`
-          : pick.missionId
-      ),
-    }));
-  }, [placedProps, mission.world]);
-
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* Background layer */}
+      {/* Background layer - full bleed, crop biased to show floor */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${backgroundImage})` }}
+        className="absolute inset-0"
+        style={{ 
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center 80%',
+          backgroundRepeat: 'no-repeat',
+          filter: 'saturate(1.15) contrast(1.08)',
+        }}
       />
-      
-      {/* Dark overlay for readability */}
-      <div className="absolute inset-0 bg-background/40" />
 
-      {/* Content layer */}
-      <div className="relative z-10 min-h-screen flex flex-col">
-        {/* Top bar with progress */}
-        <div className="p-4 bg-gradient-to-b from-background/80 to-transparent">
-          <div className="max-w-md mx-auto">
-            <div className="flex justify-between text-xs text-foreground/80 mb-2">
-              <span>{isTieBreaker ? '🔄 שובר שוויון' : `משימה ${currentIndex + 1} מתוך ${totalMissions}`}</span>
-              <span>{Math.round(progress)}%</span>
-            </div>
-            <div className="h-2 bg-muted/50 rounded-full overflow-hidden backdrop-blur-sm">
-              <div 
-                className="h-full bg-primary transition-all duration-300 ease-out rounded-full"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
+      {/* Progress bar - minimal top overlay */}
+      <div className="absolute top-0 left-0 right-0 z-20 p-3">
+        <div className="max-w-xs mx-auto">
+          <div className="h-2 bg-background/40 rounded-full overflow-hidden backdrop-blur-sm shadow-inner">
+            <div 
+              className="h-full bg-primary transition-all duration-300 ease-out rounded-full"
+              style={{ width: `${progress}%` }}
+            />
           </div>
         </div>
+      </div>
 
-        {/* Main content area */}
-        <div className="flex-1 flex flex-col items-center justify-between px-4 pb-4">
-          {/* Task card */}
-          <div className="w-full max-w-md mt-4">
-            <div className="bg-card/90 backdrop-blur-md rounded-2xl p-5 shadow-2xl border border-border/50">
-              <p className="text-lg font-medium leading-relaxed text-center text-foreground">
+      {/* Content layer */}
+      <div className="relative z-10 min-h-screen flex flex-col justify-end pb-4 px-3">
+        
+        {/* Avatar + Speech Bubble area */}
+        <div className="flex items-end gap-2 mb-4">
+          {/* Avatar - bottom-left anchored, scaled up */}
+          {avatarImage && (
+            <div className="flex-shrink-0 relative">
+              <img 
+                src={avatarImage} 
+                alt="Your avatar"
+                className="h-40 sm:h-52 w-auto object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.4)]"
+              />
+            </div>
+          )}
+          
+          {/* Speech bubble with tail pointing to avatar */}
+          <div className="relative flex-1 max-w-sm mb-8">
+            {/* Bubble tail */}
+            <div 
+              className="absolute -left-3 bottom-4 w-0 h-0"
+              style={{
+                borderTop: '12px solid transparent',
+                borderBottom: '12px solid transparent',
+                borderRight: '16px solid hsl(var(--card))',
+                filter: 'drop-shadow(-2px 0 2px rgba(0,0,0,0.1))',
+              }}
+            />
+            {/* Bubble content */}
+            <div className="bg-card/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-border/30">
+              <p className="text-base sm:text-lg font-medium leading-relaxed text-foreground">
                 {mission.task_heb}
               </p>
             </div>
           </div>
+        </div>
 
-          {/* Props display area */}
-          {recentProps.length > 0 && (
-            <div className="flex justify-center gap-2 my-4">
-              {recentProps.map((prop, idx) => (
-                <div 
-                  key={`${prop.missionId}-${idx}`}
-                  className="w-14 h-14 rounded-lg overflow-hidden bg-card/60 backdrop-blur-sm border border-border/30 shadow-lg"
-                >
-                  {prop.image && (
-                    <img 
-                      src={prop.image} 
-                      alt="Collected tool"
-                      className="w-full h-full object-cover"
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
+        {/* Tool tray area */}
+        <div className="w-full max-w-md mx-auto space-y-3">
+          {/* Tool tiles - two options side by side */}
+          <div className="flex gap-4 justify-center">
+            {/* Option A */}
+            <ToolTile
+              image={toolAImage}
+              tooltip={optionA.tooltip_heb}
+              onClick={() => onSelect(mission.mission_id, 'a', optionA.holland_code as HollandCode)}
+              variant="a"
+            />
 
-          {/* Avatar */}
-          {avatarImage && (
-            <div className="flex-shrink-0 mb-2">
-              <img 
-                src={avatarImage} 
-                alt="Your avatar"
-                className="h-48 w-auto object-contain drop-shadow-2xl"
-              />
-            </div>
-          )}
-
-          {/* Tool choice cards */}
-          <div className="w-full max-w-md space-y-3">
-            <div className="flex gap-3">
-              {/* Option A */}
-              <button
-                onClick={() => onSelect(mission.mission_id, 'a', optionA.holland_code as HollandCode)}
-                className="flex-1 group relative overflow-hidden rounded-2xl border-2 border-option-a bg-card/80 backdrop-blur-md transition-all duration-200 hover:scale-[1.02] hover:border-option-a-hover hover:shadow-lg hover:shadow-option-a/20 active:scale-[0.98]"
-              >
-                <div className="aspect-square p-3">
-                  {toolAImage ? (
-                    <img 
-                      src={toolAImage} 
-                      alt={optionA.tooltip_heb}
-                      className="w-full h-full object-contain"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-muted/50 rounded-lg">
-                      <span className="text-4xl">🔧</span>
-                    </div>
-                  )}
-                </div>
-                <div className="px-3 pb-3 text-center">
-                  <span className="text-xs font-medium text-option-a">א</span>
-                  <p className="text-sm text-foreground/90 mt-1">{optionA.tooltip_heb}</p>
-                </div>
-              </button>
-
-              {/* Option B */}
-              <button
-                onClick={() => onSelect(mission.mission_id, 'b', optionB.holland_code as HollandCode)}
-                className="flex-1 group relative overflow-hidden rounded-2xl border-2 border-option-b bg-card/80 backdrop-blur-md transition-all duration-200 hover:scale-[1.02] hover:border-option-b-hover hover:shadow-lg hover:shadow-option-b/20 active:scale-[0.98]"
-              >
-                <div className="aspect-square p-3">
-                  {toolBImage ? (
-                    <img 
-                      src={toolBImage} 
-                      alt={optionB.tooltip_heb}
-                      className="w-full h-full object-contain"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-muted/50 rounded-lg">
-                      <span className="text-4xl">🎨</span>
-                    </div>
-                  )}
-                </div>
-                <div className="px-3 pb-3 text-center">
-                  <span className="text-xs font-medium text-option-b">ב</span>
-                  <p className="text-sm text-foreground/90 mt-1">{optionB.tooltip_heb}</p>
-                </div>
-              </button>
-            </div>
-
-            {/* Undo button */}
-            <button
-              className="w-full py-3 px-6 rounded-xl text-sm font-medium transition-all duration-200 bg-muted/80 backdrop-blur-sm text-muted-foreground hover:bg-secondary hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
-              onClick={onUndo}
-              disabled={!canUndo}
-            >
-              ← חזור למשימה הקודמת
-            </button>
+            {/* Option B */}
+            <ToolTile
+              image={toolBImage}
+              tooltip={optionB.tooltip_heb}
+              onClick={() => onSelect(mission.mission_id, 'b', optionB.holland_code as HollandCode)}
+              variant="b"
+            />
           </div>
+
+          {/* Undo button */}
+          <button
+            className="w-full py-2.5 px-4 rounded-xl text-sm font-medium transition-all duration-200 bg-muted/70 backdrop-blur-sm text-muted-foreground hover:bg-secondary hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
+            onClick={onUndo}
+            disabled={!canUndo}
+          >
+            ← חזור
+          </button>
         </div>
       </div>
+    </div>
+  );
+}
+
+interface ToolTileProps {
+  image: string | undefined;
+  tooltip: string;
+  onClick: () => void;
+  variant: 'a' | 'b';
+}
+
+function ToolTile({ image, tooltip, onClick, variant }: ToolTileProps) {
+  const borderColor = variant === 'a' ? 'border-option-a' : 'border-option-b';
+  const hoverShadow = variant === 'a' ? 'hover:shadow-option-a/30' : 'hover:shadow-option-b/30';
+  const glowColor = variant === 'a' ? 'bg-option-a' : 'bg-option-b';
+
+  return (
+    <div className="relative">
+      {/* Info icon with popover */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <button 
+            className={`absolute -top-1 -right-1 z-10 w-6 h-6 rounded-full ${glowColor} flex items-center justify-center shadow-md transition-transform hover:scale-110`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Info className="w-3.5 h-3.5 text-primary-foreground" />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent 
+          side="top" 
+          className="w-48 text-sm text-center p-3"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {tooltip}
+        </PopoverContent>
+      </Popover>
+
+      {/* Tool tile button */}
+      <button
+        onClick={onClick}
+        className={`w-28 h-28 sm:w-32 sm:h-32 group relative overflow-hidden rounded-2xl border-3 ${borderColor} bg-card/85 backdrop-blur-sm transition-all duration-200 hover:scale-105 ${hoverShadow} hover:shadow-xl active:scale-95`}
+      >
+        <div className="w-full h-full p-2 flex items-center justify-center">
+          {image ? (
+            <img 
+              src={image} 
+              alt="Tool option"
+              className="w-full h-full object-contain"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-muted/50 rounded-lg">
+              <span className="text-4xl">{variant === 'a' ? '🔧' : '🎨'}</span>
+            </div>
+          )}
+        </div>
+      </button>
     </div>
   );
 }
