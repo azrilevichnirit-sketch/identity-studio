@@ -1,0 +1,16 @@
+asset_name,width_px,height_px,format,usage
+ui_bubble_left_1600x900.webp,1600,900,WebP (transparent),Feedback bubble (tail left) for narration/coach text.
+ui_bubble_right_1600x900.webp,1600,900,WebP (transparent),Feedback bubble (tail right) for narration/coach text.
+ui_tooltip_bottomtail_1600x650.webp,1600,650,WebP (transparent),Tooltip card (pointer bottom) – place above the referenced UI element.
+ui_tooltip_toptail_1600x650.webp,1600,650,WebP (transparent),Tooltip card (pointer top) – place below the referenced UI element.
+ui_container_card_1800x1000.webp,1800,1000,WebP (transparent),Generic container panel (lead form / end summary / info).
+ui_painted_wall_2200x1200.webp,2200,1200,WebP (transparent),Painted wall overlay (blank area for text).
+ui_painted_wall_long_2600x700.webp,2600,700,WebP (transparent),Painted wall long overlay (headline + short copy).
+ui_bottom_tray_5504x900.webp,5504,900,WebP (transparent),Bottom tool tray background overlay (full-width).
+ui_top_bar_5504x350.webp,5504,350,WebP (transparent),Top UI bar background overlay (full-width).
+ui_zone_glow_circle_900x900.webp,900,900,WebP (transparent),Drop-zone highlight/glow (circle).
+ui_zone_glow_rect_1200x800.webp,1200,800,WebP (transparent),Drop-zone highlight/glow (rounded rect).
+ui_back_arrow_256.webp,256,256,WebP (transparent),Back arrow icon button (top-right).
+layout_safe_areas_5504x3072.webp,5504,3072,WebP (transparent),"DEV-ONLY overlay: shows safe areas (top 12%, bottom 18%) + center play area outline. Do not ship in production."
+ui_tool_slot_700x700.webp,700,700,WebP (transparent),Tool slot container (use behind 600x600 tool icons in the bottom tray).
+ui_tool_slot_selected_700x700.webp,700,700,WebP (transparent),Tool slot container – selected/active state (glow).
