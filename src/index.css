@@ -4,6 +4,18 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700&display=swap');
 
+/* Drag hint floating animation */
+@keyframes drag-float {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}
+
 /* Identity Engine Design System - Dark, focused, minimal */
 
 @layer base {

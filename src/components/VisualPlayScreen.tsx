@@ -6,6 +6,10 @@ import { SpeechBubble } from './SpeechBubble';
 import { Info, Hand, X } from 'lucide-react';
 import { UndoConfirmPopover } from './UndoConfirmDialog';
 import { ProgressTank } from './ProgressTank';
+import { DragHint } from './DragHint';
+
+const DRAG_HINT_STORAGE_KEY = 'ie_hasDraggedOnce';
+
 interface VisualPlayScreenProps {
   mission: Mission;
   currentIndex: number;
@@ -34,7 +38,9 @@ export function VisualPlayScreen({
   const [dragPosition, setDragPosition] = useState<{ x: number; y: number } | null>(null);
   const [justPlaced, setJustPlaced] = useState<string | null>(null);
   const [activeTooltip, setActiveTooltip] = useState<'a' | 'b' | null>(null);
-  const [hasDroppedOnce, setHasDroppedOnce] = useState(false);
+  const [hasDraggedOnce, setHasDraggedOnce] = useState(() => {
+    return localStorage.getItem(DRAG_HINT_STORAGE_KEY) === 'true';
+  });
   const stageRef = useRef<HTMLDivElement>(null);
   
   // Options from mission
@@ -105,9 +111,10 @@ export function VisualPlayScreen({
     
     if (relY < 75 && relY > 0) {
       const option = draggingTool === 'a' ? optionA : optionB;
-      // Mark first drop complete
-      if (!hasDroppedOnce) {
-        setHasDroppedOnce(true);
+      // Mark first drop complete and persist
+      if (!hasDraggedOnce) {
+        setHasDraggedOnce(true);
+        localStorage.setItem(DRAG_HINT_STORAGE_KEY, 'true');
       }
       // Trigger snap feedback
       setJustPlaced(`${mission.mission_id}-${draggingTool}`);
@@ -313,47 +320,10 @@ export function VisualPlayScreen({
               isInfoActive={activeTooltip === 'b'}
             />
             
-            {/* Animated drag hint - shows before first drop, when not dragging */}
-            {!hasDroppedOnce && !draggingTool && (
-              <div className="absolute -top-16 left-1/2 -translate-x-1/2 pointer-events-none animate-fade-in">
-                {/* Animated hand with upward arrow */}
-                <div className="flex flex-col items-center animate-drag-hint">
-                  {/* Upward arrow */}
-                  <svg 
-                    width="24" height="24" viewBox="0 0 24 24" 
-                    fill="none" 
-                    className="mb-1"
-                  >
-                    <path 
-                      d="M12 19V5M5 12l7-7 7 7" 
-                      stroke="hsl(170, 80%, 50%)" 
-                      strokeWidth="2.5" 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  {/* Hand SVG */}
-                  <svg 
-                    width="28" height="28" viewBox="0 0 24 24" 
-                    fill="none"
-                    className="drop-shadow-md"
-                  >
-                    <path 
-                      d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v1M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v6M10 10.5V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8" 
-                      stroke="hsl(220, 20%, 25%)" 
-                      strokeWidth="1.5" 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round"
-                    />
-                    <path 
-                      d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15V6" 
-                      stroke="hsl(220, 20%, 25%)" 
-                      strokeWidth="1.5" 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
+            {/* Animated drag hint - shows before first drop ever, when not dragging */}
+            {!hasDraggedOnce && !draggingTool && (
+              <div className="absolute -top-14 left-1/2 -translate-x-1/2 flex flex-col items-center">
+                <DragHint />
               </div>
             )}
           </div>
