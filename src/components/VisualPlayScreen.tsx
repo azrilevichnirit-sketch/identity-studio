@@ -225,15 +225,15 @@ export function VisualPlayScreen({
         />
       </div>
 
-      {/* Avatar - anchored bottom-right */}
+      {/* Avatar - anchored bottom-right, matching Welcome screen */}
       {avatarImage && (
         <div 
           className="absolute z-20 animate-fade-in"
           style={{
-            right: '24px',
-            bottom: '160px',
-            height: '220px',
-            filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.5))',
+            right: '60px',
+            bottom: '30px',
+            height: '340px',
+            filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))',
           }}
         >
           <img 
@@ -244,28 +244,28 @@ export function VisualPlayScreen({
         </div>
       )}
 
-      {/* Speech bubble - near avatar on right */}
+      {/* Speech bubble - positioned to the left so avatar can overlap edge */}
       <div 
         className="absolute z-15 animate-pop-in"
         style={{
-          right: '180px',
-          bottom: '200px',
-          maxWidth: '380px',
+          right: '280px',
+          bottom: '100px',
+          maxWidth: '400px',
         }}
       >
         <SpeechBubble tailDirection="right">
-          <p className="font-medium text-base md:text-lg">{taskText}</p>
+          <p className="font-medium text-base md:text-lg pr-4">{taskText}</p>
         </SpeechBubble>
       </div>
 
-      {/* Compact glass tool tray - centered, not full width */}
-      <div className="absolute bottom-3 md:bottom-4 left-1/2 -translate-x-1/2 z-25">
+      {/* Compact floating tool panel - lower-left */}
+      <div className="absolute bottom-6 md:bottom-8 left-6 md:left-8 z-25">
         <div 
-          className="rounded-2xl px-5 py-4 md:px-8 md:py-5"
+          className="rounded-2xl px-5 py-4 md:px-6 md:py-5"
           style={{
-            background: 'rgba(20, 25, 35, 0.55)',
-            backdropFilter: 'blur(20px)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.08)',
+            background: 'rgba(20, 25, 35, 0.65)',
+            backdropFilter: 'blur(16px)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08)',
             border: '1px solid rgba(255,255,255,0.1)',
           }}
         >
@@ -275,7 +275,7 @@ export function VisualPlayScreen({
             <div 
               className="relative h-4 md:h-5 rounded-full overflow-hidden"
               style={{
-                width: '140px',
+                width: '120px',
                 background: 'rgba(0,0,0,0.4)',
                 border: '2px solid rgba(255,255,255,0.15)',
                 boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.3)',
@@ -303,7 +303,7 @@ export function VisualPlayScreen({
             <span 
               className="text-xs md:text-sm font-medium"
               style={{ 
-                color: 'rgba(255,255,255,0.75)',
+                color: 'rgba(255,255,255,0.85)',
                 fontVariantNumeric: 'tabular-nums',
               }}
             >
@@ -311,8 +311,8 @@ export function VisualPlayScreen({
             </span>
           </div>
 
-          {/* Tool tiles */}
-          <div className="flex gap-4 md:gap-6 justify-center items-center">
+          {/* Tool tiles - minimal framing */}
+          <div className="flex gap-4 md:gap-5 justify-center items-center">
             <DraggableToolTile
               image={toolAImage}
               tooltip={optionA.tooltip_heb || `MISSING: option_a_tooltip_heb`}
@@ -374,40 +374,41 @@ interface DraggableToolTileProps {
 function DraggableToolTile({ image, tooltip, onClick, onDragStart, variant, isDragging }: DraggableToolTileProps) {
   return (
     <div className={`relative ${isDragging ? 'opacity-40' : ''}`}>
-      {/* Tool tile button - draggable */}
+      {/* Tool tile - minimal framing, no white card */}
       <button
         onClick={onClick}
         onMouseDown={onDragStart}
         onTouchStart={onDragStart}
-        className="group relative overflow-hidden transition-all duration-200 hover:scale-105 active:scale-90 cursor-grab active:cursor-grabbing rounded-xl"
+        className="group relative overflow-visible transition-all duration-200 hover:scale-110 active:scale-95 cursor-grab active:cursor-grabbing"
         style={{
-          width: '80px',
-          height: '80px',
-          background: 'rgba(255, 252, 245, 0.94)',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+          width: '72px',
+          height: '72px',
         }}
       >
-        {/* Tool image centered */}
-        <div className="absolute inset-0 flex items-center justify-center p-2">
+        {/* Tool image - transparent PNG with subtle shadow */}
+        <div className="absolute inset-0 flex items-center justify-center">
           {image ? (
             <img 
               src={image} 
               alt="Tool option"
-              className="w-full h-full object-contain transition-transform duration-200 group-hover:scale-110"
+              className="w-full h-full object-contain transition-transform duration-200 group-hover:scale-105"
+              style={{
+                filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.4))',
+              }}
               draggable={false}
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-muted/30 rounded-lg">
+            <div className="w-14 h-14 flex items-center justify-center bg-white/20 rounded-lg backdrop-blur-sm">
               <span className="text-2xl">{variant === 'a' ? '🔧' : '🎨'}</span>
             </div>
           )}
         </div>
         
-        {/* Hover glow */}
+        {/* Subtle hover ring */}
         <div 
           className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
           style={{
-            boxShadow: '0 0 16px hsl(170 80% 45% / 0.35)',
+            boxShadow: '0 0 20px hsl(170 80% 50% / 0.4)',
           }}
         />
       </button>
@@ -416,10 +417,10 @@ function DraggableToolTile({ image, tooltip, onClick, onDragStart, variant, isDr
       <Popover>
         <PopoverTrigger asChild>
           <button 
-            className="absolute -bottom-1 -left-1 z-10 w-6 h-6 md:w-7 md:h-7 rounded-full bg-slate-700/90 flex items-center justify-center shadow-md transition-transform hover:scale-110 backdrop-blur-sm"
+            className="absolute bottom-0 left-0 z-10 w-5 h-5 md:w-6 md:h-6 rounded-full bg-slate-700/90 flex items-center justify-center shadow-md transition-transform hover:scale-110 backdrop-blur-sm"
             onClick={(e) => e.stopPropagation()}
           >
-            <Info className="w-3.5 h-3.5 md:w-4 md:h-4 text-white/90" />
+            <Info className="w-3 h-3 md:w-3.5 md:h-3.5 text-white/90" />
           </button>
         </PopoverTrigger>
         <PopoverContent 
