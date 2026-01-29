@@ -890,7 +890,7 @@
   }
 
   /* Mobile: bubble stays fully inside screen; avatar overlaps from front-right */
-  .welcomeScreen .welcomeHeroMobile .heroBubble { order: 1 !important; z-index: 85 !important; flex: 0 1 auto !important; min-width: 0 !important; max-width: 65% !important; }
+  .welcomeScreen .welcomeHeroMobile .heroBubble { order: 1 !important; z-index: 85 !important; flex: 0 1 auto !important; min-width: 0 !important; width: fit-content !important; max-width: 70% !important; }
   .welcomeScreen .welcomeHeroMobile .heroAvatar {
     order: 2 !important;
     z-index: 2000 !important;
