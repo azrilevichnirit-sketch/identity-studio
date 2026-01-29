@@ -584,10 +584,11 @@
     overflow: hidden;
   }
 
-  /* Mobile: Background with slight zoom for depth */
+  /* Mobile: Background - zoom out to show more depth/space */
   .mobile-layout .layout-bg {
-    transform: scale(1.08);
-    transform-origin: center 55%;
+    transform: scale(0.92);
+    transform-origin: center bottom;
+    background-color: hsl(var(--background));
   }
 
   /* Mobile: Avatar - right side, foreground (z-25) */
@@ -775,28 +776,30 @@
     position: relative;
   }
 
-  /* bg as div */
+  /* bg as div - zoom out to show more depth */
   .sceneBg {
     position: fixed;
     inset: 0;
     z-index: 0;
     pointer-events: none;
     background-repeat: no-repeat;
-    background-size: cover;
-    background-position: 50% 100%;
+    background-size: contain;
+    background-position: center bottom;
+    background-color: hsl(var(--background));
   }
 
-  /* bg as img */
+  /* bg as img - zoom out to show more depth */
   .sceneBgImg {
     position: fixed;
     inset: 0;
     width: 100%;
     height: 100%;
     display: block;
-    object-fit: cover;
-    object-position: 50% 100%;
+    object-fit: contain;
+    object-position: center bottom;
     z-index: 0;
     pointer-events: none;
+    background-color: hsl(var(--background));
   }
 
   /* Dialog row: mobile layering for avatar + bubble */
