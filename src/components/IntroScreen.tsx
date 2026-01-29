@@ -58,17 +58,17 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
         </div>
       )}
 
-      {/* Speech bubble with welcome text - positioned near avatar on right */}
+      {/* Speech bubble with welcome text - positioned to the left so avatar can overlap edge */}
       <div 
         className="absolute z-15 animate-scale-in"
         style={{
-          right: '200px',
-          bottom: '120px',
-          maxWidth: '480px',
+          right: '280px',
+          bottom: '100px',
+          maxWidth: '440px',
         }}
       >
         <SpeechBubble tailDirection="right">
-          <div className="space-y-3">
+          <div className="space-y-3 pr-4">
             <p className="font-semibold text-lg">היי! איזה כיף להכיר אותך.</p>
             <p>
               אני {avatarName}, ואני איתך לאורך כל המסע הזה.
