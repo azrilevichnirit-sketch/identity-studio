@@ -132,15 +132,15 @@ export function VisualPlayScreen({
   }, [draggingTool, getTargetAnchor]);
 
   return (
-    <div ref={stageRef} className="absolute inset-0 overflow-hidden">
-      {/* Background layer with crossfade */}
+    <div ref={stageRef} className="absolute inset-0 w-full h-full overflow-hidden">
+      {/* Background layer - always fills viewport */}
       <div 
-        className="absolute inset-0 animate-bg-crossfade"
+        className="absolute inset-0 w-full h-full animate-bg-crossfade"
         key={currentBg}
         style={{ 
           backgroundImage: `url(${currentBg})`,
           backgroundSize: 'cover',
-          backgroundPosition: 'center bottom',
+          backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
           filter: 'saturate(1.18) contrast(1.08)',
         }}
@@ -429,7 +429,7 @@ function DraggableToolTile({ image, tooltip, onClick, onDragStart, variant, isDr
           className="w-48 md:w-56 text-sm text-center p-3 bg-slate-800/95 text-white border-slate-600/50 backdrop-blur-sm"
           onClick={(e) => e.stopPropagation()}
           style={{
-            fontFamily: "'Heebo', sans-serif",
+            fontFamily: "'Assistant', sans-serif",
             direction: 'rtl',
           }}
         >
