@@ -718,12 +718,12 @@
 @media (min-width: 821px) {
   .welcomeScreen .welcomeOverlayDesktop {
     position: absolute;
-    right: clamp(16px, 3vw, 40px);
-    bottom: clamp(20px, 4vh, 48px);
+    right: clamp(24px, 4vw, 60px);
+    bottom: clamp(28px, 5vh, 60px);
     display: flex;
-    flex-direction: row;
+    flex-direction: row-reverse;
     align-items: flex-end;
-    gap: clamp(12px, 1.6vw, 22px);
+    gap: clamp(16px, 2vw, 28px);
     z-index: 30;
     pointer-events: none;
   }
@@ -733,6 +733,7 @@
     position: relative;
     z-index: 20;
     pointer-events: auto;
+    order: 2;
   }
 
   .welcomeScreen .welcomeAvatarWrap {
@@ -741,6 +742,7 @@
     flex: 0 0 auto;
     width: min(320px, 28vw);
     pointer-events: none;
+    order: 1;
   }
 
   .welcomeScreen .welcomeAvatarWrap img {
