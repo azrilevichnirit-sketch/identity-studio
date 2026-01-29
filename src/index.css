@@ -478,34 +478,35 @@
 /* ============================================
    RESPONSIVE LAYOUT SYSTEM
    Desktop-first: base styles for desktop (>=1024px)
-   Mobile overrides via media query (<768px portrait)
+   Mobile overrides via @media (max-width: 1023px)
    ============================================ */
 
-/* Game stage - works for all viewports */
+/* Game stage - full viewport, no overflow */
 .game-stage {
   position: fixed;
   inset: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
   margin: 0;
   padding: 0;
 }
 
-/* Game stage content - safe area only on mobile */
-.game-stage-content {
+/* Background layer - covers entire stage */
+.layout-bg {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
 }
 
 /* ============================================
-   DESKTOP LAYOUT (>=1024px default)
+   DESKTOP LAYOUT (>=1024px) - BASE STYLES
    Tray bottom-LEFT, bubble near avatar on right
    ============================================ */
-
-.desktop-layout {
-  /* Desktop stage fills viewport normally */
-}
 
 /* Desktop: Background - no zoom */
 .desktop-layout .layout-bg {
@@ -557,12 +558,12 @@
 }
 
 /* ============================================
-   MOBILE PORTRAIT LAYOUT (<768px portrait)
+   MOBILE LAYOUT (<1024px)
    Stage fills viewport, tray bottom-left,
    bubble above tray, avatar right foreground
    ============================================ */
 
-@media (max-width: 768px) and (orientation: portrait) {
+@media (max-width: 1023px) {
   /* Prevent horizontal overflow */
   html, body {
     margin: 0;
@@ -570,26 +571,32 @@
     overflow-x: hidden;
   }
 
+  /* Mobile: Use dynamic viewport height */
+  .game-stage {
+    height: 100dvh;
+    min-height: 100vh;
+  }
+
   .mobile-layout {
     width: 100vw;
-    height: 100svh;
+    height: 100dvh;
     min-height: 100vh;
     overflow: hidden;
   }
 
-  /* Mobile: Background with zoom for depth */
+  /* Mobile: Background with slight zoom for depth */
   .mobile-layout .layout-bg {
     transform: scale(1.08);
     transform-origin: center 55%;
   }
 
-  /* Mobile: Avatar - right side, slightly bigger, foreground (z-25) */
+  /* Mobile: Avatar - right side, foreground (z-25) */
   .mobile-avatar {
     position: absolute;
     z-index: 25;
-    right: 6px;
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
-    height: clamp(280px, 42vh, 410px);
+    right: 8px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+    height: clamp(260px, 38vh, 380px);
     pointer-events: none;
     filter: drop-shadow(0 10px 24px rgba(0,0,0,0.45));
   }
@@ -599,9 +606,9 @@
     position: absolute;
     z-index: 20;
     left: 12px;
-    right: calc(12px + clamp(140px, 36vw, 220px)); /* Reserve space for avatar */
-    bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(100px, 16vh, 150px) + 16px);
-    max-height: 26vh;
+    right: calc(12px + clamp(130px, 34vw, 200px)); /* Reserve space for avatar */
+    bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(95px, 15vh, 140px) + 16px);
+    max-height: 28vh;
     overflow-y: auto;
   }
 
@@ -611,8 +618,8 @@
     z-index: 18;
     left: 12px;
     bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
-    width: clamp(150px, 42vw, 220px);
-    height: clamp(95px, 15vh, 135px);
+    width: clamp(140px, 40vw, 200px);
+    height: clamp(90px, 14vh, 125px);
   }
 
   /* Mobile: Tool panel inner - tighter padding */
@@ -629,45 +636,44 @@
   }
 }
 
-/* Small mobile (very narrow) additional adjustments */
-@media (max-width: 380px) and (orientation: portrait) {
+/* Small mobile (<400px) additional adjustments */
+@media (max-width: 399px) {
   .mobile-avatar {
-    height: clamp(240px, 38vh, 360px);
+    height: clamp(220px, 34vh, 320px);
     right: 4px;
   }
 
   .mobile-bubble {
     left: 10px;
-    right: calc(10px + clamp(120px, 32vw, 180px));
-    bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(90px, 14vh, 130px) + 14px);
+    right: calc(10px + clamp(110px, 30vw, 160px));
   }
 
   .mobile-tool-panel {
-    width: clamp(130px, 44vw, 190px);
-    height: clamp(85px, 14vh, 120px);
+    width: clamp(120px, 42vw, 170px);
+    height: clamp(80px, 13vh, 110px);
     left: 10px;
   }
 }
 
-/* Tablet landscape - similar to desktop but slightly adjusted */
-@media (min-width: 769px) and (max-width: 1023px) and (orientation: landscape) {
-  .desktop-avatar {
-    right: 40px;
-    height: 320px;
+/* Tablet landscape (768-1023px) */
+@media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
+  .mobile-avatar {
+    height: clamp(280px, 40vh, 360px);
+    right: 20px;
   }
 
-  .desktop-bubble {
-    right: 280px;
-    max-width: 380px;
+  .mobile-bubble {
+    right: calc(20px + clamp(160px, 28vw, 240px));
+    max-width: 400px;
   }
 
-  .desktop-tool-panel {
-    width: 340px;
-    height: 140px;
+  .mobile-tool-panel {
+    width: clamp(280px, 32vw, 360px);
+    height: 130px;
   }
 }
 
-/* Large desktop */
+/* Large desktop (>=1280px) */
 @media (min-width: 1280px) {
   .desktop-avatar {
     right: 100px;
