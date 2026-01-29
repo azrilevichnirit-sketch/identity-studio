@@ -939,7 +939,10 @@
     width: 100% !important;
     max-width: none !important;
     margin: 0 !important;
-    z-index: 1100 !important;
+    z-index: 1 !important;
+    border-radius: 14px !important;
+    overflow: visible !important;
+    background-color: #fff !important;
 
     /* reserve space for the avatar so text never hides */
     padding-right: calc(clamp(200px, 44vw, 290px) + 12px) !important;
@@ -948,6 +951,18 @@
     font-family: Rubik, system-ui, -apple-system, "Segoe UI", Arial, sans-serif !important;
     font-size: 16px !important;
     line-height: 1.45 !important;
+  }
+  .welcomeScreen .welcomeBubble::after{
+    content:"" !important;
+    position:absolute !important;
+    right:-9px !important;
+    bottom:22px !important;
+    width:18px !important;
+    height:18px !important;
+    background-color:#fff !important;
+    transform: rotate(45deg) !important;
+    border-radius: 4px !important;
+    z-index: 0 !important;
   }
   .welcomeScreen .welcomeBubble h1,
   .welcomeScreen .welcomeBubble .title {
