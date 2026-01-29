@@ -39,7 +39,7 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
           {/* Bubble: fully visible on left side */}
           <div className="heroBubble welcomeBubble animate-scale-in max-[820px]:relative max-[820px]:z-10">
             <SpeechBubble tailDirection="right">
-              <div className="space-y-1 pr-2 max-[820px]:pr-28">
+              <div className="space-y-1 pr-2">
                 <p className="font-semibold text-sm">היי! איזה כיף להכיר אותך.</p>
                 <p className="text-xs leading-snug">אני {avatarName}, ואני איתך לאורך כל המסע הזה.</p>
                 <p className="text-xs leading-snug">
