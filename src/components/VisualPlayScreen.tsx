@@ -278,29 +278,29 @@ export function VisualPlayScreen({
         </div>
       )}
 
-      {/* Speech bubble - positioned to the left so avatar can overlap edge */}
+      {/* Speech bubble - positioned further left so avatar overlaps edge, matching Welcome */}
       <div 
         className="absolute z-15 animate-pop-in"
         style={{
-          right: '280px',
-          bottom: '100px',
-          maxWidth: '400px',
+          right: '320px',
+          bottom: '140px',
+          maxWidth: '380px',
         }}
       >
         <SpeechBubble tailDirection="right">
-          <p className="font-medium text-base md:text-lg pr-4">{taskText}</p>
+          <p className="font-medium text-base md:text-lg pr-6">{taskText}</p>
         </SpeechBubble>
       </div>
 
-      {/* Compact floating tool panel - lower-left */}
-      <div className="absolute bottom-6 md:bottom-8 left-6 md:left-8 z-25">
+      {/* Floating tool panel - LEFT side, minimal glass container */}
+      <div className="absolute bottom-8 md:bottom-10 left-8 md:left-10 z-25">
         <div 
-          className="rounded-2xl px-5 py-4 md:px-6 md:py-5"
+          className="rounded-2xl px-4 py-3 md:px-5 md:py-4"
           style={{
-            background: 'rgba(20, 25, 35, 0.65)',
-            backdropFilter: 'blur(16px)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08)',
-            border: '1px solid rgba(255,255,255,0.1)',
+            background: 'rgba(15, 20, 30, 0.55)',
+            backdropFilter: 'blur(12px)',
+            boxShadow: '0 6px 24px rgba(0,0,0,0.25)',
+            border: '1px solid rgba(255,255,255,0.08)',
           }}
         >
           {/* Progress tank */}
@@ -417,51 +417,49 @@ interface DraggableToolTileProps {
 function DraggableToolTile({ image, onClick, onDragStart, onInfoClick, variant, isDragging, isInfoActive }: DraggableToolTileProps) {
   return (
     <div className={`relative ${isDragging ? 'opacity-40' : ''}`}>
-      {/* Tool tile - minimal framing, no white card */}
+      {/* Tool tile - transparent PNG, no white card */}
       <button
         onClick={onClick}
         onMouseDown={onDragStart}
         onTouchStart={onDragStart}
         className="group relative overflow-visible transition-all duration-200 hover:scale-110 active:scale-95 cursor-grab active:cursor-grabbing"
         style={{
-          width: '72px',
-          height: '72px',
+          width: '80px',
+          height: '80px',
         }}
       >
-        {/* Tool image - transparent PNG with subtle shadow */}
+        {/* Tool image - transparent PNG with subtle shadow only */}
         <div className="absolute inset-0 flex items-center justify-center">
           {image ? (
             <img 
               src={image} 
               alt="Tool option"
-              className="w-full h-full object-contain transition-transform duration-200 group-hover:scale-105"
+              className="w-full h-full object-contain transition-transform duration-200 group-hover:scale-108"
               style={{
-                filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.4))',
+                filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.5))',
               }}
               draggable={false}
             />
           ) : (
-            <div className="w-14 h-14 flex items-center justify-center bg-white/20 rounded-lg backdrop-blur-sm">
-              <span className="text-2xl">{variant === 'a' ? '🔧' : '🎨'}</span>
-            </div>
+            <span className="text-3xl">{variant === 'a' ? '🔧' : '🎨'}</span>
           )}
         </div>
         
-        {/* Subtle hover ring */}
+        {/* Subtle hover glow - no ring, just soft glow */}
         <div 
-          className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+          className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
           style={{
-            boxShadow: '0 0 20px hsl(170 80% 50% / 0.4)',
+            boxShadow: '0 0 24px hsl(170 80% 50% / 0.35)',
           }}
         />
       </button>
 
       {/* Info icon - BOTTOM-LEFT corner */}
       <button 
-        className={`absolute bottom-0 left-0 z-10 w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center shadow-md transition-all hover:scale-110 backdrop-blur-sm ${
+        className={`absolute -bottom-1 -left-1 z-10 w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center shadow-md transition-all hover:scale-110 ${
           isInfoActive 
-            ? 'bg-slate-100 ring-2 ring-slate-400' 
-            : 'bg-slate-700/90'
+            ? 'bg-white ring-2 ring-slate-400' 
+            : 'bg-slate-800/90'
         }`}
         onClick={(e) => {
           e.stopPropagation();

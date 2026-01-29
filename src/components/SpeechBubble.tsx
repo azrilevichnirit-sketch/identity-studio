@@ -33,33 +33,34 @@ export function SpeechBubble({
         ...style,
       }}
     >
-      {/* Bubble tail - clean triangle using clip-path for seamless join */}
-      <div 
+      {/* Bubble tail - seamless triangle using SVG for clean edges */}
+      <svg 
         className="absolute"
+        width="20"
+        height="28"
+        viewBox="0 0 20 28"
+        fill="none"
         style={{
           ...(tailDirection === 'right' ? {
-            right: '-16px',
+            right: '-19px',
             top: tailVerticalPosition,
             transform: 'translateY(-50%)',
-            width: '18px',
-            height: '24px',
-            background: '#FFFCF5',
-            clipPath: 'polygon(0 0, 0 100%, 100% 50%)',
           } : {
-            left: '-16px',
+            left: '-19px',
             top: tailVerticalPosition,
-            transform: 'translateY(-50%)',
-            width: '18px',
-            height: '24px',
-            background: '#FFFCF5',
-            clipPath: 'polygon(100% 0, 100% 100%, 0 50%)',
+            transform: 'translateY(-50%) scaleX(-1)',
           }),
         }}
-      />
+      >
+        <path 
+          d="M0 0 L0 28 L20 14 Z" 
+          fill="#FFFCF5"
+        />
+      </svg>
       
-      {/* Content with proper typography */}
+      {/* Content with compact padding */}
       <div 
-        className="px-5 py-4 md:px-6 md:py-4"
+        className="px-5 py-3 md:px-6 md:py-3"
         style={{
           fontFamily: "'Rubik', sans-serif",
           fontSize: '17px',
