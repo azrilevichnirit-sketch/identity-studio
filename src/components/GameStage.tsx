@@ -29,16 +29,7 @@ export function GameStage({
 }: GameStageProps) {
   return (
     <div 
-      className={`fixed inset-0 overflow-hidden ${className}`}
-      style={{
-        width: '100vw',
-        height: '100dvh',
-        minHeight: '100vh', // Fallback for browsers without dvh
-        maxWidth: '100vw',
-        overflowX: 'hidden',
-        margin: 0,
-        padding: 0,
-      }}
+      className={`game-stage ${className}`}
     >
       {/* Background layer - separate for filter isolation */}
       {backgroundImage && (
@@ -55,16 +46,10 @@ export function GameStage({
         />
       )}
       
-      {/* Content container with safe-area padding */}
+      {/* Content container with safe-area padding (mobile only via CSS) */}
       <div 
-        className="relative w-full h-full overflow-hidden"
-        style={{
-          paddingTop: 'env(safe-area-inset-top, 0px)',
-          paddingBottom: 'env(safe-area-inset-bottom, 0px)',
-          paddingLeft: 'env(safe-area-inset-left, 0px)',
-          paddingRight: 'env(safe-area-inset-right, 0px)',
-          zIndex: 1,
-        }}
+        className="relative w-full h-full overflow-hidden game-stage-content"
+        style={{ zIndex: 1 }}
       >
         {children}
       </div>
