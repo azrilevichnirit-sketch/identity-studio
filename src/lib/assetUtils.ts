@@ -10,6 +10,7 @@ import studioGalleryWallBg from '@/assets/backgrounds/studio_in_gallery_wall_bg.
 import studioStorageBg from '@/assets/backgrounds/studio_in_storage_bg.webp';
 import studioWorkshopBg from '@/assets/backgrounds/studio_in_workshop_bg.webp';
 import studioEntryInsideBg from '@/assets/backgrounds/studio_entry_inside_bg.png';
+import galleryMainMobileWide from '@/assets/backgrounds/gallery_main_mobile_wide.webp';
 
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
@@ -142,7 +143,18 @@ const backgroundAssets: Record<string, string> = {
   studio_in_storage_bg: studioStorageBg,
   studio_in_workshop_bg: studioWorkshopBg,
   studio_entry_inside_bg: studioEntryInsideBg,
+  gallery_main_mobile_wide: galleryMainMobileWide,
 };
+
+// Wide panoramic backgrounds for mobile panning (key -> asset)
+const panoramicBackgrounds: Record<string, string> = {
+  studio_in_gallery_bg: galleryMainMobileWide,
+  studio_entry_inside_bg: galleryMainMobileWide, // Use gallery wide for main views
+};
+
+export function getPanoramicBackground(bgKey: string): string | null {
+  return panoramicBackgrounds[bgKey] || null;
+}
 
 // Fallback background mapping by (world, view)
 const backgroundFallback: Record<string, string> = {

@@ -1,6 +1,6 @@
 import { useMemo, useState, useRef, useCallback, useEffect } from 'react';
 import type { Mission, HollandCode, AvatarGender, PickRecord, MissionOption, AnchorRef } from '@/types/identity';
-import { getToolImage, getBackgroundForMission, getAvatarImage, getBackgroundKey, getBackgroundByName } from '@/lib/assetUtils';
+import { getToolImage, getBackgroundForMission, getAvatarImage, getBackgroundKey, getBackgroundByName, getPanoramicBackground } from '@/lib/assetUtils';
 import { getAnchorPosition } from '@/lib/jsonDataLoader';
 import { SpeechBubble } from './SpeechBubble';
 import { Info, Hand, X } from 'lucide-react';
@@ -9,6 +9,8 @@ import { ProgressTank } from './ProgressTank';
 import { DragHint } from './DragHint';
 import { useSceneExtras } from '@/hooks/useSceneExtras';
 import { MissionLayout } from './layouts/MissionLayout';
+import { usePanningBackground } from '@/hooks/usePanningBackground';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const DRAG_HINT_STORAGE_KEY = 'ie_hasDraggedOnce';
 
@@ -68,6 +70,13 @@ export function VisualPlayScreen({
   const avatarImage = getAvatarImage(avatarGender, 'idle');
   const toolAImage = getToolImage(optionA.asset);
   const toolBImage = getToolImage(optionB.asset);
+  
+  // Mobile panning support
+  const isMobile = useIsMobile();
+  const panoramicBg = useMemo(() => getPanoramicBackground(currentBgKey), [currentBgKey]);
+  const { backgroundPosition, updatePanFromDrag, resetPan } = usePanningBackground({
+    enabled: isMobile && !!panoramicBg,
+  });
 
   const taskText = mission.task_heb || `MISSING: task_heb`;
 
@@ -152,7 +161,14 @@ export function VisualPlayScreen({
     }
     
     setDragPosition({ x: e.clientX, y: e.clientY });
-  }, [draggingTool]);
+    
+    // Update panning based on pointer position (normalized 0-1)
+    if (stageRef.current && isMobile && panoramicBg) {
+      const rect = stageRef.current.getBoundingClientRect();
+      const normalizedX = (e.clientX - rect.left) / rect.width;
+      updatePanFromDrag(normalizedX);
+    }
+  }, [draggingTool, isMobile, panoramicBg, updatePanFromDrag]);
 
   const handlePointerUp = useCallback((e: React.PointerEvent) => {
     if (!draggingTool || !stageRef.current) {
@@ -204,7 +220,10 @@ export function VisualPlayScreen({
     setDragPosition(null);
     isDraggingRef.current = false;
     dragStartPosRef.current = null;
-  }, [draggingTool, completePlacement, getTargetAnchor]);
+    
+    // Reset pan when drag ends
+    resetPan();
+  }, [draggingTool, completePlacement, getTargetAnchor, resetPan]);
 
   // Handle tap on drop zone in carry mode
   const handleDropZoneTap = useCallback(() => {
@@ -246,13 +265,19 @@ export function VisualPlayScreen({
   // ========== RENDER ELEMENTS ==========
   // These are passed to the layout wrapper
 
+  // Use panoramic background on mobile if available
+  const effectiveBg = isMobile && panoramicBg ? panoramicBg : displayBg;
+  const effectiveBgPosition = isMobile && panoramicBg ? backgroundPosition : 'center';
+  // For panoramic backgrounds, use 'auto 100%' to show full height and allow horizontal pan
+  const effectiveBgSize = isMobile && panoramicBg ? 'auto 100%' : 'cover';
+
   const backgroundElement = (
     <div 
-      className="absolute inset-0 transition-opacity duration-300 layout-bg"
+      className="absolute inset-0 transition-all duration-300 layout-bg"
       style={{ 
-        backgroundImage: `url(${displayBg})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundImage: `url(${effectiveBg})`,
+        backgroundSize: effectiveBgSize,
+        backgroundPosition: effectiveBgPosition,
         backgroundRepeat: 'no-repeat',
         filter: 'saturate(1.18) contrast(1.08)',
         zIndex: 0,
