@@ -61,7 +61,7 @@ export function SpeechBubble({
       <div 
         className="p-5 md:p-6"
         style={{
-          fontFamily: "'Assistant', sans-serif",
+          fontFamily: "'Rubik', sans-serif",
           fontSize: '17px',
           lineHeight: '1.55',
           color: '#111',

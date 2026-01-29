@@ -361,7 +361,7 @@ export function VisualPlayScreen({
                   color: '#111',
                   direction: 'rtl',
                   textAlign: 'right',
-                  fontFamily: "'Assistant', sans-serif",
+                  fontFamily: "'Rubik', sans-serif",
                   lineHeight: 1.5,
                 }}
               >

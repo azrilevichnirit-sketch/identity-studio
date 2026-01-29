@@ -36,7 +36,7 @@ export function UndoConfirmPopover({ open, onOpenChange, onConfirm, disabled }: 
         sideOffset={8}
         className="w-auto p-3 bg-slate-800/95 border-slate-600/50 backdrop-blur-sm z-50"
         style={{
-          fontFamily: "'Heebo', sans-serif",
+          fontFamily: "'Rubik', sans-serif",
           direction: 'rtl',
         }}
       >
