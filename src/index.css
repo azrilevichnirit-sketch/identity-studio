@@ -710,31 +710,61 @@
   min-width: min(240px, 62vw);
 }
 
-/* Desktop: Larger avatar (+20%), closer to bubble */
-@media (min-width: 1024px) {
-  .intro-avatar {
-    right: clamp(80px, 10vw, 160px);
-    bottom: 24px;
-    height: clamp(380px, 42vh, 520px); /* +20% from ~320px baseline */
+/* ============================================
+   WELCOME SCREEN DESKTOP OVERLAY (min-width: 821px)
+   Flex row: [bubble] [avatar], no overlap
+   ============================================ */
+
+@media (min-width: 821px) {
+  .welcomeScreen .welcomeOverlayDesktop {
+    position: absolute;
+    right: clamp(16px, 3vw, 40px);
+    bottom: clamp(20px, 4vh, 48px);
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: clamp(12px, 1.6vw, 22px);
+    z-index: 30;
+    pointer-events: none;
   }
 
-  .intro-bubble {
-    right: clamp(260px, 22vw, 400px); /* Shifted left to create small gap with avatar */
-    bottom: clamp(80px, 12vh, 140px);
-    max-width: 420px;
-    min-width: 320px;
+  .welcomeScreen .welcomeBubble {
+    max-width: min(520px, 42vw);
+    position: relative;
+    z-index: 20;
+    pointer-events: auto;
+  }
+
+  .welcomeScreen .welcomeAvatarWrap {
+    position: relative;
+    z-index: 25;
+    flex: 0 0 auto;
+    width: min(320px, 28vw);
+    pointer-events: none;
+  }
+
+  .welcomeScreen .welcomeAvatarWrap img {
+    width: 100%;
+    height: auto;
+    display: block;
   }
 }
 
-/* Large desktop (>=1280px) - even more prominent */
-@media (min-width: 1280px) {
-  .intro-avatar {
-    right: 120px;
-    height: 480px; /* Larger on big screens */
+/* Custom breakpoint for desktop welcome screen */
+@media (max-width: 820px) {
+  .md-desktop\\:hidden {
+    display: block !important;
   }
+  .md-desktop\\:flex {
+    display: none !important;
+  }
+}
 
-  .intro-bubble {
-    right: 380px;
-    max-width: 460px;
+@media (min-width: 821px) {
+  .md-desktop\\:hidden {
+    display: none !important;
+  }
+  .md-desktop\\:flex {
+    display: flex !important;
   }
 }
