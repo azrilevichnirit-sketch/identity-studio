@@ -736,8 +736,6 @@
     pointer-events: auto;
     order: 1;
     direction: rtl;
-    margin-right: -40px;
-    padding-right: 50px;
   }
 
   .welcomeScreen .welcomeAvatarWrap {
@@ -747,6 +745,7 @@
     width: min(320px, 28vw);
     pointer-events: none;
     order: 2;
+    margin-left: -30px;
   }
 
   .welcomeScreen .welcomeAvatarWrap img {
