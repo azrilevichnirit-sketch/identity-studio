@@ -921,18 +921,18 @@
     padding: 0 !important;
   }
 
-  /* ---- Avatar: large, front-center-right, slightly overlapping bubble ---- */
+  /* ---- Avatar: large, center-right, overlapping the bubble ---- */
   .welcomeScreen .welcomeAvatar{
     position: absolute !important;
-    right: 20% !important;
+    right: 5% !important;
     bottom: 0 !important;
-    width: clamp(220px, 52vw, 320px) !important;
+    width: clamp(180px, 45vw, 260px) !important;
     z-index: 1200 !important;
     pointer-events: none !important;
     top: auto !important;
     left: auto !important;
     margin: 0 !important;
-    transform: translateX(50%) !important;
+    transform: none !important;
   }
   .welcomeScreen .welcomeAvatar img{
     width: 100% !important;
@@ -941,19 +941,19 @@
     max-width: none !important;
   }
 
-  /* ---- Bubble: left side, narrower to make room for avatar ---- */
+  /* ---- Bubble: wide, left side, avatar overlaps right edge ---- */
   .welcomeScreen .welcomeBubble{
     position: relative !important;
     left: 0 !important;
-    width: 65% !important;
-    max-width: 280px !important;
+    width: 100% !important;
+    max-width: none !important;
     margin: 0 !important;
+    padding-right: clamp(100px, 28vw, 160px) !important;
     z-index: 1 !important;
     overflow: visible !important;
     background: transparent !important;
     background-color: transparent !important;
     border-radius: 0 !important;
-    padding: 0 !important;
     box-shadow: none !important;
     border: none !important;
   }
