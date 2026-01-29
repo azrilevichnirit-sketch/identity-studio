@@ -29,12 +29,12 @@ export function GameStage({
 }: GameStageProps) {
   return (
     <div 
-      className={`game-stage ${className}`}
+      className={`game-stage sceneRoot ${className}`}
     >
       {/* Background layer - separate for filter isolation */}
       {backgroundImage && (
         <div 
-          className="absolute inset-0"
+          className="sceneBg absolute inset-0"
           style={{
             backgroundImage: `url(${backgroundImage})`,
             backgroundSize: 'cover',
