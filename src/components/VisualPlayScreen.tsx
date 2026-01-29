@@ -8,6 +8,7 @@ import { UndoConfirmPopover } from './UndoConfirmDialog';
 import { ProgressTank } from './ProgressTank';
 import { DragHint } from './DragHint';
 import { useSceneExtras } from '@/hooks/useSceneExtras';
+import { MissionLayout } from './layouts/MissionLayout';
 
 const DRAG_HINT_STORAGE_KEY = 'ie_hasDraggedOnce';
 
@@ -242,34 +243,35 @@ export function VisualPlayScreen({
   // Scene extras (NPCs) based on current mission and picks
   const sceneExtras = useSceneExtras(mission.mission_id, currentIndex, placedProps);
 
-  return (
+  // ========== RENDER ELEMENTS ==========
+  // These are passed to the layout wrapper
+
+  const backgroundElement = (
     <div 
-      ref={stageRef} 
-      className="game-stage"
-      onClick={carryModeTool ? handleCancelCarry : undefined}
-    >
-      {/* Background layer - game-stage-bg class adds mobile zoom */}
-      <div 
-        className="absolute inset-0 transition-opacity duration-300 game-stage-bg"
-        style={{ 
-          backgroundImage: `url(${displayBg})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          filter: 'saturate(1.18) contrast(1.08)',
-          zIndex: 0,
-        }}
-      />
+      className="absolute inset-0 transition-opacity duration-300 layout-bg"
+      style={{ 
+        backgroundImage: `url(${displayBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        filter: 'saturate(1.18) contrast(1.08)',
+        zIndex: 0,
+      }}
+    />
+  );
 
-      {/* Bottom gradient overlay */}
-      <div 
-        className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none"
-        style={{
-          background: 'linear-gradient(to top, rgba(0,0,0,0.25) 0%, transparent 100%)',
-        }}
-      />
+  const gradientOverlayElement = (
+    <div 
+      className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none"
+      style={{
+        background: 'linear-gradient(to top, rgba(0,0,0,0.25) 0%, transparent 100%)',
+        zIndex: 1,
+      }}
+    />
+  );
 
-      {/* Scene extras layer */}
+  const sceneExtrasElement = (
+    <>
       {sceneExtras.map((extra) => {
         const anchorPos = getAnchorPosition(displayBgKey, extra.anchorRef);
         if (!anchorPos) return null;
@@ -296,96 +298,96 @@ export function VisualPlayScreen({
           </div>
         );
       })}
+    </>
+  );
 
-      {/* Target zone indicator - shows during drag or carry mode */}
-      {activeToolVariant && targetPosition && (
+  const targetZoneElement = activeToolVariant && targetPosition ? (
+    <div 
+      className="absolute z-[12] animate-fade-in cursor-pointer"
+      style={{
+        left: `${targetPosition.x}%`,
+        top: `${targetPosition.y}%`,
+        transform: 'translate(-50%, -50%)',
+      }}
+      onClick={(e) => {
+        e.stopPropagation();
+        handleDropZoneTap();
+      }}
+      onPointerDown={(e) => {
+        e.stopPropagation();
+        handleDropZoneTap();
+      }}
+    >
+      {/* Outer glow effect */}
+      <div 
+        className="absolute inset-0 rounded-full pointer-events-none"
+        style={{
+          width: '140px',
+          height: '140px',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+          background: 'radial-gradient(circle, hsl(170 80% 50% / 0.35) 0%, transparent 70%)',
+          animation: 'pulse-glow 1.2s ease-in-out infinite',
+        }}
+      />
+      
+      {/* Main pulsing ring */}
+      <div 
+        className="w-20 h-20 md:w-28 md:h-28 rounded-full relative"
+        style={{
+          border: '4px solid hsl(170 80% 50%)',
+          boxShadow: '0 0 40px hsl(170 80% 50% / 0.6), inset 0 0 25px hsl(170 80% 50% / 0.2)',
+          background: 'radial-gradient(circle, hsl(170 80% 50% / 0.25) 0%, transparent 60%)',
+          animation: 'pulse 1.2s ease-in-out infinite',
+        }}
+      >
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-3 h-3 rounded-full bg-white/80" style={{ boxShadow: '0 0 8px white' }} />
+        </div>
+      </div>
+      
+      {/* Downward arrow */}
+      <div className="absolute left-1/2 -top-14 -translate-x-1/2 flex flex-col items-center">
+        <svg 
+          className="animate-bounce drop-shadow-lg"
+          width="36" height="36" viewBox="0 0 24 24" 
+          fill="hsl(170, 80%, 50%)" stroke="white" strokeWidth="1"
+        >
+          <path d="M12 5v14M5 12l7 7 7-7" fill="none" stroke="hsl(170, 80%, 50%)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+      
+      {/* Hand icon */}
+      <div className="absolute left-1/2 -bottom-10 -translate-x-1/2">
+        <svg 
+          className="animate-hand-move drop-shadow-md"
+          width="28" height="28" viewBox="0 0 24 24" 
+          fill="none" stroke="hsl(170, 80%, 50%)" strokeWidth="2"
+        >
+          <path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v6M10 10.5V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15V6" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+      
+      {/* Carry mode instruction */}
+      {carryModeTool && !draggingTool && (
         <div 
-          className="absolute z-[12] animate-fade-in cursor-pointer"
+          className="absolute top-full mt-14 left-1/2 -translate-x-1/2 whitespace-nowrap text-sm font-semibold px-4 py-2 rounded-xl animate-pulse"
           style={{
-            left: `${targetPosition.x}%`,
-            top: `${targetPosition.y}%`,
-            transform: 'translate(-50%, -50%)',
-          }}
-          onClick={(e) => {
-            e.stopPropagation();
-            handleDropZoneTap();
-          }}
-          onPointerDown={(e) => {
-            // Also accept pointer down on target zone
-            e.stopPropagation();
-            handleDropZoneTap();
+            background: 'hsl(170 80% 45%)',
+            color: 'white',
+            boxShadow: '0 4px 16px hsl(170 80% 45% / 0.5)',
           }}
         >
-          {/* Outer glow effect */}
-          <div 
-            className="absolute inset-0 rounded-full pointer-events-none"
-            style={{
-              width: '140px',
-              height: '140px',
-              left: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              background: 'radial-gradient(circle, hsl(170 80% 50% / 0.35) 0%, transparent 70%)',
-              animation: 'pulse-glow 1.2s ease-in-out infinite',
-            }}
-          />
-          
-          {/* Main pulsing ring */}
-          <div 
-            className="w-20 h-20 md:w-28 md:h-28 rounded-full relative"
-            style={{
-              border: '4px solid hsl(170 80% 50%)',
-              boxShadow: '0 0 40px hsl(170 80% 50% / 0.6), inset 0 0 25px hsl(170 80% 50% / 0.2)',
-              background: 'radial-gradient(circle, hsl(170 80% 50% / 0.25) 0%, transparent 60%)',
-              animation: 'pulse 1.2s ease-in-out infinite',
-            }}
-          >
-            {/* Inner crosshair/target */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-3 h-3 rounded-full bg-white/80" style={{ boxShadow: '0 0 8px white' }} />
-            </div>
-          </div>
-          
-          {/* Downward arrow with hand icon */}
-          <div className="absolute left-1/2 -top-14 -translate-x-1/2 flex flex-col items-center">
-            <svg 
-              className="animate-bounce drop-shadow-lg"
-              width="36" height="36" viewBox="0 0 24 24" 
-              fill="hsl(170, 80%, 50%)" stroke="white" strokeWidth="1"
-            >
-              <path d="M12 5v14M5 12l7 7 7-7" fill="none" stroke="hsl(170, 80%, 50%)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-          
-          {/* Hand icon below ring for touch hint */}
-          <div className="absolute left-1/2 -bottom-10 -translate-x-1/2">
-            <svg 
-              className="animate-hand-move drop-shadow-md"
-              width="28" height="28" viewBox="0 0 24 24" 
-              fill="none" stroke="hsl(170, 80%, 50%)" strokeWidth="2"
-            >
-              <path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v6M10 10.5V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15V6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-          
-          {/* Carry mode instruction - more prominent */}
-          {carryModeTool && !draggingTool && (
-            <div 
-              className="absolute top-full mt-14 left-1/2 -translate-x-1/2 whitespace-nowrap text-sm font-semibold px-4 py-2 rounded-xl animate-pulse"
-              style={{
-                background: 'hsl(170 80% 45%)',
-                color: 'white',
-                boxShadow: '0 4px 16px hsl(170 80% 45% / 0.5)',
-              }}
-            >
-              לחץ כאן להנחה
-            </div>
-          )}
+          לחץ כאן להנחה
         </div>
       )}
+    </div>
+  ) : null;
 
-      {/* Placed props layer */}
+  const placedPropsElement = (
+    <>
       {persistedProps.map((prop, idx) => {
         const assetName = prop.assetName || `${prop.missionId.replace('studio_', 'studio_')}_${prop.key}`;
         const toolImg = getToolImage(assetName);
@@ -416,163 +418,173 @@ export function VisualPlayScreen({
           </div>
         );
       })}
+    </>
+  );
 
-      {/* Back/Undo popover - uses responsive CSS class */}
-      <div className="mission-undo-btn">
-        <UndoConfirmPopover
-          open={showUndoDialog}
-          onOpenChange={setShowUndoDialog}
-          onConfirm={handleUndoConfirm}
-          disabled={!canUndo}
+  const undoButtonElement = (
+    <UndoConfirmPopover
+      open={showUndoDialog}
+      onOpenChange={setShowUndoDialog}
+      onConfirm={handleUndoConfirm}
+      disabled={!canUndo}
+    />
+  );
+
+  const avatarElement = avatarImage ? (
+    <img 
+      src={avatarImage} 
+      alt="Guide avatar"
+      className="h-full w-auto object-contain animate-subtle-float"
+    />
+  ) : null;
+
+  const speechBubbleElement = (
+    <SpeechBubble tailDirection="right">
+      <div 
+        className="overflow-y-auto"
+        style={{ maxHeight: 'calc(22vh - 28px)' }}
+      >
+        <p 
+          className="font-medium text-sm md:text-base pr-3 md:pr-5"
+          style={{ lineHeight: 1.45 }}
+        >
+          {taskText}
+        </p>
+      </div>
+    </SpeechBubble>
+  );
+
+  const toolPanelElement = (
+    <div className="layout-tool-panel-inner">
+      {/* Progress tank */}
+      <div className="flex justify-center mb-1.5">
+        <ProgressTank value={(currentIndex + 1) / totalMissions} />
+      </div>
+
+      {/* Tool tiles with drag hint */}
+      <div className="flex-1 flex gap-3 md:gap-4 justify-center items-center relative">
+        <DraggableToolTile
+          image={toolAImage}
+          onPointerDown={(e) => handlePointerDown('a', e)}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onInfoClick={() => setActiveTooltip(activeTooltip === 'a' ? null : 'a')}
+          variant="a"
+          isDragging={draggingTool === 'a'}
+          isCarryMode={carryModeTool === 'a'}
+          isInfoActive={activeTooltip === 'a'}
         />
+        <DraggableToolTile
+          image={toolBImage}
+          onPointerDown={(e) => handlePointerDown('b', e)}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onInfoClick={() => setActiveTooltip(activeTooltip === 'b' ? null : 'b')}
+          variant="b"
+          isDragging={draggingTool === 'b'}
+          isCarryMode={carryModeTool === 'b'}
+          isInfoActive={activeTooltip === 'b'}
+        />
+        
+        {/* Animated drag hint */}
+        {!hasDraggedOnce && !draggingTool && !carryModeTool && (
+          <div className="absolute -top-9 left-1/2 -translate-x-1/2 flex flex-col items-center">
+            <DragHint />
+          </div>
+        )}
       </div>
 
-      {/* Avatar - uses responsive CSS class */}
-      {avatarImage && (
-        <div className="mission-avatar animate-fade-in">
-          <img 
-            src={avatarImage} 
-            alt="Guide avatar"
-            className="h-full w-auto object-contain animate-subtle-float"
-          />
-        </div>
-      )}
-
-      {/* Speech bubble - uses responsive CSS class */}
-      <div className="mission-bubble animate-pop-in">
-        <SpeechBubble tailDirection="right">
-          <div 
-            className="overflow-y-auto"
-            style={{ maxHeight: 'calc(22vh - 28px)' }}
-          >
-            <p 
-              className="font-medium text-sm md:text-base pr-3 md:pr-5"
-              style={{ lineHeight: 1.45 }}
-            >
-              {taskText}
-            </p>
-          </div>
-        </SpeechBubble>
-      </div>
-
-      {/* Floating tool panel - uses responsive CSS class (bottom-center on desktop, bottom-left on mobile) */}
-      <div className="mission-tool-panel">
-        <div className="mission-tool-panel-inner">
-          {/* Progress tank only - no text label */}
-          <div className="flex justify-center mb-1.5">
-            <ProgressTank value={(currentIndex + 1) / totalMissions} />
-          </div>
-
-          {/* Tool tiles with drag hint */}
-          <div className="flex-1 flex gap-3 md:gap-4 justify-center items-center relative">
-            <DraggableToolTile
-              image={toolAImage}
-              onPointerDown={(e) => handlePointerDown('a', e)}
-              onPointerMove={handlePointerMove}
-              onPointerUp={handlePointerUp}
-              onInfoClick={() => setActiveTooltip(activeTooltip === 'a' ? null : 'a')}
-              variant="a"
-              isDragging={draggingTool === 'a'}
-              isCarryMode={carryModeTool === 'a'}
-              isInfoActive={activeTooltip === 'a'}
-            />
-            <DraggableToolTile
-              image={toolBImage}
-              onPointerDown={(e) => handlePointerDown('b', e)}
-              onPointerMove={handlePointerMove}
-              onPointerUp={handlePointerUp}
-              onInfoClick={() => setActiveTooltip(activeTooltip === 'b' ? null : 'b')}
-              variant="b"
-              isDragging={draggingTool === 'b'}
-              isCarryMode={carryModeTool === 'b'}
-              isInfoActive={activeTooltip === 'b'}
-            />
-            
-            {/* Animated drag hint */}
-            {!hasDraggedOnce && !draggingTool && !carryModeTool && (
-              <div className="absolute -top-9 left-1/2 -translate-x-1/2 flex flex-col items-center">
-                <DragHint />
-              </div>
-            )}
-          </div>
-
-          {/* Tooltip tray */}
-          {activeTooltip && (
-            <div 
-              className="mt-2 rounded-xl p-2.5 relative animate-fade-in"
-              style={{
-                background: '#FFFCF5',
-                boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.08)',
-              }}
-            >
-              <button
-                onClick={() => setActiveTooltip(null)}
-                className="absolute top-1.5 left-1.5 w-5 h-5 rounded-full bg-slate-200 hover:bg-slate-300 flex items-center justify-center transition-colors"
-              >
-                <X className="w-3 h-3 text-slate-600" />
-              </button>
-              
-              <p 
-                className="text-xs font-medium pr-2 pl-5"
-                style={{
-                  color: '#111',
-                  direction: 'rtl',
-                  textAlign: 'right',
-                  fontFamily: "'Rubik', sans-serif",
-                  lineHeight: 1.45,
-                }}
-              >
-                {activeTooltip === 'a' 
-                  ? (optionA.tooltip_heb || 'MISSING: option_a_tooltip_heb')
-                  : (optionB.tooltip_heb || 'MISSING: option_b_tooltip_heb')
-                }
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Dragging ghost with hand indicator - larger on mobile for visibility */}
-      {draggingTool && dragPosition && (
+      {/* Tooltip tray */}
+      {activeTooltip && (
         <div 
-          className="fixed pointer-events-none z-[55]"
+          className="mt-2 rounded-xl p-2.5 relative animate-fade-in"
           style={{
-            left: dragPosition.x,
-            top: dragPosition.y,
-            transform: 'translate(-50%, -80%)', // Offset so finger doesn't cover it
+            background: '#FFFCF5',
+            boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.08)',
           }}
         >
-          {/* Glow behind tool */}
-          <div 
-            className="absolute inset-0 rounded-full"
-            style={{
-              width: '100px',
-              height: '100px',
-              left: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              background: 'radial-gradient(circle, hsl(170 80% 50% / 0.4) 0%, transparent 70%)',
-              filter: 'blur(8px)',
-            }}
-          />
-          <img 
-            src={draggingTool === 'a' ? toolAImage : toolBImage}
-            alt=""
-            className="w-20 h-20 md:w-24 md:h-24 object-contain relative"
-            style={{
-              filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.5))',
-            }}
-          />
-          <div 
-            className="absolute -bottom-2 -right-2"
-            style={{ color: 'hsl(220 20% 20%)' }}
+          <button
+            onClick={() => setActiveTooltip(null)}
+            className="absolute top-1.5 left-1.5 w-5 h-5 rounded-full bg-slate-200 hover:bg-slate-300 flex items-center justify-center transition-colors"
           >
-            <Hand className="w-7 h-7 md:w-8 md:h-8 drop-shadow-lg" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} />
-          </div>
+            <X className="w-3 h-3 text-slate-600" />
+          </button>
+          
+          <p 
+            className="text-xs font-medium pr-2 pl-5"
+            style={{
+              color: '#111',
+              direction: 'rtl',
+              textAlign: 'right',
+              fontFamily: "'Rubik', sans-serif",
+              lineHeight: 1.45,
+            }}
+          >
+            {activeTooltip === 'a' 
+              ? (optionA.tooltip_heb || 'MISSING: option_a_tooltip_heb')
+              : (optionB.tooltip_heb || 'MISSING: option_b_tooltip_heb')
+            }
+          </p>
         </div>
       )}
-
     </div>
+  );
+
+  const draggingGhostElement = draggingTool && dragPosition ? (
+    <div 
+      className="fixed pointer-events-none z-[55]"
+      style={{
+        left: dragPosition.x,
+        top: dragPosition.y,
+        transform: 'translate(-50%, -80%)',
+      }}
+    >
+      {/* Glow behind tool */}
+      <div 
+        className="absolute inset-0 rounded-full"
+        style={{
+          width: '100px',
+          height: '100px',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+          background: 'radial-gradient(circle, hsl(170 80% 50% / 0.4) 0%, transparent 70%)',
+          filter: 'blur(8px)',
+        }}
+      />
+      <img 
+        src={draggingTool === 'a' ? toolAImage : toolBImage}
+        alt=""
+        className="w-20 h-20 md:w-24 md:h-24 object-contain relative"
+        style={{
+          filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.5))',
+        }}
+      />
+      <div 
+        className="absolute -bottom-2 -right-2"
+        style={{ color: 'hsl(220 20% 20%)' }}
+      >
+        <Hand className="w-7 h-7 md:w-8 md:h-8 drop-shadow-lg" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} />
+      </div>
+    </div>
+  ) : null;
+
+  return (
+    <MissionLayout
+      stageRef={stageRef}
+      background={backgroundElement}
+      gradientOverlay={gradientOverlayElement}
+      sceneExtras={sceneExtrasElement}
+      targetZone={targetZoneElement}
+      placedProps={placedPropsElement}
+      undoButton={undoButtonElement}
+      avatar={avatarElement}
+      speechBubble={speechBubbleElement}
+      toolPanel={toolPanelElement}
+      draggingGhost={draggingGhostElement}
+      isCarryMode={!!carryModeTool}
+      onCancelCarry={handleCancelCarry}
+    />
   );
 }
 
