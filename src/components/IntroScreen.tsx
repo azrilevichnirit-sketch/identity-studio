@@ -32,45 +32,93 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
         }}
       />
 
-      {/* Avatar - DESKTOP: larger, closer to bubble on right; MOBILE: unchanged */}
-      {avatarImage && (
-        <div 
-          className="absolute z-20 animate-fade-in intro-avatar"
-          style={{
-            filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))',
-          }}
-        >
-          <img 
-            src={avatarImage} 
-            alt="Your avatar"
-            className="h-full w-auto object-contain"
-          />
-        </div>
-      )}
-
-      {/* Speech bubble - DESKTOP: shifted left for avatar proximity; MOBILE: unchanged */}
-      <div 
-        className="absolute z-30 animate-scale-in intro-bubble"
-      >
-        <SpeechBubble 
-          tailDirection="right"
-        >
-          <div className="space-y-1 pr-2 md:pr-4">
-            <p className="font-semibold text-sm md:text-base">היי! איזה כיף להכיר אותך.</p>
-            <p className="text-xs md:text-sm leading-snug">
-              אני {avatarName}, ואני איתך לאורך כל המסע הזה.
-            </p>
-            <p className="text-xs md:text-sm leading-snug">
-              כאן ניצור ביחד את ה{arenaName} שלך, צעד אחרי צעד - עם בחירות קטנות שמרכיבות עולם שלם.
-            </p>
-            <p className="text-xs md:text-sm leading-snug">
-              בכל שלב מחכה לך משימה ושתי אפשרויות. בוחרים, גוררים, וממשיכים.
-            </p>
-            <p className="text-xs md:text-sm leading-snug">
-              בסוף נראה יחד את התמונה שנוצרה מהבחירות שלך.
-            </p>
+      {/* MOBILE: Absolute positioned avatar and bubble (unchanged) */}
+      <div className="lg:hidden">
+        {/* Avatar - mobile positioning */}
+        {avatarImage && (
+          <div 
+            className="absolute z-20 animate-fade-in intro-avatar"
+            style={{
+              filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))',
+            }}
+          >
+            <img 
+              src={avatarImage} 
+              alt="Your avatar"
+              className="h-full w-auto object-contain"
+            />
           </div>
-        </SpeechBubble>
+        )}
+
+        {/* Speech bubble - mobile positioning */}
+        <div className="absolute z-30 animate-scale-in intro-bubble">
+          <SpeechBubble tailDirection="right">
+            <div className="space-y-1 pr-2">
+              <p className="font-semibold text-sm">היי! איזה כיף להכיר אותך.</p>
+              <p className="text-xs leading-snug">
+                אני {avatarName}, ואני איתך לאורך כל המסע הזה.
+              </p>
+              <p className="text-xs leading-snug">
+                כאן ניצור ביחד את ה{arenaName} שלך, צעד אחרי צעד - עם בחירות קטנות שמרכיבות עולם שלם.
+              </p>
+              <p className="text-xs leading-snug">
+                בכל שלב מחכה לך משימה ושתי אפשרויות. בוחרים, גוררים, וממשיכים.
+              </p>
+              <p className="text-xs leading-snug">
+                בסוף נראה יחד את התמונה שנוצרה מהבחירות שלך.
+              </p>
+            </div>
+          </SpeechBubble>
+        </div>
+      </div>
+
+      {/* DESKTOP: Flex container for bubble + avatar (no overlap) */}
+      <div 
+        className="hidden lg:flex items-end absolute z-20 animate-fade-in"
+        style={{
+          right: 'clamp(40px, 5vw, 80px)',
+          bottom: '28px',
+          gap: '20px',
+        }}
+      >
+        {/* Speech bubble - left side of flex */}
+        <div className="animate-scale-in flex-shrink-0">
+          <SpeechBubble tailDirection="right">
+            <div className="space-y-1 pr-4" style={{ maxWidth: '380px', minWidth: '300px' }}>
+              <p className="font-semibold text-base">היי! איזה כיף להכיר אותך.</p>
+              <p className="text-sm leading-snug">
+                אני {avatarName}, ואני איתך לאורך כל המסע הזה.
+              </p>
+              <p className="text-sm leading-snug">
+                כאן ניצור ביחד את ה{arenaName} שלך, צעד אחרי צעד - עם בחירות קטנות שמרכיבות עולם שלם.
+              </p>
+              <p className="text-sm leading-snug">
+                בכל שלב מחכה לך משימה ושתי אפשרויות. בוחרים, גוררים, וממשיכים.
+              </p>
+              <p className="text-sm leading-snug">
+                בסוף נראה יחד את התמונה שנוצרה מהבחירות שלך.
+              </p>
+            </div>
+          </SpeechBubble>
+        </div>
+
+        {/* Avatar - right side of flex, foreground */}
+        {avatarImage && (
+          <div 
+            className="flex-shrink-0"
+            style={{
+              height: 'clamp(380px, 42vh, 520px)',
+              filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))',
+              zIndex: 25,
+            }}
+          >
+            <img 
+              src={avatarImage} 
+              alt="Your avatar"
+              className="h-full w-auto object-contain"
+            />
+          </div>
+        )}
       </div>
 
       {/* CTA Button - bottom left, thumb-friendly placement */}
