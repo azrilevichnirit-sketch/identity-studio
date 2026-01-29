@@ -4,8 +4,8 @@ import { getToolImage, getBackgroundForMission, getAvatarImage, getBackgroundKey
 import { getAnchorPosition } from '@/lib/jsonDataLoader';
 import { SpeechBubble } from './SpeechBubble';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Info, ArrowLeft, Hand } from 'lucide-react';
-import { UndoConfirmDialog } from './UndoConfirmDialog';
+import { Info, Hand } from 'lucide-react';
+import { UndoConfirmPopover } from './UndoConfirmDialog';
 
 interface VisualPlayScreenProps {
   mission: Mission;
@@ -55,14 +55,9 @@ export function VisualPlayScreen({
     return getAnchorPosition(currentBgKey, anchorRef);
   }, [optionA, optionB, currentBgKey]);
 
-  const handleUndoClick = () => {
-    if (canUndo) {
-      setShowUndoDialog(true);
-    }
-  };
-
   const handleUndoConfirm = () => {
     onUndo();
+    setShowUndoDialog(false);
   };
 
   // Drag handlers
@@ -220,14 +215,15 @@ export function VisualPlayScreen({
         );
       })}
 
-      {/* Back/Undo button - top right */}
-      <button
-        onClick={handleUndoClick}
-        disabled={!canUndo}
-        className="absolute top-3 right-3 md:top-4 md:right-4 z-30 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-lg transition-all duration-200 hover:bg-white hover:scale-105 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed"
-      >
-        <ArrowLeft className="w-5 h-5 md:w-6 md:h-6 text-slate-800" style={{ transform: 'scaleX(-1)' }} />
-      </button>
+      {/* Back/Undo popover - top right */}
+      <div className="absolute top-3 right-3 md:top-4 md:right-4 z-30">
+        <UndoConfirmPopover
+          open={showUndoDialog}
+          onOpenChange={setShowUndoDialog}
+          onConfirm={handleUndoConfirm}
+          disabled={!canUndo}
+        />
+      </div>
 
       {/* Avatar - anchored bottom-right */}
       {avatarImage && (
@@ -362,13 +358,6 @@ export function VisualPlayScreen({
         </div>
       )}
 
-      {/* Undo confirmation dialog */}
-      <UndoConfirmDialog
-        open={showUndoDialog}
-        onOpenChange={setShowUndoDialog}
-        onConfirm={handleUndoConfirm}
-        disabled={!canUndo}
-      />
     </div>
   );
 }
