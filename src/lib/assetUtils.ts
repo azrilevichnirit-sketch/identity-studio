@@ -10,7 +10,7 @@ import studioGalleryWallBg from '@/assets/backgrounds/studio_in_gallery_wall_bg.
 import studioStorageBg from '@/assets/backgrounds/studio_in_storage_bg.webp';
 import studioWorkshopBg from '@/assets/backgrounds/studio_in_workshop_bg.webp';
 import studioEntryInsideBg from '@/assets/backgrounds/studio_entry_inside_bg.png';
-import galleryMainMobileWide from '@/assets/backgrounds/gallery_main_mobile_wide.webp';
+import galleryMainWide from '@/assets/backgrounds/gallery_main_wide.webp';
 
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
@@ -138,18 +138,19 @@ const toolAssets: Record<string, string> = {
 const backgroundAssets: Record<string, string> = {
   studio_front_bg: studioFrontBg,
   studio_in_entrance_view_bg: studioEntranceViewBg,
-  studio_in_gallery_bg: studioGalleryBg,
+  studio_in_gallery_bg: galleryMainWide, // Use unified wide background
   studio_in_gallery_wall_bg: studioGalleryWallBg,
   studio_in_storage_bg: studioStorageBg,
   studio_in_workshop_bg: studioWorkshopBg,
-  studio_entry_inside_bg: studioEntryInsideBg,
-  gallery_main_mobile_wide: galleryMainMobileWide,
+  studio_entry_inside_bg: galleryMainWide, // Use unified wide background
+  gallery_main_wide: galleryMainWide,
 };
 
 // Wide panoramic backgrounds for mobile panning (key -> asset)
+// These are the same as regular backgrounds now - unified approach
 const panoramicBackgrounds: Record<string, string> = {
-  studio_in_gallery_bg: galleryMainMobileWide,
-  studio_entry_inside_bg: galleryMainMobileWide, // Use gallery wide for main views
+  studio_in_gallery_bg: galleryMainWide,
+  studio_entry_inside_bg: galleryMainWide,
 };
 
 export function getPanoramicBackground(bgKey: string): string | null {
