@@ -34,7 +34,7 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
 
       {/* MOBILE ONLY: Legacy block */}
       <div className="welcomeLegacyBlock welcomeHeroMobile">
-        <div className="heroRow welcomeHero max-[820px]:fixed max-[820px]:left-5 max-[820px]:right-5 max-[820px]:bottom-24 max-[820px]:z-40 max-[820px]:isolate max-[820px]:w-auto max-[820px]:max-w-none">
+        <div className="heroRow welcomeHero max-[820px]:fixed max-[820px]:left-5 max-[820px]:right-5 max-[820px]:bottom-24 max-[820px]:z-40 max-[820px]:isolate max-[820px]:w-auto max-[820px]:max-w-none max-[820px]:bg-transparent max-[820px]:shadow-none max-[820px]:p-0 max-[820px]:border-0">
           <div className="heroBubble welcomeBubble animate-scale-in intro-bubble max-[820px]:relative max-[820px]:z-40 max-[820px]:w-full max-[820px]:max-w-none max-[820px]:pr-[180px]">
             <SpeechBubble tailDirection="right">
               <div className="space-y-1 pr-2">
