@@ -155,12 +155,21 @@ export function VisualPlayScreen({
   }, [draggingTool, getTargetAnchor]);
 
   return (
-    <div ref={stageRef} className="absolute inset-0 w-full h-full overflow-hidden">
-      {/* Background layer - always fills viewport */}
+    <div 
+      ref={stageRef} 
+      className="absolute inset-0 overflow-hidden"
+      style={{
+        width: '100vw',
+        height: '100vh',
+      }}
+    >
+      {/* Background layer - always fills viewport with cover */}
       <div 
-        className="absolute inset-0 w-full h-full animate-bg-crossfade"
+        className="absolute inset-0 animate-bg-crossfade"
         key={currentBg}
         style={{ 
+          width: '100vw',
+          height: '100vh',
           backgroundImage: `url(${currentBg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',

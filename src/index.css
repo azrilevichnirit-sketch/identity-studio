@@ -102,6 +102,15 @@
 @layer base {
   * {
     @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html, body, #root {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
   }
 
   html {
@@ -113,6 +122,15 @@
   body {
     @apply bg-background text-foreground antialiased;
     direction: rtl;
+    width: 100vw;
+    height: 100vh;
+    min-width: 100vw;
+    min-height: 100vh;
+  }
+
+  #root {
+    width: 100vw;
+    height: 100vh;
   }
 }
 

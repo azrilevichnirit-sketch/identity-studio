@@ -34,6 +34,8 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
       <div 
         className="absolute inset-0 flex flex-col items-center justify-center p-4"
         style={{
+          width: '100vw',
+          height: '100vh',
           background: 'linear-gradient(135deg, hsl(220 25% 12%) 0%, hsl(220 20% 18%) 50%, hsl(220 15% 22%) 100%)',
         }}
       >
