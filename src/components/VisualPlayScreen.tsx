@@ -7,6 +7,7 @@ import { Info, Hand, X } from 'lucide-react';
 import { UndoConfirmPopover } from './UndoConfirmDialog';
 import { ProgressTank } from './ProgressTank';
 import { DragHint } from './DragHint';
+import { useSceneExtras } from '@/hooks/useSceneExtras';
 
 const DRAG_HINT_STORAGE_KEY = 'ie_hasDraggedOnce';
 
@@ -180,6 +181,9 @@ export function VisualPlayScreen({
     return null;
   }, [draggingTool, getTargetAnchor]);
 
+  // Scene extras (NPCs) based on current mission and picks
+  const sceneExtras = useSceneExtras(mission.mission_id, currentIndex, placedProps);
+
   return (
     <div 
       ref={stageRef} 
@@ -210,6 +214,34 @@ export function VisualPlayScreen({
           background: 'linear-gradient(to top, rgba(0,0,0,0.25) 0%, transparent 100%)',
         }}
       />
+
+      {/* Scene extras layer - NPCs that spawn based on mission rules */}
+      {sceneExtras.map((extra) => {
+        const anchorPos = getAnchorPosition(displayBgKey, extra.anchorRef);
+        if (!anchorPos) return null;
+        
+        return (
+          <div
+            key={extra.id}
+            className="absolute pointer-events-none animate-fade-in"
+            style={{
+              left: `${anchorPos.x + extra.offsetX}%`,
+              top: `${anchorPos.y + extra.offsetY}%`,
+              transform: `translate(-50%, -50%) scale(${extra.scale * anchorPos.scale})`,
+              zIndex: extra.zLayer === 'back' ? 3 : extra.zLayer === 'mid' ? 6 : 8,
+            }}
+          >
+            <img 
+              src={extra.image}
+              alt=""
+              className="h-24 md:h-32 w-auto object-contain drop-shadow-lg"
+              style={{
+                filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.3))',
+              }}
+            />
+          </div>
+        );
+      })}
 
       {/* Target zone indicator - shows when dragging, at correct anchor on TARGET background */}
       {draggingTool && targetPosition && (
