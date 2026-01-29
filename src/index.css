@@ -750,21 +750,13 @@
   }
 }
 
-/* Custom breakpoint for desktop welcome screen */
-@media (max-width: 820px) {
-  .md-desktop\\:hidden {
-    display: block !important;
-  }
-  .md-desktop\\:flex {
-    display: none !important;
-  }
+/* Welcome screen breakpoint separation */
+@media (min-width: 821px) {
+  .welcomeLegacyBlock { display: none !important; }
+  .welcomeDesktopBlock { display: flex; }
 }
 
-@media (min-width: 821px) {
-  .md-desktop\\:hidden {
-    display: none !important;
-  }
-  .md-desktop\\:flex {
-    display: flex !important;
-  }
+@media (max-width: 820px) {
+  .welcomeDesktopBlock { display: none !important; }
+  .welcomeLegacyBlock { display: block; }
 }
