@@ -990,9 +990,13 @@
   }
 
   /* ---- Ensure only the real bubble has white background ---- */
-  .welcomeBubble {
+  .welcomeScreen .welcomeBubble {
     background: #fff !important;
     border-radius: 14px !important;
+  }
+  .welcomeScreen .welcomeBubble::before,
+  .welcomeScreen .welcomeBubble::after {
+    content: none !important;
   }
 }
 
