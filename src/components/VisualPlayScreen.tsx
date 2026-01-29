@@ -3,8 +3,7 @@ import type { Mission, HollandCode, AvatarGender, PickRecord, MissionOption, Anc
 import { getToolImage, getBackgroundForMission, getAvatarImage, getBackgroundKey } from '@/lib/assetUtils';
 import { getAnchorPosition } from '@/lib/jsonDataLoader';
 import { SpeechBubble } from './SpeechBubble';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Info, Hand } from 'lucide-react';
+import { Info, Hand, X } from 'lucide-react';
 import { UndoConfirmPopover } from './UndoConfirmDialog';
 
 interface VisualPlayScreenProps {
@@ -34,6 +33,7 @@ export function VisualPlayScreen({
   const [draggingTool, setDraggingTool] = useState<'a' | 'b' | null>(null);
   const [dragPosition, setDragPosition] = useState<{ x: number; y: number } | null>(null);
   const [justPlaced, setJustPlaced] = useState<string | null>(null);
+  const [activeTooltip, setActiveTooltip] = useState<'a' | 'b' | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   
   const progress = ((currentIndex) / totalMissions) * 100;
@@ -315,21 +315,59 @@ export function VisualPlayScreen({
           <div className="flex gap-4 md:gap-5 justify-center items-center">
             <DraggableToolTile
               image={toolAImage}
-              tooltip={optionA.tooltip_heb || `MISSING: option_a_tooltip_heb`}
               onClick={() => onSelect(mission.mission_id, 'a', optionA.holland_code as HollandCode, optionA)}
               onDragStart={(e) => handleDragStart('a', e)}
+              onInfoClick={() => setActiveTooltip(activeTooltip === 'a' ? null : 'a')}
               variant="a"
               isDragging={draggingTool === 'a'}
+              isInfoActive={activeTooltip === 'a'}
             />
             <DraggableToolTile
               image={toolBImage}
-              tooltip={optionB.tooltip_heb || `MISSING: option_b_tooltip_heb`}
               onClick={() => onSelect(mission.mission_id, 'b', optionB.holland_code as HollandCode, optionB)}
               onDragStart={(e) => handleDragStart('b', e)}
+              onInfoClick={() => setActiveTooltip(activeTooltip === 'b' ? null : 'b')}
               variant="b"
               isDragging={draggingTool === 'b'}
+              isInfoActive={activeTooltip === 'b'}
             />
           </div>
+
+          {/* Tooltip tray - shown below tools when active */}
+          {activeTooltip && (
+            <div 
+              className="mt-3 rounded-xl p-3 relative animate-fade-in"
+              style={{
+                background: '#FFFCF5',
+                boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.08)',
+              }}
+            >
+              {/* Close button */}
+              <button
+                onClick={() => setActiveTooltip(null)}
+                className="absolute top-2 left-2 w-5 h-5 rounded-full bg-slate-200 hover:bg-slate-300 flex items-center justify-center transition-colors"
+              >
+                <X className="w-3 h-3 text-slate-600" />
+              </button>
+              
+              {/* Tooltip text */}
+              <p 
+                className="text-sm font-medium pr-2 pl-6"
+                style={{
+                  color: '#111',
+                  direction: 'rtl',
+                  textAlign: 'right',
+                  fontFamily: "'Assistant', sans-serif",
+                  lineHeight: 1.5,
+                }}
+              >
+                {activeTooltip === 'a' 
+                  ? (optionA.tooltip_heb || 'MISSING: option_a_tooltip_heb')
+                  : (optionB.tooltip_heb || 'MISSING: option_b_tooltip_heb')
+                }
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -364,14 +402,15 @@ export function VisualPlayScreen({
 
 interface DraggableToolTileProps {
   image: string | undefined;
-  tooltip: string;
   onClick: () => void;
   onDragStart: (e: React.MouseEvent | React.TouchEvent) => void;
+  onInfoClick: () => void;
   variant: 'a' | 'b';
   isDragging: boolean;
+  isInfoActive: boolean;
 }
 
-function DraggableToolTile({ image, tooltip, onClick, onDragStart, variant, isDragging }: DraggableToolTileProps) {
+function DraggableToolTile({ image, onClick, onDragStart, onInfoClick, variant, isDragging, isInfoActive }: DraggableToolTileProps) {
   return (
     <div className={`relative ${isDragging ? 'opacity-40' : ''}`}>
       {/* Tool tile - minimal framing, no white card */}
@@ -414,29 +453,19 @@ function DraggableToolTile({ image, tooltip, onClick, onDragStart, variant, isDr
       </button>
 
       {/* Info icon - BOTTOM-LEFT corner */}
-      <Popover>
-        <PopoverTrigger asChild>
-          <button 
-            className="absolute bottom-0 left-0 z-10 w-5 h-5 md:w-6 md:h-6 rounded-full bg-slate-700/90 flex items-center justify-center shadow-md transition-transform hover:scale-110 backdrop-blur-sm"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Info className="w-3 h-3 md:w-3.5 md:h-3.5 text-white/90" />
-          </button>
-        </PopoverTrigger>
-        <PopoverContent 
-          side="bottom" 
-          align="start"
-          sideOffset={8}
-          className="w-48 md:w-56 text-sm text-center p-3 bg-slate-800/95 text-white border-slate-600/50 backdrop-blur-sm"
-          onClick={(e) => e.stopPropagation()}
-          style={{
-            fontFamily: "'Assistant', sans-serif",
-            direction: 'rtl',
-          }}
-        >
-          {tooltip}
-        </PopoverContent>
-      </Popover>
+      <button 
+        className={`absolute bottom-0 left-0 z-10 w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center shadow-md transition-all hover:scale-110 backdrop-blur-sm ${
+          isInfoActive 
+            ? 'bg-slate-100 ring-2 ring-slate-400' 
+            : 'bg-slate-700/90'
+        }`}
+        onClick={(e) => {
+          e.stopPropagation();
+          onInfoClick();
+        }}
+      >
+        <Info className={`w-3 h-3 md:w-3.5 md:h-3.5 ${isInfoActive ? 'text-slate-700' : 'text-white/90'}`} />
+      </button>
     </div>
   );
 }
