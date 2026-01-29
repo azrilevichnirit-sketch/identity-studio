@@ -327,6 +327,21 @@
   animation: hand-move 1s ease-in-out infinite;
 }
 
+.animate-drag-hint {
+  animation: drag-hint 1.5s ease-in-out infinite;
+}
+
+@keyframes drag-hint {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateY(-12px);
+    opacity: 1;
+  }
+}
+
 /* Dragging cursor styles */
 .cursor-grab {
   cursor: grab;
