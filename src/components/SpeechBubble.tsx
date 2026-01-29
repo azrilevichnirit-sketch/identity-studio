@@ -21,45 +21,48 @@ export function SpeechBubble({
   className = '',
   style = {},
 }: SpeechBubbleProps) {
+  // Tail position closer to top (near avatar's face/torso)
+  const tailVerticalPosition = '65%';
+  
   return (
     <div 
       className={`relative rounded-2xl ${className}`}
       style={{
-        background: 'rgba(255, 252, 245, 0.96)',
-        boxShadow: '0 6px 24px rgba(0,0,0,0.2)',
+        background: '#FFFCF5',
+        boxShadow: '0 8px 28px rgba(0,0,0,0.18)',
         ...style,
       }}
     >
-      {/* Bubble tail - clean triangle using borders */}
+      {/* Bubble tail - clean triangle using clip-path for seamless join */}
       <div 
         className="absolute"
         style={{
           ...(tailDirection === 'right' ? {
-            right: '-14px',
-            bottom: '32px',
-            width: 0,
-            height: 0,
-            borderTop: '12px solid transparent',
-            borderBottom: '12px solid transparent',
-            borderLeft: '14px solid rgba(255, 252, 245, 0.96)',
+            right: '-16px',
+            top: tailVerticalPosition,
+            transform: 'translateY(-50%)',
+            width: '18px',
+            height: '24px',
+            background: '#FFFCF5',
+            clipPath: 'polygon(0 0, 0 100%, 100% 50%)',
           } : {
-            left: '-14px',
-            bottom: '32px',
-            width: 0,
-            height: 0,
-            borderTop: '12px solid transparent',
-            borderBottom: '12px solid transparent',
-            borderRight: '14px solid rgba(255, 252, 245, 0.96)',
+            left: '-16px',
+            top: tailVerticalPosition,
+            transform: 'translateY(-50%)',
+            width: '18px',
+            height: '24px',
+            background: '#FFFCF5',
+            clipPath: 'polygon(100% 0, 100% 100%, 0 50%)',
           }),
         }}
       />
       
       {/* Content with proper typography */}
       <div 
-        className="p-5"
+        className="p-5 md:p-6"
         style={{
           fontFamily: "'Heebo', 'Assistant', sans-serif",
-          fontSize: '18px',
+          fontSize: '17px',
           lineHeight: '1.55',
           color: '#111',
           direction: 'rtl',
