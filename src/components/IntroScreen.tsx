@@ -33,44 +33,46 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
       />
 
       {/* MOBILE ONLY: Legacy block */}
-      <div className="welcomeLegacyBlock dialogRow">
-        <div className="dialogBubble absolute z-30 animate-scale-in intro-bubble">
-          <SpeechBubble tailDirection="right">
-            <div className="space-y-1 pr-2">
-              <p className="font-semibold text-sm">היי! איזה כיף להכיר אותך.</p>
-              <p className="text-xs leading-snug">
-                אני {avatarName}, ואני איתך לאורך כל המסע הזה.
-              </p>
-              <p className="text-xs leading-snug">
-                כאן ניצור ביחד את ה{arenaName} שלך, צעד אחרי צעד - עם בחירות קטנות שמרכיבות עולם שלם.
-              </p>
-              <p className="text-xs leading-snug">
-                בכל שלב מחכה לך משימה ושתי אפשרויות. בוחרים, גוררים, וממשיכים.
-              </p>
-              <p className="text-xs leading-snug">
-                בסוף נראה יחד את התמונה שנוצרה מהבחירות שלך.
-              </p>
-            </div>
-          </SpeechBubble>
-        </div>
-        {avatarImage && (
-          <div 
-            className="dialogAvatar absolute z-20 animate-fade-in intro-avatar"
-            style={{
-              filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))',
-            }}
-          >
-            <img 
-              src={avatarImage} 
-              alt="Your avatar"
-              className="h-full w-auto object-contain"
-            />
+      <div className="welcomeLegacyBlock welcomeHeroMobile">
+        <div className="heroRow">
+          <div className="heroBubble animate-scale-in intro-bubble">
+            <SpeechBubble tailDirection="right">
+              <div className="space-y-1 pr-2">
+                <p className="font-semibold text-sm">היי! איזה כיף להכיר אותך.</p>
+                <p className="text-xs leading-snug">
+                  אני {avatarName}, ואני איתך לאורך כל המסע הזה.
+                </p>
+                <p className="text-xs leading-snug">
+                  כאן ניצור ביחד את ה{arenaName} שלך, צעד אחרי צעד - עם בחירות קטנות שמרכיבות עולם שלם.
+                </p>
+                <p className="text-xs leading-snug">
+                  בכל שלב מחכה לך משימה ושתי אפשרויות. בוחרים, גוררים, וממשיכים.
+                </p>
+                <p className="text-xs leading-snug">
+                  בסוף נראה יחד את התמונה שנוצרה מהבחירות שלך.
+                </p>
+              </div>
+            </SpeechBubble>
           </div>
-        )}
+          {avatarImage && (
+            <div 
+              className="heroAvatar animate-fade-in intro-avatar"
+              style={{
+                filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))',
+              }}
+            >
+              <img 
+                src={avatarImage} 
+                alt="Your avatar"
+                className="h-full w-auto object-contain"
+              />
+            </div>
+          )}
+        </div>
       </div>
 
       {/* DESKTOP ONLY: Flex overlay for bubble + avatar */}
-      <div className="welcomeDesktopBlock welcomeOverlayDesktop animate-fade-in">
+      <div className="welcomeDesktopBlock welcomeHeroDesktop welcomeOverlayDesktop animate-fade-in">
         {/* Speech bubble */}
         <div className="welcomeBubble animate-scale-in">
           <SpeechBubble tailDirection="right">
