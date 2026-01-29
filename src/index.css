@@ -935,9 +935,11 @@
   .welcomeScreen .welcomeBubble{
     position: relative !important;
     z-index: 1100 !important;
-    width: 100% !important;
-    max-width: none !important;
+    width: calc(100vw - 40px) !important;
+    max-width: calc(100vw - 40px) !important;
     margin: 0 !important;
+    margin-right: 20px !important;
+    margin-left: 20px !important;
 
     /* reserve space for the avatar so text never hides */
     padding-right: calc(clamp(200px, 44vw, 290px) + 12px) !important;
