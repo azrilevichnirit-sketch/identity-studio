@@ -248,9 +248,9 @@ export function VisualPlayScreen({
       className="game-stage"
       onClick={carryModeTool ? handleCancelCarry : undefined}
     >
-      {/* Background layer */}
+      {/* Background layer - game-stage-bg class adds mobile zoom */}
       <div 
-        className="absolute inset-0 transition-opacity duration-300"
+        className="absolute inset-0 transition-opacity duration-300 game-stage-bg"
         style={{ 
           backgroundImage: `url(${displayBg})`,
           backgroundSize: 'cover',

@@ -497,10 +497,24 @@
 }
 
 @media (max-width: 768px) and (orientation: portrait) {
+  /* Prevent any horizontal overflow */
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
   .game-stage {
     width: 100vw;
-    height: 100dvh;
+    height: 100svh;
     min-height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Background image zoom for depth on mobile */
+  .game-stage-bg {
+    transform: scale(1.08);
+    transform-origin: center 55%;
   }
 
   .game-stage-content {
@@ -524,7 +538,7 @@
 /* DESKTOP: Speech bubble positioning (default) */
 .mission-bubble {
   position: absolute;
-  z-index: 25;
+  z-index: 15;
   right: 380px;
   bottom: 140px;
   max-width: 400px;
@@ -569,27 +583,30 @@
    Only applies to narrow portrait screens
    ============================================ */
 @media (max-width: 768px) and (orientation: portrait) {
-  /* Mobile: Avatar - bottom right, larger */
+  /* Mobile: Avatar - bottom right, ABOVE bubble (higher z-index) */
   .mission-avatar {
-    right: 6px;
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
-    height: clamp(260px, 40vh, 380px);
+    right: 12px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+    height: clamp(200px, 36vh, 300px);
+    z-index: 25; /* Above bubble */
   }
 
-  /* Mobile: Speech bubble - left of avatar, compact */
+  /* Mobile: Speech bubble - bottom left, reserves space for avatar on right */
   .mission-bubble {
-    right: calc(16px + clamp(180px, 30vh, 280px) * 0.5);
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 12px + clamp(90px, 14vh, 130px) + 14px);
-    max-width: min(68vw, 320px);
-    min-width: 170px;
-    max-height: 22vh;
+    left: 12px;
+    right: calc(12px + clamp(140px, 32vw, 200px)); /* Reserve space for avatar */
+    bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(100px, 15vh, 140px) + 20px);
+    max-width: none; /* Use left/right positioning instead */
+    min-width: auto;
+    max-height: 26vh;
+    z-index: 15; /* Below avatar */
   }
 
-  /* Mobile: Tool panel - BOTTOM LEFT */
+  /* Mobile: Tool panel - BOTTOM LEFT, below bubble */
   .mission-tool-panel {
     left: 12px;
     transform: none;
-    width: clamp(170px, 42vw, 260px);
+    width: clamp(160px, 44vw, 240px);
     height: clamp(90px, 14vh, 130px);
     bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
   }
@@ -609,17 +626,20 @@
 /* Small mobile (very narrow) additional adjustments */
 @media (max-width: 380px) and (orientation: portrait) {
   .mission-avatar {
-    height: clamp(220px, 36vh, 320px);
+    height: clamp(180px, 32vh, 260px);
+    right: 8px;
   }
 
   .mission-bubble {
-    max-width: 60vw;
-    min-width: 150px;
+    left: 10px;
+    right: calc(10px + clamp(120px, 30vw, 180px));
+    bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(90px, 13vh, 120px) + 16px);
   }
 
   .mission-tool-panel {
-    width: clamp(150px, 48vw, 220px);
-    height: clamp(85px, 13vh, 120px);
+    width: clamp(140px, 48vw, 200px);
+    height: clamp(85px, 13vh, 110px);
+    left: 10px;
   }
 }
 
