@@ -924,13 +924,14 @@
   /* ---- Avatar: large, overlapping bubble significantly ---- */
   .welcomeScreen .welcomeAvatar{
     position: absolute !important;
-    right: -20px !important;
+    right: auto !important;
+    left: 50% !important;
+    transform: translateX(-20%) !important;
     bottom: 0 !important;
     width: clamp(280px, 65vw, 380px) !important;
     z-index: 1200 !important;
     pointer-events: none !important;
     top: auto !important;
-    left: auto !important;
     margin: 0 !important;
   }
   .welcomeScreen .welcomeAvatar img{
