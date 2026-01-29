@@ -793,4 +793,38 @@
     z-index: 0;
     pointer-events: none;
   }
+
+  /* Dialog row: mobile layering for avatar + bubble */
+  .dialogRow{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-end;
+    gap: 12px;
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+    z-index: 10;
+  }
+
+  .dialogBubble{
+    flex: 1 1 auto;
+    min-width: 0;
+    position: relative;
+    z-index: 20;
+  }
+
+  .dialogAvatar{
+    flex: 0 0 auto;
+    width: clamp(88px, 18vw, 128px);
+    position: relative;
+    z-index: 30;
+    pointer-events: none;
+  }
+
+  .dialogAvatar img{
+    width: 100%;
+    height: auto;
+    display: block;
+  }
 }
