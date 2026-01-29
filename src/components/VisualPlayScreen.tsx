@@ -34,6 +34,7 @@ export function VisualPlayScreen({
   const [dragPosition, setDragPosition] = useState<{ x: number; y: number } | null>(null);
   const [justPlaced, setJustPlaced] = useState<string | null>(null);
   const [activeTooltip, setActiveTooltip] = useState<'a' | 'b' | null>(null);
+  const [hasDroppedOnce, setHasDroppedOnce] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
   
   const progress = ((currentIndex) / totalMissions) * 100;
@@ -93,6 +94,10 @@ export function VisualPlayScreen({
     
     if (relY < 75 && relY > 0) {
       const option = draggingTool === 'a' ? optionA : optionB;
+      // Mark first drop complete
+      if (!hasDroppedOnce) {
+        setHasDroppedOnce(true);
+      }
       // Trigger snap feedback
       setJustPlaced(`${mission.mission_id}-${draggingTool}`);
       setTimeout(() => setJustPlaced(null), 300);
@@ -311,8 +316,8 @@ export function VisualPlayScreen({
             </span>
           </div>
 
-          {/* Tool tiles - minimal framing */}
-          <div className="flex gap-4 md:gap-5 justify-center items-center">
+          {/* Tool tiles with drag hint */}
+          <div className="flex gap-4 md:gap-5 justify-center items-center relative">
             <DraggableToolTile
               image={toolAImage}
               onClick={() => onSelect(mission.mission_id, 'a', optionA.holland_code as HollandCode, optionA)}
@@ -331,6 +336,50 @@ export function VisualPlayScreen({
               isDragging={draggingTool === 'b'}
               isInfoActive={activeTooltip === 'b'}
             />
+            
+            {/* Animated drag hint - shows before first drop, when not dragging */}
+            {!hasDroppedOnce && !draggingTool && (
+              <div className="absolute -top-16 left-1/2 -translate-x-1/2 pointer-events-none animate-fade-in">
+                {/* Animated hand with upward arrow */}
+                <div className="flex flex-col items-center animate-drag-hint">
+                  {/* Upward arrow */}
+                  <svg 
+                    width="24" height="24" viewBox="0 0 24 24" 
+                    fill="none" 
+                    className="mb-1"
+                  >
+                    <path 
+                      d="M12 19V5M5 12l7-7 7 7" 
+                      stroke="hsl(170, 80%, 50%)" 
+                      strokeWidth="2.5" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  {/* Hand SVG */}
+                  <svg 
+                    width="28" height="28" viewBox="0 0 24 24" 
+                    fill="none"
+                    className="drop-shadow-md"
+                  >
+                    <path 
+                      d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v1M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v6M10 10.5V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8" 
+                      stroke="hsl(220, 20%, 25%)" 
+                      strokeWidth="1.5" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round"
+                    />
+                    <path 
+                      d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15V6" 
+                      stroke="hsl(220, 20%, 25%)" 
+                      strokeWidth="1.5" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Tooltip tray - shown below tools when active */}
