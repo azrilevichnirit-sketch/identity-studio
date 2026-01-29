@@ -690,3 +690,51 @@
     height: 160px;
   }
 }
+
+/* ============================================
+   INTRO SCREEN (Welcome) - Desktop-specific
+   Avatar larger, closer to bubble on right
+   ============================================ */
+
+/* Mobile defaults for intro screen */
+.intro-avatar {
+  right: max(env(safe-area-inset-right, 0px), 8px);
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  height: clamp(200px, 38vh, 360px);
+}
+
+.intro-bubble {
+  right: clamp(120px, 30vw, 300px);
+  bottom: clamp(50px, 10vh, 100px);
+  max-width: min(360px, 56vw);
+  min-width: min(240px, 62vw);
+}
+
+/* Desktop: Larger avatar (+20%), closer to bubble */
+@media (min-width: 1024px) {
+  .intro-avatar {
+    right: clamp(80px, 10vw, 160px);
+    bottom: 24px;
+    height: clamp(380px, 42vh, 520px); /* +20% from ~320px baseline */
+  }
+
+  .intro-bubble {
+    right: clamp(260px, 22vw, 400px); /* Shifted left to create small gap with avatar */
+    bottom: clamp(80px, 12vh, 140px);
+    max-width: 420px;
+    min-width: 320px;
+  }
+}
+
+/* Large desktop (>=1280px) - even more prominent */
+@media (min-width: 1280px) {
+  .intro-avatar {
+    right: 120px;
+    height: 480px; /* Larger on big screens */
+  }
+
+  .intro-bubble {
+    right: 380px;
+    max-width: 460px;
+  }
+}

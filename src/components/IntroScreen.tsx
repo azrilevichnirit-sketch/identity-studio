@@ -32,14 +32,11 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
         }}
       />
 
-      {/* Avatar - responsive positioning, bottom right, larger on mobile */}
+      {/* Avatar - DESKTOP: larger, closer to bubble on right; MOBILE: unchanged */}
       {avatarImage && (
         <div 
-          className="absolute z-20 animate-fade-in"
+          className="absolute z-20 animate-fade-in intro-avatar"
           style={{
-            right: 'max(env(safe-area-inset-right, 0px), 8px)',
-            bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)',
-            height: 'clamp(200px, 38vh, 360px)',
             filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))',
           }}
         >
@@ -51,15 +48,9 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
         </div>
       )}
 
-      {/* Speech bubble with welcome text - positioned left of avatar, compact */}
+      {/* Speech bubble - DESKTOP: shifted left for avatar proximity; MOBILE: unchanged */}
       <div 
-        className="absolute z-30 animate-scale-in"
-        style={{
-          right: 'clamp(120px, 30vw, 300px)',
-          bottom: 'clamp(50px, 10vh, 100px)',
-          maxWidth: 'min(360px, 56vw)',
-          minWidth: 'min(240px, 62vw)',
-        }}
+        className="absolute z-30 animate-scale-in intro-bubble"
       >
         <SpeechBubble 
           tailDirection="right"
