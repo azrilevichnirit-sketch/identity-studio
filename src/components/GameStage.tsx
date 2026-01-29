@@ -32,14 +32,12 @@ export function GameStage({
       className={`game-stage sceneRoot ${className}`}
     >
       {/* Background layer - separate for filter isolation */}
+      {/* Note: backgroundSize/Position handled via CSS (.sceneBg) for responsive behavior */}
       {backgroundImage && (
         <div 
           className="sceneBg absolute inset-0"
           style={{
             backgroundImage: `url(${backgroundImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
             filter: enhanceBackground ? 'saturate(1.18) contrast(1.08)' : undefined,
             zIndex: 0,
           }}

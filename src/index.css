@@ -493,13 +493,15 @@
 }
 
 /* Background layer - covers entire stage */
-.layout-bg {
+.layout-bg,
+.sceneBg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   z-index: 0;
 }
 
