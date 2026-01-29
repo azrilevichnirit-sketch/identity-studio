@@ -475,8 +475,8 @@
 
 /* ============================================
    RESPONSIVE LAYOUT SYSTEM
-   Desktop-first: base styles for desktop
-   Mobile overrides via media query
+   Desktop-first: base styles for desktop (>=1024px)
+   Mobile overrides via media query (<768px portrait)
    ============================================ */
 
 /* Game stage - works for all viewports */
@@ -496,75 +496,53 @@
   height: 100%;
 }
 
-@media (max-width: 768px) and (orientation: portrait) {
-  /* Prevent any horizontal overflow */
-  html, body {
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-  }
+/* ============================================
+   DESKTOP LAYOUT (>=1024px default)
+   Tray bottom-LEFT, bubble near avatar on right
+   ============================================ */
 
-  .game-stage {
-    width: 100vw;
-    height: 100svh;
-    min-height: 100vh;
-    overflow: hidden;
-  }
-
-  /* Background image zoom for depth on mobile */
-  .game-stage-bg {
-    transform: scale(1.08);
-    transform-origin: center 55%;
-  }
-
-  .game-stage-content {
-    padding-top: env(safe-area-inset-top, 0px);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-    padding-left: env(safe-area-inset-left, 0px);
-    padding-right: env(safe-area-inset-right, 0px);
-  }
+.desktop-layout {
+  /* Desktop stage fills viewport normally */
 }
 
-/* DESKTOP: Avatar positioning (default) - larger, closer to bubble, foreground */
-.mission-avatar {
-  position: absolute;
-  z-index: 25;
-  right: clamp(80px, 12vw, 180px);
-  bottom: 24px;
-  height: clamp(320px, 28vh, 420px);
-  filter: drop-shadow(0 14px 28px rgba(0,0,0,0.45));
-  pointer-events: none;
-}
-
-/* DESKTOP: Speech bubble positioning (default) - behind avatar */
-.mission-bubble {
-  position: absolute;
-  z-index: 15;
-  right: clamp(340px, 28vw, 480px);
-  bottom: 120px;
-  max-width: 420px;
-  min-width: 280px;
-}
-
-/* DESKTOP: Tool panel - BOTTOM CENTER (default) */
-.mission-tool-panel {
-  position: absolute;
-  z-index: 20;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 420px;
-  max-width: 90vw;
-  height: 140px;
-}
-
-/* DESKTOP: Background - no zoom transform */
-.game-stage-bg {
+/* Desktop: Background - no zoom */
+.desktop-layout .layout-bg {
   transform: none;
 }
 
-/* DESKTOP: Tool panel inner */
-.mission-tool-panel-inner {
+/* Desktop: Avatar - right side, large, foreground */
+.desktop-avatar {
+  position: absolute;
+  z-index: 25;
+  right: clamp(60px, 10vw, 140px);
+  bottom: 28px;
+  height: clamp(340px, 32vh, 440px);
+  pointer-events: none;
+  filter: drop-shadow(0 14px 32px rgba(0,0,0,0.5));
+}
+
+/* Desktop: Speech bubble - near avatar, behind it */
+.desktop-bubble {
+  position: absolute;
+  z-index: 15;
+  right: clamp(280px, 24vw, 420px);
+  bottom: 100px;
+  max-width: 440px;
+  min-width: 300px;
+}
+
+/* Desktop: Tool panel - BOTTOM LEFT */
+.desktop-tool-panel {
+  position: absolute;
+  z-index: 20;
+  bottom: 24px;
+  left: 24px;
+  width: clamp(360px, 28vw, 480px);
+  height: 150px;
+}
+
+/* Desktop: Tool panel inner styling */
+.layout-tool-panel-inner {
   border-radius: 1rem;
   padding: 0.75rem 1.25rem;
   height: 100%;
@@ -576,54 +554,74 @@
   border: 1px solid rgba(255,255,255,0.08);
 }
 
-/* DESKTOP: Undo button positioning */
-.mission-undo-btn {
-  position: absolute;
-  z-index: 30;
-  top: 16px;
-  right: 16px;
-}
-
 /* ============================================
-   MOBILE PORTRAIT OVERRIDES
-   Only applies to narrow portrait screens
+   MOBILE PORTRAIT LAYOUT (<768px portrait)
+   Stage fills viewport, tray bottom-left,
+   bubble above tray, avatar right foreground
    ============================================ */
+
 @media (max-width: 768px) and (orientation: portrait) {
-  /* Mobile: Avatar - bottom right, ABOVE bubble (higher z-index) */
-  .mission-avatar {
-    right: 12px;
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
-    height: clamp(200px, 36vh, 300px);
-    z-index: 25; /* Above bubble */
+  /* Prevent horizontal overflow */
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
   }
 
-  /* Mobile: Speech bubble - bottom left, reserves space for avatar on right */
-  .mission-bubble {
+  .mobile-layout {
+    width: 100vw;
+    height: 100svh;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Mobile: Background with zoom for depth */
+  .mobile-layout .layout-bg {
+    transform: scale(1.08);
+    transform-origin: center 55%;
+  }
+
+  /* Mobile: Avatar - right side, slightly bigger, foreground (z-25) */
+  .mobile-avatar {
+    position: absolute;
+    z-index: 25;
+    right: 6px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+    height: clamp(280px, 42vh, 410px);
+    pointer-events: none;
+    filter: drop-shadow(0 10px 24px rgba(0,0,0,0.45));
+  }
+
+  /* Mobile: Speech bubble - above tray, reserves space for avatar (z-20) */
+  .mobile-bubble {
+    position: absolute;
+    z-index: 20;
     left: 12px;
-    right: calc(12px + clamp(140px, 32vw, 200px)); /* Reserve space for avatar */
-    bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(100px, 15vh, 140px) + 20px);
-    max-width: none; /* Use left/right positioning instead */
-    min-width: auto;
+    right: calc(12px + clamp(140px, 36vw, 220px)); /* Reserve space for avatar */
+    bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(100px, 16vh, 150px) + 16px);
     max-height: 26vh;
-    z-index: 15; /* Below avatar */
+    overflow-y: auto;
   }
 
-  /* Mobile: Tool panel - BOTTOM LEFT, below bubble */
-  .mission-tool-panel {
+  /* Mobile: Tool panel - bottom-left, compact (z-18) */
+  .mobile-tool-panel {
+    position: absolute;
+    z-index: 18;
     left: 12px;
-    transform: none;
-    width: clamp(160px, 44vw, 240px);
-    height: clamp(90px, 14vh, 130px);
     bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+    width: clamp(150px, 42vw, 220px);
+    height: clamp(95px, 15vh, 135px);
   }
 
   /* Mobile: Tool panel inner - tighter padding */
-  .mission-tool-panel-inner {
+  .mobile-layout .layout-tool-panel-inner {
     padding: 0.5rem 0.75rem;
   }
 
-  /* Mobile: Undo button with safe area */
-  .mission-undo-btn {
+  /* Mobile: Undo button with safe area (z-30) */
+  .mobile-undo-btn {
+    position: absolute;
+    z-index: 30;
     top: max(env(safe-area-inset-top, 12px), 16px);
     right: max(env(safe-area-inset-right, 12px), 16px);
   }
@@ -631,55 +629,56 @@
 
 /* Small mobile (very narrow) additional adjustments */
 @media (max-width: 380px) and (orientation: portrait) {
-  .mission-avatar {
-    height: clamp(180px, 32vh, 260px);
-    right: 8px;
+  .mobile-avatar {
+    height: clamp(240px, 38vh, 360px);
+    right: 4px;
   }
 
-  .mission-bubble {
+  .mobile-bubble {
     left: 10px;
-    right: calc(10px + clamp(120px, 30vw, 180px));
-    bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(90px, 13vh, 120px) + 16px);
+    right: calc(10px + clamp(120px, 32vw, 180px));
+    bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(90px, 14vh, 130px) + 14px);
   }
 
-  .mission-tool-panel {
-    width: clamp(140px, 48vw, 200px);
-    height: clamp(85px, 13vh, 110px);
+  .mobile-tool-panel {
+    width: clamp(130px, 44vw, 190px);
+    height: clamp(85px, 14vh, 120px);
     left: 10px;
   }
 }
 
-/* Tablet landscape - slightly adjusted from desktop */
-@media (min-width: 769px) and (max-width: 1023px) {
-  .mission-avatar {
+/* Tablet landscape - similar to desktop but slightly adjusted */
+@media (min-width: 769px) and (max-width: 1023px) and (orientation: landscape) {
+  .desktop-avatar {
     right: 40px;
-    height: 300px;
+    height: 320px;
   }
 
-  .mission-bubble {
-    right: 320px;
-    max-width: 360px;
+  .desktop-bubble {
+    right: 280px;
+    max-width: 380px;
   }
 
-  .mission-tool-panel {
-    width: 360px;
+  .desktop-tool-panel {
+    width: 340px;
+    height: 140px;
   }
 }
 
 /* Large desktop */
 @media (min-width: 1280px) {
-  .mission-avatar {
-    right: 80px;
-    height: 380px;
+  .desktop-avatar {
+    right: 100px;
+    height: 420px;
   }
 
-  .mission-bubble {
-    right: 440px;
-    max-width: 450px;
+  .desktop-bubble {
+    right: 400px;
+    max-width: 480px;
   }
 
-  .mission-tool-panel {
-    width: 480px;
-    height: 150px;
+  .desktop-tool-panel {
+    width: 440px;
+    height: 160px;
   }
 }
