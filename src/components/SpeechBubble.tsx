@@ -59,7 +59,7 @@ export function SpeechBubble({
       
       {/* Content with proper typography */}
       <div 
-        className="p-5 md:p-6"
+        className="px-5 py-4 md:px-6 md:py-4"
         style={{
           fontFamily: "'Rubik', sans-serif",
           fontSize: '17px',
