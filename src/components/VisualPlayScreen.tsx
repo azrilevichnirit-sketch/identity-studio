@@ -187,23 +187,25 @@ export function VisualPlayScreen({
   return (
     <div 
       ref={stageRef} 
-      className="absolute inset-0 overflow-hidden"
+      className="fixed inset-0 overflow-hidden"
       style={{
         width: '100vw',
-        height: '100vh',
+        height: '100dvh',
+        minHeight: '100vh',
+        maxWidth: '100vw',
+        overflowX: 'hidden',
       }}
     >
       {/* Background layer - shows drag preview or current bg with smooth crossfade */}
       <div 
         className="absolute inset-0 transition-opacity duration-300"
         style={{ 
-          width: '100vw',
-          height: '100vh',
           backgroundImage: `url(${displayBg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
           filter: 'saturate(1.18) contrast(1.08)',
+          zIndex: 0,
         }}
       />
 
@@ -308,8 +310,14 @@ export function VisualPlayScreen({
         );
       })}
 
-      {/* Back/Undo popover - top right */}
-      <div className="absolute top-3 right-3 md:top-4 md:right-4 z-30">
+      {/* Back/Undo popover - top right with safe-area */}
+      <div 
+        className="absolute z-30"
+        style={{
+          top: 'max(env(safe-area-inset-top, 12px), 16px)',
+          right: 'max(env(safe-area-inset-right, 12px), 16px)',
+        }}
+      >
         <UndoConfirmPopover
           open={showUndoDialog}
           onOpenChange={setShowUndoDialog}
@@ -318,14 +326,14 @@ export function VisualPlayScreen({
         />
       </div>
 
-      {/* Avatar - anchored bottom-right, matching Welcome screen */}
+      {/* Avatar - anchored bottom-right, responsive sizing */}
       {avatarImage && (
         <div 
           className="absolute z-20 animate-fade-in"
           style={{
-            right: '60px',
-            bottom: '30px',
-            height: '340px',
+            right: 'clamp(12px, 3vw, 60px)',
+            bottom: 'clamp(8px, 2vh, 30px)',
+            height: 'clamp(160px, 30vh, 340px)',
             filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))',
           }}
         >
@@ -337,29 +345,42 @@ export function VisualPlayScreen({
         </div>
       )}
 
-      {/* Speech bubble - positioned further left so avatar overlaps edge, matching Welcome */}
+      {/* Speech bubble - responsive positioning, won't cover text */}
       <div 
         className="absolute z-15 animate-pop-in"
         style={{
-          right: '320px',
-          bottom: '140px',
-          maxWidth: '380px',
+          right: 'clamp(100px, 28vw, 320px)',
+          bottom: 'clamp(60px, 12vh, 140px)',
+          maxWidth: 'min(380px, 50vw)',
+          minWidth: 'min(200px, 45vw)',
         }}
       >
         <SpeechBubble tailDirection="right">
-          <p className="font-medium text-base md:text-lg pr-6">{taskText}</p>
+          <p 
+            className="font-medium text-sm md:text-base lg:text-lg pr-4 md:pr-6"
+            style={{ lineHeight: 1.5 }}
+          >
+            {taskText}
+          </p>
         </SpeechBubble>
       </div>
 
-      {/* Floating tool panel - LEFT side, minimal glass container */}
-      <div className="absolute bottom-8 md:bottom-10 left-8 md:left-10 z-25">
+      {/* Floating tool panel - LEFT side, doesn't span full width */}
+      <div 
+        className="absolute z-25"
+        style={{
+          bottom: 'max(env(safe-area-inset-bottom, 16px), 20px)',
+          left: 'max(env(safe-area-inset-left, 12px), 16px)',
+        }}
+      >
         <div 
-          className="rounded-2xl px-4 py-3 md:px-5 md:py-4"
+          className="rounded-2xl px-3 py-2.5 md:px-5 md:py-4"
           style={{
-            background: 'rgba(15, 20, 30, 0.55)',
+            background: 'rgba(15, 20, 30, 0.65)',
             backdropFilter: 'blur(12px)',
             boxShadow: '0 6px 24px rgba(0,0,0,0.25)',
             border: '1px solid rgba(255,255,255,0.08)',
+            maxWidth: 'min(280px, 50vw)',
           }}
         >
           {/* Progress tank */}
@@ -476,15 +497,17 @@ interface DraggableToolTileProps {
 function DraggableToolTile({ image, onClick, onDragStart, onInfoClick, variant, isDragging, isInfoActive }: DraggableToolTileProps) {
   return (
     <div className={`relative ${isDragging ? 'opacity-40' : ''}`}>
-      {/* Tool tile - transparent PNG, no white card */}
+      {/* Tool tile - transparent PNG, no white card, responsive sizing */}
       <button
         onClick={onClick}
         onMouseDown={onDragStart}
         onTouchStart={onDragStart}
         className="group relative overflow-visible transition-all duration-200 hover:scale-110 active:scale-95 cursor-grab active:cursor-grabbing"
         style={{
-          width: '80px',
-          height: '80px',
+          width: 'clamp(64px, 12vw, 100px)',
+          height: 'clamp(64px, 12vw, 100px)',
+          minWidth: '64px',
+          minHeight: '64px',
         }}
       >
         {/* Tool image - transparent PNG with subtle shadow only */}
