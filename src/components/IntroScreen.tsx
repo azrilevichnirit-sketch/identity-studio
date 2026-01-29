@@ -57,18 +57,18 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
         </div>
       )}
 
-      {/* Speech bubble with welcome text - positioned near avatar */}
+      {/* Speech bubble with welcome text - positioned near avatar on right */}
       <div 
         className="absolute z-15 animate-scale-in"
         style={{
-          left: '40px',
-          bottom: '80px',
-          maxWidth: '500px',
+          right: '200px',
+          bottom: '120px',
+          maxWidth: '480px',
         }}
       >
         <SpeechBubble tailDirection="right">
           <div className="space-y-3">
-            <p className="font-semibold text-lg">היי! איזה כיף לראות אותך</p>
+            <p className="font-semibold text-lg">היי! איזה כיף להכיר אותך.</p>
             <p>
               אני {avatarName}, ואני איתך לאורך כל המסע הזה.
             </p>
@@ -82,21 +82,45 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
               בסוף נראה יחד את התמונה שנוצרה מהבחירות שלך.
             </p>
           </div>
-          
-          {/* CTA Button - LEFT side with LEFT arrow, dark background */}
-          <button
-            onClick={onStart}
-            className="mt-5 flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-lg transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{
-              background: 'hsl(220 25% 15%)',
-              color: 'white',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
-            }}
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span>יאללה, מתחילים?</span>
-          </button>
         </SpeechBubble>
+      </div>
+
+      {/* CTA Button - LEFT side with LEFT arrow, dark background */}
+      <div 
+        className="absolute z-20 animate-fade-in"
+        style={{
+          left: '40px',
+          bottom: '60px',
+        }}
+      >
+        <button
+          onClick={onStart}
+          className="flex items-center gap-2 px-7 py-4 rounded-xl font-semibold text-lg transition-all duration-200 hover:scale-105 active:scale-95"
+          style={{
+            background: 'hsl(220 30% 12%)',
+            color: 'white',
+            boxShadow: '0 6px 20px rgba(0,0,0,0.4)',
+          }}
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span>יאללה, מתחילים?</span>
+        </button>
+      </div>
+
+      {/* Disclaimer - tiny footer at bottom corner */}
+      <div 
+        className="absolute z-10"
+        style={{
+          right: '16px',
+          bottom: '16px',
+          fontSize: '11px',
+          color: 'rgba(255,255,255,0.5)',
+          maxWidth: '280px',
+          textAlign: 'right',
+          direction: 'rtl',
+        }}
+      >
+        התוצאות מיועדות להכוונה ראשונית ואינן מהוות תחליף לייעוץ מקצועי.
       </div>
     </div>
   );
