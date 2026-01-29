@@ -721,11 +721,12 @@
     right: clamp(24px, 4vw, 60px);
     bottom: clamp(28px, 5vh, 60px);
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
     align-items: flex-end;
     gap: clamp(16px, 2vw, 28px);
     z-index: 30;
     pointer-events: none;
+    direction: ltr;
   }
 
   .welcomeScreen .welcomeBubble {
@@ -733,7 +734,8 @@
     position: relative;
     z-index: 20;
     pointer-events: auto;
-    order: 2;
+    order: 1;
+    direction: rtl;
   }
 
   .welcomeScreen .welcomeAvatarWrap {
@@ -742,7 +744,7 @@
     flex: 0 0 auto;
     width: min(320px, 28vw);
     pointer-events: none;
-    order: 1;
+    order: 2;
   }
 
   .welcomeScreen .welcomeAvatarWrap img {
