@@ -84,10 +84,21 @@ export default {
             height: "0",
           },
         },
+        "drag-float": {
+          "0%, 100%": {
+            transform: "translateY(0)",
+            opacity: "0.85",
+          },
+          "50%": {
+            transform: "translateY(-6px)",
+            opacity: "1",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "drag-float": "drag-float 1.5s ease-in-out infinite",
       },
     },
   },
