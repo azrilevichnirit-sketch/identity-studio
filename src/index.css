@@ -889,53 +889,68 @@
 
   .welcomeScreen .welcomeHeroMobile .heroAvatar img{ width:100% !important; height:auto !important; display:block !important; }
 
-  /* Force bubble + avatar visibility on mobile */
-  .welcomeHero, .welcomeBubble, .welcomeAvatar {
+  /* ---- hard reset visibility so bubble can't be "gone" ---- */
+  .welcomeScreen .welcomeHero,
+  .welcomeScreen .welcomeBubble,
+  .welcomeScreen .welcomeAvatar {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
   }
 
-  .welcomeHero{
+  /* ---- anchor the whole hero near bottom, inside screen ---- */
+  .welcomeScreen .welcomeHero{
     position: fixed !important;
     left: 16px !important;
     right: 16px !important;
     bottom: calc(96px + env(safe-area-inset-bottom)) !important;
-    z-index: 80 !important;
+    z-index: 999 !important;
     isolation: isolate !important;
     direction: rtl !important;
-    min-height: 180px !important;
+    min-height: 220px !important;
   }
 
-  /* bubble stays INSIDE screen and not off-canvas */
-  .welcomeBubble{
-    position: relative !important;
-    z-index: 90 !important;
-    width: 100% !important;
-    max-width: none !important;
-    transform: none !important;
-    margin: 0 !important;
-
-    /* reserve space for avatar so text is never covered */
-    padding-right: 180px !important;
-  }
-
-  /* avatar pinned to RIGHT-bottom of the hero */
-  .welcomeAvatar{
+  /* ---- Avatar pinned right-bottom, bigger, always above ---- */
+  .welcomeScreen .welcomeAvatar{
     position: absolute !important;
     right: 0 !important;
     bottom: 0 !important;
-    z-index: 120 !important;
-    width: 180px !important;
-    transform: none !important;
+    width: clamp(200px, 44vw, 290px) !important;
+    z-index: 1200 !important;
     pointer-events: none !important;
+    top: auto !important;
+    left: auto !important;
+    margin: 0 !important;
   }
-
-  .welcomeAvatar img{
+  .welcomeScreen .welcomeAvatar img{
     width: 100% !important;
     height: auto !important;
     display: block !important;
     max-width: none !important;
+  }
+
+  /* ---- Bubble stays fully inside screen and close to avatar ---- */
+  .welcomeScreen .welcomeBubble{
+    position: relative !important;
+    z-index: 1100 !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+
+    /* reserve space for the avatar so text never hides */
+    padding-right: calc(clamp(200px, 44vw, 290px) + 12px) !important;
+
+    /* restore typography (Rubik + normal sizes) */
+    font-family: Rubik, system-ui, -apple-system, "Segoe UI", Arial, sans-serif !important;
+    font-size: 16px !important;
+    line-height: 1.45 !important;
+  }
+  .welcomeScreen .welcomeBubble h1,
+  .welcomeScreen .welcomeBubble .title {
+    font-size: 18px !important;
+    line-height: 1.3 !important;
   }
 }
 
