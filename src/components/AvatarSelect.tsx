@@ -56,7 +56,7 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
               ) : (
                 <span className="text-7xl">👩</span>
               )}
-              <span className="font-semibold text-lg text-slate-900 mt-2">נקבה</span>
+              <span className="font-bold text-xl text-slate-800 mt-3 drop-shadow-sm">נקבה</span>
             </div>
             
             {/* Hover glow */}
@@ -85,7 +85,7 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
               ) : (
                 <span className="text-7xl">👨</span>
               )}
-              <span className="font-semibold text-lg text-slate-900 mt-2">זכר</span>
+              <span className="font-bold text-xl text-slate-800 mt-3 drop-shadow-sm">זכר</span>
             </div>
             
             {/* Hover glow */}
