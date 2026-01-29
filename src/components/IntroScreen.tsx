@@ -1,6 +1,7 @@
 import type { AvatarGender } from '@/types/identity';
 import { getAvatarImage } from '@/lib/assetUtils';
 import studioEntryBg from '@/assets/backgrounds/studio_entry_inside_bg.png';
+import { SpeechBubble } from './SpeechBubble';
 import { ArrowLeft } from 'lucide-react';
 
 interface IntroScreenProps {
@@ -44,7 +45,7 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
           style={{
             right: '60px',
             bottom: '30px',
-            height: '340px', // Larger avatar
+            height: '340px',
             filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))',
           }}
         >
@@ -62,38 +63,11 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
         style={{
           left: '40px',
           bottom: '80px',
-          maxWidth: '480px',
+          maxWidth: '500px',
         }}
       >
-        {/* Custom bubble with tail pointing to avatar */}
-        <div 
-          className="relative rounded-2xl p-6"
-          style={{
-            background: 'rgba(255, 252, 245, 0.95)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
-          }}
-        >
-          {/* Bubble tail pointing toward avatar (right side) */}
-          <div 
-            className="absolute"
-            style={{
-              right: '-16px',
-              bottom: '40px',
-              width: 0,
-              height: 0,
-              borderTop: '12px solid transparent',
-              borderBottom: '12px solid transparent',
-              borderLeft: '16px solid rgba(255, 252, 245, 0.95)',
-            }}
-          />
-          
-          <div 
-            className="text-foreground leading-[1.55] space-y-3"
-            style={{ 
-              fontFamily: "'Heebo', sans-serif",
-              fontSize: '17px',
-            }}
-          >
+        <SpeechBubble tailDirection="right">
+          <div className="space-y-3">
             <p className="font-semibold text-lg">היי! איזה כיף לראות אותך</p>
             <p>
               אני {avatarName}, ואני איתך לאורך כל המסע הזה.
@@ -122,7 +96,7 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
             <ArrowLeft className="w-5 h-5" />
             <span>יאללה, מתחילים?</span>
           </button>
-        </div>
+        </SpeechBubble>
       </div>
     </div>
   );
