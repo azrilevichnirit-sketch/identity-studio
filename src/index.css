@@ -892,13 +892,13 @@
   /* Welcome hero flex layout - HARD RESET to fix floating */
   .welcomeScreen .welcomeHero{
     position: fixed !important;
-    left: 12px !important;
-    right: 12px !important;
+    left: 20px !important;
+    right: 20px !important;
     bottom: calc(96px + env(safe-area-inset-bottom)) !important;
     display: flex !important;
     align-items: flex-end !important;
-    justify-content: flex-end !important;
-    gap: 12px !important;
+    justify-content: flex-start !important;  /* pack to the RIGHT in RTL */
+    gap: 10px !important;
     direction: rtl !important;
     z-index: 80 !important;
     isolation: isolate !important;
@@ -918,7 +918,7 @@
     align-self: flex-end !important;
     z-index: 140 !important;
 
-    width: clamp(140px, 32vw, 210px) !important;
+    width: clamp(170px, 38vw, 260px) !important;  /* bigger avatar */
     flex: 0 0 auto !important;
     pointer-events: none !important;
   }
@@ -932,7 +932,8 @@
 
   .welcomeScreen .welcomeBubble{
     order: 2 !important;
-    flex: 1 1 auto !important;
+    flex: 0 1 64vw !important;               /* controlled width */
+    max-width: 64vw !important;
     min-width: 0 !important;
     position: relative !important;
     z-index: 110 !important;
