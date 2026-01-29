@@ -11,9 +11,12 @@ interface SpeechBubbleProps {
 }
 
 /**
- * Reusable speech bubble component with chat-style tail.
- * Uses high-contrast cream background (#FFFCF5) with dark text (#111).
+ * Reusable speech bubble component with seamless chat-style tail.
+ * Uses high-contrast cream background with dark text.
  * RTL-ready with Hebrew-friendly typography.
+ * 
+ * The tail is built as a CSS pseudo-element so it shares the same
+ * drop-shadow as the bubble (no visible seam).
  */
 export function SpeechBubble({ 
   children, 
@@ -21,56 +24,56 @@ export function SpeechBubble({
   className = '',
   style = {},
 }: SpeechBubbleProps) {
-  // Tail position closer to top (near avatar's face/torso)
-  const tailVerticalPosition = '65%';
-  
   return (
     <div 
-      className={`relative rounded-2xl ${className}`}
+      className={`relative ${className}`}
       style={{
-        background: '#FFFCF5',
-        boxShadow: '0 8px 28px rgba(0,0,0,0.18)',
+        filter: 'drop-shadow(0 14px 28px rgba(0,0,0,0.18))',
         ...style,
       }}
     >
-      {/* Bubble tail - seamless triangle using SVG for clean edges */}
-      <svg 
-        className="absolute"
-        width="20"
-        height="28"
-        viewBox="0 0 20 28"
-        fill="none"
-        style={{
-          ...(tailDirection === 'right' ? {
-            right: '-19px',
-            top: tailVerticalPosition,
-            transform: 'translateY(-50%)',
-          } : {
-            left: '-19px',
-            top: tailVerticalPosition,
-            transform: 'translateY(-50%) scaleX(-1)',
-          }),
-        }}
-      >
-        <path 
-          d="M0 0 L0 28 L20 14 Z" 
-          fill="#FFFCF5"
-        />
-      </svg>
-      
-      {/* Content with compact padding */}
+      {/* Bubble panel with seamless tail pseudo-element */}
       <div 
-        className="px-5 py-3 md:px-6 md:py-3"
+        className="relative rounded-[22px]"
         style={{
-          fontFamily: "'Rubik', sans-serif",
-          fontSize: '17px',
-          lineHeight: '1.55',
-          color: '#111',
-          direction: 'rtl',
-          textAlign: 'right',
+          background: 'rgba(255,255,255,0.94)',
+          border: '1px solid rgba(255,255,255,0.55)',
         }}
       >
-        {children}
+        {/* Tail - CSS element for seamless shadow */}
+        <div
+          style={{
+            position: 'absolute',
+            width: '20px',
+            height: '20px',
+            background: 'rgba(255,255,255,0.94)',
+            borderRadius: '6px',
+            ...(tailDirection === 'right' ? {
+              right: '-6px',
+              top: '55%',
+              transform: 'translateY(-50%) rotate(45deg)',
+            } : {
+              left: '-6px',
+              top: '55%',
+              transform: 'translateY(-50%) rotate(45deg)',
+            }),
+          }}
+        />
+        
+        {/* Content with comfortable padding */}
+        <div 
+          className="relative px-5 py-3 md:px-6 md:py-3"
+          style={{
+            fontFamily: "'Rubik', sans-serif",
+            fontSize: '17px',
+            lineHeight: '1.55',
+            color: '#111',
+            direction: 'rtl',
+            textAlign: 'right',
+          }}
+        >
+          {children}
+        </div>
       </div>
     </div>
   );
