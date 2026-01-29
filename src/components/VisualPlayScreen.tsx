@@ -329,11 +329,11 @@ export function VisualPlayScreen({
       {/* Avatar - anchored bottom-right, stable size on mobile */}
       {avatarImage && (
         <div 
-          className="absolute z-30 animate-fade-in"
+          className="absolute z-25 animate-fade-in"
           style={{
-            right: '10px',
-            bottom: 'calc(env(safe-area-inset-bottom, 0px) + 12px)',
-            height: 'clamp(240px, 36vh, 340px)',
+            right: '6px',
+            bottom: 'calc(env(safe-area-inset-bottom, 0px) + 10px)',
+            height: 'clamp(280px, 42vh, 410px)',
             filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))',
           }}
         >
