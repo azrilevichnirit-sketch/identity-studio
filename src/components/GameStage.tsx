@@ -36,6 +36,8 @@ export function GameStage({
         minHeight: '100vh', // Fallback for browsers without dvh
         maxWidth: '100vw',
         overflowX: 'hidden',
+        margin: 0,
+        padding: 0,
       }}
     >
       {/* Background layer - separate for filter isolation */}

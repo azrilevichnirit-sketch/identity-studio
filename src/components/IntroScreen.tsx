@@ -37,9 +37,9 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
         <div 
           className="absolute z-20 animate-fade-in"
           style={{
-            right: 'clamp(8px, 2vw, 60px)',
+            right: 'max(env(safe-area-inset-right, 0px), 8px)',
             bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)',
-            height: 'clamp(220px, 40vh, 380px)',
+            height: 'clamp(200px, 38vh, 360px)',
             filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))',
           }}
         >
@@ -55,27 +55,27 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
       <div 
         className="absolute z-30 animate-scale-in"
         style={{
-          right: 'clamp(130px, 32vw, 320px)',
-          bottom: 'clamp(60px, 12vh, 120px)',
-          maxWidth: 'min(380px, 58vw)',
-          minWidth: 'min(260px, 65vw)',
+          right: 'clamp(120px, 30vw, 300px)',
+          bottom: 'clamp(50px, 10vh, 100px)',
+          maxWidth: 'min(360px, 56vw)',
+          minWidth: 'min(240px, 62vw)',
         }}
       >
         <SpeechBubble 
           tailDirection="right"
         >
-          <div className="space-y-1.5 pr-3 md:pr-5">
+          <div className="space-y-1 pr-2 md:pr-4">
             <p className="font-semibold text-sm md:text-base">היי! איזה כיף להכיר אותך.</p>
-            <p className="text-xs md:text-sm leading-relaxed">
+            <p className="text-xs md:text-sm leading-snug">
               אני {avatarName}, ואני איתך לאורך כל המסע הזה.
             </p>
-            <p className="text-xs md:text-sm leading-relaxed">
+            <p className="text-xs md:text-sm leading-snug">
               כאן ניצור ביחד את ה{arenaName} שלך, צעד אחרי צעד - עם בחירות קטנות שמרכיבות עולם שלם.
             </p>
-            <p className="text-xs md:text-sm leading-relaxed">
+            <p className="text-xs md:text-sm leading-snug">
               בכל שלב מחכה לך משימה ושתי אפשרויות. בוחרים, גוררים, וממשיכים.
             </p>
-            <p className="text-xs md:text-sm leading-relaxed">
+            <p className="text-xs md:text-sm leading-snug">
               בסוף נראה יחד את התמונה שנוצרה מהבחירות שלך.
             </p>
           </div>

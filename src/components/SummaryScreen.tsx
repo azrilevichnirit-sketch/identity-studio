@@ -34,8 +34,12 @@ export function SummaryScreen({ state, countsFinal, leaders }: SummaryScreenProp
 
   return (
     <div 
-      className="absolute inset-0 flex items-center justify-center overflow-hidden"
+      className="fixed inset-0 flex items-center justify-center overflow-hidden"
       style={{
+        width: '100vw',
+        height: '100dvh',
+        minHeight: '100vh',
+        margin: 0,
         backgroundImage: `url(${studioEntranceBg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center bottom',
@@ -45,29 +49,38 @@ export function SummaryScreen({ state, countsFinal, leaders }: SummaryScreenProp
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-black/50" />
       
-      {/* Content - horizontal layout */}
-      <div className="relative z-10 flex gap-6 animate-fade-in px-8">
+      {/* Content - vertical on mobile, horizontal on desktop */}
+      <div 
+        className="relative z-10 flex flex-col md:flex-row gap-4 md:gap-6 animate-fade-in overflow-auto w-full h-full items-center justify-start md:justify-center"
+        style={{
+          paddingTop: 'max(env(safe-area-inset-top, 16px), 20px)',
+          paddingBottom: 'max(env(safe-area-inset-bottom, 16px), 60px)',
+          paddingLeft: 'max(env(safe-area-inset-left, 16px), 16px)',
+          paddingRight: 'max(env(safe-area-inset-right, 16px), 16px)',
+        }}
+      >
         {/* Results card */}
         <div 
-          className="p-6 rounded-2xl w-[320px]"
+          className="p-5 md:p-6 rounded-2xl w-full md:w-[320px] flex-shrink-0"
           style={{
+            maxWidth: 'min(320px, 92vw)',
             background: 'rgba(255, 252, 245, 0.96)',
             boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
           }}
         >
-          <div className="text-4xl mb-3 text-center">🎉</div>
+          <div className="text-3xl md:text-4xl mb-2 md:mb-3 text-center">🎉</div>
           <h1 
-            className="text-2xl font-bold mb-4 text-center"
-            style={{ color: '#111', fontFamily: "'Heebo', sans-serif" }}
+            className="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-center"
+            style={{ color: '#111', fontFamily: "'Rubik', sans-serif" }}
           >
             התוצאות שלך!
           </h1>
           
           {leaders.length > 0 && (
-            <div className="mb-4">
+            <div className="mb-3 md:mb-4">
               <p 
                 className="text-sm mb-2 text-center"
-                style={{ color: '#555', fontFamily: "'Heebo', sans-serif" }}
+                style={{ color: '#555', fontFamily: "'Rubik', sans-serif" }}
               >
                 הפרופיל המוביל שלך:
               </p>
@@ -76,7 +89,7 @@ export function SummaryScreen({ state, countsFinal, leaders }: SummaryScreenProp
                   <span
                     key={code}
                     className="px-3 py-1 rounded-full bg-primary text-primary-foreground text-sm font-medium"
-                    style={{ fontFamily: "'Heebo', sans-serif" }}
+                    style={{ fontFamily: "'Rubik', sans-serif" }}
                   >
                     {HOLLAND_LABELS[code]}
                   </span>
@@ -86,19 +99,19 @@ export function SummaryScreen({ state, countsFinal, leaders }: SummaryScreenProp
           )}
 
           {/* Scores breakdown */}
-          <div className="mt-4 pt-4 border-t border-slate-200">
+          <div className="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-slate-200">
             <h2 
-              className="text-sm font-semibold mb-3"
-              style={{ color: '#555', fontFamily: "'Heebo', sans-serif" }}
+              className="text-sm font-semibold mb-2 md:mb-3"
+              style={{ color: '#555', fontFamily: "'Rubik', sans-serif" }}
             >
               חלוקת הניקוד
             </h2>
-            <div className="space-y-2">
+            <div className="space-y-1.5 md:space-y-2">
               {(Object.keys(countsFinal) as HollandCode[]).map((code) => (
                 <div key={code} className="flex items-center gap-2">
                   <span 
-                    className="text-xs w-20 truncate"
-                    style={{ color: '#333', fontFamily: "'Heebo', sans-serif" }}
+                    className="text-xs w-16 md:w-20 truncate"
+                    style={{ color: '#333', fontFamily: "'Rubik', sans-serif" }}
                   >
                     {HOLLAND_LABELS[code].split(' ')[0]}
                   </span>
@@ -122,9 +135,9 @@ export function SummaryScreen({ state, countsFinal, leaders }: SummaryScreenProp
           </div>
         </div>
 
-        {/* JSON output card */}
+        {/* JSON output card - hidden on mobile for cleaner UX */}
         <div 
-          className="p-6 rounded-2xl w-[400px] max-h-[500px] overflow-hidden flex flex-col"
+          className="hidden md:block p-6 rounded-2xl w-[400px] max-h-[500px] overflow-hidden flex-col flex-shrink-0"
           style={{
             background: 'rgba(255, 252, 245, 0.96)',
             boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
@@ -132,7 +145,7 @@ export function SummaryScreen({ state, countsFinal, leaders }: SummaryScreenProp
         >
           <h2 
             className="text-sm font-semibold mb-3"
-            style={{ color: '#555', fontFamily: "'Heebo', sans-serif" }}
+            style={{ color: '#555', fontFamily: "'Rubik', sans-serif" }}
           >
             JSON Export
           </h2>
@@ -147,7 +160,13 @@ export function SummaryScreen({ state, countsFinal, leaders }: SummaryScreenProp
       </div>
 
       {/* Disclaimer in bottom corner */}
-      <div className="absolute bottom-4 left-4 z-20">
+      <div 
+        className="absolute z-20"
+        style={{
+          bottom: 'max(env(safe-area-inset-bottom, 8px), 16px)',
+          left: 'max(env(safe-area-inset-left, 8px), 16px)',
+        }}
+      >
         <Disclaimer className="text-white/60" />
       </div>
     </div>
