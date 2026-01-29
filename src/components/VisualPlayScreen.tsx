@@ -170,12 +170,29 @@ export function VisualPlayScreen({
     } catch {}
     
     if (wasActualDrag) {
-      // It was a real drag - check if dropped in valid zone
+      // It was a real drag - check if dropped near the target position
       const rect = stageRef.current.getBoundingClientRect();
-      const relY = ((e.clientY - rect.top) / rect.height) * 100;
+      const dropX = ((e.clientX - rect.left) / rect.width) * 100;
+      const dropY = ((e.clientY - rect.top) / rect.height) * 100;
       
-      if (relY < 75 && relY > 0) {
-        completePlacement(draggingTool);
+      // Get target position for current tool
+      const target = getTargetAnchor(draggingTool);
+      if (target) {
+        // Check if within target radius (generous ~15% of screen)
+        const dx = dropX - target.x;
+        const dy = dropY - target.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        // Accept drop if within 20% radius or in upper 75% of screen
+        if (distance < 20 || (dropY < 75 && dropY > 5)) {
+          completePlacement(draggingTool);
+        }
+        // Otherwise return to tray (no placement)
+      } else {
+        // Fallback: accept if in valid zone
+        if (dropY < 75 && dropY > 5) {
+          completePlacement(draggingTool);
+        }
       }
     } else {
       // It was a tap - enter carry mode
@@ -186,7 +203,7 @@ export function VisualPlayScreen({
     setDragPosition(null);
     isDraggingRef.current = false;
     dragStartPosRef.current = null;
-  }, [draggingTool, completePlacement]);
+  }, [draggingTool, completePlacement, getTargetAnchor]);
 
   // Handle tap on drop zone in carry mode
   const handleDropZoneTap = useCallback(() => {
@@ -290,7 +307,7 @@ export function VisualPlayScreen({
       {/* Target zone indicator - shows during drag or carry mode */}
       {activeToolVariant && targetPosition && (
         <div 
-          className="absolute z-15 animate-fade-in cursor-pointer"
+          className="absolute z-[12] animate-fade-in cursor-pointer"
           style={{
             left: `${targetPosition.x}%`,
             top: `${targetPosition.y}%`,
@@ -300,32 +317,73 @@ export function VisualPlayScreen({
             e.stopPropagation();
             handleDropZoneTap();
           }}
+          onPointerDown={(e) => {
+            // Also accept pointer down on target zone
+            e.stopPropagation();
+            handleDropZoneTap();
+          }}
         >
-          {/* Pulsing glow ring */}
+          {/* Outer glow effect */}
           <div 
-            className="w-24 h-24 md:w-32 md:h-32 rounded-full"
+            className="absolute inset-0 rounded-full pointer-events-none"
             style={{
-              border: '3px solid hsl(170 80% 50% / 0.9)',
-              boxShadow: '0 0 30px hsl(170 80% 50% / 0.5), inset 0 0 20px hsl(170 80% 50% / 0.15)',
-              background: 'radial-gradient(circle, hsl(170 80% 50% / 0.2) 0%, transparent 70%)',
-              animation: 'pulse 1.5s ease-in-out infinite',
+              width: '140px',
+              height: '140px',
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+              background: 'radial-gradient(circle, hsl(170 80% 50% / 0.35) 0%, transparent 70%)',
+              animation: 'pulse-glow 1.2s ease-in-out infinite',
             }}
           />
-          {/* Downward arrow */}
-          <svg 
-            className="absolute left-1/2 -top-12 -translate-x-1/2 animate-bounce"
-            width="32" height="32" viewBox="0 0 24 24" 
-            fill="none" stroke="hsl(170, 80%, 50%)" strokeWidth="3"
+          
+          {/* Main pulsing ring */}
+          <div 
+            className="w-20 h-20 md:w-28 md:h-28 rounded-full relative"
+            style={{
+              border: '4px solid hsl(170 80% 50%)',
+              boxShadow: '0 0 40px hsl(170 80% 50% / 0.6), inset 0 0 25px hsl(170 80% 50% / 0.2)',
+              background: 'radial-gradient(circle, hsl(170 80% 50% / 0.25) 0%, transparent 60%)',
+              animation: 'pulse 1.2s ease-in-out infinite',
+            }}
           >
-            <path d="M12 5v14M5 12l7 7 7-7" />
-          </svg>
-          {/* Carry mode instruction */}
+            {/* Inner crosshair/target */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-3 h-3 rounded-full bg-white/80" style={{ boxShadow: '0 0 8px white' }} />
+            </div>
+          </div>
+          
+          {/* Downward arrow with hand icon */}
+          <div className="absolute left-1/2 -top-14 -translate-x-1/2 flex flex-col items-center">
+            <svg 
+              className="animate-bounce drop-shadow-lg"
+              width="36" height="36" viewBox="0 0 24 24" 
+              fill="hsl(170, 80%, 50%)" stroke="white" strokeWidth="1"
+            >
+              <path d="M12 5v14M5 12l7 7 7-7" fill="none" stroke="hsl(170, 80%, 50%)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+          
+          {/* Hand icon below ring for touch hint */}
+          <div className="absolute left-1/2 -bottom-10 -translate-x-1/2">
+            <svg 
+              className="animate-hand-move drop-shadow-md"
+              width="28" height="28" viewBox="0 0 24 24" 
+              fill="none" stroke="hsl(170, 80%, 50%)" strokeWidth="2"
+            >
+              <path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v6M10 10.5V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15V6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+          
+          {/* Carry mode instruction - more prominent */}
           {carryModeTool && !draggingTool && (
             <div 
-              className="absolute top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-medium px-3 py-1.5 rounded-full"
+              className="absolute top-full mt-14 left-1/2 -translate-x-1/2 whitespace-nowrap text-sm font-semibold px-4 py-2 rounded-xl animate-pulse"
               style={{
-                background: 'rgba(0,0,0,0.7)',
+                background: 'hsl(170 80% 45%)',
                 color: 'white',
+                boxShadow: '0 4px 16px hsl(170 80% 45% / 0.5)',
               }}
             >
               לחץ כאן להנחה
@@ -520,26 +578,42 @@ export function VisualPlayScreen({
         </div>
       </div>
 
-      {/* Dragging ghost with hand indicator */}
+      {/* Dragging ghost with hand indicator - larger on mobile for visibility */}
       {draggingTool && dragPosition && (
         <div 
-          className="fixed pointer-events-none z-50"
+          className="fixed pointer-events-none z-[55]"
           style={{
             left: dragPosition.x,
             top: dragPosition.y,
-            transform: 'translate(-50%, -50%)',
+            transform: 'translate(-50%, -80%)', // Offset so finger doesn't cover it
           }}
         >
+          {/* Glow behind tool */}
+          <div 
+            className="absolute inset-0 rounded-full"
+            style={{
+              width: '100px',
+              height: '100px',
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+              background: 'radial-gradient(circle, hsl(170 80% 50% / 0.4) 0%, transparent 70%)',
+              filter: 'blur(8px)',
+            }}
+          />
           <img 
             src={draggingTool === 'a' ? toolAImage : toolBImage}
             alt=""
-            className="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-2xl opacity-90"
+            className="w-20 h-20 md:w-24 md:h-24 object-contain relative"
+            style={{
+              filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.5))',
+            }}
           />
           <div 
-            className="absolute -bottom-1 -right-1 animate-hand-move"
+            className="absolute -bottom-2 -right-2"
             style={{ color: 'hsl(220 20% 20%)' }}
           >
-            <Hand className="w-6 h-6 md:w-7 md:h-7 drop-shadow-md" />
+            <Hand className="w-7 h-7 md:w-8 md:h-8 drop-shadow-lg" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} />
           </div>
         </div>
       )}
