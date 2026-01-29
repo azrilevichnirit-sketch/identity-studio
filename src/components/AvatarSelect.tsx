@@ -24,10 +24,12 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
       
       {/* Content - scrollable on mobile, properly centered */}
       <div 
-        className="relative z-10 h-full flex flex-col items-center justify-center px-4 py-6 overflow-auto"
+        className="relative z-10 h-full flex flex-col items-center justify-center overflow-auto"
         style={{
           paddingTop: 'max(env(safe-area-inset-top, 16px), 24px)',
           paddingBottom: 'max(env(safe-area-inset-bottom, 16px), 24px)',
+          paddingLeft: 'max(env(safe-area-inset-left, 16px), 16px)',
+          paddingRight: 'max(env(safe-area-inset-right, 16px), 16px)',
         }}
       >
         <div className="flex flex-col items-center gap-5 md:gap-8 animate-fade-in w-full max-w-2xl">
@@ -43,9 +45,9 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
               onClick={() => onSelect('female')}
               className="group relative rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
               style={{
-                width: 'min(85vw, 360px)',
-                height: 'clamp(130px, 32vw, 180px)',
-                minHeight: '130px',
+                width: 'min(85vw, 320px)',
+                height: 'clamp(110px, 28vw, 160px)',
+                minHeight: '110px',
                 background: 'rgba(255, 252, 245, 0.92)',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
               }}
@@ -55,7 +57,7 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
                   <img 
                     src={femaleAvatar} 
                     alt="Female avatar" 
-                    className="h-full max-h-28 md:max-h-36 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                    className="h-full max-h-24 md:max-h-32 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : (
                   <span className="text-5xl md:text-6xl">👩</span>
@@ -74,9 +76,9 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
               onClick={() => onSelect('male')}
               className="group relative rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
               style={{
-                width: 'min(85vw, 360px)',
-                height: 'clamp(130px, 32vw, 180px)',
-                minHeight: '130px',
+                width: 'min(85vw, 320px)',
+                height: 'clamp(110px, 28vw, 160px)',
+                minHeight: '110px',
                 background: 'rgba(255, 252, 245, 0.92)',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
               }}
@@ -86,7 +88,7 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
                   <img 
                     src={maleAvatar} 
                     alt="Male avatar" 
-                    className="h-full max-h-28 md:max-h-36 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                    className="h-full max-h-24 md:max-h-32 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : (
                   <span className="text-5xl md:text-6xl">👨</span>

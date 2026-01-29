@@ -105,7 +105,10 @@
     box-sizing: border-box;
   }
 
-  html, body, #root {
+  html {
+    font-family: 'Rubik', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
     width: 100%;
     height: 100%;
     margin: 0;
@@ -113,24 +116,31 @@
     overflow: hidden;
   }
 
-  html {
-    font-family: 'Rubik', sans-serif;
-    font-size: 16px;
-    line-height: 1.5;
-  }
-
   body {
     @apply bg-background text-foreground antialiased;
     direction: rtl;
     width: 100vw;
-    height: 100vh;
-    min-width: 100vw;
-    min-height: 100vh;
+    height: 100dvh;
+    min-height: 100vh; /* fallback */
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    overflow-x: hidden;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
   }
 
   #root {
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
+    min-height: 100vh; /* fallback */
+    max-width: 100vw;
+    overflow: hidden;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    inset: 0;
   }
 }
 
