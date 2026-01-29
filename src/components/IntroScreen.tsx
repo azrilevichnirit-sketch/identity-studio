@@ -110,21 +110,6 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
         </button>
       </div>
 
-      {/* Disclaimer - tiny footer at bottom corner */}
-      <div 
-        className="absolute z-10"
-        style={{
-          right: '16px',
-          bottom: '16px',
-          fontSize: '11px',
-          color: 'rgba(255,255,255,0.5)',
-          maxWidth: '280px',
-          textAlign: 'right',
-          direction: 'rtl',
-        }}
-      >
-        התוצאות מיועדות להכוונה ראשונית ואינן מהוות תחליף לייעוץ מקצועי.
-      </div>
     </div>
   );
 }

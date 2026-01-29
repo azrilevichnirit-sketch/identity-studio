@@ -17,7 +17,7 @@ export function Disclaimer({ className }: DisclaimerProps) {
         className
       )}
       style={{
-        fontFamily: "'Heebo', sans-serif",
+        fontFamily: "'Rubik', sans-serif",
         direction: 'rtl',
       }}
     >
