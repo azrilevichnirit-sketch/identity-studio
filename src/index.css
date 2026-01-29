@@ -882,15 +882,26 @@
     bottom: calc(96px + env(safe-area-inset-bottom)) !important;
     display: flex !important;
     align-items: flex-end !important;
-    justify-content: flex-end !important;
+    justify-content: flex-start !important;
     gap: 12px !important;
-    direction: rtl !important;
+    direction: ltr !important;
     z-index: 80 !important;
     max-width: 100% !important;
   }
 
-  .welcomeScreen .welcomeHeroMobile .heroAvatar { order: 1 !important; z-index: 90 !important; width: clamp(110px, 22vw, 150px) !important; pointer-events: none !important; }
-  .welcomeScreen .welcomeHeroMobile .heroBubble { order: 2 !important; z-index: 85 !important; flex: 1 1 auto !important; min-width: 0 !important; }
+  /* Mobile: bubble stays fully inside screen; avatar overlaps from front-right */
+  .welcomeScreen .welcomeHeroMobile .heroBubble { order: 1 !important; z-index: 85 !important; flex: 0 1 auto !important; min-width: 0 !important; }
+  .welcomeScreen .welcomeHeroMobile .heroAvatar {
+    order: 2 !important;
+    z-index: 1200 !important;
+    pointer-events: none !important;
+    position: fixed !important;
+    right: max(env(safe-area-inset-right, 0px), 12px) !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 60px) !important;
+    width: 140px !important; /* base size; scaled below to 250% */
+    transform: scale(2.5) !important;
+    transform-origin: bottom right !important;
+  }
 
   .welcomeScreen .welcomeHeroMobile .heroAvatar img{ width:100% !important; height:auto !important; display:block !important; }
 
@@ -923,16 +934,18 @@
 
   /* ---- Avatar: large, front-center, overlapping bubble ---- */
   .welcomeScreen .welcomeAvatar{
-    position: absolute !important;
-    right: auto !important;
-    left: 55% !important;
-    bottom: 0 !important;
-    width: clamp(200px, 50vw, 280px) !important;
+    /* 250% scale on mobile, anchored above Debug */
+    position: fixed !important;
+    left: auto !important;
+    right: max(env(safe-area-inset-right, 0px), 12px) !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 60px) !important;
+    width: 140px !important; /* base size; scaled to 250% */
     z-index: 1200 !important;
     pointer-events: none !important;
     top: auto !important;
     margin: 0 !important;
-    transform: none !important;
+    transform: scale(2.5) !important;
+    transform-origin: bottom right !important;
   }
   .welcomeScreen .welcomeAvatar img{
     width: 100% !important;
@@ -945,7 +958,7 @@
   .welcomeScreen .welcomeBubble{
     position: relative !important;
     left: 0 !important;
-    width: 70% !important;
+    width: min(78vw, 360px) !important;
     max-width: none !important;
     margin: 0 !important;
     z-index: 1 !important;
@@ -997,6 +1010,36 @@
     background: transparent !important;
     box-shadow: none !important;
     border: none !important;
+  }
+
+  /* ================================
+     FINAL (Mobile <=820px) Welcome/Intro overrides
+     Goals:
+     - Bubble stays 100% inside viewport
+     - Avatar is 250% larger and stands on the floor just above Debug toggle
+     - Avatar overlaps IN FRONT of the bubble
+     ================================ */
+  .welcomeScreen .welcomeHero {
+    left: 12px !important;
+    right: 12px !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 72px) !important;
+    min-height: 0 !important;
+  }
+
+  .welcomeScreen .welcomeBubble {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .welcomeScreen .welcomeAvatar {
+    position: fixed !important;
+    right: max(env(safe-area-inset-right, 0px), 16px) !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 56px) !important; /* Debug toggle is bottom-4 (~16px) */
+    width: 160px !important; /* base size */
+    transform: scale(2.5) !important; /* +250% */
+    transform-origin: bottom right !important;
+    z-index: 2000 !important;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6)) !important;
   }
 }
 
