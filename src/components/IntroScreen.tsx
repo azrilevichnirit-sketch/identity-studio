@@ -64,14 +64,14 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
             </SpeechBubble>
           </div>
 
-          {/* Avatar: LARGE, overlapping bubble FROM THE FRONT (higher z-index) */}
+          {/* Avatar: VERY LARGE, standing on floor above Debug button */}
           {avatarImage && (
             <div
-              className="heroAvatar welcomeAvatar animate-fade-in intro-avatar max-[820px]:absolute max-[820px]:z-50 max-[820px]:pointer-events-none"
+              className="heroAvatar welcomeAvatar animate-fade-in intro-avatar max-[820px]:fixed max-[820px]:z-50 max-[820px]:pointer-events-none"
               style={{
-                bottom: "-30px",
-                left: "35%",
-                width: "70%",
+                bottom: "60px",
+                right: "0",
+                width: "85vw",
                 filter: "drop-shadow(0 10px 20px rgba(0,0,0,0.6))",
               }}
             >
