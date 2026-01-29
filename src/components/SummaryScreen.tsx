@@ -51,21 +51,32 @@ export function SummaryScreen({ state, countsFinal, leaders }: SummaryScreenProp
         <div 
           className="p-6 rounded-2xl w-[320px]"
           style={{
-            background: 'rgba(255, 252, 245, 0.95)',
+            background: 'rgba(255, 252, 245, 0.96)',
             boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
           }}
         >
           <div className="text-4xl mb-3 text-center">🎉</div>
-          <h1 className="text-2xl font-bold mb-4 text-center text-foreground">התוצאות שלך!</h1>
+          <h1 
+            className="text-2xl font-bold mb-4 text-center"
+            style={{ color: '#111', fontFamily: "'Heebo', sans-serif" }}
+          >
+            התוצאות שלך!
+          </h1>
           
           {leaders.length > 0 && (
             <div className="mb-4">
-              <p className="text-muted-foreground text-sm mb-2 text-center">הפרופיל המוביל שלך:</p>
+              <p 
+                className="text-sm mb-2 text-center"
+                style={{ color: '#555', fontFamily: "'Heebo', sans-serif" }}
+              >
+                הפרופיל המוביל שלך:
+              </p>
               <div className="flex flex-wrap gap-2 justify-center">
                 {leaders.map((code) => (
                   <span
                     key={code}
                     className="px-3 py-1 rounded-full bg-primary text-primary-foreground text-sm font-medium"
+                    style={{ fontFamily: "'Heebo', sans-serif" }}
                   >
                     {HOLLAND_LABELS[code]}
                   </span>
@@ -75,13 +86,23 @@ export function SummaryScreen({ state, countsFinal, leaders }: SummaryScreenProp
           )}
 
           {/* Scores breakdown */}
-          <div className="mt-4 pt-4 border-t border-border">
-            <h2 className="text-sm font-semibold mb-3 text-muted-foreground">חלוקת הניקוד</h2>
+          <div className="mt-4 pt-4 border-t border-slate-200">
+            <h2 
+              className="text-sm font-semibold mb-3"
+              style={{ color: '#555', fontFamily: "'Heebo', sans-serif" }}
+            >
+              חלוקת הניקוד
+            </h2>
             <div className="space-y-2">
               {(Object.keys(countsFinal) as HollandCode[]).map((code) => (
                 <div key={code} className="flex items-center gap-2">
-                  <span className="text-xs w-20 truncate text-foreground">{HOLLAND_LABELS[code].split(' ')[0]}</span>
-                  <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                  <span 
+                    className="text-xs w-20 truncate"
+                    style={{ color: '#333', fontFamily: "'Heebo', sans-serif" }}
+                  >
+                    {HOLLAND_LABELS[code].split(' ')[0]}
+                  </span>
+                  <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-primary transition-all duration-500"
                       style={{
@@ -89,7 +110,12 @@ export function SummaryScreen({ state, countsFinal, leaders }: SummaryScreenProp
                       }}
                     />
                   </div>
-                  <span className="text-xs font-medium w-4 text-foreground">{countsFinal[code]}</span>
+                  <span 
+                    className="text-xs font-medium w-4"
+                    style={{ color: '#333' }}
+                  >
+                    {countsFinal[code]}
+                  </span>
                 </div>
               ))}
             </div>
@@ -100,12 +126,21 @@ export function SummaryScreen({ state, countsFinal, leaders }: SummaryScreenProp
         <div 
           className="p-6 rounded-2xl w-[400px] max-h-[500px] overflow-hidden flex flex-col"
           style={{
-            background: 'rgba(255, 252, 245, 0.95)',
+            background: 'rgba(255, 252, 245, 0.96)',
             boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
           }}
         >
-          <h2 className="text-sm font-semibold mb-3 text-muted-foreground">JSON Export</h2>
-          <pre className="text-xs bg-white/50 rounded-lg p-3 overflow-auto flex-1 text-left text-foreground" dir="ltr">
+          <h2 
+            className="text-sm font-semibold mb-3"
+            style={{ color: '#555', fontFamily: "'Heebo', sans-serif" }}
+          >
+            JSON Export
+          </h2>
+          <pre 
+            className="text-xs bg-slate-100 rounded-lg p-3 overflow-auto flex-1 text-left" 
+            dir="ltr"
+            style={{ color: '#333' }}
+          >
             {JSON.stringify(exportData, null, 2)}
           </pre>
         </div>
@@ -113,7 +148,7 @@ export function SummaryScreen({ state, countsFinal, leaders }: SummaryScreenProp
 
       {/* Disclaimer in bottom corner */}
       <div className="absolute bottom-4 left-4 z-20">
-        <Disclaimer />
+        <Disclaimer className="text-white/60" />
       </div>
     </div>
   );

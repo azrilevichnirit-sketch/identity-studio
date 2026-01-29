@@ -1,5 +1,6 @@
 import type { AvatarGender } from '@/types/identity';
 import { getAvatarImage } from '@/lib/assetUtils';
+import studioEntryBg from '@/assets/backgrounds/studio_entry_inside_bg.png';
 
 interface AvatarSelectProps {
   onSelect: (gender: AvatarGender) => void;
@@ -13,15 +14,18 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
     <div 
       className="absolute inset-0 flex flex-col items-center justify-center"
       style={{
-        background: 'linear-gradient(135deg, hsl(220 25% 12%) 0%, hsl(220 20% 18%) 50%, hsl(220 15% 22%) 100%)',
+        // Show the Studio background to reflect chosen world
+        backgroundImage: `url(${studioEntryBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center bottom',
+        filter: 'saturate(1.18) contrast(1.08)',
       }}
     >
-      {/* Subtle pattern overlay */}
+      {/* Dark overlay for contrast */}
       <div 
-        className="absolute inset-0 opacity-30"
+        className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: `radial-gradient(circle at 30% 40%, hsl(170 80% 45% / 0.12) 0%, transparent 50%),
-                           radial-gradient(circle at 70% 60%, hsl(280 60% 55% / 0.12) 0%, transparent 50%)`,
+          background: 'linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.35) 100%)',
         }}
       />
       
@@ -38,7 +42,7 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
             onClick={() => onSelect('female')}
             className="group relative w-52 h-72 rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
             style={{
-              background: 'rgba(255, 252, 245, 0.9)',
+              background: 'rgba(255, 252, 245, 0.92)',
               boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
             }}
           >
@@ -52,7 +56,7 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
               ) : (
                 <span className="text-7xl">👩</span>
               )}
-              <span className="font-semibold text-lg text-foreground mt-2">נקבה</span>
+              <span className="font-semibold text-lg text-slate-900 mt-2">נקבה</span>
             </div>
             
             {/* Hover glow */}
@@ -67,7 +71,7 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
             onClick={() => onSelect('male')}
             className="group relative w-52 h-72 rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
             style={{
-              background: 'rgba(255, 252, 245, 0.9)',
+              background: 'rgba(255, 252, 245, 0.92)',
               boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
             }}
           >
@@ -81,7 +85,7 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
               ) : (
                 <span className="text-7xl">👨</span>
               )}
-              <span className="font-semibold text-lg text-foreground mt-2">זכר</span>
+              <span className="font-semibold text-lg text-slate-900 mt-2">זכר</span>
             </div>
             
             {/* Hover glow */}

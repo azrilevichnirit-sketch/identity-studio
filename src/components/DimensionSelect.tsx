@@ -34,12 +34,13 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
       <div 
         className="absolute inset-0 flex flex-col items-center justify-center"
         style={{
+          // Neutral abstract gradient - NOT Studio interior
           background: 'linear-gradient(135deg, hsl(220 25% 12%) 0%, hsl(220 20% 18%) 50%, hsl(220 15% 22%) 100%)',
         }}
       >
         {/* Subtle pattern overlay */}
         <div 
-          className="absolute inset-0 opacity-30"
+          className="absolute inset-0 opacity-30 pointer-events-none"
           style={{
             backgroundImage: `radial-gradient(circle at 20% 50%, hsl(170 80% 45% / 0.1) 0%, transparent 50%),
                              radial-gradient(circle at 80% 50%, hsl(280 60% 55% / 0.1) 0%, transparent 50%)`,
@@ -53,8 +54,26 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
             <p className="text-xl text-white/90 drop-shadow-md">בחר/י את העולם שלך</p>
           </div>
           
-          {/* Horizontal dimension cards */}
-          <div className="flex gap-6 items-end">
+          {/* Horizontal dimension cards + arrow CTA */}
+          <div className="flex gap-6 items-center">
+            {/* Left arrow CTA - appears when dimension is selected */}
+            <div 
+              className={`transition-all duration-300 ${
+                selectedDimension ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 pointer-events-none'
+              }`}
+            >
+              <button
+                onClick={handleProceed}
+                className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110 hover:bg-primary/90 active:scale-95"
+                style={{
+                  boxShadow: '0 8px 24px hsl(170 80% 45% / 0.4)',
+                }}
+                aria-label="המשך"
+              >
+                <ArrowLeft className="w-8 h-8 text-primary-foreground" />
+              </button>
+            </div>
+
             {DIMENSIONS.map((dim) => {
               const isSelected = selectedDimension === dim.key;
               
@@ -78,9 +97,9 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
                         <span className={`text-6xl transition-transform duration-300 ${isSelected ? 'scale-110' : 'group-hover:scale-110'}`}>
                           {dim.emoji}
                         </span>
-                        <span className="font-semibold text-xl text-foreground">{dim.label}</span>
+                        <span className="font-semibold text-xl text-slate-900">{dim.label}</span>
                         {!dim.available && (
-                          <span className="text-sm text-muted-foreground">(בקרוב)</span>
+                          <span className="text-sm text-slate-500">(בקרוב)</span>
                         )}
                       </div>
                       
@@ -102,29 +121,12 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
                       />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom" className="max-w-[220px] text-center">
+                  <TooltipContent side="bottom" className="max-w-[220px] text-center bg-slate-800 text-white border-slate-600">
                     <Disclaimer />
                   </TooltipContent>
                 </Tooltip>
               );
             })}
-            
-            {/* Arrow CTA - appears when dimension is selected */}
-            <div 
-              className={`transition-all duration-300 ${
-                selectedDimension ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'
-              }`}
-            >
-              <button
-                onClick={handleProceed}
-                className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110 hover:bg-primary/90 active:scale-95"
-                style={{
-                  boxShadow: '0 8px 24px hsl(170 80% 45% / 0.4)',
-                }}
-              >
-                <ArrowLeft className="w-8 h-8 text-primary-foreground" />
-              </button>
-            </div>
           </div>
         </div>
 

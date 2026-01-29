@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import type { GameState, Phase, AvatarGender, Dimension, HollandCode, PickRecord, UndoEvent, Mission, LeadFormData, CountsFinal, MissionOption } from '@/types/identity';
-import { getStudioQuests, getStudioTie } from '@/lib/csvParser';
+import { getStudioQuests, getStudioTie } from '@/lib/jsonDataLoader';
 
 const initialState: GameState = {
   phase: 'dimension',
@@ -18,7 +18,7 @@ const initialState: GameState = {
 export function useGameState() {
   const [state, setState] = useState<GameState>(initialState);
 
-  // Load missions from CSV parser
+  // Load missions from JSON loader
   const mainMissions = useMemo(() => getStudioQuests(), []);
   const tieMissions = useMemo(() => getStudioTie(), []);
 

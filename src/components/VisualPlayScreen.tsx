@@ -1,7 +1,8 @@
 import { useMemo, useState, useRef, useCallback, useEffect } from 'react';
 import type { Mission, HollandCode, AvatarGender, PickRecord, MissionOption, AnchorRef } from '@/types/identity';
 import { getToolImage, getBackgroundForMission, getAvatarImage, getBackgroundKey } from '@/lib/assetUtils';
-import { getAnchorPosition } from '@/lib/csvParser';
+import { getAnchorPosition } from '@/lib/jsonDataLoader';
+import { SpeechBubble } from './SpeechBubble';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Info, ArrowLeft, Hand } from 'lucide-react';
 import { UndoConfirmDialog } from './UndoConfirmDialog';
@@ -32,7 +33,6 @@ export function VisualPlayScreen({
   const [showUndoDialog, setShowUndoDialog] = useState(false);
   const [draggingTool, setDraggingTool] = useState<'a' | 'b' | null>(null);
   const [dragPosition, setDragPosition] = useState<{ x: number; y: number } | null>(null);
-  const [showDragIndicator, setShowDragIndicator] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
   
   const progress = ((currentIndex) / totalMissions) * 100;
@@ -44,6 +44,9 @@ export function VisualPlayScreen({
   const avatarImage = getAvatarImage(avatarGender, 'idle');
   const toolAImage = getToolImage(optionA.asset);
   const toolBImage = getToolImage(optionB.asset);
+
+  // Check if task_heb is missing
+  const taskText = mission.task_heb || `MISSING: task_heb`;
 
   // Get target anchor for currently selected tool
   const getTargetAnchor = useCallback((variant: 'a' | 'b') => {
@@ -66,7 +69,6 @@ export function VisualPlayScreen({
   const handleDragStart = useCallback((variant: 'a' | 'b', e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
     setDraggingTool(variant);
-    setShowDragIndicator(true);
     
     const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
     const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
@@ -85,7 +87,6 @@ export function VisualPlayScreen({
     if (!draggingTool || !stageRef.current) {
       setDraggingTool(null);
       setDragPosition(null);
-      setShowDragIndicator(false);
       return;
     }
 
@@ -104,7 +105,6 @@ export function VisualPlayScreen({
     
     setDraggingTool(null);
     setDragPosition(null);
-    setShowDragIndicator(false);
   }, [draggingTool, mission.mission_id, optionA, optionB, onSelect]);
 
   // Attach global drag listeners
@@ -257,38 +257,9 @@ export function VisualPlayScreen({
           maxWidth: '480px',
         }}
       >
-        <div 
-          className="relative rounded-2xl p-5"
-          style={{
-            background: 'rgba(255, 252, 245, 0.95)',
-            boxShadow: '0 6px 24px rgba(0,0,0,0.2)',
-          }}
-        >
-          {/* Bubble tail pointing toward avatar (right side) */}
-          <div 
-            className="absolute"
-            style={{
-              right: '-14px',
-              bottom: '24px',
-              width: 0,
-              height: 0,
-              borderTop: '10px solid transparent',
-              borderBottom: '10px solid transparent',
-              borderLeft: '14px solid rgba(255, 252, 245, 0.95)',
-            }}
-          />
-          
-          <p 
-            className="text-foreground leading-relaxed font-medium"
-            style={{ 
-              fontFamily: "'Heebo', sans-serif",
-              fontSize: '17px',
-              lineHeight: '1.5',
-            }}
-          >
-            {mission.task_heb}
-          </p>
-        </div>
+        <SpeechBubble tailDirection="right">
+          <p className="font-medium">{taskText}</p>
+        </SpeechBubble>
       </div>
 
       {/* Tool tray - clean glass panel at bottom */}
@@ -296,10 +267,10 @@ export function VisualPlayScreen({
         <div 
           className="mx-4 mb-4 rounded-2xl px-6 py-4"
           style={{
-            background: 'rgba(255, 255, 255, 0.15)',
+            background: 'rgba(30, 35, 45, 0.65)',
             backdropFilter: 'blur(16px)',
-            boxShadow: '0 -2px 20px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.2)',
-            borderTop: '1px solid rgba(255,255,255,0.25)',
+            boxShadow: '0 -2px 20px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1)',
+            borderTop: '1px solid rgba(255,255,255,0.15)',
           }}
         >
           {/* Progress capsule - above tools */}
@@ -308,8 +279,8 @@ export function VisualPlayScreen({
               className="h-3 rounded-full overflow-hidden"
               style={{
                 width: '45%',
-                background: 'rgba(0,0,0,0.2)',
-                boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.15)',
+                background: 'rgba(0,0,0,0.3)',
+                boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)',
               }}
             >
               <div 
@@ -335,7 +306,7 @@ export function VisualPlayScreen({
           <div className="flex gap-6 justify-center items-center">
             <DraggableToolTile
               image={toolAImage}
-              tooltip={optionA.tooltip_heb}
+              tooltip={optionA.tooltip_heb || `MISSING: option_a_tooltip_heb`}
               onClick={() => onSelect(mission.mission_id, 'a', optionA.holland_code as HollandCode, optionA)}
               onDragStart={(e) => handleDragStart('a', e)}
               variant="a"
@@ -343,7 +314,7 @@ export function VisualPlayScreen({
             />
             <DraggableToolTile
               image={toolBImage}
-              tooltip={optionB.tooltip_heb}
+              tooltip={optionB.tooltip_heb || `MISSING: option_b_tooltip_heb`}
               onClick={() => onSelect(mission.mission_id, 'b', optionB.holland_code as HollandCode, optionB)}
               onDragStart={(e) => handleDragStart('b', e)}
               variant="b"
@@ -415,6 +386,10 @@ function DraggableToolTile({ image, tooltip, onClick, onDragStart, variant, isDr
           side="top" 
           className="w-52 text-sm text-center p-3 bg-slate-800 text-white border-slate-600"
           onClick={(e) => e.stopPropagation()}
+          style={{
+            fontFamily: "'Heebo', sans-serif",
+            direction: 'rtl',
+          }}
         >
           {tooltip}
         </PopoverContent>
@@ -429,7 +404,7 @@ function DraggableToolTile({ image, tooltip, onClick, onDragStart, variant, isDr
         style={{
           width: '100px',
           height: '100px',
-          background: 'rgba(255, 252, 245, 0.9)',
+          background: 'rgba(255, 252, 245, 0.92)',
           boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
         }}
       >
