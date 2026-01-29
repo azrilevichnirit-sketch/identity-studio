@@ -982,7 +982,7 @@
   }
 
   /* ---- Avatar container: transparent, no card styling ---- */
-  .welcomeAvatar {
+  .welcomeScreen .welcomeAvatar {
     background: transparent !important;
     box-shadow: none !important;
     border-radius: 0 !important;
