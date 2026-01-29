@@ -981,12 +981,18 @@
     content: none !important;
   }
 
-  /* ---- Strip any panel around avatar ---- */
-  .welcomeScreen .welcomeHero > *:has(.welcomeAvatar){
+  /* ---- Avatar container: transparent, no card styling ---- */
+  .welcomeAvatar {
     background: transparent !important;
     box-shadow: none !important;
     border-radius: 0 !important;
     padding: 0 !important;
+  }
+
+  /* ---- Ensure only the real bubble has white background ---- */
+  .welcomeBubble {
+    background: #fff !important;
+    border-radius: 14px !important;
   }
 }
 
