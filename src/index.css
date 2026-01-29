@@ -926,7 +926,7 @@
     position: absolute !important;
     right: -10px !important;
     bottom: 0 !important;
-    width: clamp(180px, 42vw, 260px) !important;
+    width: clamp(220px, 50vw, 300px) !important;
     z-index: 1200 !important;
     pointer-events: none !important;
     top: auto !important;
