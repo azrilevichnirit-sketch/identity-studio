@@ -326,14 +326,14 @@ export function VisualPlayScreen({
         />
       </div>
 
-      {/* Avatar - anchored bottom-right, responsive sizing */}
+      {/* Avatar - anchored bottom-right, stable size on mobile */}
       {avatarImage && (
         <div 
-          className="absolute z-20 animate-fade-in"
+          className="absolute z-30 animate-fade-in"
           style={{
-            right: 'clamp(12px, 3vw, 60px)',
-            bottom: 'clamp(8px, 2vh, 30px)',
-            height: 'clamp(160px, 30vh, 340px)',
+            right: '16px',
+            bottom: 'calc(env(safe-area-inset-bottom, 0px) + 12px)',
+            height: 'clamp(220px, 34vh, 320px)',
             filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))',
           }}
         >
@@ -345,51 +345,58 @@ export function VisualPlayScreen({
         </div>
       )}
 
-      {/* Speech bubble - responsive positioning, won't cover text */}
+      {/* Speech bubble - positioned above dock, left of avatar on mobile */}
       <div 
-        className="absolute z-15 animate-pop-in"
+        className="absolute z-40 animate-pop-in"
         style={{
-          right: 'clamp(100px, 28vw, 320px)',
-          bottom: 'clamp(60px, 12vh, 140px)',
-          maxWidth: 'min(380px, 50vw)',
-          minWidth: 'min(200px, 45vw)',
+          right: 'calc(16px + clamp(220px, 34vh, 320px) * 0.45)',
+          bottom: 'calc(env(safe-area-inset-bottom, 0px) + 12px + clamp(120px, 18vh, 165px) + 14px)',
+          maxWidth: 'min(74vw, 360px)',
+          minWidth: '200px',
+          maxHeight: '26vh',
         }}
       >
         <SpeechBubble tailDirection="right">
-          <p 
-            className="font-medium text-sm md:text-base lg:text-lg pr-4 md:pr-6"
-            style={{ lineHeight: 1.5 }}
+          <div 
+            className="overflow-y-auto"
+            style={{ maxHeight: 'calc(26vh - 32px)' }}
           >
-            {taskText}
-          </p>
+            <p 
+              className="font-medium text-sm md:text-base lg:text-lg pr-4 md:pr-6"
+              style={{ lineHeight: 1.5 }}
+            >
+              {taskText}
+            </p>
+          </div>
         </SpeechBubble>
       </div>
 
-      {/* Floating tool panel - LEFT side, doesn't span full width */}
+      {/* Floating tool panel - LEFT side, constrained size, never overlaps bubble */}
       <div 
-        className="absolute z-25"
+        className="absolute z-20"
         style={{
-          bottom: 'max(env(safe-area-inset-bottom, 16px), 20px)',
-          left: 'max(env(safe-area-inset-left, 12px), 16px)',
+          bottom: 'calc(env(safe-area-inset-bottom, 0px) + 12px)',
+          left: '16px',
+          width: 'clamp(220px, 44vw, 320px)',
+          height: 'clamp(120px, 18vh, 165px)',
         }}
       >
         <div 
-          className="rounded-2xl px-3 py-2.5 md:px-5 md:py-4"
+          className="rounded-2xl px-3 py-2.5 md:px-5 md:py-4 h-full flex flex-col"
           style={{
             background: 'rgba(15, 20, 30, 0.65)',
             backdropFilter: 'blur(12px)',
             boxShadow: '0 6px 24px rgba(0,0,0,0.25)',
             border: '1px solid rgba(255,255,255,0.08)',
-            maxWidth: 'min(280px, 50vw)',
           }}
         >
           {/* Progress tank */}
-          <div className="flex justify-center mb-3">
+          <div className="flex justify-center mb-2">
             <ProgressTank value={(currentIndex + 1) / totalMissions} />
           </div>
 
-          {/* Tool tiles with drag hint */}
-          <div className="flex gap-4 md:gap-5 justify-center items-center relative">
+          {/* Tool tiles with drag hint - flex-1 to fill remaining space */}
+          <div className="flex-1 flex gap-3 md:gap-5 justify-center items-center relative">
             <DraggableToolTile
               image={toolAImage}
               onClick={() => onSelect(mission.mission_id, 'a', optionA.holland_code as HollandCode, optionA)}
@@ -411,7 +418,7 @@ export function VisualPlayScreen({
             
             {/* Animated drag hint - shows before first drop ever, when not dragging */}
             {!hasDraggedOnce && !draggingTool && (
-              <div className="absolute -top-14 left-1/2 -translate-x-1/2 flex flex-col items-center">
+              <div className="absolute -top-10 left-1/2 -translate-x-1/2 flex flex-col items-center">
                 <DragHint />
               </div>
             )}
