@@ -294,9 +294,9 @@ export function VisualPlayScreen({
             border: '1px solid rgba(255,255,255,0.1)',
           }}
         >
-          {/* Progress tank with bubbles */}
+          {/* Progress tank */}
           <div className="flex justify-center mb-3">
-            <ProgressTank current={currentIndex + 1} total={totalMissions} />
+            <ProgressTank value={(currentIndex + 1) / totalMissions} />
           </div>
 
           {/* Tool tiles with drag hint */}
