@@ -893,13 +893,15 @@
   .welcomeScreen .welcomeHeroMobile .heroBubble { order: 1 !important; z-index: 85 !important; flex: 0 1 auto !important; min-width: 0 !important; }
   .welcomeScreen .welcomeHeroMobile .heroAvatar {
     order: 2 !important;
-    z-index: 1200 !important;
+    z-index: 2000 !important;
     pointer-events: none !important;
     position: fixed !important;
-    right: max(env(safe-area-inset-right, 0px), 12px) !important;
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 60px) !important;
-    width: 140px !important; /* base size; scaled below to 250% */
-    transform: scale(2.5) !important;
+    /* NOTE: this selector is more specific than `.welcomeScreen .welcomeAvatar`,
+       so it MUST be the source of truth for moving the avatar on mobile. */
+    right: -40px !important; /* move further right into the marked area */
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 72px) !important;
+    width: 160px !important;
+    transform: scale(2) !important;
     transform-origin: bottom right !important;
   }
 
