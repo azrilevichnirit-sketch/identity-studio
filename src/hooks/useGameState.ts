@@ -1,7 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
-import type { GameState, Phase, AvatarGender, Dimension, HollandCode, PickRecord, UndoEvent, Mission, LeadFormData, CountsFinal } from '@/types/identity';
-import missionsMain from '@/data/missions_studio_main.json';
-import missionsTie from '@/data/missions_studio_tie.json';
+import type { GameState, Phase, AvatarGender, Dimension, HollandCode, PickRecord, UndoEvent, Mission, LeadFormData, CountsFinal, MissionOption } from '@/types/identity';
+import { getStudioQuests, getStudioTie } from '@/lib/csvParser';
 
 const initialState: GameState = {
   phase: 'dimension',
@@ -19,8 +18,9 @@ const initialState: GameState = {
 export function useGameState() {
   const [state, setState] = useState<GameState>(initialState);
 
-  const mainMissions = missionsMain as Mission[];
-  const tieMissions = missionsTie as Mission[];
+  // Load missions from CSV parser
+  const mainMissions = useMemo(() => getStudioQuests(), []);
+  const tieMissions = useMemo(() => getStudioTie(), []);
 
   const countsFinal = useMemo<CountsFinal>(() => {
     const counts: CountsFinal = { r: 0, i: 0, a: 0, s: 0, e: 0, c: 0 };
@@ -54,9 +54,20 @@ export function useGameState() {
     setState((prev) => ({ ...prev, avatarGender }));
   }, []);
 
-  const selectOption = useCallback((missionId: string, key: 'a' | 'b', hollandCode: HollandCode) => {
+  const selectOption = useCallback((missionId: string, key: 'a' | 'b', hollandCode: HollandCode, option?: MissionOption) => {
     setState((prev) => {
-      const pick: PickRecord = { missionId, key, hollandCode };
+      const pick: PickRecord = { 
+        missionId, 
+        key, 
+        hollandCode,
+        // Include placement info from option if provided
+        placementMode: option?.placement_mode,
+        anchorRef: option?.anchor_ref,
+        offsetX: option?.offset_x,
+        offsetY: option?.offset_y,
+        scale: option?.scale,
+        persist: option?.persist,
+      };
       const newFirst = { ...prev.firstPicksByMissionId };
       const newFinal = { ...prev.finalPicksByMissionId };
 
@@ -142,12 +153,16 @@ export function useGameState() {
   const findTieMission = useCallback((tiedCodes: HollandCode[]): Mission | null => {
     if (tiedCodes.length !== 2) return null;
     
-    const pairKey1 = `${tiedCodes[0]}_${tiedCodes[1]}`;
-    const pairKey2 = `${tiedCodes[1]}_${tiedCodes[0]}`;
+    // Tie missions use pair_key like "ir", "ar", etc.
+    const code1 = tiedCodes[0];
+    const code2 = tiedCodes[1];
     
-    const mission = tieMissions.find(
-      (m) => m.pair_key === pairKey1 || m.pair_key === pairKey2
-    );
+    const mission = tieMissions.find((m) => {
+      const pairKey = m.pair_key?.toLowerCase() || '';
+      return (
+        (pairKey.includes(code1) && pairKey.includes(code2))
+      );
+    });
     
     return mission || null;
   }, [tieMissions]);

@@ -9,7 +9,7 @@ import { VisualPlayScreen } from '@/components/VisualPlayScreen';
 import { LeadForm } from '@/components/LeadForm';
 import { SummaryScreen } from '@/components/SummaryScreen';
 import { DebugPanel } from '@/components/DebugPanel';
-import type { Dimension } from '@/types/identity';
+import type { Dimension, HollandCode, MissionOption } from '@/types/identity';
 
 const Index = () => {
   const {
@@ -77,6 +77,11 @@ const Index = () => {
     setPhase('summary');
   };
 
+  // Wrapper for selectOption that includes the option data
+  const handleSelect = (missionId: string, key: 'a' | 'b', hollandCode: HollandCode, option?: MissionOption) => {
+    selectOption(missionId, key, hollandCode, option);
+  };
+
   // Convert finalPicksByMissionId to array for placed props display
   const placedProps = useMemo(() => {
     return Object.values(state.finalPicksByMissionId);
@@ -110,7 +115,7 @@ const Index = () => {
             canUndo={canUndo}
             avatarGender={state.avatarGender}
             placedProps={placedProps}
-            onSelect={selectOption}
+            onSelect={handleSelect}
             onUndo={undo}
           />
         )}
@@ -124,7 +129,7 @@ const Index = () => {
             canUndo={canUndo}
             avatarGender={state.avatarGender}
             placedProps={placedProps}
-            onSelect={selectOption}
+            onSelect={handleSelect}
             onUndo={undo}
           />
         )}

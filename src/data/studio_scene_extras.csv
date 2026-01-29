@@ -1,0 +1,8 @@
+﻿world,phase,order,mission_id,trigger_when,trigger_tool_ids,spawn_asset_key,spawn_count,placement_mode,anchor_ref,note,despawn_mode,despawn_value
+studio,main,1,studio_01,after,studio_01_a,studio_extra_asset_07,5,wall,wall_back,the asset duplicate,until_mission_order,02
+studio,main,2,studio_02,before,studio_02_b;studio_02_a,studio_extra_asset_05,1,wall,wall_left,the asset on one of the inner rooms wall,keep,end
+studio,main,3,studio_02,before,studio_02_b;studio_02_a,studio_extra_asset_02,5,wall,wall_back,the asset on the wall in the main studio area,keep,end
+studio,main,4,studio_02,before,studio_02_b;studio_02_a,studio_extra_asset_03,5,wall,wall_back,the asset on the wall in the main studio area,keep,end
+studio,main,5,studio_02,before,studio_02_b;studio_02_a,studio_extra_asset_02,5,floor_near_wall,floor,on the graound next to the walls,remove_after_mission_id,studio_04
+studio,main,6,studio_02,before,studio_02_b;studio_02_a,studio_extra_asset_03,5,floor_near_wall,floor,on the graound next to the walls,remove_after_mission_id,studio_04
+studio,main,7,studio_04,after,studio_04_a,studio_extra_asset_04,5,ceiling,ceiling,on the main sciling,keep,end

@@ -1,5 +1,6 @@
 import type { GameState, CountsFinal, HollandCode } from '@/types/identity';
 import studioEntranceBg from '@/assets/backgrounds/studio_in_entrance_view_bg.webp';
+import { Disclaimer } from './Disclaimer';
 
 interface SummaryScreenProps {
   state: GameState;
@@ -108,6 +109,11 @@ export function SummaryScreen({ state, countsFinal, leaders }: SummaryScreenProp
             {JSON.stringify(exportData, null, 2)}
           </pre>
         </div>
+      </div>
+
+      {/* Disclaimer in bottom corner */}
+      <div className="absolute bottom-4 left-4 z-20">
+        <Disclaimer />
       </div>
     </div>
   );
