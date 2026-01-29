@@ -1,6 +1,6 @@
 import { useMemo, useState, useRef, useCallback, useEffect } from 'react';
 import type { Mission, HollandCode, AvatarGender, PickRecord, MissionOption, AnchorRef } from '@/types/identity';
-import { getToolImage, getBackgroundForMission, getAvatarImage, getBackgroundKey } from '@/lib/assetUtils';
+import { getToolImage, getBackgroundForMission, getAvatarImage, getBackgroundKey, getBackgroundByName } from '@/lib/assetUtils';
 import { getAnchorPosition } from '@/lib/jsonDataLoader';
 import { SpeechBubble } from './SpeechBubble';
 import { Info, Hand, X } from 'lucide-react';
@@ -66,11 +66,37 @@ export function VisualPlayScreen({
 
   const taskText = mission.task_heb || `MISSING: task_heb`;
 
-  // Get target anchor for currently selected tool
+  // Get the target background for a tool option (where it should be placed)
+  const getTargetBgForOption = useCallback((option: MissionOption) => {
+    // The tool's target background is defined by next_bg_override
+    const targetBgKey = option.next_bg_override || currentBgKey;
+    const targetBgImage = getBackgroundByName(targetBgKey) || currentBg;
+    return { key: targetBgKey, image: targetBgImage };
+  }, [currentBgKey, currentBg]);
+
+  // Determine which background to show during drag (preview the target background)
+  const dragPreviewBg = useMemo(() => {
+    if (!draggingTool) return null;
+    const option = draggingTool === 'a' ? optionA : optionB;
+    const target = getTargetBgForOption(option);
+    // Only switch if different from current
+    if (target.key !== currentBgKey) {
+      return target;
+    }
+    return null;
+  }, [draggingTool, optionA, optionB, getTargetBgForOption, currentBgKey]);
+
+  // The effective background to display (preview during drag, or current)
+  const displayBg = dragPreviewBg?.image || currentBg;
+  const displayBgKey = dragPreviewBg?.key || currentBgKey;
+
+  // Get target anchor for currently selected tool - use TARGET background's anchor map
   const getTargetAnchor = useCallback((variant: 'a' | 'b') => {
     const option = variant === 'a' ? optionA : optionB;
     const anchorRef = option.anchor_ref as AnchorRef;
-    return getAnchorPosition(currentBgKey, anchorRef);
+    // Use the target background key for anchor lookup
+    const targetBgKey = option.next_bg_override || currentBgKey;
+    return getAnchorPosition(targetBgKey, anchorRef);
   }, [optionA, optionB, currentBgKey]);
 
   const handleUndoConfirm = () => {
@@ -163,14 +189,13 @@ export function VisualPlayScreen({
         height: '100vh',
       }}
     >
-      {/* Background layer - always fills viewport with cover */}
+      {/* Background layer - shows drag preview or current bg with smooth crossfade */}
       <div 
-        className="absolute inset-0 animate-bg-crossfade"
-        key={currentBg}
+        className="absolute inset-0 transition-opacity duration-300"
         style={{ 
           width: '100vw',
           height: '100vh',
-          backgroundImage: `url(${currentBg})`,
+          backgroundImage: `url(${displayBg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
@@ -186,10 +211,10 @@ export function VisualPlayScreen({
         }}
       />
 
-      {/* Target zone indicator - shows when dragging */}
+      {/* Target zone indicator - shows when dragging, at correct anchor on TARGET background */}
       {draggingTool && targetPosition && (
         <div 
-          className="absolute pointer-events-none z-15"
+          className="absolute pointer-events-none z-15 animate-fade-in"
           style={{
             left: `${targetPosition.x}%`,
             top: `${targetPosition.y}%`,
@@ -198,31 +223,33 @@ export function VisualPlayScreen({
         >
           {/* Pulsing glow ring */}
           <div 
-            className="w-20 h-20 md:w-28 md:h-28 rounded-full animate-pulse"
+            className="w-24 h-24 md:w-32 md:h-32 rounded-full"
             style={{
-              border: '2px solid hsl(170 80% 50% / 0.8)',
-              boxShadow: '0 0 20px hsl(170 80% 50% / 0.4), inset 0 0 15px hsl(170 80% 50% / 0.1)',
-              background: 'radial-gradient(circle, hsl(170 80% 50% / 0.15) 0%, transparent 70%)',
+              border: '3px solid hsl(170 80% 50% / 0.9)',
+              boxShadow: '0 0 30px hsl(170 80% 50% / 0.5), inset 0 0 20px hsl(170 80% 50% / 0.15)',
+              background: 'radial-gradient(circle, hsl(170 80% 50% / 0.2) 0%, transparent 70%)',
+              animation: 'pulse 1.5s ease-in-out infinite',
             }}
           />
           {/* Downward arrow */}
           <svg 
-            className="absolute left-1/2 -top-10 -translate-x-1/2 animate-bounce"
-            width="28" height="28" viewBox="0 0 24 24" 
-            fill="none" stroke="hsl(170, 80%, 50%)" strokeWidth="2.5"
+            className="absolute left-1/2 -top-12 -translate-x-1/2 animate-bounce"
+            width="32" height="32" viewBox="0 0 24 24" 
+            fill="none" stroke="hsl(170, 80%, 50%)" strokeWidth="3"
           >
             <path d="M12 5v14M5 12l7 7 7-7" />
           </svg>
         </div>
       )}
 
-      {/* Placed props layer */}
+      {/* Placed props layer - use displayBgKey for current view's anchor positions */}
       {persistedProps.map((prop, idx) => {
         // Use assetName from pick record if available, fallback to constructed name
         const assetName = prop.assetName || `${prop.missionId.replace('studio_', 'studio_')}_${prop.key}`;
         const toolImg = getToolImage(assetName);
+        // Use displayBgKey to get anchors for the currently shown background
         const anchorPos = prop.anchorRef 
-          ? getAnchorPosition(currentBgKey, prop.anchorRef as AnchorRef)
+          ? getAnchorPosition(displayBgKey, prop.anchorRef as AnchorRef)
           : null;
         
         if (!toolImg || !anchorPos) return null;
