@@ -35,24 +35,11 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
       {/* MOBILE ONLY: Legacy block */}
       <div className="welcomeLegacyBlock welcomeHeroMobile max-[820px]:block min-[821px]:hidden">
         {/* Mobile container: bubble left, avatar overlapping from front-right */}
-        <div 
-          className="heroRow welcomeHero max-[820px]:fixed max-[820px]:z-40 max-[820px]:isolate max-[820px]:bg-transparent max-[820px]:shadow-none max-[820px]:p-0 max-[820px]:border-0"
-          style={{
-            left: "16px",
-            right: "16px",
-            bottom: "100px",
-          }}
-        >
+        <div className="heroRow welcomeHero max-[820px]:z-40 max-[820px]:isolate max-[820px]:bg-transparent max-[820px]:shadow-none max-[820px]:p-0 max-[820px]:border-0">
           {/* Bubble: fully visible on left side */}
-          <div 
-            className="heroBubble welcomeBubble animate-scale-in intro-bubble max-[820px]:relative max-[820px]:z-10"
-            style={{
-              width: "60%",
-              maxWidth: "60%",
-            }}
-          >
+          <div className="heroBubble welcomeBubble animate-scale-in max-[820px]:relative max-[820px]:z-10">
             <SpeechBubble tailDirection="right">
-              <div className="space-y-1 pr-2">
+              <div className="space-y-1 pr-2 max-[820px]:pr-28">
                 <p className="font-semibold text-sm">היי! איזה כיף להכיר אותך.</p>
                 <p className="text-xs leading-snug">אני {avatarName}, ואני איתך לאורך כל המסע הזה.</p>
                 <p className="text-xs leading-snug">
@@ -64,16 +51,10 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
             </SpeechBubble>
           </div>
 
-          {/* Avatar: VERY LARGE, standing on floor above Debug button */}
+          {/* Avatar: (mobile sizing/position controlled in CSS) */}
           {avatarImage && (
             <div
-              className="heroAvatar welcomeAvatar animate-fade-in intro-avatar max-[820px]:fixed max-[820px]:z-50 max-[820px]:pointer-events-none"
-              style={{
-                bottom: "60px",
-                right: "0",
-                width: "85vw",
-                filter: "drop-shadow(0 10px 20px rgba(0,0,0,0.6))",
-              }}
+              className="heroAvatar welcomeAvatar animate-fade-in max-[820px]:z-50 max-[820px]:pointer-events-none"
             >
               <img
                 src={avatarImage}
