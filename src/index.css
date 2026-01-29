@@ -924,9 +924,9 @@
   /* ---- Avatar: large, overlapping bubble significantly ---- */
   .welcomeScreen .welcomeAvatar{
     position: absolute !important;
-    right: -10px !important;
+    right: -20px !important;
     bottom: 0 !important;
-    width: clamp(220px, 50vw, 300px) !important;
+    width: clamp(280px, 65vw, 380px) !important;
     z-index: 1200 !important;
     pointer-events: none !important;
     top: auto !important;
