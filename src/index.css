@@ -864,10 +864,37 @@
     height: auto;
     display: block;
   }
+
+
+  /* Mobile hero layout for Welcome screen */
+  .welcomeScreen .welcomeHeroDesktop { display: none !important; }
+  .welcomeScreen .welcomeHeroMobile  { display: block !important; }
+
+  .welcomeScreen .welcomeHeroMobile .heroRow{
+    position: fixed !important;
+    left: 12px !important;
+    right: 12px !important;
+    bottom: calc(96px + env(safe-area-inset-bottom)) !important;
+    display: flex !important;
+    align-items: flex-end !important;
+    justify-content: flex-end !important;
+    gap: 12px !important;
+    direction: rtl !important;
+    z-index: 80 !important;
+    max-width: 100% !important;
+  }
+
+  .welcomeScreen .welcomeHeroMobile .heroAvatar { order: 1 !important; z-index: 90 !important; width: clamp(110px, 22vw, 150px) !important; pointer-events: none !important; }
+  .welcomeScreen .welcomeHeroMobile .heroBubble { order: 2 !important; z-index: 85 !important; flex: 1 1 auto !important; min-width: 0 !important; }
+
+  .welcomeScreen .welcomeHeroMobile .heroAvatar img{ width:100% !important; height:auto !important; display:block !important; }
 }
 
 /* Welcome screen desktop layout */
 @media (min-width: 821px) {
+  .welcomeScreen .welcomeHeroMobile { display: none !important; }
+  .welcomeScreen .welcomeHeroDesktop { display: flex !important; }
+  
   .welcomeScreen .dialogRow{
     position: absolute !important;
     right: clamp(24px, 3vw, 48px) !important;
