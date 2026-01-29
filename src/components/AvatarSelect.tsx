@@ -14,10 +14,12 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
     <div 
       className="absolute inset-0 flex flex-col items-center justify-center"
       style={{
-        // Show the Studio background to reflect chosen world
+        width: '100vw',
+        height: '100vh',
         backgroundImage: `url(${studioEntryBg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center bottom',
+        backgroundRepeat: 'no-repeat',
         filter: 'saturate(1.18) contrast(1.08)',
       }}
     >

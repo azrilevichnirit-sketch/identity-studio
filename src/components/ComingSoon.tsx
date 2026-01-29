@@ -10,9 +10,12 @@ export function ComingSoon({ onBack }: ComingSoonProps) {
     <div 
       className="absolute inset-0 flex flex-col items-center justify-center"
       style={{
+        width: '100vw',
+        height: '100vh',
         backgroundImage: `url(${studioEntranceBg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center bottom',
+        backgroundRepeat: 'no-repeat',
         filter: 'saturate(1.1) contrast(1.05)',
       }}
     >

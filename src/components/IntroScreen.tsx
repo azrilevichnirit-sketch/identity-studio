@@ -22,8 +22,10 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
 
   return (
     <div 
-      className="absolute inset-0 w-full h-full"
+      className="absolute inset-0"
       style={{
+        width: '100vw',
+        height: '100vh',
         backgroundImage: `url(${studioEntryBg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
