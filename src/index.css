@@ -1033,10 +1033,10 @@
 
   .welcomeScreen .welcomeAvatar {
     position: fixed !important;
-    right: max(env(safe-area-inset-right, 0px), 16px) !important;
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 56px) !important; /* Debug toggle is bottom-4 (~16px) */
-    width: 160px !important; /* base size */
-    transform: scale(2.5) !important; /* +250% */
+    right: 0 !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 72px) !important;
+    width: 160px !important;
+    transform: scale(2) !important; /* 250% - 20% = ~200% */
     transform-origin: bottom right !important;
     z-index: 2000 !important;
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6)) !important;
