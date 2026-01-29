@@ -331,9 +331,9 @@ export function VisualPlayScreen({
         <div 
           className="absolute z-30 animate-fade-in"
           style={{
-            right: '16px',
+            right: '10px',
             bottom: 'calc(env(safe-area-inset-bottom, 0px) + 12px)',
-            height: 'clamp(220px, 34vh, 320px)',
+            height: 'clamp(240px, 36vh, 340px)',
             filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))',
           }}
         >
