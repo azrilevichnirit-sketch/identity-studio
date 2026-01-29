@@ -4,54 +4,57 @@ interface GameStageProps {
   children: React.ReactNode;
 }
 
-const STAGE_WIDTH = 1280;
-const STAGE_HEIGHT = 720;
-const ASPECT_RATIO = STAGE_WIDTH / STAGE_HEIGHT;
+// Responsive stage - portrait-first on mobile, landscape on desktop
+const DESKTOP_WIDTH = 1280;
+const DESKTOP_HEIGHT = 720;
+const MOBILE_BREAKPOINT = 768;
 
 export function GameStage({ children }: GameStageProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(1);
+  const [dimensions, setDimensions] = useState({ width: '100%', height: '100%', scale: 1 });
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    // Try to lock orientation to landscape (if supported)
-    const lockOrientation = async () => {
-      try {
-        const orientation = screen.orientation as ScreenOrientation & { lock?: (orientation: string) => Promise<void> };
-        if (orientation && typeof orientation.lock === 'function') {
-          await orientation.lock('landscape');
-        }
-      } catch {
-        // Orientation lock not supported or denied - that's fine
-      }
-    };
-    lockOrientation();
+    const calculateLayout = () => {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const mobile = vw <= MOBILE_BREAKPOINT;
+      setIsMobile(mobile);
 
-    const calculateScale = () => {
-      if (!containerRef.current) return;
-      
-      const containerWidth = window.innerWidth;
-      const containerHeight = window.innerHeight;
-      const containerAspect = containerWidth / containerHeight;
-
-      let newScale: number;
-      if (containerAspect > ASPECT_RATIO) {
-        // Container is wider than stage - fit to height
-        newScale = containerHeight / STAGE_HEIGHT;
+      if (mobile) {
+        // Mobile: full viewport, no scaling, portrait-first
+        setDimensions({
+          width: '100%',
+          height: '100%',
+          scale: 1,
+        });
       } else {
-        // Container is taller than stage - fit to width
-        newScale = containerWidth / STAGE_WIDTH;
+        // Desktop: scale the 16:9 stage to fit
+        const aspectRatio = DESKTOP_WIDTH / DESKTOP_HEIGHT;
+        const containerAspect = vw / vh;
+        
+        let scale: number;
+        if (containerAspect > aspectRatio) {
+          scale = vh / DESKTOP_HEIGHT;
+        } else {
+          scale = vw / DESKTOP_WIDTH;
+        }
+        
+        setDimensions({
+          width: `${DESKTOP_WIDTH}px`,
+          height: `${DESKTOP_HEIGHT}px`,
+          scale: Math.min(scale, 1.2), // Cap scaling to avoid extreme stretch
+        });
       }
-      
-      setScale(newScale);
     };
 
-    calculateScale();
-    window.addEventListener('resize', calculateScale);
-    window.addEventListener('orientationchange', calculateScale);
+    calculateLayout();
+    window.addEventListener('resize', calculateLayout);
+    window.addEventListener('orientationchange', calculateLayout);
 
     return () => {
-      window.removeEventListener('resize', calculateScale);
-      window.removeEventListener('orientationchange', calculateScale);
+      window.removeEventListener('resize', calculateLayout);
+      window.removeEventListener('orientationchange', calculateLayout);
     };
   }, []);
 
@@ -59,13 +62,22 @@ export function GameStage({ children }: GameStageProps) {
     <div 
       ref={containerRef}
       className="fixed inset-0 flex items-center justify-center bg-background overflow-hidden"
+      style={{
+        paddingTop: 'env(safe-area-inset-top)',
+        paddingBottom: 'env(safe-area-inset-bottom)',
+        paddingLeft: 'env(safe-area-inset-left)',
+        paddingRight: 'env(safe-area-inset-right)',
+      }}
     >
       <div
         className="relative overflow-hidden"
-        style={{
-          width: STAGE_WIDTH,
-          height: STAGE_HEIGHT,
-          transform: `scale(${scale})`,
+        style={isMobile ? {
+          width: '100%',
+          height: '100%',
+        } : {
+          width: dimensions.width,
+          height: dimensions.height,
+          transform: `scale(${dimensions.scale})`,
           transformOrigin: 'center center',
         }}
       >

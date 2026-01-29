@@ -32,9 +32,8 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
   return (
     <TooltipProvider>
       <div 
-        className="absolute inset-0 flex flex-col items-center justify-center"
+        className="absolute inset-0 flex flex-col items-center justify-center p-4"
         style={{
-          // Neutral abstract gradient - NOT Studio interior
           background: 'linear-gradient(135deg, hsl(220 25% 12%) 0%, hsl(220 20% 18%) 50%, hsl(220 15% 22%) 100%)',
         }}
       >
@@ -48,32 +47,14 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
         />
         
         {/* Content */}
-        <div className="relative z-10 flex flex-col items-center gap-8 animate-fade-in">
+        <div className="relative z-10 flex flex-col items-center gap-6 md:gap-8 animate-fade-in w-full max-w-3xl">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">Identity Engine</h1>
-            <p className="text-xl text-white/90 drop-shadow-md">בחר/י את העולם שלך</p>
+            <h1 className="text-2xl md:text-4xl font-bold text-white mb-2 drop-shadow-lg">Identity Engine</h1>
+            <p className="text-lg md:text-xl text-white/90 drop-shadow-md">בחר/י את העולם שלך</p>
           </div>
           
-          {/* Horizontal dimension cards + arrow CTA */}
-          <div className="flex gap-6 items-center">
-            {/* Left arrow CTA - appears when dimension is selected */}
-            <div 
-              className={`transition-all duration-300 ${
-                selectedDimension ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 pointer-events-none'
-              }`}
-            >
-              <button
-                onClick={handleProceed}
-                className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110 hover:bg-primary/90 active:scale-95"
-                style={{
-                  boxShadow: '0 8px 24px hsl(170 80% 45% / 0.4)',
-                }}
-                aria-label="המשך"
-              >
-                <ArrowLeft className="w-8 h-8 text-primary-foreground" />
-              </button>
-            </div>
-
+          {/* Dimension cards - responsive grid */}
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6">
             {DIMENSIONS.map((dim) => {
               const isSelected = selectedDimension === dim.key;
               
@@ -83,7 +64,7 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
                     <button
                       onClick={() => handleCardClick(dim)}
                       disabled={!dim.available}
-                      className={`group relative w-48 h-56 rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 ${
+                      className={`group relative w-32 h-40 md:w-48 md:h-56 rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 ${
                         isSelected ? 'ring-4 ring-primary scale-105' : ''
                       }`}
                       style={{
@@ -93,13 +74,13 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
                           : '0 8px 32px rgba(0,0,0,0.3)',
                       }}
                     >
-                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-4">
-                        <span className={`text-6xl transition-transform duration-300 ${isSelected ? 'scale-110' : 'group-hover:scale-110'}`}>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 md:gap-4 p-4">
+                        <span className={`text-4xl md:text-6xl transition-transform duration-300 ${isSelected ? 'scale-110' : 'group-hover:scale-110'}`}>
                           {dim.emoji}
                         </span>
-                        <span className="font-semibold text-xl text-slate-900">{dim.label}</span>
+                        <span className="font-semibold text-lg md:text-xl text-slate-900">{dim.label}</span>
                         {!dim.available && (
-                          <span className="text-sm text-slate-500">(בקרוב)</span>
+                          <span className="text-xs md:text-sm text-slate-500">(בקרוב)</span>
                         )}
                       </div>
                       
@@ -130,8 +111,26 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
           </div>
         </div>
 
+        {/* Bottom-left arrow CTA - appears when dimension is selected */}
+        <div 
+          className={`absolute bottom-8 left-8 md:bottom-12 md:left-12 transition-all duration-300 z-20 ${
+            selectedDimension ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
+          }`}
+        >
+          <button
+            onClick={handleProceed}
+            className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-primary flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110 hover:bg-primary/90 active:scale-95"
+            style={{
+              boxShadow: '0 8px 24px hsl(170 80% 45% / 0.4)',
+            }}
+            aria-label="המשך"
+          >
+            <ArrowLeft className="w-7 h-7 md:w-8 md:h-8 text-primary-foreground" />
+          </button>
+        </div>
+
         {/* Disclaimer at bottom */}
-        <div className="absolute bottom-4 left-4 z-20">
+        <div className="absolute bottom-4 right-4 z-20">
           <Disclaimer className="text-white/40" />
         </div>
       </div>
