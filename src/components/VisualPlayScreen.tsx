@@ -33,6 +33,7 @@ export function VisualPlayScreen({
   const [showUndoDialog, setShowUndoDialog] = useState(false);
   const [draggingTool, setDraggingTool] = useState<'a' | 'b' | null>(null);
   const [dragPosition, setDragPosition] = useState<{ x: number; y: number } | null>(null);
+  const [justPlaced, setJustPlaced] = useState<string | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   
   const progress = ((currentIndex) / totalMissions) * 100;
@@ -45,7 +46,6 @@ export function VisualPlayScreen({
   const toolAImage = getToolImage(optionA.asset);
   const toolBImage = getToolImage(optionB.asset);
 
-  // Check if task_heb is missing
   const taskText = mission.task_heb || `MISSING: task_heb`;
 
   // Get target anchor for currently selected tool
@@ -93,13 +93,15 @@ export function VisualPlayScreen({
     const clientX = 'touches' in e ? e.changedTouches?.[0]?.clientX : e.clientX;
     const clientY = 'touches' in e ? e.changedTouches?.[0]?.clientY : e.clientY;
     
-    // Get stage bounds
     const rect = stageRef.current.getBoundingClientRect();
     const relY = ((clientY - rect.top) / rect.height) * 100;
     
-    // Check if dropped in valid area (above tray, ~top 75% of stage)
     if (relY < 75 && relY > 0) {
       const option = draggingTool === 'a' ? optionA : optionB;
+      // Trigger snap feedback
+      setJustPlaced(`${mission.mission_id}-${draggingTool}`);
+      setTimeout(() => setJustPlaced(null), 300);
+      
       onSelect(mission.mission_id, draggingTool, option.holland_code as HollandCode, option);
     }
     
@@ -107,7 +109,6 @@ export function VisualPlayScreen({
     setDragPosition(null);
   }, [draggingTool, mission.mission_id, optionA, optionB, onSelect]);
 
-  // Attach global drag listeners
   useEffect(() => {
     if (draggingTool) {
       window.addEventListener('mousemove', handleDragMove);
@@ -124,12 +125,10 @@ export function VisualPlayScreen({
     }
   }, [draggingTool, handleDragMove, handleDragEnd]);
 
-  // Get placed props that should persist
   const persistedProps = useMemo(() => {
     return placedProps.filter(p => p.persist === 'keep');
   }, [placedProps]);
 
-  // Target zone position for drag indicator
   const targetPosition = useMemo(() => {
     if (draggingTool) {
       return getTargetAnchor(draggingTool);
@@ -152,45 +151,45 @@ export function VisualPlayScreen({
         }}
       />
 
-      {/* Bottom gradient overlay to ground UI */}
+      {/* Bottom gradient overlay */}
       <div 
         className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none"
         style={{
-          background: 'linear-gradient(to top, rgba(0,0,0,0.3) 0%, transparent 100%)',
+          background: 'linear-gradient(to top, rgba(0,0,0,0.25) 0%, transparent 100%)',
         }}
       />
 
       {/* Target zone indicator - shows when dragging */}
       {draggingTool && targetPosition && (
         <div 
-          className="absolute pointer-events-none z-15 animate-pulse-glow"
+          className="absolute pointer-events-none z-15"
           style={{
             left: `${targetPosition.x}%`,
             top: `${targetPosition.y}%`,
             transform: 'translate(-50%, -50%)',
           }}
         >
-          {/* Pulsing circle indicator */}
+          {/* Pulsing glow ring */}
           <div 
-            className="w-24 h-24 rounded-full border-2 border-dashed animate-spin-slow"
+            className="w-20 h-20 md:w-28 md:h-28 rounded-full animate-pulse"
             style={{
-              borderColor: 'hsl(170 80% 45% / 0.7)',
-              background: 'radial-gradient(circle, hsl(170 80% 45% / 0.2) 0%, transparent 70%)',
+              border: '2px solid hsl(170 80% 50% / 0.8)',
+              boxShadow: '0 0 20px hsl(170 80% 50% / 0.4), inset 0 0 15px hsl(170 80% 50% / 0.1)',
+              background: 'radial-gradient(circle, hsl(170 80% 50% / 0.15) 0%, transparent 70%)',
             }}
           />
-          {/* Arrow pointing down */}
-          <div 
-            className="absolute left-1/2 -top-8 -translate-x-1/2 animate-bounce-subtle"
-            style={{ color: 'hsl(170 80% 45%)' }}
+          {/* Downward arrow */}
+          <svg 
+            className="absolute left-1/2 -top-10 -translate-x-1/2 animate-bounce"
+            width="28" height="28" viewBox="0 0 24 24" 
+            fill="none" stroke="hsl(170, 80%, 50%)" strokeWidth="2.5"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 4l-8 8h5v8h6v-8h5z" />
-            </svg>
-          </div>
+            <path d="M12 5v14M5 12l7 7 7-7" />
+          </svg>
         </div>
       )}
 
-      {/* Placed props layer - persisted items from previous choices */}
+      {/* Placed props layer */}
       {persistedProps.map((prop, idx) => {
         const toolImg = getToolImage(prop.missionId.replace('studio_', 'studio_') + '_' + prop.key);
         const anchorPos = prop.anchorRef 
@@ -199,10 +198,12 @@ export function VisualPlayScreen({
         
         if (!toolImg || !anchorPos) return null;
         
+        const isJustPlaced = justPlaced === `${prop.missionId}-${prop.key}`;
+        
         return (
           <div
             key={`${prop.missionId}-${idx}`}
-            className="absolute pointer-events-none animate-snap-place"
+            className={`absolute pointer-events-none ${isJustPlaced ? 'animate-snap-pop' : 'animate-snap-place'}`}
             style={{
               left: `${anchorPos.x + (prop.offsetX || 0) / 10}%`,
               top: `${anchorPos.y + (prop.offsetY || 0) / 10}%`,
@@ -213,97 +214,109 @@ export function VisualPlayScreen({
             <img 
               src={toolImg}
               alt=""
-              className="w-20 h-20 object-contain drop-shadow-lg"
+              className="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-lg"
             />
           </div>
         );
       })}
 
-      {/* Back arrow button - top right with visible dark arrow */}
+      {/* Back/Undo button - top right */}
       <button
         onClick={handleUndoClick}
         disabled={!canUndo}
-        className="absolute top-4 right-4 z-30 w-12 h-12 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-lg transition-all duration-200 hover:bg-white hover:scale-105 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed"
+        className="absolute top-3 right-3 md:top-4 md:right-4 z-30 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-lg transition-all duration-200 hover:bg-white hover:scale-105 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed"
       >
-        <ArrowLeft className="w-6 h-6 text-slate-800" style={{ transform: 'scaleX(-1)' }} />
+        <ArrowLeft className="w-5 h-5 md:w-6 md:h-6 text-slate-800" style={{ transform: 'scaleX(-1)' }} />
       </button>
 
-      {/* Avatar - anchored bottom-right, larger size */}
+      {/* Avatar - anchored bottom-right */}
       {avatarImage && (
         <div 
           className="absolute z-20 animate-fade-in"
           style={{
-            right: '40px',
-            bottom: '170px',
-            height: '280px',
+            right: '24px',
+            bottom: '160px',
+            height: '220px',
             filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.5))',
           }}
         >
           <img 
             src={avatarImage} 
-            alt="Your avatar"
+            alt="Guide avatar"
             className="h-full w-auto object-contain animate-subtle-float"
           />
         </div>
       )}
 
-      {/* Speech bubble - chat bubble with tail pointing to avatar */}
+      {/* Speech bubble - near avatar on right */}
       <div 
         className="absolute z-15 animate-pop-in"
         style={{
-          left: '24px',
-          right: '280px',
-          bottom: '220px',
-          maxWidth: '480px',
+          right: '180px',
+          bottom: '200px',
+          maxWidth: '380px',
         }}
       >
         <SpeechBubble tailDirection="right">
-          <p className="font-medium">{taskText}</p>
+          <p className="font-medium text-base md:text-lg">{taskText}</p>
         </SpeechBubble>
       </div>
 
-      {/* Tool tray - clean glass panel at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 z-25">
+      {/* Compact glass tool tray - centered, not full width */}
+      <div className="absolute bottom-3 md:bottom-4 left-1/2 -translate-x-1/2 z-25">
         <div 
-          className="mx-4 mb-4 rounded-2xl px-6 py-4"
+          className="rounded-2xl px-5 py-4 md:px-8 md:py-5"
           style={{
-            background: 'rgba(30, 35, 45, 0.65)',
-            backdropFilter: 'blur(16px)',
-            boxShadow: '0 -2px 20px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1)',
-            borderTop: '1px solid rgba(255,255,255,0.15)',
+            background: 'rgba(20, 25, 35, 0.55)',
+            backdropFilter: 'blur(20px)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.08)',
+            border: '1px solid rgba(255,255,255,0.1)',
           }}
         >
-          {/* Progress capsule - above tools */}
-          <div className="flex justify-center mb-3">
+          {/* Progress tank with counter */}
+          <div className="flex items-center justify-center gap-3 mb-3">
+            {/* Capsule tank */}
             <div 
-              className="h-3 rounded-full overflow-hidden"
+              className="relative h-4 md:h-5 rounded-full overflow-hidden"
               style={{
-                width: '45%',
-                background: 'rgba(0,0,0,0.3)',
-                boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)',
+                width: '140px',
+                background: 'rgba(0,0,0,0.4)',
+                border: '2px solid rgba(255,255,255,0.15)',
+                boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.3)',
               }}
             >
               <div 
-                className="h-full rounded-full transition-all duration-400 ease-out relative overflow-hidden"
+                className="h-full rounded-full transition-all ease-out relative overflow-hidden"
                 style={{ 
                   width: `${progress}%`,
-                  background: 'linear-gradient(90deg, hsl(170 80% 45%) 0%, hsl(170 80% 55%) 100%)',
+                  transitionDuration: '350ms',
+                  background: 'linear-gradient(90deg, hsl(170 70% 42%) 0%, hsl(170 75% 52%) 100%)',
                 }}
               >
-                {/* Shine effect */}
+                {/* Animated shine */}
                 <div 
                   className="absolute inset-0"
                   style={{
-                    background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)',
-                    animation: 'shine 2s ease-in-out infinite',
+                    background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.35) 45%, rgba(255,255,255,0.35) 55%, transparent 100%)',
+                    animation: 'shine 2.5s ease-in-out infinite',
                   }}
                 />
               </div>
             </div>
+            {/* Counter text */}
+            <span 
+              className="text-xs md:text-sm font-medium"
+              style={{ 
+                color: 'rgba(255,255,255,0.75)',
+                fontVariantNumeric: 'tabular-nums',
+              }}
+            >
+              {currentIndex + 1}/{totalMissions}
+            </span>
           </div>
 
-          {/* Tool tiles - two options side by side */}
-          <div className="flex gap-6 justify-center items-center">
+          {/* Tool tiles */}
+          <div className="flex gap-4 md:gap-6 justify-center items-center">
             <DraggableToolTile
               image={toolAImage}
               tooltip={optionA.tooltip_heb || `MISSING: option_a_tooltip_heb`}
@@ -337,14 +350,14 @@ export function VisualPlayScreen({
           <img 
             src={draggingTool === 'a' ? toolAImage : toolBImage}
             alt=""
-            className="w-24 h-24 object-contain drop-shadow-2xl opacity-90"
+            className="w-20 h-20 md:w-24 md:h-24 object-contain drop-shadow-2xl opacity-90"
           />
-          {/* Hand indicator */}
+          {/* Hand icon */}
           <div 
-            className="absolute -bottom-3 -right-3 animate-hand-move"
-            style={{ color: 'hsl(220 25% 25%)' }}
+            className="absolute -bottom-2 -right-2 animate-hand-move"
+            style={{ color: 'hsl(220 20% 20%)' }}
           >
-            <Hand className="w-8 h-8" />
+            <Hand className="w-7 h-7 md:w-8 md:h-8 drop-shadow-md" />
           </div>
         </div>
       )}
@@ -372,19 +385,59 @@ interface DraggableToolTileProps {
 function DraggableToolTile({ image, tooltip, onClick, onDragStart, variant, isDragging }: DraggableToolTileProps) {
   return (
     <div className={`relative ${isDragging ? 'opacity-40' : ''}`}>
-      {/* Info icon with popover */}
+      {/* Tool tile button - draggable */}
+      <button
+        onClick={onClick}
+        onMouseDown={onDragStart}
+        onTouchStart={onDragStart}
+        className="group relative overflow-hidden transition-all duration-200 hover:scale-105 active:scale-90 cursor-grab active:cursor-grabbing rounded-xl"
+        style={{
+          width: '80px',
+          height: '80px',
+          background: 'rgba(255, 252, 245, 0.94)',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+        }}
+      >
+        {/* Tool image centered */}
+        <div className="absolute inset-0 flex items-center justify-center p-2">
+          {image ? (
+            <img 
+              src={image} 
+              alt="Tool option"
+              className="w-full h-full object-contain transition-transform duration-200 group-hover:scale-110"
+              draggable={false}
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-muted/30 rounded-lg">
+              <span className="text-2xl">{variant === 'a' ? '🔧' : '🎨'}</span>
+            </div>
+          )}
+        </div>
+        
+        {/* Hover glow */}
+        <div 
+          className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+          style={{
+            boxShadow: '0 0 16px hsl(170 80% 45% / 0.35)',
+          }}
+        />
+      </button>
+
+      {/* Info icon - BOTTOM-LEFT corner */}
       <Popover>
         <PopoverTrigger asChild>
           <button 
-            className="absolute -top-1 -right-1 z-10 w-7 h-7 rounded-full bg-slate-700 flex items-center justify-center shadow-md transition-transform hover:scale-110"
+            className="absolute -bottom-1 -left-1 z-10 w-6 h-6 md:w-7 md:h-7 rounded-full bg-slate-700/90 flex items-center justify-center shadow-md transition-transform hover:scale-110 backdrop-blur-sm"
             onClick={(e) => e.stopPropagation()}
           >
-            <Info className="w-4 h-4 text-white" />
+            <Info className="w-3.5 h-3.5 md:w-4 md:h-4 text-white/90" />
           </button>
         </PopoverTrigger>
         <PopoverContent 
-          side="top" 
-          className="w-52 text-sm text-center p-3 bg-slate-800 text-white border-slate-600"
+          side="bottom" 
+          align="start"
+          sideOffset={8}
+          className="w-48 md:w-56 text-sm text-center p-3 bg-slate-800/95 text-white border-slate-600/50 backdrop-blur-sm"
           onClick={(e) => e.stopPropagation()}
           style={{
             fontFamily: "'Heebo', sans-serif",
@@ -394,44 +447,6 @@ function DraggableToolTile({ image, tooltip, onClick, onDragStart, variant, isDr
           {tooltip}
         </PopoverContent>
       </Popover>
-
-      {/* Tool tile button - draggable */}
-      <button
-        onClick={onClick}
-        onMouseDown={onDragStart}
-        onTouchStart={onDragStart}
-        className="group relative overflow-hidden transition-all duration-200 hover:scale-105 active:scale-90 cursor-grab active:cursor-grabbing rounded-xl"
-        style={{
-          width: '100px',
-          height: '100px',
-          background: 'rgba(255, 252, 245, 0.92)',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
-        }}
-      >
-        {/* Tool image centered */}
-        <div className="absolute inset-0 flex items-center justify-center p-3">
-          {image ? (
-            <img 
-              src={image} 
-              alt="Tool option"
-              className="w-4/5 h-4/5 object-contain transition-transform duration-200 group-hover:scale-110"
-              draggable={false}
-            />
-          ) : (
-            <div className="w-4/5 h-4/5 flex items-center justify-center bg-muted/30 rounded-lg">
-              <span className="text-2xl">{variant === 'a' ? '🔧' : '🎨'}</span>
-            </div>
-          )}
-        </div>
-        
-        {/* Selection glow on hover */}
-        <div 
-          className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-          style={{
-            boxShadow: '0 0 20px hsl(170 80% 45% / 0.4)',
-          }}
-        />
-      </button>
     </div>
   );
 }
