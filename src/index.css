@@ -827,4 +827,56 @@
     height: auto;
     display: block;
   }
+
+  /* Welcome screen specific positioning */
+  .welcomeScreen .dialogRow{
+    position: absolute;
+    right: 12px;
+    bottom: 96px;
+    width: calc(100% - 24px);
+    max-width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-end;
+    gap: 12px;
+    direction: ltr;
+    z-index: 20;
+  }
+  .welcomeScreen .dialogBubble{
+    direction: rtl;
+    flex: 1 1 auto;
+    min-width: 0;
+    position: relative;
+    z-index: 20;
+  }
+  .welcomeScreen .dialogAvatar{
+    flex: 0 0 auto;
+    width: clamp(96px, 20vw, 140px);
+    position: relative;
+    z-index: 30;
+    pointer-events: none;
+  }
+  .welcomeScreen .dialogAvatar img{
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
+/* Welcome screen desktop layout */
+@media (min-width: 821px) {
+  .welcomeScreen .dialogRow{
+    position: absolute;
+    right: clamp(24px, 3vw, 48px);
+    bottom: clamp(28px, 4vh, 56px);
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: clamp(14px, 1.6vw, 22px);
+    direction: ltr;
+    z-index: 20;
+  }
+  .welcomeScreen .dialogBubble{ direction: rtl; max-width: min(560px, 44vw); }
+  .welcomeScreen .dialogAvatar{ width: min(320px, 28vw); z-index: 30; }
 }
