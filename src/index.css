@@ -1033,7 +1033,7 @@
 
   .welcomeScreen .welcomeAvatar {
     position: fixed !important;
-    right: -180px !important;
+    right: -220px !important;
     bottom: calc(env(safe-area-inset-bottom, 0px) + 72px) !important;
     width: 160px !important;
     transform: scale(2) !important;
