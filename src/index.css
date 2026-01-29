@@ -745,7 +745,7 @@
     width: min(320px, 28vw);
     pointer-events: none;
     order: 2;
-    margin-left: -30px;
+    margin-left: -120px;
   }
 
   .welcomeScreen .welcomeAvatarWrap img {
