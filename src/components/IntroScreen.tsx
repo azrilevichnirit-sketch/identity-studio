@@ -34,9 +34,23 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
 
       {/* MOBILE ONLY: Legacy block */}
       <div className="welcomeLegacyBlock welcomeHeroMobile max-[820px]:block min-[821px]:hidden">
-        <div className="heroRow welcomeHero max-[820px]:fixed max-[820px]:left-4 max-[820px]:right-4 max-[820px]:bottom-24 max-[820px]:z-40 max-[820px]:isolate max-[820px]:bg-transparent max-[820px]:shadow-none max-[820px]:p-0 max-[820px]:border-0">
-          {/* Bubble on the left */}
-          <div className="heroBubble welcomeBubble animate-scale-in intro-bubble max-[820px]:relative max-[820px]:z-10 max-[820px]:w-[65%] max-[820px]:max-w-[65%]">
+        {/* Mobile container: bubble left, avatar overlapping from front-right */}
+        <div 
+          className="heroRow welcomeHero max-[820px]:fixed max-[820px]:z-40 max-[820px]:isolate max-[820px]:bg-transparent max-[820px]:shadow-none max-[820px]:p-0 max-[820px]:border-0"
+          style={{
+            left: "16px",
+            right: "16px",
+            bottom: "100px",
+          }}
+        >
+          {/* Bubble: fully visible on left side */}
+          <div 
+            className="heroBubble welcomeBubble animate-scale-in intro-bubble max-[820px]:relative max-[820px]:z-10"
+            style={{
+              width: "60%",
+              maxWidth: "60%",
+            }}
+          >
             <SpeechBubble tailDirection="right">
               <div className="space-y-1 pr-2">
                 <p className="font-semibold text-sm">היי! איזה כיף להכיר אותך.</p>
@@ -50,14 +64,15 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
             </SpeechBubble>
           </div>
 
-          {/* Avatar: LARGE, front-center, overlapping bubble */}
+          {/* Avatar: LARGE, overlapping bubble FROM THE FRONT (higher z-index) */}
           {avatarImage && (
             <div
-              className="heroAvatar welcomeAvatar animate-fade-in intro-avatar max-[820px]:absolute max-[820px]:bottom-0 max-[820px]:z-50 max-[820px]:pointer-events-none"
+              className="heroAvatar welcomeAvatar animate-fade-in intro-avatar max-[820px]:absolute max-[820px]:z-50 max-[820px]:pointer-events-none"
               style={{
+                bottom: "-30px",
+                left: "35%",
+                width: "70%",
                 filter: "drop-shadow(0 10px 20px rgba(0,0,0,0.6))",
-                left: "45%",
-                width: "clamp(200px, 55vw, 300px)",
               }}
             >
               <img
