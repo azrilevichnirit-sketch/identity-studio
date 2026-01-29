@@ -24,50 +24,57 @@ export function SpeechBubble({
   className = '',
   style = {},
 }: SpeechBubbleProps) {
+  // Using a wrapper with drop-shadow filter so the tail shares the same shadow
+  // This creates a seamless single-bubble appearance
   return (
     <div 
-      className={`relative ${className}`}
+      className={`relative speech-bubble-wrapper ${className}`}
       style={{
-        filter: 'drop-shadow(0 14px 28px rgba(0,0,0,0.18))',
+        // drop-shadow on wrapper applies to all child shapes uniformly
+        filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.20))',
         ...style,
       }}
     >
-      {/* Bubble panel with seamless tail pseudo-element */}
+      {/* Main bubble body */}
       <div 
-        className="relative rounded-[22px]"
+        className="relative rounded-[20px] speech-bubble-body"
         style={{
-          background: 'rgba(255,255,255,0.94)',
-          border: '1px solid rgba(255,255,255,0.55)',
+          background: '#FFFDF8',
         }}
       >
-        {/* Tail - CSS element for seamless shadow */}
+        {/* Tail - positioned to overlap bubble edge, creating seamless connection */}
+        {/* Using same background color and no separate shadow (wrapper handles it) */}
         <div
+          className="speech-bubble-tail"
           style={{
             position: 'absolute',
-            width: '20px',
-            height: '20px',
-            background: 'rgba(255,255,255,0.94)',
-            borderRadius: '6px',
+            width: '22px',
+            height: '22px',
+            background: '#FFFDF8',
+            borderRadius: '5px',
+            // Position tail to slightly overlap the bubble body
             ...(tailDirection === 'right' ? {
-              right: '-6px',
-              top: '55%',
-              transform: 'translateY(-50%) rotate(45deg)',
+              right: '-8px',
+              bottom: '24px',
+              transform: 'rotate(45deg)',
             } : {
-              left: '-6px',
-              top: '55%',
-              transform: 'translateY(-50%) rotate(45deg)',
+              left: '-8px',
+              bottom: '24px',
+              transform: 'rotate(45deg)',
             }),
+            // Clip the outer corner for smoother blend
+            zIndex: -1,
           }}
         />
         
-        {/* Content with comfortable but compact padding */}
+        {/* Content area with comfortable padding */}
         <div 
-          className="relative px-4 py-2.5 md:px-5 md:py-3"
+          className="relative px-4 py-3 md:px-5 md:py-3.5"
           style={{
             fontFamily: "'Rubik', sans-serif",
             fontSize: '15px',
-            lineHeight: '1.45',
-            color: '#111',
+            lineHeight: '1.5',
+            color: '#1a1a1a',
             direction: 'rtl',
             textAlign: 'right',
           }}
