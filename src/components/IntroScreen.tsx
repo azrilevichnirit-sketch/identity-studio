@@ -22,7 +22,7 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
   const arenaName = 'סטודיו';
 
   return (
-    <GameStage backgroundImage={studioEntryBg} enhanceBackground>
+    <GameStage backgroundImage={studioEntryBg} enhanceBackground className="welcomeScreen">
       {/* Bottom gradient for grounding */}
       <div 
         className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none"
@@ -32,9 +32,8 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
         }}
       />
 
-      {/* MOBILE: Absolute positioned avatar and bubble (unchanged) */}
-      <div className="lg:hidden">
-        {/* Avatar - mobile positioning */}
+      {/* MOBILE ONLY: Absolute positioned avatar and bubble */}
+      <div className="block md-desktop:hidden">
         {avatarImage && (
           <div 
             className="absolute z-20 animate-fade-in intro-avatar"
@@ -49,8 +48,6 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
             />
           </div>
         )}
-
-        {/* Speech bubble - mobile positioning */}
         <div className="absolute z-30 animate-scale-in intro-bubble">
           <SpeechBubble tailDirection="right">
             <div className="space-y-1 pr-2">
@@ -72,19 +69,12 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
         </div>
       </div>
 
-      {/* DESKTOP: Flex container for bubble + avatar (no overlap) */}
-      <div 
-        className="hidden lg:flex items-end absolute z-20 animate-fade-in"
-        style={{
-          right: 'clamp(40px, 5vw, 80px)',
-          bottom: '28px',
-          gap: '20px',
-        }}
-      >
-        {/* Speech bubble - left side of flex */}
-        <div className="animate-scale-in flex-shrink-0">
+      {/* DESKTOP ONLY: Flex overlay for bubble + avatar */}
+      <div className="welcomeOverlayDesktop hidden md-desktop:flex animate-fade-in">
+        {/* Speech bubble */}
+        <div className="welcomeBubble animate-scale-in">
           <SpeechBubble tailDirection="right">
-            <div className="space-y-1 pr-4" style={{ maxWidth: '380px', minWidth: '300px' }}>
+            <div className="space-y-1 pr-4">
               <p className="font-semibold text-base">היי! איזה כיף להכיר אותך.</p>
               <p className="text-sm leading-snug">
                 אני {avatarName}, ואני איתך לאורך כל המסע הזה.
@@ -102,26 +92,23 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
           </SpeechBubble>
         </div>
 
-        {/* Avatar - right side of flex, foreground */}
+        {/* Avatar */}
         {avatarImage && (
           <div 
-            className="flex-shrink-0"
+            className="welcomeAvatarWrap"
             style={{
-              height: 'clamp(380px, 42vh, 520px)',
               filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))',
-              zIndex: 25,
             }}
           >
             <img 
               src={avatarImage} 
               alt="Your avatar"
-              className="h-full w-auto object-contain"
             />
           </div>
         )}
       </div>
 
-      {/* CTA Button - bottom left, thumb-friendly placement */}
+      {/* CTA Button - bottom left, unchanged */}
       <div 
         className="absolute z-20 animate-fade-in"
         style={{
