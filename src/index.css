@@ -980,6 +980,14 @@
   .welcomeScreen .welcomeHero::after{
     content: none !important;
   }
+
+  /* ---- Strip any panel around avatar ---- */
+  .welcomeScreen .welcomeHero > *:has(.welcomeAvatar){
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+  }
 }
 
 /* Welcome screen desktop layout */
