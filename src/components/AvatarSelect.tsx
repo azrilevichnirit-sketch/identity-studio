@@ -51,7 +51,7 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
               }}
             >
               <div className="absolute inset-0 flex items-center justify-center p-4 gap-4">
-                {femaleAvatar ? (
+              {femaleAvatar ? (
                   <img 
                     src={femaleAvatar} 
                     alt="Female avatar" 
@@ -60,7 +60,6 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
                 ) : (
                   <span className="text-5xl md:text-6xl">👩</span>
                 )}
-                <span className="font-bold text-xl md:text-2xl text-slate-800 drop-shadow-sm">נקבה</span>
               </div>
               
               {/* Hover glow */}
@@ -83,7 +82,7 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
               }}
             >
               <div className="absolute inset-0 flex items-center justify-center p-4 gap-4">
-                {maleAvatar ? (
+              {maleAvatar ? (
                   <img 
                     src={maleAvatar} 
                     alt="Male avatar" 
@@ -92,7 +91,6 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
                 ) : (
                   <span className="text-5xl md:text-6xl">👨</span>
                 )}
-                <span className="font-bold text-xl md:text-2xl text-slate-800 drop-shadow-sm">זכר</span>
               </div>
               
               {/* Hover glow */}
