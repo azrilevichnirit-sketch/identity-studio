@@ -33,22 +33,8 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
       />
 
       {/* MOBILE ONLY: Legacy block */}
-      <div className="welcomeLegacyBlock">
-        {avatarImage && (
-          <div 
-            className="absolute z-20 animate-fade-in intro-avatar"
-            style={{
-              filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))',
-            }}
-          >
-            <img 
-              src={avatarImage} 
-              alt="Your avatar"
-              className="h-full w-auto object-contain"
-            />
-          </div>
-        )}
-        <div className="absolute z-30 animate-scale-in intro-bubble">
+      <div className="welcomeLegacyBlock dialogRow">
+        <div className="dialogBubble absolute z-30 animate-scale-in intro-bubble">
           <SpeechBubble tailDirection="right">
             <div className="space-y-1 pr-2">
               <p className="font-semibold text-sm">היי! איזה כיף להכיר אותך.</p>
@@ -67,6 +53,20 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
             </div>
           </SpeechBubble>
         </div>
+        {avatarImage && (
+          <div 
+            className="dialogAvatar absolute z-20 animate-fade-in intro-avatar"
+            style={{
+              filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))',
+            }}
+          >
+            <img 
+              src={avatarImage} 
+              alt="Your avatar"
+              className="h-full w-auto object-contain"
+            />
+          </div>
+        )}
       </div>
 
       {/* DESKTOP ONLY: Flex overlay for bubble + avatar */}
