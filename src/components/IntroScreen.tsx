@@ -34,8 +34,8 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
 
       {/* MOBILE ONLY: Legacy block */}
       <div className="welcomeLegacyBlock welcomeHeroMobile">
-        <div className="heroRow">
-          <div className="heroBubble animate-scale-in intro-bubble">
+        <div className="heroRow welcomeHero">
+          <div className="heroBubble welcomeBubble animate-scale-in intro-bubble">
             <SpeechBubble tailDirection="right">
               <div className="space-y-1 pr-2">
                 <p className="font-semibold text-sm">היי! איזה כיף להכיר אותך.</p>
@@ -56,7 +56,7 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
           </div>
           {avatarImage && (
             <div 
-              className="heroAvatar animate-fade-in intro-avatar"
+              className="heroAvatar welcomeAvatar animate-fade-in intro-avatar"
               style={{
                 filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))',
               }}

@@ -888,6 +888,32 @@
   .welcomeScreen .welcomeHeroMobile .heroBubble { order: 2 !important; z-index: 85 !important; flex: 1 1 auto !important; min-width: 0 !important; }
 
   .welcomeScreen .welcomeHeroMobile .heroAvatar img{ width:100% !important; height:auto !important; display:block !important; }
+
+  /* Welcome avatar bigger + always in front */
+  .welcomeHero{
+    isolation: isolate !important;
+    position: relative !important;
+    z-index: 10 !important;
+  }
+
+  .welcomeBubble{
+    position: relative !important;
+    z-index: 20 !important;
+  }
+
+  .welcomeAvatar{
+    position: relative !important;
+    z-index: 40 !important;
+    width: clamp(140px, 30vw, 210px) !important;
+    max-width: none !important;
+  }
+
+  .welcomeAvatar img{
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    max-width: none !important;
+  }
 }
 
 /* Welcome screen desktop layout */
