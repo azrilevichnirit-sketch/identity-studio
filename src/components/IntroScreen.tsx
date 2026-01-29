@@ -8,8 +8,16 @@ interface IntroScreenProps {
   onStart: () => void;
 }
 
+// Avatar names by gender
+const AVATAR_NAMES: Record<'female' | 'male', string> = {
+  female: 'נועה',
+  male: 'ליאו',
+};
+
 export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
   const avatarImage = getAvatarImage(avatarGender, 'idle');
+  const avatarName = avatarGender ? AVATAR_NAMES[avatarGender] : 'המדריך שלך';
+  const arenaName = 'סטודיו';
 
   return (
     <div 
@@ -48,13 +56,13 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
         </div>
       )}
 
-      {/* Speech bubble with intro text */}
+      {/* Speech bubble with welcome text */}
       <div 
         className="absolute z-15 animate-scale-in"
         style={{
           left: '60px',
           bottom: '100px',
-          maxWidth: '500px',
+          maxWidth: '520px',
         }}
       >
         <div 
@@ -66,18 +74,27 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
             padding: '32px 48px 32px 32px',
           }}
         >
-          <h2 className="text-2xl font-bold mb-3 text-foreground">ברוכים הבאים לסטודיו!</h2>
-          <p className="text-base text-muted-foreground leading-relaxed mb-5">
-            לפניך 12 משימות שיעזרו לנו להכיר אותך טוב יותר.
-            בכל משימה תבחר/י בין שתי אפשרויות.
-            אין תשובות נכונות או שגויות – פשוט בחר/י את מה שמדבר אליך!
-          </p>
+          <div className="text-base text-foreground leading-relaxed space-y-3">
+            <p className="font-semibold text-lg">היי! איזה כיף לראות אותך</p>
+            <p>
+              אני {avatarName}, ואני איתך לאורך כל המסע הזה.
+            </p>
+            <p>
+              כאן ניצור ביחד את ה{arenaName} שלך, צעד אחרי צעד - עם בחירות קטנות שמרכיבות עולם שלם.
+            </p>
+            <p>
+              בכל שלב מחכה לך משימה ושתי אפשרויות. בוחרים, גוררים, וממשיכים.
+            </p>
+            <p>
+              בסוף נראה יחד את התמונה שנוצרה מהבחירות שלך.
+            </p>
+          </div>
           
           <button
             onClick={onStart}
-            className="px-8 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-lg hover:bg-primary/90 transition-all duration-200 hover:scale-105 active:scale-95"
+            className="mt-5 px-8 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-lg hover:bg-primary/90 transition-all duration-200 hover:scale-105 active:scale-95"
           >
-            בוא/י נתחיל
+            יאללה, מתחילים? →
           </button>
         </div>
       </div>

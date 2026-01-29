@@ -6,12 +6,41 @@ export type Dimension = 'studio' | 'farm' | 'surprise' | null;
 
 export type Phase = 'dimension' | 'avatar' | 'intro' | 'main' | 'tie' | 'lead' | 'summary' | 'coming-soon';
 
+// Placement modes for tool rendering
+export type PlacementMode = 
+  | 'wall_full' 
+  | 'wall' 
+  | 'floor_near_wall' 
+  | 'floor' 
+  | 'center' 
+  | 'ceiling'
+  | 'handheld'  // for avatar_hand anchor
+  | 'table';     // for table_center anchor
+
+// Anchor references for placement
+export type AnchorRef = 
+  | 'wall_back' 
+  | 'wall_left' 
+  | 'wall_right' 
+  | 'floor' 
+  | 'center' 
+  | 'ceiling'
+  | 'avatar_hand'
+  | 'table_center';
+
 export interface MissionOption {
   key: 'a' | 'b';
   holland_code: HollandCode;
   asset: string;
   tooltip_heb: string;
   view: string;
+  // Placement fields from CSV
+  placement_mode?: PlacementMode;
+  anchor_ref?: AnchorRef;
+  offset_x?: number;
+  offset_y?: number;
+  scale?: number;
+  persist?: 'keep' | 'temp';
 }
 
 export interface Mission {
@@ -20,6 +49,7 @@ export interface Mission {
   mission_id: string;
   sequence: number;
   view: string;
+  bg_override?: string;  // Background override from CSV
   task_heb: string;
   options: MissionOption[];
   pair_key?: string;
@@ -36,6 +66,13 @@ export interface PickRecord {
   missionId: string;
   key: 'a' | 'b';
   hollandCode: HollandCode;
+  // Placement info for rendering
+  placementMode?: PlacementMode;
+  anchorRef?: AnchorRef;
+  offsetX?: number;
+  offsetY?: number;
+  scale?: number;
+  persist?: 'keep' | 'temp';
 }
 
 export interface GameState {
@@ -64,4 +101,21 @@ export interface CountsFinal {
   s: number;
   e: number;
   c: number;
+}
+
+// Scene extras types for rendering additional assets
+export interface SceneExtra {
+  world: string;
+  phase: string;
+  order: number;
+  mission_id: string;
+  trigger_when: 'before' | 'after';
+  trigger_tool_ids: string[];
+  spawn_asset_key: string;
+  spawn_count: number;
+  placement_mode: PlacementMode;
+  anchor_ref: AnchorRef;
+  note?: string;
+  despawn_mode: 'keep' | 'until_mission_order' | 'remove_after_mission_id';
+  despawn_value: string;
 }

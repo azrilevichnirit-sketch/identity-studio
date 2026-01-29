@@ -133,20 +133,22 @@ const toolAssets: Record<string, string> = {
   studio_tie_15_b: studioTie15b,
 };
 
-// Background mapping based on mission sequence
-const backgroundsBySequence: Record<number, string> = {
-  1: studioEntryInsideBg,
-  2: studioEntryInsideBg,
-  3: studioEntryInsideBg,
-  4: studioGalleryWallBg,
-  5: studioFrontBg,
-  6: studioGalleryWallBg,
-  7: studioFrontBg,
-  8: studioGalleryBg,
-  9: studioStorageBg,
-  10: studioWorkshopBg,
-  11: studioFrontBg,
-  12: studioGalleryBg,
+// Background asset lookup by CSV bg_override name
+const backgroundAssets: Record<string, string> = {
+  studio_front_bg: studioFrontBg,
+  studio_in_entrance_view_bg: studioEntranceViewBg,
+  studio_in_gallery_bg: studioGalleryBg,
+  studio_in_gallery_wall_bg: studioGalleryWallBg,
+  studio_in_storage_bg: studioStorageBg,
+  studio_in_workshop_bg: studioWorkshopBg,
+  studio_entry_inside_bg: studioEntryInsideBg,
+};
+
+// Fallback background mapping by (world, view)
+const backgroundFallback: Record<string, string> = {
+  'studio_in': studioEntryInsideBg,
+  'studio_front': studioFrontBg,
+  'studio_out': studioFrontBg,
 };
 
 export function getToolImage(assetName: string): string | null {
@@ -154,12 +156,23 @@ export function getToolImage(assetName: string): string | null {
 }
 
 export function getBackgroundForMission(mission: Mission): string {
-  // Use sequence for main missions, default for tie-breakers
-  if (mission.phase === 'main' && mission.sequence in backgroundsBySequence) {
-    return backgroundsBySequence[mission.sequence];
+  // Priority 1: Use bg_override from CSV if present
+  if (mission.bg_override && backgroundAssets[mission.bg_override]) {
+    return backgroundAssets[mission.bg_override];
   }
-  // Tie-breaker default background
-  return studioGalleryBg;
+  
+  // Priority 2: Fallback by (world, view)
+  const fallbackKey = `${mission.world}_${mission.view}`;
+  if (backgroundFallback[fallbackKey]) {
+    return backgroundFallback[fallbackKey];
+  }
+  
+  // Default fallback
+  return studioEntryInsideBg;
+}
+
+export function getBackgroundByName(bgName: string): string | null {
+  return backgroundAssets[bgName] || null;
 }
 
 export function getAvatarImage(gender: AvatarGender, state: 'idle' | 'walk' = 'idle'): string | null {
@@ -169,4 +182,20 @@ export function getAvatarImage(gender: AvatarGender, state: 'idle' | 'walk' = 'i
     return state === 'walk' ? femaleWalk : femaleIdle;
   }
   return state === 'walk' ? maleWalk : maleIdle;
+}
+
+// Preload backgrounds for smooth transitions
+export function preloadBackground(bgName: string): void {
+  const bg = backgroundAssets[bgName];
+  if (bg) {
+    const img = new Image();
+    img.src = bg;
+  }
+}
+
+export function preloadAllBackgrounds(): void {
+  Object.values(backgroundAssets).forEach(src => {
+    const img = new Image();
+    img.src = src;
+  });
 }

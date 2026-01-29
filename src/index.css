@@ -186,6 +186,38 @@
   }
 }
 
+@keyframes bg-crossfade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes snap-place {
+  0% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes drag-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px 8px hsl(var(--primary) / 0.3);
+  }
+}
+
 .animate-fade-in {
   animation: fade-in 0.4s ease-out forwards;
 }
@@ -200,4 +232,25 @@
 
 .animate-subtle-float {
   animation: subtle-float 3s ease-in-out infinite;
+}
+
+.animate-bg-crossfade {
+  animation: bg-crossfade 300ms ease-out forwards;
+}
+
+.animate-snap-place {
+  animation: snap-place 250ms ease-out forwards;
+}
+
+.animate-drag-pulse {
+  animation: drag-pulse 1.5s ease-in-out infinite;
+}
+
+/* Dragging cursor styles */
+.cursor-grab {
+  cursor: grab;
+}
+
+.cursor-grabbing {
+  cursor: grabbing;
 }
