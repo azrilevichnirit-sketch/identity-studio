@@ -5,7 +5,7 @@ import { getAnchorPosition } from '@/lib/jsonDataLoader';
 import { SpeechBubble } from './SpeechBubble';
 import { Info, Hand, X } from 'lucide-react';
 import { UndoConfirmPopover } from './UndoConfirmDialog';
-
+import { ProgressTank } from './ProgressTank';
 interface VisualPlayScreenProps {
   mission: Mission;
   currentIndex: number;
@@ -37,7 +37,7 @@ export function VisualPlayScreen({
   const [hasDroppedOnce, setHasDroppedOnce] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
   
-  const progress = ((currentIndex) / totalMissions) * 100;
+  // Options from mission
   const optionA = mission.options.find((o) => o.key === 'a')!;
   const optionB = mission.options.find((o) => o.key === 'b')!;
 
@@ -287,46 +287,9 @@ export function VisualPlayScreen({
             border: '1px solid rgba(255,255,255,0.1)',
           }}
         >
-          {/* Progress tank with counter */}
-          <div className="flex items-center justify-center gap-3 mb-3">
-            {/* Capsule tank */}
-            <div 
-              className="relative h-4 md:h-5 rounded-full overflow-hidden"
-              style={{
-                width: '120px',
-                background: 'rgba(0,0,0,0.4)',
-                border: '2px solid rgba(255,255,255,0.15)',
-                boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.3)',
-              }}
-            >
-              <div 
-                className="h-full rounded-full transition-all ease-out relative overflow-hidden"
-                style={{ 
-                  width: `${progress}%`,
-                  transitionDuration: '350ms',
-                  background: 'linear-gradient(90deg, hsl(170 70% 42%) 0%, hsl(170 75% 52%) 100%)',
-                }}
-              >
-                {/* Animated shine */}
-                <div 
-                  className="absolute inset-0"
-                  style={{
-                    background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.35) 45%, rgba(255,255,255,0.35) 55%, transparent 100%)',
-                    animation: 'shine 2.5s ease-in-out infinite',
-                  }}
-                />
-              </div>
-            </div>
-            {/* Counter text */}
-            <span 
-              className="text-xs md:text-sm font-medium"
-              style={{ 
-                color: 'rgba(255,255,255,0.85)',
-                fontVariantNumeric: 'tabular-nums',
-              }}
-            >
-              {currentIndex + 1}/{totalMissions}
-            </span>
+          {/* Progress tank with bubbles */}
+          <div className="flex justify-center mb-3">
+            <ProgressTank current={currentIndex + 1} total={totalMissions} />
           </div>
 
           {/* Tool tiles with drag hint */}
