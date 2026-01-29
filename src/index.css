@@ -969,6 +969,17 @@
     font-size: 18px !important;
     line-height: 1.3 !important;
   }
+
+  /* ---- Clean up welcomeHero container ---- */
+  .welcomeScreen .welcomeHero{
+    background: transparent !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+  .welcomeScreen .welcomeHero::before,
+  .welcomeScreen .welcomeHero::after{
+    content: none !important;
+  }
 }
 
 /* Welcome screen desktop layout */
