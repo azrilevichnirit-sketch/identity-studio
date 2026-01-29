@@ -890,15 +890,13 @@
   }
 
   /* Mobile: bubble stays fully inside screen; avatar overlaps from front-right */
-  .welcomeScreen .welcomeHeroMobile .heroBubble { order: 1 !important; z-index: 85 !important; flex: 0 1 auto !important; min-width: 0 !important; }
+  .welcomeScreen .welcomeHeroMobile .heroBubble { order: 1 !important; z-index: 85 !important; flex: 0 1 auto !important; min-width: 0 !important; max-width: 65% !important; }
   .welcomeScreen .welcomeHeroMobile .heroAvatar {
     order: 2 !important;
     z-index: 2000 !important;
     pointer-events: none !important;
     position: fixed !important;
-    /* NOTE: this selector is more specific than `.welcomeScreen .welcomeAvatar`,
-       so it MUST be the source of truth for moving the avatar on mobile. */
-    right: -40px !important; /* move further right into the marked area */
+    right: -70px !important;
     bottom: calc(env(safe-area-inset-bottom, 0px) + 72px) !important;
     width: 160px !important;
     transform: scale(2) !important;
