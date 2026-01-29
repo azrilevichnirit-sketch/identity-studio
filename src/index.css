@@ -103,6 +103,7 @@
   * {
     @apply border-border;
     box-sizing: border-box;
+    font-family: 'Rubik', sans-serif;
   }
 
   html {
@@ -118,6 +119,7 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    font-family: 'Rubik', sans-serif;
     direction: rtl;
     width: 100%;
     height: 100%;
