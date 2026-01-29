@@ -419,3 +419,27 @@
 .cursor-grabbing {
   cursor: grabbing;
 }
+
+/* Touch drag support - disable scroll while dragging */
+.draggable-tool {
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Carry mode highlight for touch fallback */
+.carry-mode-active {
+  animation: carry-pulse 1s ease-in-out infinite;
+}
+
+@keyframes carry-pulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.08);
+    filter: brightness(1.15);
+  }
+}

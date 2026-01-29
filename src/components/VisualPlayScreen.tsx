@@ -42,7 +42,11 @@ export function VisualPlayScreen({
   const [hasDraggedOnce, setHasDraggedOnce] = useState(() => {
     return localStorage.getItem(DRAG_HINT_STORAGE_KEY) === 'true';
   });
+  // Carry mode for touch fallback - tap to pick up, tap target to place
+  const [carryModeTool, setCarryModeTool] = useState<'a' | 'b' | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const isDraggingRef = useRef(false);
+  const dragStartPosRef = useRef<{ x: number; y: number } | null>(null);
   
   // Options from mission
   const optionA = mission.options.find((o) => o.key === 'a')!;
@@ -50,8 +54,7 @@ export function VisualPlayScreen({
 
   // Get the previous pick's nextBgOverride to determine current background
   const previousBgOverride = useMemo(() => {
-    // Find the pick for the previous mission
-    const prevPicks = placedProps.slice(0, -1); // All picks except current
+    const prevPicks = placedProps.slice(0, -1);
     if (prevPicks.length > 0) {
       const lastPick = prevPicks[prevPicks.length - 1];
       return lastPick.nextBgOverride;
@@ -67,35 +70,32 @@ export function VisualPlayScreen({
 
   const taskText = mission.task_heb || `MISSING: task_heb`;
 
-  // Get the target background for a tool option (where it should be placed)
+  // Get the target background for a tool option
   const getTargetBgForOption = useCallback((option: MissionOption) => {
-    // The tool's target background is defined by next_bg_override
     const targetBgKey = option.next_bg_override || currentBgKey;
     const targetBgImage = getBackgroundByName(targetBgKey) || currentBg;
     return { key: targetBgKey, image: targetBgImage };
   }, [currentBgKey, currentBg]);
 
-  // Determine which background to show during drag (preview the target background)
+  // Determine which background to show during drag/carry
+  const activeToolVariant = draggingTool || carryModeTool;
   const dragPreviewBg = useMemo(() => {
-    if (!draggingTool) return null;
-    const option = draggingTool === 'a' ? optionA : optionB;
+    if (!activeToolVariant) return null;
+    const option = activeToolVariant === 'a' ? optionA : optionB;
     const target = getTargetBgForOption(option);
-    // Only switch if different from current
     if (target.key !== currentBgKey) {
       return target;
     }
     return null;
-  }, [draggingTool, optionA, optionB, getTargetBgForOption, currentBgKey]);
+  }, [activeToolVariant, optionA, optionB, getTargetBgForOption, currentBgKey]);
 
-  // The effective background to display (preview during drag, or current)
   const displayBg = dragPreviewBg?.image || currentBg;
   const displayBgKey = dragPreviewBg?.key || currentBgKey;
 
-  // Get target anchor for currently selected tool - use TARGET background's anchor map
+  // Get target anchor for currently selected tool
   const getTargetAnchor = useCallback((variant: 'a' | 'b') => {
     const option = variant === 'a' ? optionA : optionB;
     const anchorRef = option.anchor_ref as AnchorRef;
-    // Use the target background key for anchor lookup
     const targetBgKey = option.next_bg_override || currentBgKey;
     return getAnchorPosition(targetBgKey, anchorRef);
   }, [optionA, optionB, currentBgKey]);
@@ -105,81 +105,122 @@ export function VisualPlayScreen({
     setShowUndoDialog(false);
   };
 
-  // Drag handlers
-  const handleDragStart = useCallback((variant: 'a' | 'b', e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault();
-    setDraggingTool(variant);
-    
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-    setDragPosition({ x: clientX, y: clientY });
-  }, []);
+  // Complete a tool selection (used by both drag and carry mode)
+  const completePlacement = useCallback((variant: 'a' | 'b') => {
+    const option = variant === 'a' ? optionA : optionB;
+    if (!hasDraggedOnce) {
+      setHasDraggedOnce(true);
+      localStorage.setItem(DRAG_HINT_STORAGE_KEY, 'true');
+    }
+    setJustPlaced(`${mission.mission_id}-${variant}`);
+    setTimeout(() => setJustPlaced(null), 300);
+    onSelect(mission.mission_id, variant, option.holland_code as HollandCode, option);
+    setCarryModeTool(null);
+  }, [mission.mission_id, optionA, optionB, onSelect, hasDraggedOnce]);
 
-  const handleDragMove = useCallback((e: MouseEvent | TouchEvent) => {
-    if (!draggingTool) return;
+  // Pointer Events for unified mouse/touch handling
+  const handlePointerDown = useCallback((variant: 'a' | 'b', e: React.PointerEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-    setDragPosition({ x: clientX, y: clientY });
+    // If already in carry mode for a different tool, switch to this one
+    if (carryModeTool && carryModeTool !== variant) {
+      setCarryModeTool(variant);
+      return;
+    }
+    
+    isDraggingRef.current = false;
+    dragStartPosRef.current = { x: e.clientX, y: e.clientY };
+    setDraggingTool(variant);
+    setDragPosition({ x: e.clientX, y: e.clientY });
+    
+    // Capture pointer for reliable tracking
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+  }, [carryModeTool]);
+
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    if (!draggingTool || !dragStartPosRef.current) return;
+    
+    const dx = e.clientX - dragStartPosRef.current.x;
+    const dy = e.clientY - dragStartPosRef.current.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    
+    // Mark as actual drag if moved more than 10px
+    if (distance > 10) {
+      isDraggingRef.current = true;
+    }
+    
+    setDragPosition({ x: e.clientX, y: e.clientY });
   }, [draggingTool]);
 
-  const handleDragEnd = useCallback((e: MouseEvent | TouchEvent) => {
+  const handlePointerUp = useCallback((e: React.PointerEvent) => {
     if (!draggingTool || !stageRef.current) {
-      setDraggingTool(null);
-      setDragPosition(null);
+      // Release pointer capture
+      try {
+        (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+      } catch {}
       return;
     }
 
-    const clientX = 'touches' in e ? e.changedTouches?.[0]?.clientX : e.clientX;
-    const clientY = 'touches' in e ? e.changedTouches?.[0]?.clientY : e.clientY;
+    const wasActualDrag = isDraggingRef.current;
     
-    const rect = stageRef.current.getBoundingClientRect();
-    const relY = ((clientY - rect.top) / rect.height) * 100;
+    // Release pointer capture
+    try {
+      (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+    } catch {}
     
-    if (relY < 75 && relY > 0) {
-      const option = draggingTool === 'a' ? optionA : optionB;
-      // Mark first drop complete and persist
-      if (!hasDraggedOnce) {
-        setHasDraggedOnce(true);
-        localStorage.setItem(DRAG_HINT_STORAGE_KEY, 'true');
-      }
-      // Trigger snap feedback
-      setJustPlaced(`${mission.mission_id}-${draggingTool}`);
-      setTimeout(() => setJustPlaced(null), 300);
+    if (wasActualDrag) {
+      // It was a real drag - check if dropped in valid zone
+      const rect = stageRef.current.getBoundingClientRect();
+      const relY = ((e.clientY - rect.top) / rect.height) * 100;
       
-      onSelect(mission.mission_id, draggingTool, option.holland_code as HollandCode, option);
+      if (relY < 75 && relY > 0) {
+        completePlacement(draggingTool);
+      }
+    } else {
+      // It was a tap - enter carry mode
+      setCarryModeTool(draggingTool);
     }
     
     setDraggingTool(null);
     setDragPosition(null);
-  }, [draggingTool, mission.mission_id, optionA, optionB, onSelect]);
+    isDraggingRef.current = false;
+    dragStartPosRef.current = null;
+  }, [draggingTool, completePlacement]);
 
-  useEffect(() => {
-    if (draggingTool) {
-      window.addEventListener('mousemove', handleDragMove);
-      window.addEventListener('mouseup', handleDragEnd);
-      window.addEventListener('touchmove', handleDragMove, { passive: false });
-      window.addEventListener('touchend', handleDragEnd);
-      
-      return () => {
-        window.removeEventListener('mousemove', handleDragMove);
-        window.removeEventListener('mouseup', handleDragEnd);
-        window.removeEventListener('touchmove', handleDragMove);
-        window.removeEventListener('touchend', handleDragEnd);
-      };
+  // Handle tap on drop zone in carry mode
+  const handleDropZoneTap = useCallback(() => {
+    if (carryModeTool) {
+      completePlacement(carryModeTool);
     }
-  }, [draggingTool, handleDragMove, handleDragEnd]);
+  }, [carryModeTool, completePlacement]);
+
+  // Cancel carry mode on escape or background tap
+  const handleCancelCarry = useCallback(() => {
+    setCarryModeTool(null);
+  }, []);
+
+  // Escape key cancels carry mode
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && carryModeTool) {
+        setCarryModeTool(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [carryModeTool]);
 
   const persistedProps = useMemo(() => {
     return placedProps.filter(p => p.persist === 'keep');
   }, [placedProps]);
 
   const targetPosition = useMemo(() => {
-    if (draggingTool) {
-      return getTargetAnchor(draggingTool);
+    if (activeToolVariant) {
+      return getTargetAnchor(activeToolVariant);
     }
     return null;
-  }, [draggingTool, getTargetAnchor]);
+  }, [activeToolVariant, getTargetAnchor]);
 
   // Scene extras (NPCs) based on current mission and picks
   const sceneExtras = useSceneExtras(mission.mission_id, currentIndex, placedProps);
@@ -195,8 +236,9 @@ export function VisualPlayScreen({
         maxWidth: '100vw',
         overflowX: 'hidden',
       }}
+      onClick={carryModeTool ? handleCancelCarry : undefined}
     >
-      {/* Background layer - shows drag preview or current bg with smooth crossfade */}
+      {/* Background layer */}
       <div 
         className="absolute inset-0 transition-opacity duration-300"
         style={{ 
@@ -217,7 +259,7 @@ export function VisualPlayScreen({
         }}
       />
 
-      {/* Scene extras layer - NPCs that spawn based on mission rules */}
+      {/* Scene extras layer */}
       {sceneExtras.map((extra) => {
         const anchorPos = getAnchorPosition(displayBgKey, extra.anchorRef);
         if (!anchorPos) return null;
@@ -245,14 +287,18 @@ export function VisualPlayScreen({
         );
       })}
 
-      {/* Target zone indicator - shows when dragging, at correct anchor on TARGET background */}
-      {draggingTool && targetPosition && (
+      {/* Target zone indicator - shows during drag or carry mode */}
+      {activeToolVariant && targetPosition && (
         <div 
-          className="absolute pointer-events-none z-15 animate-fade-in"
+          className="absolute z-15 animate-fade-in cursor-pointer"
           style={{
             left: `${targetPosition.x}%`,
             top: `${targetPosition.y}%`,
             transform: 'translate(-50%, -50%)',
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDropZoneTap();
           }}
         >
           {/* Pulsing glow ring */}
@@ -273,15 +319,25 @@ export function VisualPlayScreen({
           >
             <path d="M12 5v14M5 12l7 7 7-7" />
           </svg>
+          {/* Carry mode instruction */}
+          {carryModeTool && !draggingTool && (
+            <div 
+              className="absolute top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-medium px-3 py-1.5 rounded-full"
+              style={{
+                background: 'rgba(0,0,0,0.7)',
+                color: 'white',
+              }}
+            >
+              לחץ כאן להנחה
+            </div>
+          )}
         </div>
       )}
 
-      {/* Placed props layer - use displayBgKey for current view's anchor positions */}
+      {/* Placed props layer */}
       {persistedProps.map((prop, idx) => {
-        // Use assetName from pick record if available, fallback to constructed name
         const assetName = prop.assetName || `${prop.missionId.replace('studio_', 'studio_')}_${prop.key}`;
         const toolImg = getToolImage(assetName);
-        // Use displayBgKey to get anchors for the currently shown background
         const anchorPos = prop.anchorRef 
           ? getAnchorPosition(displayBgKey, prop.anchorRef as AnchorRef)
           : null;
@@ -326,10 +382,10 @@ export function VisualPlayScreen({
         />
       </div>
 
-      {/* Avatar - anchored bottom-right, stable size on mobile */}
+      {/* Avatar - anchored bottom-right, larger on mobile portrait */}
       {avatarImage && (
         <div 
-          className="absolute z-[25] animate-fade-in"
+          className="absolute z-[18] animate-fade-in"
           style={{
             right: '6px',
             bottom: 'calc(env(safe-area-inset-bottom, 0px) + 10px)',
@@ -347,23 +403,23 @@ export function VisualPlayScreen({
 
       {/* Speech bubble - positioned above dock, left of avatar on mobile */}
       <div 
-        className="absolute z-40 animate-pop-in"
+        className="absolute z-[25] animate-pop-in"
         style={{
-          right: 'calc(16px + clamp(220px, 34vh, 320px) * 0.45)',
-          bottom: 'calc(env(safe-area-inset-bottom, 0px) + 12px + clamp(120px, 18vh, 165px) + 14px)',
-          maxWidth: 'min(74vw, 360px)',
-          minWidth: '200px',
-          maxHeight: '26vh',
+          right: 'calc(16px + clamp(200px, 32vh, 300px) * 0.5)',
+          bottom: 'calc(env(safe-area-inset-bottom, 0px) + 12px + clamp(100px, 16vh, 150px) + 14px)',
+          maxWidth: 'min(70vw, 340px)',
+          minWidth: '180px',
+          maxHeight: '24vh',
         }}
       >
         <SpeechBubble tailDirection="right">
           <div 
             className="overflow-y-auto"
-            style={{ maxHeight: 'calc(26vh - 32px)' }}
+            style={{ maxHeight: 'calc(24vh - 28px)' }}
           >
             <p 
-              className="font-medium text-sm md:text-base lg:text-lg pr-4 md:pr-6"
-              style={{ lineHeight: 1.5 }}
+              className="font-medium text-sm md:text-base pr-3 md:pr-5"
+              style={{ lineHeight: 1.45 }}
             >
               {taskText}
             </p>
@@ -371,18 +427,18 @@ export function VisualPlayScreen({
         </SpeechBubble>
       </div>
 
-      {/* Floating tool panel - LEFT side, constrained size, never overlaps bubble */}
+      {/* Floating tool panel - LEFT side, compact */}
       <div 
         className="absolute z-20"
         style={{
           bottom: 'calc(env(safe-area-inset-bottom, 0px) + 12px)',
-          left: '16px',
-          width: 'clamp(220px, 44vw, 320px)',
-          height: 'clamp(120px, 18vh, 165px)',
+          left: '12px',
+          width: 'clamp(180px, 40vw, 280px)',
+          height: 'clamp(100px, 16vh, 150px)',
         }}
       >
         <div 
-          className="rounded-2xl px-3 py-2.5 md:px-5 md:py-4 h-full flex flex-col"
+          className="rounded-2xl px-3 py-2 md:px-4 md:py-3 h-full flex flex-col"
           style={{
             background: 'rgba(15, 20, 30, 0.65)',
             backdropFilter: 'blur(12px)',
@@ -390,66 +446,68 @@ export function VisualPlayScreen({
             border: '1px solid rgba(255,255,255,0.08)',
           }}
         >
-          {/* Progress tank */}
-          <div className="flex justify-center mb-2">
+          {/* Progress tank only - no text label */}
+          <div className="flex justify-center mb-1.5">
             <ProgressTank value={(currentIndex + 1) / totalMissions} />
           </div>
 
-          {/* Tool tiles with drag hint - flex-1 to fill remaining space */}
-          <div className="flex-1 flex gap-3 md:gap-5 justify-center items-center relative">
+          {/* Tool tiles with drag hint */}
+          <div className="flex-1 flex gap-3 md:gap-4 justify-center items-center relative">
             <DraggableToolTile
               image={toolAImage}
-              onClick={() => onSelect(mission.mission_id, 'a', optionA.holland_code as HollandCode, optionA)}
-              onDragStart={(e) => handleDragStart('a', e)}
+              onPointerDown={(e) => handlePointerDown('a', e)}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
               onInfoClick={() => setActiveTooltip(activeTooltip === 'a' ? null : 'a')}
               variant="a"
               isDragging={draggingTool === 'a'}
+              isCarryMode={carryModeTool === 'a'}
               isInfoActive={activeTooltip === 'a'}
             />
             <DraggableToolTile
               image={toolBImage}
-              onClick={() => onSelect(mission.mission_id, 'b', optionB.holland_code as HollandCode, optionB)}
-              onDragStart={(e) => handleDragStart('b', e)}
+              onPointerDown={(e) => handlePointerDown('b', e)}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
               onInfoClick={() => setActiveTooltip(activeTooltip === 'b' ? null : 'b')}
               variant="b"
               isDragging={draggingTool === 'b'}
+              isCarryMode={carryModeTool === 'b'}
               isInfoActive={activeTooltip === 'b'}
             />
             
-            {/* Animated drag hint - shows before first drop ever, when not dragging */}
-            {!hasDraggedOnce && !draggingTool && (
-              <div className="absolute -top-10 left-1/2 -translate-x-1/2 flex flex-col items-center">
+            {/* Animated drag hint */}
+            {!hasDraggedOnce && !draggingTool && !carryModeTool && (
+              <div className="absolute -top-9 left-1/2 -translate-x-1/2 flex flex-col items-center">
                 <DragHint />
               </div>
             )}
           </div>
 
-          {/* Tooltip tray - shown below tools when active */}
+          {/* Tooltip tray */}
           {activeTooltip && (
             <div 
-              className="mt-3 rounded-xl p-3 relative animate-fade-in"
+              className="mt-2 rounded-xl p-2.5 relative animate-fade-in"
               style={{
                 background: '#FFFCF5',
                 boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.08)',
               }}
             >
-              {/* Close button */}
               <button
                 onClick={() => setActiveTooltip(null)}
-                className="absolute top-2 left-2 w-5 h-5 rounded-full bg-slate-200 hover:bg-slate-300 flex items-center justify-center transition-colors"
+                className="absolute top-1.5 left-1.5 w-5 h-5 rounded-full bg-slate-200 hover:bg-slate-300 flex items-center justify-center transition-colors"
               >
                 <X className="w-3 h-3 text-slate-600" />
               </button>
               
-              {/* Tooltip text */}
               <p 
-                className="text-sm font-medium pr-2 pl-6"
+                className="text-xs font-medium pr-2 pl-5"
                 style={{
                   color: '#111',
                   direction: 'rtl',
                   textAlign: 'right',
                   fontFamily: "'Rubik', sans-serif",
-                  lineHeight: 1.5,
+                  lineHeight: 1.45,
                 }}
               >
                 {activeTooltip === 'a' 
@@ -475,14 +533,13 @@ export function VisualPlayScreen({
           <img 
             src={draggingTool === 'a' ? toolAImage : toolBImage}
             alt=""
-            className="w-20 h-20 md:w-24 md:h-24 object-contain drop-shadow-2xl opacity-90"
+            className="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-2xl opacity-90"
           />
-          {/* Hand icon */}
           <div 
-            className="absolute -bottom-2 -right-2 animate-hand-move"
+            className="absolute -bottom-1 -right-1 animate-hand-move"
             style={{ color: 'hsl(220 20% 20%)' }}
           >
-            <Hand className="w-7 h-7 md:w-8 md:h-8 drop-shadow-md" />
+            <Hand className="w-6 h-6 md:w-7 md:h-7 drop-shadow-md" />
           </div>
         </div>
       )}
@@ -493,31 +550,43 @@ export function VisualPlayScreen({
 
 interface DraggableToolTileProps {
   image: string | undefined;
-  onClick: () => void;
-  onDragStart: (e: React.MouseEvent | React.TouchEvent) => void;
+  onPointerDown: (e: React.PointerEvent) => void;
+  onPointerMove: (e: React.PointerEvent) => void;
+  onPointerUp: (e: React.PointerEvent) => void;
   onInfoClick: () => void;
   variant: 'a' | 'b';
   isDragging: boolean;
+  isCarryMode: boolean;
   isInfoActive: boolean;
 }
 
-function DraggableToolTile({ image, onClick, onDragStart, onInfoClick, variant, isDragging, isInfoActive }: DraggableToolTileProps) {
+function DraggableToolTile({ 
+  image, 
+  onPointerDown, 
+  onPointerMove, 
+  onPointerUp, 
+  onInfoClick, 
+  variant, 
+  isDragging, 
+  isCarryMode,
+  isInfoActive 
+}: DraggableToolTileProps) {
   return (
-    <div className={`relative ${isDragging ? 'opacity-40' : ''}`}>
-      {/* Tool tile - transparent PNG, no white card, responsive sizing */}
-      <button
-        onClick={onClick}
-        onMouseDown={onDragStart}
-        onTouchStart={onDragStart}
-        className="group relative overflow-visible transition-all duration-200 hover:scale-110 active:scale-95 cursor-grab active:cursor-grabbing"
+    <div className={`relative ${isDragging ? 'opacity-40' : ''} ${isCarryMode ? 'carry-mode-active' : ''}`}>
+      {/* Tool tile - transparent PNG, no white card */}
+      <div
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        className="draggable-tool group relative overflow-visible transition-all duration-200 hover:scale-110 active:scale-95 cursor-grab active:cursor-grabbing"
         style={{
-          width: 'clamp(64px, 12vw, 100px)',
-          height: 'clamp(64px, 12vw, 100px)',
-          minWidth: '64px',
-          minHeight: '64px',
+          width: 'clamp(56px, 11vw, 90px)',
+          height: 'clamp(56px, 11vw, 90px)',
+          minWidth: '56px',
+          minHeight: '56px',
         }}
       >
-        {/* Tool image - transparent PNG with subtle shadow only */}
+        {/* Tool image - transparent PNG with subtle shadow */}
         <div className="absolute inset-0 flex items-center justify-center">
           {image ? (
             <img 
@@ -525,27 +594,27 @@ function DraggableToolTile({ image, onClick, onDragStart, onInfoClick, variant, 
               alt="Tool option"
               className="w-full h-full object-contain transition-transform duration-200 group-hover:scale-108"
               style={{
-                filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.5))',
+                filter: 'drop-shadow(0 5px 10px rgba(0,0,0,0.45))',
               }}
               draggable={false}
             />
           ) : (
-            <span className="text-3xl">{variant === 'a' ? '🔧' : '🎨'}</span>
+            <span className="text-2xl md:text-3xl">{variant === 'a' ? '🔧' : '🎨'}</span>
           )}
         </div>
         
-        {/* Subtle hover glow - no ring, just soft glow */}
+        {/* Subtle hover glow */}
         <div 
           className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
           style={{
-            boxShadow: '0 0 24px hsl(170 80% 50% / 0.35)',
+            boxShadow: '0 0 20px hsl(170 80% 50% / 0.3)',
           }}
         />
-      </button>
+      </div>
 
       {/* Info icon - BOTTOM-LEFT corner */}
       <button 
-        className={`absolute -bottom-1 -left-1 z-10 w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center shadow-md transition-all hover:scale-110 ${
+        className={`absolute -bottom-0.5 -left-0.5 z-10 w-5 h-5 rounded-full flex items-center justify-center shadow-md transition-all hover:scale-110 ${
           isInfoActive 
             ? 'bg-white ring-2 ring-slate-400' 
             : 'bg-slate-800/90'
@@ -555,7 +624,7 @@ function DraggableToolTile({ image, onClick, onDragStart, onInfoClick, variant, 
           onInfoClick();
         }}
       >
-        <Info className={`w-3 h-3 md:w-3.5 md:h-3.5 ${isInfoActive ? 'text-slate-700' : 'text-white/90'}`} />
+        <Info className={`w-2.5 h-2.5 ${isInfoActive ? 'text-slate-700' : 'text-white/90'}`} />
       </button>
     </div>
   );

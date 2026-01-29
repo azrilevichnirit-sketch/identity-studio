@@ -32,14 +32,14 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
         }}
       />
 
-      {/* Avatar - responsive positioning, bottom right */}
+      {/* Avatar - responsive positioning, bottom right, larger on mobile */}
       {avatarImage && (
         <div 
           className="absolute z-20 animate-fade-in"
           style={{
-            right: 'clamp(16px, 4vw, 60px)',
-            bottom: 'clamp(16px, 3vh, 30px)',
-            height: 'clamp(180px, 35vh, 340px)',
+            right: 'clamp(8px, 2vw, 60px)',
+            bottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)',
+            height: 'clamp(220px, 40vh, 380px)',
             filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))',
           }}
         >
@@ -51,37 +51,31 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
         </div>
       )}
 
-      {/* Speech bubble with welcome text - responsive positioning */}
+      {/* Speech bubble with welcome text - positioned left of avatar, compact */}
       <div 
-        className="absolute z-15 animate-scale-in"
+        className="absolute z-30 animate-scale-in"
         style={{
-          // On mobile: more left space, on desktop: fixed position
-          right: 'clamp(140px, 35vw, 320px)',
-          bottom: 'clamp(80px, 15vh, 120px)',
-          maxWidth: 'min(420px, 55vw)',
-          minWidth: 'min(280px, 70vw)',
+          right: 'clamp(130px, 32vw, 320px)',
+          bottom: 'clamp(60px, 12vh, 120px)',
+          maxWidth: 'min(380px, 58vw)',
+          minWidth: 'min(260px, 65vw)',
         }}
       >
         <SpeechBubble 
-          tailDirection="right" 
-          className="py-3"
-          style={{
-            maxHeight: '50vh',
-            overflowY: 'auto',
-          }}
+          tailDirection="right"
         >
-          <div className="space-y-2 pr-4 md:pr-6">
-            <p className="font-semibold text-base md:text-lg">היי! איזה כיף להכיר אותך.</p>
-            <p className="text-sm md:text-base">
+          <div className="space-y-1.5 pr-3 md:pr-5">
+            <p className="font-semibold text-sm md:text-base">היי! איזה כיף להכיר אותך.</p>
+            <p className="text-xs md:text-sm leading-relaxed">
               אני {avatarName}, ואני איתך לאורך כל המסע הזה.
             </p>
-            <p className="text-sm md:text-base">
+            <p className="text-xs md:text-sm leading-relaxed">
               כאן ניצור ביחד את ה{arenaName} שלך, צעד אחרי צעד - עם בחירות קטנות שמרכיבות עולם שלם.
             </p>
-            <p className="text-sm md:text-base">
+            <p className="text-xs md:text-sm leading-relaxed">
               בכל שלב מחכה לך משימה ושתי אפשרויות. בוחרים, גוררים, וממשיכים.
             </p>
-            <p className="text-sm md:text-base">
+            <p className="text-xs md:text-sm leading-relaxed">
               בסוף נראה יחד את התמונה שנוצרה מהבחירות שלך.
             </p>
           </div>
@@ -92,13 +86,13 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
       <div 
         className="absolute z-20 animate-fade-in"
         style={{
-          left: 'max(env(safe-area-inset-left, 16px), 24px)',
-          bottom: 'max(env(safe-area-inset-bottom, 16px), 32px)',
+          left: 'max(env(safe-area-inset-left, 16px), 20px)',
+          bottom: 'max(env(safe-area-inset-bottom, 16px), 28px)',
         }}
       >
         <button
           onClick={onStart}
-          className="flex items-center gap-2 px-5 py-3.5 md:px-7 md:py-4 rounded-xl font-semibold text-base md:text-lg transition-all duration-200 hover:scale-105 active:scale-95"
+          className="flex items-center gap-2 px-5 py-3 md:px-7 md:py-4 rounded-xl font-semibold text-sm md:text-base transition-all duration-200 hover:scale-105 active:scale-95"
           style={{
             background: 'hsl(220 30% 12%)',
             color: 'white',
@@ -110,7 +104,7 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
           <span>יאללה, מתחילים?</span>
         </button>
       </div>
-
+      {/* No disclaimer here - it exists only on World Select and Summary */}
     </GameStage>
   );
 }

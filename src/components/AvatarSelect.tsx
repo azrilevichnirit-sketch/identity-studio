@@ -22,7 +22,7 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
         }}
       />
       
-      {/* Content - scrollable on mobile */}
+      {/* Content - scrollable on mobile, properly centered */}
       <div 
         className="relative z-10 h-full flex flex-col items-center justify-center px-4 py-6 overflow-auto"
         style={{
@@ -43,9 +43,9 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
               onClick={() => onSelect('female')}
               className="group relative rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
               style={{
-                width: 'min(88vw, 380px)',
-                height: 'clamp(140px, 35vw, 200px)',
-                minHeight: '140px',
+                width: 'min(85vw, 360px)',
+                height: 'clamp(130px, 32vw, 180px)',
+                minHeight: '130px',
                 background: 'rgba(255, 252, 245, 0.92)',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
               }}
@@ -55,7 +55,7 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
                   <img 
                     src={femaleAvatar} 
                     alt="Female avatar" 
-                    className="h-full max-h-32 md:max-h-40 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                    className="h-full max-h-28 md:max-h-36 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : (
                   <span className="text-5xl md:text-6xl">👩</span>
@@ -74,9 +74,9 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
               onClick={() => onSelect('male')}
               className="group relative rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
               style={{
-                width: 'min(88vw, 380px)',
-                height: 'clamp(140px, 35vw, 200px)',
-                minHeight: '140px',
+                width: 'min(85vw, 360px)',
+                height: 'clamp(130px, 32vw, 180px)',
+                minHeight: '130px',
                 background: 'rgba(255, 252, 245, 0.92)',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
               }}
@@ -86,7 +86,7 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
                   <img 
                     src={maleAvatar} 
                     alt="Male avatar" 
-                    className="h-full max-h-32 md:max-h-40 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                    className="h-full max-h-28 md:max-h-36 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : (
                   <span className="text-5xl md:text-6xl">👨</span>
@@ -103,6 +103,7 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
           </div>
         </div>
       </div>
+      {/* No disclaimer here - it exists only on World Select and Summary */}
     </GameStage>
   );
 }

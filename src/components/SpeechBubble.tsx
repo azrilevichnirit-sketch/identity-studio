@@ -60,13 +60,13 @@ export function SpeechBubble({
           }}
         />
         
-        {/* Content with comfortable padding */}
+        {/* Content with comfortable but compact padding */}
         <div 
-          className="relative px-5 py-3 md:px-6 md:py-3"
+          className="relative px-4 py-2.5 md:px-5 md:py-3"
           style={{
             fontFamily: "'Rubik', sans-serif",
-            fontSize: '17px',
-            lineHeight: '1.55',
+            fontSize: '15px',
+            lineHeight: '1.45',
             color: '#111',
             direction: 'rtl',
             textAlign: 'right',
