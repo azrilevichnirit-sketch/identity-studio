@@ -11,18 +11,19 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
   const maleAvatar = getAvatarImage('male', 'idle');
 
   return (
-    <div 
-      className="absolute inset-0 flex flex-col items-center justify-center"
-      style={{
-        width: '100vw',
-        height: '100vh',
-        backgroundImage: `url(${studioEntryBg})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center bottom',
-        backgroundRepeat: 'no-repeat',
-        filter: 'saturate(1.18) contrast(1.08)',
-      }}
-    >
+    <div className="absolute inset-0 overflow-auto">
+      {/* Background layer with filter - separate from interactive content */}
+      <div 
+        className="absolute inset-0 -z-10"
+        style={{
+          backgroundImage: `url(${studioEntryBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center bottom',
+          backgroundRepeat: 'no-repeat',
+          filter: 'saturate(1.18) contrast(1.08)',
+        }}
+      />
+      
       {/* Dark overlay for contrast */}
       <div 
         className="absolute inset-0 pointer-events-none"
@@ -31,72 +32,86 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
         }}
       />
       
-      {/* Content */}
-      <div className="relative z-10 flex flex-col items-center gap-8 animate-fade-in">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">Identity Engine</h1>
-          <p className="text-xl text-white/90 drop-shadow-md">בחר/י את הדמות שלך</p>
-        </div>
-        
-        {/* Avatar selection cards */}
-        <div className="flex gap-8">
-          <button
-            onClick={() => onSelect('female')}
-            className="group relative w-52 h-72 rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
-            style={{
-              background: 'rgba(255, 252, 245, 0.92)',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-            }}
-          >
-            <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-              {femaleAvatar ? (
-                <img 
-                  src={femaleAvatar} 
-                  alt="Female avatar" 
-                  className="h-48 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-                />
-              ) : (
-                <span className="text-7xl">👩</span>
-              )}
-              <span className="font-bold text-xl text-slate-800 mt-3 drop-shadow-sm">נקבה</span>
-            </div>
-            
-            {/* Hover glow */}
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-              style={{
-                background: 'radial-gradient(circle at center, hsl(var(--primary) / 0.2) 0%, transparent 70%)',
-              }}
-            />
-          </button>
+      {/* Content - scrollable on mobile */}
+      <div className="relative z-10 min-h-full flex flex-col items-center justify-center px-4 py-safe-top pb-safe-bottom"
+        style={{
+          paddingTop: 'max(env(safe-area-inset-top, 16px), 24px)',
+          paddingBottom: 'max(env(safe-area-inset-bottom, 16px), 24px)',
+        }}
+      >
+        <div className="flex flex-col items-center gap-6 md:gap-8 animate-fade-in w-full max-w-2xl">
+          {/* Title */}
+          <div className="text-center px-4">
+            <h1 className="text-2xl md:text-4xl font-bold text-white mb-2 drop-shadow-lg">Identity Engine</h1>
+            <p className="text-base md:text-xl text-white/90 drop-shadow-md">בחר/י את הדמות שלך</p>
+          </div>
           
-          <button
-            onClick={() => onSelect('male')}
-            className="group relative w-52 h-72 rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
-            style={{
-              background: 'rgba(255, 252, 245, 0.92)',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-            }}
-          >
-            <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-              {maleAvatar ? (
-                <img 
-                  src={maleAvatar} 
-                  alt="Male avatar" 
-                  className="h-48 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-                />
-              ) : (
-                <span className="text-7xl">👨</span>
-              )}
-              <span className="font-bold text-xl text-slate-800 mt-3 drop-shadow-sm">זכר</span>
-            </div>
-            
-            {/* Hover glow */}
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+          {/* Avatar selection cards - stacked on mobile, side-by-side on tablet+ */}
+          <div className="flex flex-col md:flex-row gap-4 md:gap-8 w-full items-center justify-center">
+            <button
+              onClick={() => onSelect('female')}
+              className="group relative rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
               style={{
-                background: 'radial-gradient(circle at center, hsl(var(--primary) / 0.2) 0%, transparent 70%)',
+                width: 'min(92vw, 420px)',
+                height: 'min(45vw, 220px)',
+                maxWidth: '420px',
+                background: 'rgba(255, 252, 245, 0.92)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
               }}
-            />
-          </button>
+            >
+              <div className="absolute inset-0 flex items-center justify-center p-4 gap-4">
+                {femaleAvatar ? (
+                  <img 
+                    src={femaleAvatar} 
+                    alt="Female avatar" 
+                    className="h-full max-h-40 md:max-h-48 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                  />
+                ) : (
+                  <span className="text-6xl md:text-7xl">👩</span>
+                )}
+                <span className="font-bold text-xl md:text-2xl text-slate-800 drop-shadow-sm">נקבה</span>
+              </div>
+              
+              {/* Hover glow */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                style={{
+                  background: 'radial-gradient(circle at center, hsl(var(--primary) / 0.2) 0%, transparent 70%)',
+                }}
+              />
+            </button>
+            
+            <button
+              onClick={() => onSelect('male')}
+              className="group relative rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
+              style={{
+                width: 'min(92vw, 420px)',
+                height: 'min(45vw, 220px)',
+                maxWidth: '420px',
+                background: 'rgba(255, 252, 245, 0.92)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+              }}
+            >
+              <div className="absolute inset-0 flex items-center justify-center p-4 gap-4">
+                {maleAvatar ? (
+                  <img 
+                    src={maleAvatar} 
+                    alt="Male avatar" 
+                    className="h-full max-h-40 md:max-h-48 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                  />
+                ) : (
+                  <span className="text-6xl md:text-7xl">👨</span>
+                )}
+                <span className="font-bold text-xl md:text-2xl text-slate-800 drop-shadow-sm">זכר</span>
+              </div>
+              
+              {/* Hover glow */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                style={{
+                  background: 'radial-gradient(circle at center, hsl(var(--primary) / 0.2) 0%, transparent 70%)',
+                }}
+              />
+            </button>
+          </div>
         </div>
       </div>
     </div>
