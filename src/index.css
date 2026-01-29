@@ -917,17 +917,18 @@
     min-height: 220px !important;
   }
 
-  /* ---- Avatar pinned right-bottom, bigger, always above ---- */
+  /* ---- Avatar pinned right, overlapping bubble ---- */
   .welcomeScreen .welcomeAvatar{
     position: absolute !important;
     right: 0 !important;
     bottom: 0 !important;
-    width: clamp(200px, 44vw, 290px) !important;
+    width: clamp(140px, 32vw, 200px) !important;
     z-index: 1200 !important;
     pointer-events: none !important;
     top: auto !important;
     left: auto !important;
     margin: 0 !important;
+    margin-left: -60px !important;
   }
   .welcomeScreen .welcomeAvatar img{
     width: 100% !important;
@@ -936,12 +937,12 @@
     max-width: none !important;
   }
 
-  /* ---- Bubble stays fully inside screen and close to avatar ---- */
+  /* ---- Bubble with space for overlapping avatar ---- */
   .welcomeScreen .welcomeBubble{
     position: relative !important;
     left: 0 !important;
     right: 0 !important;
-    width: 100% !important;
+    width: calc(100% - clamp(80px, 18vw, 120px)) !important;
     max-width: none !important;
     margin: 0 !important;
     z-index: 1 !important;
@@ -949,13 +950,13 @@
     overflow: visible !important;
     background-color: #fff !important;
 
-    /* reserve space for the avatar so text never hides */
-    padding-right: calc(clamp(200px, 44vw, 290px) + 12px) !important;
+    /* reserve space for the overlapping avatar */
+    padding-right: clamp(50px, 12vw, 80px) !important;
 
     /* restore typography (Rubik + normal sizes) */
     font-family: Rubik, system-ui, -apple-system, "Segoe UI", Arial, sans-serif !important;
-    font-size: 16px !important;
-    line-height: 1.45 !important;
+    font-size: 14px !important;
+    line-height: 1.4 !important;
   }
   .welcomeScreen .welcomeBubble::after{
     content:"" !important;
