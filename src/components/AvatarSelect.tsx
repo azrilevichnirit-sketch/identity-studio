@@ -1,6 +1,7 @@
 import type { AvatarGender } from '@/types/identity';
 import { getAvatarImage } from '@/lib/assetUtils';
 import studioEntryBg from '@/assets/backgrounds/studio_entry_inside_bg.png';
+import { GameStage } from './GameStage';
 
 interface AvatarSelectProps {
   onSelect: (gender: AvatarGender) => void;
@@ -11,35 +12,25 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
   const maleAvatar = getAvatarImage('male', 'idle');
 
   return (
-    <div className="absolute inset-0 overflow-auto">
-      {/* Background layer with filter - separate from interactive content */}
-      <div 
-        className="absolute inset-0 -z-10"
-        style={{
-          backgroundImage: `url(${studioEntryBg})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center bottom',
-          backgroundRepeat: 'no-repeat',
-          filter: 'saturate(1.18) contrast(1.08)',
-        }}
-      />
-      
+    <GameStage backgroundImage={studioEntryBg} enhanceBackground>
       {/* Dark overlay for contrast */}
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
           background: 'linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.35) 100%)',
+          zIndex: 1,
         }}
       />
       
       {/* Content - scrollable on mobile */}
-      <div className="relative z-10 min-h-full flex flex-col items-center justify-center px-4 py-safe-top pb-safe-bottom"
+      <div 
+        className="relative z-10 h-full flex flex-col items-center justify-center px-4 py-6 overflow-auto"
         style={{
           paddingTop: 'max(env(safe-area-inset-top, 16px), 24px)',
           paddingBottom: 'max(env(safe-area-inset-bottom, 16px), 24px)',
         }}
       >
-        <div className="flex flex-col items-center gap-6 md:gap-8 animate-fade-in w-full max-w-2xl">
+        <div className="flex flex-col items-center gap-5 md:gap-8 animate-fade-in w-full max-w-2xl">
           {/* Title */}
           <div className="text-center px-4">
             <h1 className="text-2xl md:text-4xl font-bold text-white mb-2 drop-shadow-lg">Identity Engine</h1>
@@ -52,9 +43,9 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
               onClick={() => onSelect('female')}
               className="group relative rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
               style={{
-                width: 'min(92vw, 420px)',
-                height: 'min(45vw, 220px)',
-                maxWidth: '420px',
+                width: 'min(88vw, 380px)',
+                height: 'clamp(140px, 35vw, 200px)',
+                minHeight: '140px',
                 background: 'rgba(255, 252, 245, 0.92)',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
               }}
@@ -64,10 +55,10 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
                   <img 
                     src={femaleAvatar} 
                     alt="Female avatar" 
-                    className="h-full max-h-40 md:max-h-48 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                    className="h-full max-h-32 md:max-h-40 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : (
-                  <span className="text-6xl md:text-7xl">👩</span>
+                  <span className="text-5xl md:text-6xl">👩</span>
                 )}
                 <span className="font-bold text-xl md:text-2xl text-slate-800 drop-shadow-sm">נקבה</span>
               </div>
@@ -84,9 +75,9 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
               onClick={() => onSelect('male')}
               className="group relative rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
               style={{
-                width: 'min(92vw, 420px)',
-                height: 'min(45vw, 220px)',
-                maxWidth: '420px',
+                width: 'min(88vw, 380px)',
+                height: 'clamp(140px, 35vw, 200px)',
+                minHeight: '140px',
                 background: 'rgba(255, 252, 245, 0.92)',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
               }}
@@ -96,10 +87,10 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
                   <img 
                     src={maleAvatar} 
                     alt="Male avatar" 
-                    className="h-full max-h-40 md:max-h-48 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                    className="h-full max-h-32 md:max-h-40 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : (
-                  <span className="text-6xl md:text-7xl">👨</span>
+                  <span className="text-5xl md:text-6xl">👨</span>
                 )}
                 <span className="font-bold text-xl md:text-2xl text-slate-800 drop-shadow-sm">זכר</span>
               </div>
@@ -114,6 +105,6 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
           </div>
         </div>
       </div>
-    </div>
+    </GameStage>
   );
 }
