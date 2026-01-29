@@ -97,7 +97,7 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
         {/* Avatar */}
         {avatarImage && (
           <div 
-            className="welcomeAvatarWrap"
+            className="welcomeAvatarWrap welcomeAvatar"
             style={{
               filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))',
             }}
