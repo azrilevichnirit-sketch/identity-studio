@@ -1,6 +1,5 @@
 import type { AvatarGender } from '@/types/identity';
 import { getAvatarImage } from '@/lib/assetUtils';
-import studioEntranceBg from '@/assets/backgrounds/studio_in_entrance_view_bg.webp';
 
 interface AvatarSelectProps {
   onSelect: (gender: AvatarGender) => void;
@@ -14,14 +13,17 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
     <div 
       className="absolute inset-0 flex flex-col items-center justify-center"
       style={{
-        backgroundImage: `url(${studioEntranceBg})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center bottom',
-        filter: 'saturate(1.1) contrast(1.05)',
+        background: 'linear-gradient(135deg, hsl(220 25% 12%) 0%, hsl(220 20% 18%) 50%, hsl(220 15% 22%) 100%)',
       }}
     >
-      {/* Dark overlay for readability */}
-      <div className="absolute inset-0 bg-black/40" />
+      {/* Subtle pattern overlay */}
+      <div 
+        className="absolute inset-0 opacity-30"
+        style={{
+          backgroundImage: `radial-gradient(circle at 30% 40%, hsl(170 80% 45% / 0.12) 0%, transparent 50%),
+                           radial-gradient(circle at 70% 60%, hsl(280 60% 55% / 0.12) 0%, transparent 50%)`,
+        }}
+      />
       
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center gap-8 animate-fade-in">
@@ -36,7 +38,7 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
             onClick={() => onSelect('female')}
             className="group relative w-52 h-72 rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
             style={{
-              background: 'rgba(255, 252, 245, 0.85)',
+              background: 'rgba(255, 252, 245, 0.9)',
               boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
             }}
           >
@@ -65,7 +67,7 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
             onClick={() => onSelect('male')}
             className="group relative w-52 h-72 rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
             style={{
-              background: 'rgba(255, 252, 245, 0.85)',
+              background: 'rgba(255, 252, 245, 0.9)',
               boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
             }}
           >

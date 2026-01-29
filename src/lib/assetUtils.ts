@@ -171,6 +171,24 @@ export function getBackgroundForMission(mission: Mission): string {
   return studioEntryInsideBg;
 }
 
+// Get the background key (for anchor map lookups)
+export function getBackgroundKey(mission: Mission): string {
+  // Priority 1: Use bg_override from CSV if present
+  if (mission.bg_override) {
+    return mission.bg_override;
+  }
+  
+  // Priority 2: Return default key based on view
+  const fallbackKey = `${mission.world}_${mission.view}`;
+  const keyMap: Record<string, string> = {
+    'studio_in': 'studio_entry_inside_bg',
+    'studio_front': 'studio_front_bg',
+    'studio_out': 'studio_front_bg',
+  };
+  
+  return keyMap[fallbackKey] || 'studio_entry_inside_bg';
+}
+
 export function getBackgroundByName(bgName: string): string | null {
   return backgroundAssets[bgName] || null;
 }

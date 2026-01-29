@@ -1,7 +1,7 @@
 import type { AvatarGender } from '@/types/identity';
 import { getAvatarImage } from '@/lib/assetUtils';
 import studioEntryBg from '@/assets/backgrounds/studio_entry_inside_bg.png';
-import bubbleRightAsset from '@/assets/ui/ui_bubble_right_1600x900.webp';
+import { ArrowLeft } from 'lucide-react';
 
 interface IntroScreenProps {
   avatarGender: AvatarGender;
@@ -33,19 +33,19 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
       <div 
         className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none"
         style={{
-          background: 'linear-gradient(to top, rgba(0,0,0,0.3) 0%, transparent 100%)',
+          background: 'linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 100%)',
         }}
       />
 
-      {/* Avatar - bottom right */}
+      {/* Avatar - bottom right, larger size */}
       {avatarImage && (
         <div 
           className="absolute z-20 animate-fade-in"
           style={{
-            right: '80px',
-            bottom: '40px',
-            height: '280px',
-            filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
+            right: '60px',
+            bottom: '30px',
+            height: '340px', // Larger avatar
+            filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))',
           }}
         >
           <img 
@@ -56,25 +56,44 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
         </div>
       )}
 
-      {/* Speech bubble with welcome text */}
+      {/* Speech bubble with welcome text - positioned near avatar */}
       <div 
         className="absolute z-15 animate-scale-in"
         style={{
-          left: '60px',
-          bottom: '100px',
-          maxWidth: '520px',
+          left: '40px',
+          bottom: '80px',
+          maxWidth: '480px',
         }}
       >
+        {/* Custom bubble with tail pointing to avatar */}
         <div 
-          className="relative"
+          className="relative rounded-2xl p-6"
           style={{
-            backgroundImage: `url(${bubbleRightAsset})`,
-            backgroundSize: '100% 100%',
-            backgroundRepeat: 'no-repeat',
-            padding: '32px 48px 32px 32px',
+            background: 'rgba(255, 252, 245, 0.95)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
           }}
         >
-          <div className="text-base text-foreground leading-relaxed space-y-3">
+          {/* Bubble tail pointing toward avatar (right side) */}
+          <div 
+            className="absolute"
+            style={{
+              right: '-16px',
+              bottom: '40px',
+              width: 0,
+              height: 0,
+              borderTop: '12px solid transparent',
+              borderBottom: '12px solid transparent',
+              borderLeft: '16px solid rgba(255, 252, 245, 0.95)',
+            }}
+          />
+          
+          <div 
+            className="text-foreground leading-[1.55] space-y-3"
+            style={{ 
+              fontFamily: "'Heebo', sans-serif",
+              fontSize: '17px',
+            }}
+          >
             <p className="font-semibold text-lg">היי! איזה כיף לראות אותך</p>
             <p>
               אני {avatarName}, ואני איתך לאורך כל המסע הזה.
@@ -90,11 +109,18 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
             </p>
           </div>
           
+          {/* CTA Button - LEFT side with LEFT arrow, dark background */}
           <button
             onClick={onStart}
-            className="mt-5 px-8 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-lg hover:bg-primary/90 transition-all duration-200 hover:scale-105 active:scale-95"
+            className="mt-5 flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-lg transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              background: 'hsl(220 25% 15%)',
+              color: 'white',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
+            }}
           >
-            יאללה, מתחילים? →
+            <ArrowLeft className="w-5 h-5" />
+            <span>יאללה, מתחילים?</span>
           </button>
         </div>
       </div>
