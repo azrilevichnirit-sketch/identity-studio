@@ -32,8 +32,8 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
         }}
       />
 
-      {/* MOBILE ONLY: Absolute positioned avatar and bubble */}
-      <div className="block md-desktop:hidden">
+      {/* MOBILE ONLY: Legacy block */}
+      <div className="welcomeLegacyBlock">
         {avatarImage && (
           <div 
             className="absolute z-20 animate-fade-in intro-avatar"
@@ -70,7 +70,7 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
       </div>
 
       {/* DESKTOP ONLY: Flex overlay for bubble + avatar */}
-      <div className="welcomeOverlayDesktop hidden md-desktop:flex animate-fade-in">
+      <div className="welcomeDesktopBlock welcomeOverlayDesktop animate-fade-in">
         {/* Speech bubble */}
         <div className="welcomeBubble animate-scale-in">
           <SpeechBubble tailDirection="right">
