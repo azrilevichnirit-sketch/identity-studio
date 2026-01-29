@@ -34,8 +34,8 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
 
       {/* MOBILE ONLY: Legacy block */}
       <div className="welcomeLegacyBlock welcomeHeroMobile">
-        <div className="heroRow welcomeHero">
-          <div className="heroBubble welcomeBubble animate-scale-in intro-bubble">
+        <div className="heroRow welcomeHero max-[820px]:fixed max-[820px]:left-5 max-[820px]:right-5 max-[820px]:bottom-24 max-[820px]:z-40 max-[820px]:isolate max-[820px]:w-auto max-[820px]:max-w-none">
+          <div className="heroBubble welcomeBubble animate-scale-in intro-bubble max-[820px]:relative max-[820px]:z-40 max-[820px]:w-full max-[820px]:max-w-none max-[820px]:pr-[180px]">
             <SpeechBubble tailDirection="right">
               <div className="space-y-1 pr-2">
                 <p className="font-semibold text-sm">היי! איזה כיף להכיר אותך.</p>
@@ -56,7 +56,7 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
           </div>
           {avatarImage && (
             <div 
-              className="heroAvatar welcomeAvatar animate-fade-in intro-avatar"
+              className="heroAvatar welcomeAvatar animate-fade-in intro-avatar max-[820px]:absolute max-[820px]:right-0 max-[820px]:bottom-0 max-[820px]:z-50 max-[820px]:w-[180px] max-[820px]:pointer-events-none"
               style={{
                 filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))',
               }}
@@ -64,7 +64,7 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
               <img 
                 src={avatarImage} 
                 alt="Your avatar"
-                className="h-full w-auto object-contain"
+                className="h-full w-auto object-contain max-[820px]:w-full max-[820px]:h-auto max-[820px]:max-w-none"
               />
             </div>
           )}
