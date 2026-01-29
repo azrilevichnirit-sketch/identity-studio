@@ -41,8 +41,19 @@ export function VisualPlayScreen({
   const optionA = mission.options.find((o) => o.key === 'a')!;
   const optionB = mission.options.find((o) => o.key === 'b')!;
 
-  const currentBg = useMemo(() => getBackgroundForMission(mission), [mission]);
-  const currentBgKey = useMemo(() => getBackgroundKey(mission), [mission]);
+  // Get the previous pick's nextBgOverride to determine current background
+  const previousBgOverride = useMemo(() => {
+    // Find the pick for the previous mission
+    const prevPicks = placedProps.slice(0, -1); // All picks except current
+    if (prevPicks.length > 0) {
+      const lastPick = prevPicks[prevPicks.length - 1];
+      return lastPick.nextBgOverride;
+    }
+    return undefined;
+  }, [placedProps]);
+
+  const currentBg = useMemo(() => getBackgroundForMission(mission, previousBgOverride), [mission, previousBgOverride]);
+  const currentBgKey = useMemo(() => getBackgroundKey(mission, previousBgOverride), [mission, previousBgOverride]);
   const avatarImage = getAvatarImage(avatarGender, 'idle');
   const toolAImage = getToolImage(optionA.asset);
   const toolBImage = getToolImage(optionB.asset);
@@ -191,7 +202,9 @@ export function VisualPlayScreen({
 
       {/* Placed props layer */}
       {persistedProps.map((prop, idx) => {
-        const toolImg = getToolImage(prop.missionId.replace('studio_', 'studio_') + '_' + prop.key);
+        // Use assetName from pick record if available, fallback to constructed name
+        const assetName = prop.assetName || `${prop.missionId.replace('studio_', 'studio_')}_${prop.key}`;
+        const toolImg = getToolImage(assetName);
         const anchorPos = prop.anchorRef 
           ? getAnchorPosition(currentBgKey, prop.anchorRef as AnchorRef)
           : null;
@@ -205,8 +218,8 @@ export function VisualPlayScreen({
             key={`${prop.missionId}-${idx}`}
             className={`absolute pointer-events-none ${isJustPlaced ? 'animate-snap-pop' : 'animate-snap-place'}`}
             style={{
-              left: `${anchorPos.x + (prop.offsetX || 0) / 10}%`,
-              top: `${anchorPos.y + (prop.offsetY || 0) / 10}%`,
+              left: `${anchorPos.x + (prop.offsetX || 0)}%`,
+              top: `${anchorPos.y + (prop.offsetY || 0)}%`,
               transform: `translate(-50%, -50%) scale(${(prop.scale || 1) * anchorPos.scale})`,
               zIndex: anchorPos.z_layer === 'back' ? 5 : anchorPos.z_layer === 'mid' ? 10 : 15,
             }}

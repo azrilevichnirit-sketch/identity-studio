@@ -60,6 +60,10 @@ export function useGameState() {
         missionId, 
         key, 
         hollandCode,
+        // Include asset name for rendering
+        assetName: option?.asset,
+        // Include next_bg_override for background transitions
+        nextBgOverride: option?.next_bg_override,
         // Include placement info from option if provided
         placementMode: option?.placement_mode,
         anchorRef: option?.anchor_ref,
