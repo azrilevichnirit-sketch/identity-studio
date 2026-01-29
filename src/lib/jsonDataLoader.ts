@@ -27,6 +27,7 @@ function parseOption(row: Record<string, unknown>, variant: 'a' | 'b'): MissionO
     asset: String(row[`option_${suffix}_asset`] || ''),
     tooltip_heb: String(row[`option_${suffix}_tooltip_heb`] || '').replace(/^"|"$/g, ''),
     view: String(row[`option_${suffix}_view`] || ''),
+    next_bg_override: row[`next_bg_override_${suffix}`] ? String(row[`next_bg_override_${suffix}`]) : undefined,
     placement_mode: (String(row[`placement_mode_${suffix}`]) || 'floor') as PlacementMode,
     anchor_ref: (String(row[`anchor_ref_${suffix}`]) || 'floor') as AnchorRef,
     offset_x: Number(row[`offset_x_${suffix}`]) || 0,

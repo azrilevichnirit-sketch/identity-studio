@@ -34,6 +34,8 @@ export interface MissionOption {
   asset: string;
   tooltip_heb: string;
   view: string;
+  // Background for next mission after this option is chosen
+  next_bg_override?: string;
   // Placement fields from CSV
   placement_mode?: PlacementMode;
   anchor_ref?: AnchorRef;
@@ -66,6 +68,10 @@ export interface PickRecord {
   missionId: string;
   key: 'a' | 'b';
   hollandCode: HollandCode;
+  // Asset name for rendering
+  assetName?: string;
+  // Background override for the next mission
+  nextBgOverride?: string;
   // Placement info for rendering
   placementMode?: PlacementMode;
   anchorRef?: AnchorRef;

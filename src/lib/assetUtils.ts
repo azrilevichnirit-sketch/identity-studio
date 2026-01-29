@@ -155,13 +155,18 @@ export function getToolImage(assetName: string): string | null {
   return toolAssets[assetName] || null;
 }
 
-export function getBackgroundForMission(mission: Mission): string {
-  // Priority 1: Use bg_override from CSV if present
+export function getBackgroundForMission(mission: Mission, previousPickBgOverride?: string): string {
+  // Priority 1: Use next_bg_override from previous pick if available
+  if (previousPickBgOverride && backgroundAssets[previousPickBgOverride]) {
+    return backgroundAssets[previousPickBgOverride];
+  }
+  
+  // Priority 2: Use bg_override from current mission if present
   if (mission.bg_override && backgroundAssets[mission.bg_override]) {
     return backgroundAssets[mission.bg_override];
   }
   
-  // Priority 2: Fallback by (world, view)
+  // Priority 3: Fallback by (world, view)
   const fallbackKey = `${mission.world}_${mission.view}`;
   if (backgroundFallback[fallbackKey]) {
     return backgroundFallback[fallbackKey];
@@ -172,13 +177,18 @@ export function getBackgroundForMission(mission: Mission): string {
 }
 
 // Get the background key (for anchor map lookups)
-export function getBackgroundKey(mission: Mission): string {
-  // Priority 1: Use bg_override from CSV if present
+export function getBackgroundKey(mission: Mission, previousPickBgOverride?: string): string {
+  // Priority 1: Use next_bg_override from previous pick if available
+  if (previousPickBgOverride) {
+    return previousPickBgOverride;
+  }
+  
+  // Priority 2: Use bg_override from current mission if present
   if (mission.bg_override) {
     return mission.bg_override;
   }
   
-  // Priority 2: Return default key based on view
+  // Priority 3: Return default key based on view
   const fallbackKey = `${mission.world}_${mission.view}`;
   const keyMap: Record<string, string> = {
     'studio_in': 'studio_entry_inside_bg',
