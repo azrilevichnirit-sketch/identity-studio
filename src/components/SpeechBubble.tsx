@@ -15,8 +15,9 @@ interface SpeechBubbleProps {
  * Uses high-contrast cream background with dark text.
  * RTL-ready with Hebrew-friendly typography.
  * 
- * The tail is built as a CSS pseudo-element so it shares the same
- * drop-shadow as the bubble (no visible seam).
+ * The tail is implemented as a CSS pseudo-element (::after) so it
+ * shares the same drop-shadow filter as the bubble body, creating
+ * a seamless unified shape with no visible seam.
  */
 export function SpeechBubble({ 
   children, 
@@ -24,56 +25,34 @@ export function SpeechBubble({
   className = '',
   style = {},
 }: SpeechBubbleProps) {
-  // Using a wrapper with drop-shadow filter so the tail shares the same shadow
-  // This creates a seamless single-bubble appearance
+  // Wrapper applies drop-shadow filter to the entire shape (body + tail)
+  // This creates a unified shadow that wraps both elements seamlessly
   return (
     <div 
-      className={`relative speech-bubble-wrapper ${className}`}
+      className={`speech-bubble-wrapper ${className}`}
       style={{
-        // drop-shadow on wrapper applies to all child shapes uniformly
-        filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.20))',
+        position: 'relative',
+        filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.15)) drop-shadow(0 2px 6px rgba(0,0,0,0.08))',
         ...style,
       }}
     >
-      {/* Main bubble body */}
+      {/* Main bubble body with ::after tail */}
       <div 
-        className="relative rounded-[20px] speech-bubble-body"
+        className={`speech-bubble-body speech-bubble-tail-${tailDirection}`}
         style={{
+          position: 'relative',
           background: '#FFFDF8',
+          borderRadius: '18px',
         }}
       >
-        {/* Tail - positioned to overlap bubble edge, creating seamless connection */}
-        {/* Using same background color and no separate shadow (wrapper handles it) */}
-        <div
-          className="speech-bubble-tail"
-          style={{
-            position: 'absolute',
-            width: '22px',
-            height: '22px',
-            background: '#FFFDF8',
-            borderRadius: '5px',
-            // Position tail to slightly overlap the bubble body
-            ...(tailDirection === 'right' ? {
-              right: '-8px',
-              bottom: '24px',
-              transform: 'rotate(45deg)',
-            } : {
-              left: '-8px',
-              bottom: '24px',
-              transform: 'rotate(45deg)',
-            }),
-            // Clip the outer corner for smoother blend
-            zIndex: -1,
-          }}
-        />
-        
-        {/* Content area with comfortable padding */}
+        {/* Content area */}
         <div 
-          className="relative px-4 py-3 md:px-5 md:py-3.5"
+          className="speech-bubble-content"
           style={{
+            padding: '14px 18px',
             fontFamily: "'Rubik', sans-serif",
             fontSize: '15px',
-            lineHeight: '1.5',
+            lineHeight: '1.55',
             color: '#1a1a1a',
             direction: 'rtl',
             textAlign: 'right',
@@ -82,6 +61,34 @@ export function SpeechBubble({
           {children}
         </div>
       </div>
+
+      {/* 
+        Inline style tag for ::after pseudo-element
+        This is cleaner than injecting global CSS and keeps the component self-contained
+      */}
+      <style>{`
+        .speech-bubble-tail-right::after,
+        .speech-bubble-tail-left::after {
+          content: '';
+          position: absolute;
+          width: 20px;
+          height: 20px;
+          background: #FFFDF8;
+          border-radius: 4px;
+          bottom: 20px;
+          z-index: -1;
+        }
+        
+        .speech-bubble-tail-right::after {
+          right: -7px;
+          transform: rotate(45deg);
+        }
+        
+        .speech-bubble-tail-left::after {
+          left: -7px;
+          transform: rotate(45deg);
+        }
+      `}</style>
     </div>
   );
 }
