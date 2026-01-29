@@ -34,12 +34,8 @@ export function SummaryScreen({ state, countsFinal, leaders }: SummaryScreenProp
 
   return (
     <div 
-      className="fixed inset-0 flex items-center justify-center overflow-hidden"
+      className="game-stage flex items-center justify-center"
       style={{
-        width: '100vw',
-        height: '100dvh',
-        minHeight: '100vh',
-        margin: 0,
         backgroundImage: `url(${studioEntranceBg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center bottom',
@@ -51,13 +47,7 @@ export function SummaryScreen({ state, countsFinal, leaders }: SummaryScreenProp
       
       {/* Content - vertical on mobile, horizontal on desktop */}
       <div 
-        className="relative z-10 flex flex-col md:flex-row gap-4 md:gap-6 animate-fade-in overflow-auto w-full h-full items-center justify-start md:justify-center"
-        style={{
-          paddingTop: 'max(env(safe-area-inset-top, 16px), 20px)',
-          paddingBottom: 'max(env(safe-area-inset-bottom, 16px), 60px)',
-          paddingLeft: 'max(env(safe-area-inset-left, 16px), 16px)',
-          paddingRight: 'max(env(safe-area-inset-right, 16px), 16px)',
-        }}
+        className="relative z-10 flex flex-col md:flex-row gap-4 md:gap-6 animate-fade-in overflow-auto w-full h-full items-center justify-start md:justify-center game-stage-content p-4 md:p-8"
       >
         {/* Results card */}
         <div 

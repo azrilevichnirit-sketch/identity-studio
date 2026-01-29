@@ -32,13 +32,8 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
   return (
     <TooltipProvider>
       <div 
-        className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden"
+        className="game-stage flex flex-col items-center justify-center"
         style={{
-          width: '100vw',
-          height: '100dvh',
-          minHeight: '100vh',
-          margin: 0,
-          padding: 0,
           background: 'linear-gradient(135deg, hsl(220 25% 12%) 0%, hsl(220 20% 18%) 50%, hsl(220 15% 22%) 100%)',
         }}
       >
@@ -51,16 +46,9 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
           }}
         />
         
-        {/* Content with safe-area padding */}
+        {/* Content - desktop centered, mobile with safe-area */}
         <div 
-          className="relative z-10 flex flex-col items-center gap-5 md:gap-8 animate-fade-in w-full max-w-3xl overflow-auto"
-          style={{
-            paddingTop: 'max(env(safe-area-inset-top, 16px), 24px)',
-            paddingBottom: 'max(env(safe-area-inset-bottom, 16px), 24px)',
-            paddingLeft: 'max(env(safe-area-inset-left, 16px), 16px)',
-            paddingRight: 'max(env(safe-area-inset-right, 16px), 16px)',
-            maxHeight: '100%',
-          }}
+          className="relative z-10 flex flex-col items-center gap-5 md:gap-8 animate-fade-in w-full max-w-3xl overflow-auto game-stage-content p-4 md:p-8"
         >
           {/* Title */}
           <div className="text-center px-4">

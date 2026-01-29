@@ -245,14 +245,7 @@ export function VisualPlayScreen({
   return (
     <div 
       ref={stageRef} 
-      className="fixed inset-0 overflow-hidden"
-      style={{
-        width: '100vw',
-        height: '100dvh',
-        minHeight: '100vh',
-        maxWidth: '100vw',
-        overflowX: 'hidden',
-      }}
+      className="game-stage"
       onClick={carryModeTool ? handleCancelCarry : undefined}
     >
       {/* Background layer */}
@@ -424,14 +417,8 @@ export function VisualPlayScreen({
         );
       })}
 
-      {/* Back/Undo popover - top right with safe-area */}
-      <div 
-        className="absolute z-30"
-        style={{
-          top: 'max(env(safe-area-inset-top, 12px), 16px)',
-          right: 'max(env(safe-area-inset-right, 12px), 16px)',
-        }}
-      >
+      {/* Back/Undo popover - uses responsive CSS class */}
+      <div className="mission-undo-btn">
         <UndoConfirmPopover
           open={showUndoDialog}
           onOpenChange={setShowUndoDialog}
@@ -440,17 +427,9 @@ export function VisualPlayScreen({
         />
       </div>
 
-      {/* Avatar - anchored bottom-right, larger on mobile portrait */}
+      {/* Avatar - uses responsive CSS class */}
       {avatarImage && (
-        <div 
-          className="absolute z-[18] animate-fade-in"
-          style={{
-            right: '6px',
-            bottom: 'calc(env(safe-area-inset-bottom, 0px) + 10px)',
-            height: 'clamp(280px, 42vh, 410px)',
-            filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.6))',
-          }}
-        >
+        <div className="mission-avatar animate-fade-in">
           <img 
             src={avatarImage} 
             alt="Guide avatar"
@@ -459,21 +438,12 @@ export function VisualPlayScreen({
         </div>
       )}
 
-      {/* Speech bubble - positioned above dock, left of avatar on mobile */}
-      <div 
-        className="absolute z-[25] animate-pop-in"
-        style={{
-          right: 'calc(16px + clamp(200px, 32vh, 300px) * 0.5)',
-          bottom: 'calc(env(safe-area-inset-bottom, 0px) + 12px + clamp(100px, 16vh, 150px) + 14px)',
-          maxWidth: 'min(70vw, 340px)',
-          minWidth: '180px',
-          maxHeight: '24vh',
-        }}
-      >
+      {/* Speech bubble - uses responsive CSS class */}
+      <div className="mission-bubble animate-pop-in">
         <SpeechBubble tailDirection="right">
           <div 
             className="overflow-y-auto"
-            style={{ maxHeight: 'calc(24vh - 28px)' }}
+            style={{ maxHeight: 'calc(22vh - 28px)' }}
           >
             <p 
               className="font-medium text-sm md:text-base pr-3 md:pr-5"
@@ -485,25 +455,9 @@ export function VisualPlayScreen({
         </SpeechBubble>
       </div>
 
-      {/* Floating tool panel - LEFT side, compact */}
-      <div 
-        className="absolute z-20"
-        style={{
-          bottom: 'calc(env(safe-area-inset-bottom, 0px) + 12px)',
-          left: '12px',
-          width: 'clamp(180px, 40vw, 280px)',
-          height: 'clamp(100px, 16vh, 150px)',
-        }}
-      >
-        <div 
-          className="rounded-2xl px-3 py-2 md:px-4 md:py-3 h-full flex flex-col"
-          style={{
-            background: 'rgba(15, 20, 30, 0.65)',
-            backdropFilter: 'blur(12px)',
-            boxShadow: '0 6px 24px rgba(0,0,0,0.25)',
-            border: '1px solid rgba(255,255,255,0.08)',
-          }}
-        >
+      {/* Floating tool panel - uses responsive CSS class (bottom-center on desktop, bottom-left on mobile) */}
+      <div className="mission-tool-panel">
+        <div className="mission-tool-panel-inner">
           {/* Progress tank only - no text label */}
           <div className="flex justify-center mb-1.5">
             <ProgressTank value={(currentIndex + 1) / totalMissions} />
