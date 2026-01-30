@@ -255,24 +255,27 @@ export function VisualPlayScreen({
     });
 
     // Let the player *first* see the tool settle, then a subtle lock confirmation.
-    // NOTE: Mission 01 Tool B should NOT re-render as a smaller tool during "lock".
-    // We avoid the justPlaced animation for that case and only use the glow pulse.
     setJustPlaced(null);
     setLockPulseKey(null);
     const isMission01Paint = mission.mission_id === 'studio_01' && variant === 'a';
     const isMission01ToolB = mission.mission_id === 'studio_01' && variant === 'b';
     
-    // Mission 01 Tool B: lock should feel immediate (glow only), no transform-based animation.
-    const lockDelayMs = isMission01Paint ? 900 : 120;
+    // ===== Mission 01 Tool B timing sequence =====
+    // 0ms:      Tool appears on floor (localPlacement set above)
+    // 300ms:    Lock glow starts (smooth confirmation)
+    // 1100ms:   Lock glow ends (300 + 800ms duration)
+    // 1200ms:   Staff character enters (after lock completes)
+    // 2800ms:   Mission advances (player sees staff arrive)
+    // ===============================================
+    
+    const lockDelayMs = isMission01Paint ? 900 : (isMission01ToolB ? 300 : 120);
     const lockOnId = window.setTimeout(() => {
-      if (!isMission01ToolB) {
-        setJustPlaced(`${mission.mission_id}-${variant}`);
-      }
+      setJustPlaced(`${mission.mission_id}-${variant}`);
       setLockPulseKey(`${mission.mission_id}-${variant}`);
     }, lockDelayMs);
     timeoutsRef.current.push(lockOnId);
 
-    // Lock pulse duration - longer for Mission 01 to give visual feedback
+    // Lock pulse duration
     const lockPulseDuration = isMission01ToolB ? 800 : 650;
     const lockOffId = window.setTimeout(() => {
       setLockPulseKey(null);
@@ -304,8 +307,8 @@ export function VisualPlayScreen({
     // We wait 2500ms to ensure users see the full blink effect + painted walls
     // Mission 01 paint: only advance after the player clearly sees the “painted walls” beat.
     const isMission02 = mission.mission_id === 'studio_02';
-    // Mission 01 Tool B: 3500ms so staff has time to enter and player sees the scene
-    const advanceDelay = isMission01Paint ? 3200 : (isMission01ToolB ? 3500 : (isMission02 ? 2600 : 2500));
+    // Mission 01 Tool B: 2800ms - enough time for lock (1100ms) + staff entry + viewing
+    const advanceDelay = isMission01Paint ? 3200 : (isMission01ToolB ? 2800 : (isMission02 ? 2600 : 2500));
     const advanceId = window.setTimeout(() => {
       // For Mission 01 Tool B: DON'T clear localPlacement before onSelect
       // This prevents the tool from disappearing before it's added to placedProps
@@ -523,13 +526,31 @@ export function VisualPlayScreen({
     }
   }, [mission.mission_id, placedProps]);
   
-  // Trigger female staff entry shortly after Mission 01 Tool B is placed
+  // Track if we've seen the lock pulse for M01 Tool B (to know when it ends)
+  const [hadM01ToolBLock, setHadM01ToolBLock] = useState(false);
+  
+  // When lock pulse starts for M01 Tool B, track it
   useEffect(() => {
-    if (localPlacement?.missionId === 'studio_01' && localPlacement.key === 'b') {
-      const id = window.setTimeout(() => setStaffEnterReady(true), 350);
+    if (lockPulseKey === 'studio_01-b') {
+      setHadM01ToolBLock(true);
+    }
+  }, [lockPulseKey]);
+  
+  // Trigger female staff entry AFTER lock pulse finishes
+  useEffect(() => {
+    // When lock pulse ends for Mission 01 Tool B (hadM01ToolBLock true but lockPulseKey null)
+    if (hadM01ToolBLock && !lockPulseKey && localPlacement?.missionId === 'studio_01' && localPlacement.key === 'b') {
+      const id = window.setTimeout(() => setStaffEnterReady(true), 100);
       return () => window.clearTimeout(id);
     }
-  }, [localPlacement]);
+  }, [hadM01ToolBLock, lockPulseKey, localPlacement]);
+  
+  // Reset hadM01ToolBLock when mission changes
+  useEffect(() => {
+    if (mission.mission_id !== 'studio_01') {
+      setHadM01ToolBLock(false);
+    }
+  }, [mission.mission_id]);
   
   // Trigger male staff entry after Mission 02 tool lock pulse finishes
   useEffect(() => {
@@ -841,10 +862,11 @@ export function VisualPlayScreen({
                   isPersisted
                     ? ''
                     : (isMission01ToolB
+                        // Tool B: simple fade-in, lock glow handled on img element
                         ? 'animate-tool-appear'
-                        : (isJustPlaced
-                            ? (prop.missionId === 'studio_01' && prop.key === 'a' ? 'animate-snap-place' : 'animate-snap-pop-blink')
-                            : 'animate-snap-place'))
+                        : (isMission01Buckets
+                            ? 'animate-snap-place'
+                            : (isJustPlaced ? 'animate-snap-pop-blink' : 'animate-snap-place')))
                 }`}
                 style={{
                 left: `${leftValue}%`,
