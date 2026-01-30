@@ -59,7 +59,7 @@ function DesktopMissionLayout({
   return (
     <div 
       ref={stageRef} 
-      className="game-stage desktop-layout"
+      className="game-stage desktop-layout missionScreen"
       onClick={isCarryMode ? onCancelCarry : undefined}
     >
       {/* Background layer */}
@@ -80,18 +80,18 @@ function DesktopMissionLayout({
         {undoButton}
       </div>
 
-      {/* Avatar - right side, foreground */}
-      <div className="desktop-avatar">
-        {avatar}
-      </div>
-
-      {/* Speech bubble - near avatar, behind it */}
-      <div className="desktop-bubble">
-        {speechBubble}
+      {/* Hero row: bubble + avatar, like Welcome screen */}
+      <div className="mission-hero-desktop">
+        <div className="mission-bubble-desktop">
+          {speechBubble}
+        </div>
+        <div className="mission-avatar-desktop">
+          {avatar}
+        </div>
       </div>
 
       {/* Tool panel - bottom LEFT on desktop */}
-      <div className="desktop-tool-panel">
+      <div className="mission-tool-panel-desktop">
         {toolPanel}
       </div>
 
@@ -127,43 +127,43 @@ function MobileMissionLayout({
   return (
     <div 
       ref={stageRef} 
-      className="game-stage mobile-layout"
+      className="game-stage mobile-layout missionScreen"
       onClick={isCarryMode ? onCancelCarry : undefined}
     >
       {/* Background layer with mobile zoom */}
       {background}
       {gradientOverlay}
 
-      {/* Scene extras - z-index 3-8 */}
+      {/* Scene extras */}
       {sceneExtras}
 
-      {/* Target zone - z-index 12 */}
+      {/* Target zone */}
       {targetZone}
 
-      {/* Placed props - z-index 5-15 */}
+      {/* Placed props */}
       {placedProps}
 
-      {/* Tool panel - z-index 18 (bottom-left, compact) */}
-      <div className="mobile-tool-panel">
-        {toolPanel}
-      </div>
-
-      {/* Speech bubble - z-index 20 (above tray) */}
-      <div className="mobile-bubble">
-        {speechBubble}
-      </div>
-
-      {/* Avatar - z-index 25 (right side, foreground) */}
-      <div className="mobile-avatar">
-        {avatar}
-      </div>
-
-      {/* Top-right undo button - z-index 30 */}
-      <div className="mobile-undo-btn">
+      {/* Top-right undo button */}
+      <div className="mission-undo-btn">
         {undoButton}
       </div>
 
-      {/* Dragging ghost - z-index 55 */}
+      {/* Tool panel - bottom-left */}
+      <div className="mission-tool-panel-mobile">
+        {toolPanel}
+      </div>
+
+      {/* Hero row: bubble + avatar (like Welcome screen) */}
+      <div className="mission-hero-mobile">
+        <div className="mission-bubble-mobile">
+          {speechBubble}
+        </div>
+        <div className="mission-avatar-mobile">
+          {avatar}
+        </div>
+      </div>
+
+      {/* Dragging ghost */}
       {draggingGhost}
     </div>
   );
