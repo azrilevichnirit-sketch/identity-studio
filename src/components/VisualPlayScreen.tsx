@@ -492,6 +492,18 @@ export function VisualPlayScreen({
   // She enters with a delayed animation so the sequence is: tool locks → staff walks in → mission advances
   const [staffEnterReady, setStaffEnterReady] = useState(false);
   
+  // Reset staff visibility when mission changes (except when going to mission 02 with Tool B)
+  useEffect(() => {
+    // Only show staff if we're in mission 02 AND Tool B was chosen
+    const hasMission01ToolB = placedProps.some(p => p.missionId === 'studio_01' && p.key === 'b');
+    if (mission.mission_id === 'studio_02' && hasMission01ToolB) {
+      setStaffEnterReady(true);
+    } else if (mission.mission_id === 'studio_01') {
+      // Reset when back in mission 1 (fresh start or undo)
+      setStaffEnterReady(false);
+    }
+  }, [mission.mission_id, placedProps]);
+  
   // Trigger staff entry after tool lock pulse finishes (lockPulseKey set → wait 600ms → show staff)
   useEffect(() => {
     if (lockPulseKey === 'studio_01-b') {
@@ -499,14 +511,6 @@ export function VisualPlayScreen({
       return () => window.clearTimeout(id);
     }
   }, [lockPulseKey]);
-  
-  // Keep staff visible once she's entered (even after mission changes)
-  useEffect(() => {
-    if (mission.mission_id === 'studio_02') {
-      const hasMission01ToolB = placedProps.some(p => p.missionId === 'studio_01' && p.key === 'b');
-      if (hasMission01ToolB) setStaffEnterReady(true);
-    }
-  }, [mission.mission_id, placedProps]);
   
   const showFemaleStaff = staffEnterReady;
   
