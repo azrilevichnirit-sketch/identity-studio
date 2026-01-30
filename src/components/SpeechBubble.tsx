@@ -57,7 +57,9 @@ export function SpeechBubble({
             textAlign: 'right',
           }}
         >
-          {children}
+          <div style={{ direction: 'rtl', textAlign: 'right', width: '100%' }}>
+            {children}
+          </div>
         </div>
         
         {/* Tail - rendered as a sibling with proper stacking */}
