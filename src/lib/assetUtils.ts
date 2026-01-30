@@ -135,13 +135,14 @@ const toolAssets: Record<string, string> = {
 };
 
 // Background asset lookup by CSV bg_override name
+// NOTE: All old backgrounds replaced with new stylized gallery_main_stylized_v3
 const backgroundAssets: Record<string, string> = {
   studio_front_bg: studioFrontBg,
-  studio_in_entrance_view_bg: studioEntranceViewBg,
+  studio_in_entrance_view_bg: galleryMainStylized, // Use new stylized background
   studio_in_gallery_bg: galleryMainStylized, // Use new stylized background
-  studio_in_gallery_wall_bg: studioGalleryWallBg,
-  studio_in_storage_bg: studioStorageBg,
-  studio_in_workshop_bg: studioWorkshopBg,
+  studio_in_gallery_wall_bg: galleryMainStylized, // PAINTED WALLS = same stylized bg (white walls)
+  studio_in_storage_bg: galleryMainStylized, // Use new stylized background
+  studio_in_workshop_bg: galleryMainStylized, // Use new stylized background
   studio_entry_inside_bg: galleryMainStylized, // Use new stylized background
   gallery_main_stylized: galleryMainStylized,
 };
