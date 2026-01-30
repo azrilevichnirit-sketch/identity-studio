@@ -1045,12 +1045,11 @@
     display: block;
   }
 
-  /* Mission tool panel - bottom-right, fits content */
+  /* Mission tool panel - bottom-left, slightly shifted right */
   .missionScreen .mission-tool-panel-mobile {
     position: fixed;
     z-index: 70;
-    left: auto;
-    right: 10px;
+    left: 24px;
     bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
     width: fit-content;
     max-width: min(92vw, 360px);
