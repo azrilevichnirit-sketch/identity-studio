@@ -2,14 +2,8 @@
 
 import type { AvatarGender, Mission } from '@/types/identity';
 
-// Background imports
-import studioFrontBg from '@/assets/backgrounds/studio_front_stylized_v3.webp';
-import studioEntranceViewBg from '@/assets/backgrounds/studio_in_entrance_view_bg.webp';
-import studioGalleryBg from '@/assets/backgrounds/studio_in_gallery_bg.webp';
-import studioGalleryWallBg from '@/assets/backgrounds/studio_in_gallery_wall_bg.webp';
-import studioStorageBg from '@/assets/backgrounds/studio_in_storage_v2.webp';
-import studioWorkshopBg from '@/assets/backgrounds/studio_in_workshop_v2.webp';
-import studioEntryInsideBg from '@/assets/backgrounds/studio_entry_inside_bg.png';
+// Background imports - ONLY using the new stylized background
+// All old backgrounds removed per product requirements
 import galleryMainStylized from '@/assets/backgrounds/gallery_main_stylized_v3.webp';
 
 // Avatar imports
@@ -135,15 +129,15 @@ const toolAssets: Record<string, string> = {
 };
 
 // Background asset lookup by CSV bg_override name
-// NOTE: All old backgrounds replaced with new stylized gallery_main_stylized_v3
+// NOTE: All old backgrounds removed - using only gallery_main_stylized_v3
 const backgroundAssets: Record<string, string> = {
-  studio_front_bg: studioFrontBg,
-  studio_in_entrance_view_bg: galleryMainStylized, // Use new stylized background
-  studio_in_gallery_bg: galleryMainStylized, // Use new stylized background
-  studio_in_gallery_wall_bg: galleryMainStylized, // PAINTED WALLS = same stylized bg (white walls)
-  studio_in_storage_bg: galleryMainStylized, // Use new stylized background
-  studio_in_workshop_bg: galleryMainStylized, // Use new stylized background
-  studio_entry_inside_bg: galleryMainStylized, // Use new stylized background
+  studio_front_bg: galleryMainStylized,
+  studio_in_entrance_view_bg: galleryMainStylized,
+  studio_in_gallery_bg: galleryMainStylized,
+  studio_in_gallery_wall_bg: galleryMainStylized,
+  studio_in_storage_bg: galleryMainStylized,
+  studio_in_workshop_bg: galleryMainStylized,
+  studio_entry_inside_bg: galleryMainStylized,
   gallery_main_stylized: galleryMainStylized,
 };
 
@@ -157,11 +151,11 @@ export function getPanoramicBackground(bgKey: string): string | null {
   return panoramicBackgrounds[bgKey] || null;
 }
 
-// Fallback background mapping by (world, view)
+// Fallback background mapping by (world, view) - all use the same stylized bg now
 const backgroundFallback: Record<string, string> = {
-  'studio_in': studioEntryInsideBg,
-  'studio_front': studioFrontBg,
-  'studio_out': studioFrontBg,
+  'studio_in': galleryMainStylized,
+  'studio_front': galleryMainStylized,
+  'studio_out': galleryMainStylized,
 };
 
 export function getToolImage(assetName: string): string | null {
@@ -185,8 +179,8 @@ export function getBackgroundForMission(mission: Mission, previousPickBgOverride
     return backgroundFallback[fallbackKey];
   }
   
-  // Default fallback
-  return studioEntryInsideBg;
+  // Default fallback - use the single stylized background
+  return galleryMainStylized;
 }
 
 // Get the background key (for anchor map lookups)
