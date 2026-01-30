@@ -112,33 +112,37 @@ export function VisualPlayScreen({
   const currentBg = useMemo(() => getBackgroundForMission(mission, previousBgOverride), [mission, previousBgOverride]);
   const currentBgKey = useMemo(() => getBackgroundKey(mission, previousBgOverride), [mission, previousBgOverride]);
 
-  // Mission 01: derive "floor near wall" from anchors so it never drifts onto windows.
+  // Mission 01: derive "floor near wall" from anchors.
+  // In perspective, the back-floor plane sits *above* the foreground floor.
+  // We bias toward the floor anchor so the marker/tools sit under the windows (on the floor plane), not mid-wall.
   const FLOOR_NEAR_WALL_Y = useMemo(() => {
     const wallBack = getAnchorPosition(currentBgKey, 'wall_back');
     const floor = getAnchorPosition(currentBgKey, 'floor');
-    if (!wallBack || !floor) return 64;
+    if (!wallBack || !floor) return 74;
 
-    const midpoint = wallBack.y + (floor.y - wallBack.y) * 0.5;
-    const minY = wallBack.y + 6;
-    const maxY = floor.y - 6;
-    return Math.max(minY, Math.min(maxY, midpoint));
+    const y = wallBack.y + (floor.y - wallBack.y) * 0.72;
+    const minY = wallBack.y + 10;
+    const maxY = floor.y - 4;
+    return Math.max(minY, Math.min(maxY, y));
   }, [currentBgKey]);
 
   // Mission 01 duplicates: keep them near the back wall (on the floor close to the walls).
-  // Important: do NOT change the target marker (FLOOR_NEAR_WALL_Y) since it's already correct.
   const DUPLICATE_BUCKETS_Y = useMemo(() => {
     const wallBack = getAnchorPosition(currentBgKey, 'wall_back');
     const floor = getAnchorPosition(currentBgKey, 'floor');
     // Fallback tuned to this game's backgrounds: "under windows" but still on the floor plane
-    if (!wallBack || !floor) return 70;
+    if (!wallBack || !floor) return 78;
 
-    // We keep the *drop marker* at FLOOR_NEAR_WALL_Y, but for the duplicated buckets
-    // we want them a bit LOWER (closer to the actual floor) so they never sit in the window area.
-    const y = FLOOR_NEAR_WALL_Y + (floor.y - FLOOR_NEAR_WALL_Y) * 0.25;
-    const minY = FLOOR_NEAR_WALL_Y + 4;
-    const maxY = floor.y - 6;
+    // Keep duplicates slightly lower than the marker so they visually "sit" on the floor.
+    const y = FLOOR_NEAR_WALL_Y + (floor.y - FLOOR_NEAR_WALL_Y) * 0.22;
+    const minY = FLOOR_NEAR_WALL_Y + 3;
+    const maxY = floor.y - 4;
     return Math.max(minY, Math.min(maxY, y));
   }, [currentBgKey]);
+
+  // Mission 01 Tool B: the asset has extra bottom padding; nudge it down so it touches the floor.
+  const M01_TOOL_B_Y = useMemo(() => DUPLICATE_BUCKETS_Y + 6, [DUPLICATE_BUCKETS_Y]);
+
   const avatarImage = getAvatarImage(avatarGender, 'idle');
   const toolAImage = getToolImage(optionA.asset);
   const toolBImage = getToolImage(optionB.asset);
@@ -541,28 +545,37 @@ export function VisualPlayScreen({
     </>
   );
 
-  // Scene extras - Female staff NPC appears after Mission 01 Tool B placement
-  // She stands on the floor looking at Tool B (positioned to her right)
+  // Scene extras - Female staff NPC appears after Mission 01 Tool B placement.
+  // Position her relative to Tool B (so she's close and clearly looking at it).
+  const staffStandPos = useMemo(() => {
+    const floor = getAnchorPosition(displayBgKey, 'floor');
+    const toolBX = (floor?.x ?? 50) + 8; // matches getDuplicateAnchors() offsetX for M01 Tool B
+    const staffX = Math.max(8, Math.min(92, toolBX - 10));
+    return {
+      left: `${staffX}%`,
+      bottom: '6%',
+    };
+  }, [displayBgKey]);
+
   const sceneExtrasElement = showFemaleStaff ? (
-    <div 
+    <div
       className="absolute pointer-events-none animate-npc-enter"
       style={{
-        // Position on the floor, to the left of center (looking right at the tool)
-        left: '32%',
-        bottom: '8%',
-        zIndex: 14,
+        left: staffStandPos.left,
+        bottom: staffStandPos.bottom,
+        zIndex: 18,
         transform: 'translateX(-50%)',
         transformOrigin: 'bottom center',
       }}
     >
-      <img 
+      <img
         src={femaleStaffWalk}
         alt="Staff member"
         className="w-auto object-contain"
         style={{
-          height: 'clamp(180px, 32vh, 320px)',
-          filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
-          transform: 'scaleX(-1)', // Face right (toward the tool)
+          height: 'clamp(320px, 58vh, 560px)',
+          filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.45))',
+          // Keep unflipped so she faces the tool (most sprites face right by default).
         }}
       />
     </div>
@@ -669,9 +682,9 @@ export function VisualPlayScreen({
       ];
     }
     
-    // Mission 01 Tool B: single placement in back-center, persists into Mission 02
+    // Mission 01 Tool B: single placement on the back floor plane, persists into Mission 02
     if (prop.missionId === 'studio_01' && prop.key === 'b') {
-      return [{ anchor: 'floor', offsetX: 8, offsetY: 0, customScale: 1.8, absoluteY: DUPLICATE_BUCKETS_Y }];
+      return [{ anchor: 'floor', offsetX: 8, offsetY: 0, customScale: 1.8, absoluteY: M01_TOOL_B_Y }];
     }
 
     // Default: single placement at floor
