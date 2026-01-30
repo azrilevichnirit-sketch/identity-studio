@@ -694,28 +694,34 @@
   }
 }
 
-/* Tablet/intermediate screens (768-1023px) */
+/* Tablet/intermediate screens (768-1023px)
+   NOTE: From 768px and up we render the DESKTOP mission layout (MissionLayout switches at 768).
+   So overrides must target the *desktop* selectors.
+*/
 @media (min-width: 768px) and (max-width: 1023px) {
-  .missionScreen .mission-hero-mobile {
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 140px);
-    right: 24px;
+  .missionScreen .mission-hero-desktop {
+    right: 28px;
+    bottom: 42px;
   }
 
-  .missionScreen .mission-bubble-mobile {
-    max-width: 42%;
-    margin-right: 80px;
-    margin-bottom: 20px;
+  /* Slight overlap like mobile/desktop, but keep bubble readable */
+  .missionScreen .mission-bubble-desktop {
+    max-width: min(420px, 46vw);
+    margin-right: 55px;
+    margin-bottom: 18px;
   }
 
-  .missionScreen .mission-avatar-mobile {
-    width: 180px;
-    margin-left: -120px;
-    transform: scale(2.2);
+  .missionScreen .mission-avatar-desktop {
+    width: min(360px, 34vw);
+    margin-left: -180px;
   }
 
-  .missionScreen .mission-tool-panel-mobile {
-    width: clamp(180px, 22vw, 240px);
-    height: 110px;
+  /* Smaller tools panel on tablet */
+  .missionScreen .mission-tool-panel-desktop {
+    left: 18px;
+    bottom: 18px;
+    width: clamp(260px, 24vw, 330px);
+    height: 120px;
   }
 }
 
