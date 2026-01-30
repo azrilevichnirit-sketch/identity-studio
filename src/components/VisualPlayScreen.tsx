@@ -49,6 +49,13 @@ export function VisualPlayScreen({
   // Carry mode for touch fallback - tap to pick up, tap target to place
   const [carryModeTool, setCarryModeTool] = useState<'a' | 'b' | null>(null);
   
+  // Local placement state - shows tool BEFORE it's added to global placedProps
+  const [localPlacement, setLocalPlacement] = useState<{
+    missionId: string;
+    key: 'a' | 'b';
+    assetName: string;
+  } | null>(null);
+  
   const stageRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
   const dragStartPosRef = useRef<{ x: number; y: number } | null>(null);
@@ -131,15 +138,23 @@ export function VisualPlayScreen({
       setHasDraggedOnce(true);
       localStorage.setItem(DRAG_HINT_STORAGE_KEY, 'true');
     }
+    
+    // Step 1: Immediately show the tool on the floor (local state, before global update)
+    setLocalPlacement({
+      missionId: mission.mission_id,
+      key: variant,
+      assetName: option.asset,
+    });
     setJustPlaced(`${mission.mission_id}-${variant}`);
     
-    // Delay the mission transition to allow placement animation to complete
+    // Step 2: Wait for animation to complete, then transition to next mission
     // Animation is 800ms per item + 300ms stagger × 3 items = ~1700ms total
-    // We wait 2200ms to ensure users see the full blink effect
+    // We wait 2500ms to ensure users see the full blink effect + painted walls
     setTimeout(() => {
+      setLocalPlacement(null);
       setJustPlaced(null);
       onSelect(mission.mission_id, variant, option.holland_code as HollandCode, option);
-    }, 2200);
+    }, 2500);
     
     setCarryModeTool(null);
   }, [mission.mission_id, optionA, optionB, onSelect, hasDraggedOnce]);
@@ -264,11 +279,19 @@ export function VisualPlayScreen({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [carryModeTool]);
 
-  // Show all placed props (not just those with persist === 'keep')
-  // For now, show all placements to debug tool placement issues
-  const persistedProps = useMemo(() => {
-    return placedProps;
-  }, [placedProps]);
+  // Only show the current local placement (tool being placed in this mission)
+  // Don't show tools from previous missions - they disappear after transition
+  const displayedPlacement = useMemo(() => {
+    if (localPlacement) {
+      return [{
+        missionId: localPlacement.missionId,
+        key: localPlacement.key as 'a' | 'b',
+        assetName: localPlacement.assetName,
+        hollandCode: 'r' as HollandCode, // Not used for display
+      }];
+    }
+    return [];
+  }, [localPlacement]);
 
   const targetPosition = useMemo(() => {
     if (activeToolVariant) {
@@ -404,7 +427,7 @@ export function VisualPlayScreen({
 
   // Special duplication logic for certain missions (e.g., studio_01 option A duplicates to 3 floor corners)
   // For mission 1, the paint buckets should be placed on the floor NEAR THE WALLS
-  const getDuplicateAnchors = (prop: typeof persistedProps[0]): { anchor: AnchorRef; offsetX: number; offsetY: number; customScale?: number }[] => {
+  const getDuplicateAnchors = (prop: typeof displayedPlacement[0]): { anchor: AnchorRef; offsetX: number; offsetY: number; customScale?: number }[] => {
     // Mission 1, option A: duplicate to 3 floor positions near walls
     // Using wall_left/wall_right/wall_back y positions but floor-level
     if (prop.missionId === 'studio_01' && prop.key === 'a') {
@@ -423,16 +446,12 @@ export function VisualPlayScreen({
       ];
     }
     // Default: no duplication, use original anchor
-    if (prop.anchorRef) {
-      return [{ anchor: prop.anchorRef as AnchorRef, offsetX: 0, offsetY: 0 }];
-    }
-    // Fallback to floor if no anchor specified
     return [{ anchor: 'floor', offsetX: 0, offsetY: 0 }];
   };
 
   const placedPropsElement = (
     <>
-      {persistedProps.flatMap((prop, propIdx) => {
+      {displayedPlacement.flatMap((prop, propIdx) => {
         const assetName = prop.assetName || `${prop.missionId.replace('studio_', 'studio_')}_${prop.key}`;
         const toolImg = getToolImage(assetName);
         
@@ -448,7 +467,7 @@ export function VisualPlayScreen({
           // Stagger animation for duplicates - longer delay for better visibility
           const animationDelay = idx * 300;
           // Use custom scale if provided, otherwise default
-          const finalScale = anchorInfo.customScale || ((prop.scale || 1) * anchorPos.scale * 2.2);
+          const finalScale = anchorInfo.customScale || (anchorPos.scale * 2.2);
           
           return (
             <div
