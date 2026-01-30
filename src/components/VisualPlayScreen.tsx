@@ -195,15 +195,18 @@ export function VisualPlayScreen({
 
     // Mission 01: separate drop zones for Tool A (back near walls) and Tool B (center floor)
     if (mission.mission_id === 'studio_01') {
+      const wallBack = getAnchorPosition(currentBgKey, 'wall_back');
+      const floor = getAnchorPosition(currentBgKey, 'floor');
+      
       if (variant === 'a') {
-        // Tool A: drop zone at BACK of room, near the walls (under windows)
-        const wallBack = getAnchorPosition(currentBgKey, 'wall_back');
+        // Tool A: drop zone at BACK of room, right under the windows (very close to wall_back)
+        // Use wallBack.y + small offset to place it just below the windows
         if (wallBack) {
-          return { x: 50, y: FLOOR_NEAR_WALL_Y, scale: 1, z_layer: 'mid' as const };
+          const backFloorY = wallBack.y + 12; // Just below the windows
+          return { x: 50, y: backFloorY, scale: 1, z_layer: 'mid' as const };
         }
       } else {
-        // Tool B: drop zone at CENTER of floor (where the current indicator shows)
-        const floor = getAnchorPosition(currentBgKey, 'floor');
+        // Tool B: drop zone at CENTER of floor (forward in the room)
         if (floor) {
           return { x: 50, y: floor.y - 8, scale: 1, z_layer: 'mid' as const };
         }
