@@ -259,16 +259,20 @@ export function VisualPlayScreen({
     setLockPulseKey(null);
     const isMission01Paint = mission.mission_id === 'studio_01' && variant === 'a';
     const isMission01ToolB = mission.mission_id === 'studio_01' && variant === 'b';
-    const lockDelayMs = isMission01Paint ? 900 : 120;
+    
+    // Mission 01 Tool B: longer lock delay so player sees tool settle before staff enters
+    const lockDelayMs = isMission01Paint ? 900 : (isMission01ToolB ? 600 : 120);
     const lockOnId = window.setTimeout(() => {
       setJustPlaced(`${mission.mission_id}-${variant}`);
       setLockPulseKey(`${mission.mission_id}-${variant}`);
     }, lockDelayMs);
     timeoutsRef.current.push(lockOnId);
 
+    // Lock pulse duration - longer for Mission 01 to give visual feedback
+    const lockPulseDuration = isMission01ToolB ? 800 : 650;
     const lockOffId = window.setTimeout(() => {
       setLockPulseKey(null);
-    }, lockDelayMs + 650);
+    }, lockDelayMs + lockPulseDuration);
     timeoutsRef.current.push(lockOffId);
 
     // Step 2: "Painted walls" beat before transitioning (only for Tool A paint scenario, NOT for Tool B)
@@ -296,8 +300,8 @@ export function VisualPlayScreen({
     // We wait 2500ms to ensure users see the full blink effect + painted walls
     // Mission 01 paint: only advance after the player clearly sees the “painted walls” beat.
     const isMission02 = mission.mission_id === 'studio_02';
-    // Mission 01 Tool B: longer delay (3000ms) so staff enters BEFORE mission 2 appears
-    const advanceDelay = isMission01Paint ? 3200 : (isMission01ToolB ? 3000 : (isMission02 ? 2600 : 2500));
+    // Mission 01 Tool B: 3500ms so staff has time to enter and player sees the scene
+    const advanceDelay = isMission01Paint ? 3200 : (isMission01ToolB ? 3500 : (isMission02 ? 2600 : 2500));
     const advanceId = window.setTimeout(() => {
       // For Mission 01 Tool B: DON'T clear localPlacement before onSelect
       // This prevents the tool from disappearing before it's added to placedProps
