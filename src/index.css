@@ -701,15 +701,15 @@
   }
 
   .missionScreen .mission-bubble-mobile {
-    max-width: 48%;
-    margin-right: 80px;
+    max-width: 45%;
+    margin-right: 120px;
     margin-bottom: 30px;
   }
 
   .missionScreen .mission-avatar-mobile {
-    width: 200px;
-    margin-left: -180px;
-    transform: scale(2);
+    width: 240px;
+    margin-left: -140px;
+    transform: scale(2.4);
   }
 
   .missionScreen .mission-tool-panel-mobile {
