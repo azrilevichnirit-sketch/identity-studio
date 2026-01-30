@@ -339,33 +339,8 @@ export function VisualPlayScreen({
         );
       })}
       
-      {/* Animated staff characters - only on mission 1 */}
-      {mission.mission_id === 'studio_01' && (
-        <>
-          <AnimatedStaffCharacter
-            gender="female"
-            state={staffCharacterState}
-            startX={-12}
-            idleX={22}
-            targetX={staffTargetX - 10}
-            bottomY={6}
-            scale={1.3}
-            zIndex={20}
-            delay={400}
-          />
-          <AnimatedStaffCharacter
-            gender="male"
-            state={staffCharacterState}
-            startX={-8}
-            idleX={38}
-            targetX={staffTargetX + 10}
-            bottomY={5}
-            scale={1.35}
-            zIndex={21}
-            delay={800}
-          />
-        </>
-      )}
+      {/* TODO: Animated staff characters - disabled for now, needs better animation frames */}
+      {/* {mission.mission_id === 'studio_01' && (...)} */}
     </>
   );
 
