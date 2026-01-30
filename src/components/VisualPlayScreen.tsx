@@ -70,15 +70,26 @@ export function VisualPlayScreen({
   const optionA = mission.options.find((o) => o.key === 'a')!;
   const optionB = mission.options.find((o) => o.key === 'b')!;
 
-  // Get the previous pick's nextBgOverride to determine current background
-  const previousBgOverride = useMemo(() => {
-    const prevPicks = placedProps.slice(0, -1);
-    if (prevPicks.length > 0) {
-      const lastPick = prevPicks[prevPicks.length - 1];
-      return lastPick.nextBgOverride;
-    }
-    return undefined;
+  // Mission 01 special rule (per product spec): choosing tool A paints the walls white
+  const PAINTED_WALLS_BG_KEY = 'studio_in_gallery_wall_bg';
+  const hasPaintedWalls = useMemo(() => {
+    return placedProps.some((p) => p.missionId === 'studio_01' && p.key === 'a');
   }, [placedProps]);
+
+  // Get the *actual* previous mission pick (Object.values order is not reliable)
+  const previousBgOverride = useMemo(() => {
+    // Product rule: if player painted in mission 01, mission 02+ walls are white
+    if (mission.phase === 'main' && mission.sequence >= 2 && hasPaintedWalls) {
+      return PAINTED_WALLS_BG_KEY;
+    }
+
+    if (mission.phase !== 'main' || mission.sequence <= 1) return undefined;
+
+    const prevSeq = mission.sequence - 1;
+    const prevMissionId = `studio_${String(prevSeq).padStart(2, '0')}`;
+    const prevPick = placedProps.find((p) => p.missionId === prevMissionId);
+    return prevPick?.nextBgOverride;
+  }, [placedProps, mission.phase, mission.sequence, hasPaintedWalls]);
 
   const currentBg = useMemo(() => getBackgroundForMission(mission, previousBgOverride), [mission, previousBgOverride]);
   const currentBgKey = useMemo(() => getBackgroundKey(mission, previousBgOverride), [mission, previousBgOverride]);
@@ -131,14 +142,14 @@ export function VisualPlayScreen({
     const option = variant === 'a' ? optionA : optionB;
     const targetBgKey = option.next_bg_override || currentBgKey;
 
-    // Mission 01: target the FLOOR (y ~75-80%) - NOT the window area
-    // This puts the drop indicator on the wooden floor where paint buckets belong
+    // Mission 01: target FLOOR-NEAR-WALL (baseboard line) so indicator isn't on windows or front floor
     if (mission.mission_id === 'studio_01') {
-      // Use floor anchor position directly - it's at y=88% which is the floor
+      const wallBack = getAnchorPosition(currentBgKey, 'wall_back');
       const floor = getAnchorPosition(currentBgKey, 'floor');
-      if (floor) {
-        // Position drop zone at floor level, centered
-        return { x: 50, y: floor.y - 8, scale: 1, z_layer: 'mid' as const };
+      if (wallBack && floor) {
+        // ~72% of the way from wall_back to floor feels like “near wall on the floor” in perspective
+        const y = wallBack.y + (floor.y - wallBack.y) * 0.72;
+        return { x: wallBack.x, y, scale: 1, z_layer: 'mid' as const };
       }
     }
 
@@ -180,14 +191,18 @@ export function VisualPlayScreen({
 
     // Step 2: "Painted walls" beat before transitioning (only if the option defines it)
     // We want: place tool -> SEE it near the walls -> walls turn white -> tool disappears -> mission advances.
-    const hasBgBeat = !!option.next_bg_override;
+    const hasBgBeat = !!option.next_bg_override || (mission.mission_id === 'studio_01' && variant === 'a');
     if (hasBgBeat) {
-      // Mission 01 requires a clearer beat: show the placed tool first, then paint, then clear.
-      const beatDelay = (mission.mission_id === 'studio_01' && variant === 'a') ? 1100 : 900;
-      const clearDelay = (mission.mission_id === 'studio_01' && variant === 'a') ? 1800 : beatDelay;
+      // Mission 01 A: place -> blink -> paint -> only then allow transition
+      const isMission01Paint = mission.mission_id === 'studio_01' && variant === 'a';
+      const beatDelay = isMission01Paint ? 900 : 900;
+      const clearDelay = isMission01Paint ? 2600 : 1800;
+      const paintTarget = isMission01Paint
+        ? { key: PAINTED_WALLS_BG_KEY, image: getBackgroundByName(PAINTED_WALLS_BG_KEY) || currentBg }
+        : getTargetBgForOption(option);
 
       const beatId = window.setTimeout(() => {
-        setLocalBgOverride(getTargetBgForOption(option));
+        setLocalBgOverride(paintTarget);
       }, beatDelay);
       timeoutsRef.current.push(beatId);
 
@@ -200,16 +215,17 @@ export function VisualPlayScreen({
     // Step 3: Wait for animation to complete, then transition to next mission
     // Animation is 800ms per item + 300ms stagger × 3 items = ~1700ms total
     // We wait 2500ms to ensure users see the full blink effect + painted walls
+    const advanceDelay = (mission.mission_id === 'studio_01' && variant === 'a') ? 2800 : 2500;
     const advanceId = window.setTimeout(() => {
       setLocalPlacement(null);
       setLocalBgOverride(null);
       setJustPlaced(null);
       onSelect(mission.mission_id, variant, option.holland_code as HollandCode, option);
-    }, 2500);
+    }, advanceDelay);
     timeoutsRef.current.push(advanceId);
     
     setCarryModeTool(null);
-  }, [mission.mission_id, optionA, optionB, onSelect, hasDraggedOnce, getTargetBgForOption]);
+  }, [mission.mission_id, optionA, optionB, onSelect, hasDraggedOnce, getTargetBgForOption, PAINTED_WALLS_BG_KEY, currentBg]);
 
   // Pointer Events for unified mouse/touch handling
   const handlePointerDown = useCallback((variant: 'a' | 'b', e: React.PointerEvent) => {
@@ -276,9 +292,7 @@ export function VisualPlayScreen({
       const dropY = ((e.clientY - rect.top) / rect.height) * 100;
 
       const isMission01 = mission.mission_id === 'studio_01';
-      // For mission 01: accept drops on the FLOOR (bottom portion of screen, y > 65%)
-      // This is the wooden floor area, NOT the windows
-      const isOnFloor = dropY > 65 && dropY < 98 && dropX > 5 && dropX < 95;
+      const isMission01Paint = isMission01 && draggingTool === 'a';
       
       // Get target position for current tool
       const target = getTargetAnchor(draggingTool);
@@ -290,9 +304,9 @@ export function VisualPlayScreen({
         
         // Mission 01: accept if user drops on the floor
         // Other missions: keep existing generous rules
-        const accepted = isMission01
-          ? isOnFloor
-          : (distance < 20 || (dropY < 75 && dropY > 5));
+        const accepted = isMission01Paint
+          ? (distance < 28 && dropY > 45 && dropY < 92)
+          : (isMission01 ? (dropY > 55 && dropY < 98) : (distance < 20 || (dropY < 75 && dropY > 5)));
 
         if (accepted) {
           completePlacement(draggingTool);
@@ -300,7 +314,7 @@ export function VisualPlayScreen({
         // Otherwise return to tray (no placement)
       } else {
         // Fallback: accept if in valid zone
-        if (isMission01 ? isOnFloor : (dropY < 75 && dropY > 5)) {
+        if (isMission01Paint ? (dropY > 45 && dropY < 92) : (isMission01 ? (dropY > 55 && dropY < 98) : (dropY < 75 && dropY > 5))) {
           completePlacement(draggingTool);
         }
       }
@@ -490,24 +504,16 @@ export function VisualPlayScreen({
   // Special duplication logic for certain missions (e.g., studio_01 option A duplicates to 3 floor corners)
   // For mission 1, the paint buckets should be placed near EACH WALL (left, back, right)
   const getDuplicateAnchors = (prop: typeof displayedPlacement[0]): { anchor: AnchorRef; offsetX: number; offsetY: number; customScale?: number }[] => {
-    // Mission 1, option A: place 3 paint buckets - one near each wall on the floor
-    // Normal size (scale ~1.0), positioned on the floor near left/back/right walls
+    // Product rule: Mission 01 tool A duplicates to 3 placements (one per wall)
+    // Keep NORMAL size and push down to the floor-near-wall line.
     if (prop.missionId === 'studio_01' && prop.key === 'a') {
       return [
-        // Floor positions near each wall - normal scale (1.0)
-        { anchor: 'floor', offsetX: -30, offsetY: -5, customScale: 1.0 },  // Near left wall
-        { anchor: 'floor', offsetX: 0, offsetY: -10, customScale: 1.0 },   // Near back wall (center)
-        { anchor: 'floor', offsetX: 30, offsetY: -5, customScale: 1.0 },   // Near right wall
+        { anchor: 'wall_left', offsetX: 0, offsetY: 33, customScale: 1.0 },
+        { anchor: 'wall_back', offsetX: 0, offsetY: 36, customScale: 1.0 },
+        { anchor: 'wall_right', offsetX: 0, offsetY: 33, customScale: 1.0 },
       ];
     }
-    // Mission 1, option B: same pattern for drafting tools
-    if (prop.missionId === 'studio_01' && prop.key === 'b') {
-      return [
-        { anchor: 'floor', offsetX: -30, offsetY: -5, customScale: 1.0 },
-        { anchor: 'floor', offsetX: 0, offsetY: -10, customScale: 1.0 },
-        { anchor: 'floor', offsetX: 30, offsetY: -5, customScale: 1.0 },
-      ];
-    }
+
     // Default: single placement at floor
     return [{ anchor: 'floor', offsetX: 0, offsetY: 0 }];
   };
