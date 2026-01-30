@@ -662,7 +662,7 @@
     pointer-events: none;
     position: relative;
     width: 180px;
-    margin-left: -160px;
+    margin-left: -140px;
     transform: scale(2.2);
     transform-origin: bottom center;
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6));
