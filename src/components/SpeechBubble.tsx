@@ -30,6 +30,8 @@ export function SpeechBubble({
       className={`speech-bubble-wrapper ${className}`}
       style={{
         position: 'relative',
+        display: 'inline-block',
+        maxWidth: '100%',
         filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.15)) drop-shadow(0 2px 6px rgba(0,0,0,0.08))',
         ...style,
       }}

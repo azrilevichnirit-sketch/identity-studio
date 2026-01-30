@@ -547,7 +547,8 @@
 
 .missionScreen .mission-bubble-desktop {
   max-width: min(420px, 36vw);
-  width: fit-content;
+  width: auto;
+  flex: 0 0 auto;
   position: relative;
   z-index: 20;
   pointer-events: auto;
