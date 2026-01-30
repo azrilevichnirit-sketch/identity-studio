@@ -299,7 +299,8 @@ export function VisualPlayScreen({
     // We wait 2500ms to ensure users see the full blink effect + painted walls
     // Mission 01 paint: only advance after the player clearly sees the “painted walls” beat.
     const isMission02 = mission.mission_id === 'studio_02';
-    const advanceDelay = isMission01Paint ? 3200 : (isMission01ToolB ? 2600 : (isMission02 ? 2600 : 2500));
+    // Mission 01 Tool B: longer delay (3000ms) so staff enters BEFORE mission 2 appears
+    const advanceDelay = isMission01Paint ? 3200 : (isMission01ToolB ? 3000 : (isMission02 ? 2600 : 2500));
     const advanceId = window.setTimeout(() => {
       // For Mission 01 Tool B: DON'T clear localPlacement before onSelect
       // This prevents the tool from disappearing before it's added to placedProps
@@ -758,10 +759,11 @@ export function VisualPlayScreen({
     if (prop.missionId === 'studio_01' && prop.key === 'a') {
       // Use fixed X positions for left/center/right walls (22%, 50%, 78%)
       // Position close to back wall with larger scale so they look like real tools
+      // absoluteX ensures exact positioning regardless of anchor
       return [
-        { anchor: 'floor', offsetX: -28, offsetY: 0, customScale: 2.0, absoluteY: DUPLICATE_BUCKETS_Y },
-        { anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: DUPLICATE_BUCKETS_Y },
-        { anchor: 'floor', offsetX: 28, offsetY: 0, customScale: 2.0, absoluteY: DUPLICATE_BUCKETS_Y },
+        { anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: DUPLICATE_BUCKETS_Y, absoluteX: 22 },
+        { anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: DUPLICATE_BUCKETS_Y, absoluteX: 50 },
+        { anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: DUPLICATE_BUCKETS_Y, absoluteX: 78 },
       ];
     }
     
