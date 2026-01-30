@@ -514,123 +514,107 @@
   transform: none;
 }
 
-/* Desktop: Tool panel container */
+/* Desktop: Tool panel container - fits content */
 .layout-tool-panel-inner {
-  border-radius: 1rem;
-  padding: 0.75rem;
-  height: 100%;
-  display: flex;
+  border-radius: 16px;
+  padding: 10px 14px;
+  display: inline-flex;
   flex-direction: column;
-  background: rgba(15, 20, 30, 0.65);
+  gap: 0;
+  background: rgba(15, 20, 30, 0.7);
   backdrop-filter: blur(12px);
-  box-shadow: 0 6px 24px rgba(0,0,0,0.25);
-  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
-/* Main row: progress tank on LEFT, tools on RIGHT */
+/* Main row: progress tank LEFT, tools RIGHT */
 .tool-panel-main-row {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 12px;
-  flex: 1;
+  gap: 14px;
 }
 
-/* Progress tank wrapper - vertical bar on left */
+/* Progress tank wrapper - vertical */
 .progress-tank-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 100%;
+  width: 22px;
   flex-shrink: 0;
 }
 
-/* Rotate the tank to be vertical */
 .progress-tank-wrapper > div {
   transform: rotate(-90deg);
   transform-origin: center;
-  width: 90px;
+  width: 85px;
 }
 
-/* Tool tiles area */
+/* Tool tiles area - horizontal */
 .tool-tiles-area {
-  flex: 1;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 14px;
   position: relative;
 }
 
-/* Tool tile - LARGE on desktop */
+/* Tool tile - fits nicely */
 .tool-tile {
-  width: 100px;
-  height: 100px;
+  width: 90px;
+  height: 90px;
 }
 
-/* Tooltip area - game-styled like speech bubbles */
+/* Tooltip - compact, one line if possible */
 .tooltip-area {
-  margin-top: 10px;
-  padding: 12px 16px;
-  padding-left: 36px;
-  background: linear-gradient(145deg, #FFFCF5 0%, #FFF6E5 100%);
-  border-radius: 14px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  padding-left: 28px;
+  background: linear-gradient(145deg, #FFFCF5 0%, #FFF8EB 100%);
+  border-radius: 10px;
   position: relative;
   direction: rtl;
   text-align: right;
-  border: 3px solid rgba(180, 140, 80, 0.35);
-  box-shadow: 
-    0 4px 12px rgba(0,0,0,0.15),
-    inset 0 2px 0 rgba(255,255,255,0.9),
-    inset 0 -2px 4px rgba(180, 140, 80, 0.1);
-  animation: tooltip-pop 0.25s ease-out;
+  border: 2px solid rgba(180, 140, 80, 0.3);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+  animation: tooltip-pop 0.2s ease-out;
 }
 
 @keyframes tooltip-pop {
-  0% {
-    opacity: 0;
-    transform: translateY(8px) scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  0% { opacity: 0; transform: translateY(4px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 .tooltip-close-btn {
   position: absolute;
   top: 50%;
-  left: 10px;
+  left: 6px;
   transform: translateY(-50%);
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(180,140,80,0.2) 0%, rgba(180,140,80,0.35) 100%);
+  background: rgba(140, 110, 70, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #8B7355;
-  border: 2px solid rgba(180,140,80,0.3);
+  border: none;
   cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: background 0.15s;
 }
 
 .tooltip-close-btn:hover {
-  background: linear-gradient(135deg, rgba(180,140,80,0.35) 0%, rgba(180,140,80,0.5) 100%);
-  transform: translateY(-50%) scale(1.1);
+  background: rgba(140, 110, 70, 0.35);
 }
 
 .tooltip-text {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 500;
   color: #3D2E1F;
-  line-height: 1.5;
+  line-height: 1.4;
   font-family: 'Rubik', sans-serif;
   margin: 0;
-  text-shadow: 0 1px 0 rgba(255,255,255,0.8);
 }
 
 /* ============================================
@@ -686,9 +670,6 @@
   z-index: 20;
   bottom: 24px;
   left: 24px;
-  width: clamp(340px, 28vw, 420px);
-  height: auto;
-  min-height: 130px;
 }
 
 /* ============================================
@@ -784,33 +765,61 @@
     display: block;
   }
 
-  /* Mission tool panel - bottom-left */
+  /* Mission tool panel - bottom-left, fits content */
   .missionScreen .mission-tool-panel-mobile {
     position: fixed;
     z-index: 70;
-    left: 12px;
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
-    width: clamp(170px, 48vw, 240px);
-    min-height: 100px;
-    height: auto;
-    max-height: clamp(100px, 18vh, 160px);
+    left: 10px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
   }
 
-  /* Mobile tool tiles - smaller */
-  .missionScreen .tool-tile {
-    width: clamp(50px, 14vw, 70px);
-    height: clamp(50px, 14vw, 70px);
-    min-width: 50px;
-    min-height: 50px;
+  /* Mobile: panel styling */
+  .mobile-layout .layout-tool-panel-inner {
+    padding: 8px 10px;
+    border-radius: 12px;
+    gap: 0;
   }
 
-  /* Mobile tooltip - compact */
-  .missionScreen .tooltip-tray {
-    max-height: 60px;
-    padding: 6px 8px;
+  /* Mobile: main row */
+  .mobile-layout .tool-panel-main-row {
+    gap: 10px;
   }
 
-  .missionScreen .tooltip-tray p {
+  /* Mobile: progress tank */
+  .mobile-layout .progress-tank-wrapper {
+    width: 18px;
+  }
+
+  .mobile-layout .progress-tank-wrapper > div {
+    width: 70px;
+  }
+
+  /* Mobile: tools area */
+  .mobile-layout .tool-tiles-area {
+    gap: 10px;
+  }
+
+  /* Mobile tool tiles */
+  .tool-tile {
+    width: 60px;
+    height: 60px;
+  }
+
+  /* Mobile tooltip */
+  .mobile-layout .tooltip-area {
+    margin-top: 6px;
+    padding: 5px 8px;
+    padding-left: 24px;
+    border-radius: 8px;
+  }
+
+  .mobile-layout .tooltip-close-btn {
+    width: 16px;
+    height: 16px;
+    left: 5px;
+  }
+
+  .mobile-layout .tooltip-text {
     font-size: 10px;
     line-height: 1.35;
   }
@@ -849,37 +858,44 @@
     margin-left: -170px;
   }
 
-  /* Tools panel - proper sizing and positioning */
+  /* Tools panel - fits content */
   .missionScreen .mission-tool-panel-desktop {
     left: 16px;
     bottom: 16px;
-    width: clamp(240px, 30vw, 320px);
-    min-height: 110px;
-    height: auto;
-    max-height: 160px;
   }
 
-  /* Fix tool panel inner for tablet */
-  .missionScreen .layout-tool-panel-inner {
-    padding: 0.5rem 0.75rem;
-    border-radius: 0.75rem;
+  /* Tablet tool panel */
+  .layout-tool-panel-inner {
+    padding: 8px 10px;
+    border-radius: 12px;
+  }
+
+  .tool-panel-main-row {
+    gap: 10px;
+  }
+
+  .tool-tiles-area {
+    gap: 10px;
   }
 
   /* Tablet tool tiles */
-  .missionScreen .tool-tile {
-    width: clamp(55px, 10vw, 75px);
-    height: clamp(55px, 10vw, 75px);
-    min-width: 55px;
-    min-height: 55px;
+  .tool-tile {
+    width: 70px;
+    height: 70px;
   }
 
   /* Tablet tooltip */
-  .missionScreen .tooltip-tray {
-    max-height: 65px;
+  .tooltip-area {
+    padding: 5px 8px;
+    padding-left: 26px;
+  }
+
+  .tooltip-text {
+    font-size: 11px;
   }
 }
 
-/* Small mobile (<400px) additional adjustments */
+/* Small mobile (<400px) */
 @media (max-width: 399px) {
   .missionScreen .mission-hero-mobile {
     bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(85px, 14vh, 120px) + 10px);
@@ -895,28 +911,38 @@
     transform: scale(2.3);
   }
 
-  .missionScreen .mission-tool-panel-mobile {
-    width: clamp(140px, 50vw, 180px);
-    min-height: 90px;
-    max-height: 130px;
+  /* Small mobile tool tiles */
+  .tool-tile {
+    width: 50px;
+    height: 50px;
   }
 
-  /* Small mobile tool tiles */
-  .missionScreen .tool-tile {
-    width: clamp(42px, 16vw, 55px);
-    height: clamp(42px, 16vw, 55px);
-    min-width: 42px;
-    min-height: 42px;
+  .tool-tiles-area {
+    gap: 8px;
+  }
+
+  .tool-panel-main-row {
+    gap: 8px;
+  }
+
+  .progress-tank-wrapper > div {
+    width: 60px;
   }
 
   /* Small mobile tooltip */
-  .missionScreen .tooltip-tray {
-    max-height: 50px;
-    padding: 5px 6px;
+  .tooltip-area {
+    padding: 4px 6px;
+    padding-left: 22px;
   }
 
-  .missionScreen .tooltip-tray p {
+  .tooltip-text {
     font-size: 9px;
+  }
+
+  .tooltip-close-btn {
+    width: 14px;
+    height: 14px;
+    left: 4px;
   }
 }
 
@@ -936,18 +962,18 @@
     margin-left: -260px;
   }
 
-  .missionScreen .mission-tool-panel-desktop {
-    width: 420px;
-  }
-
   /* Larger tools on big screens */
   .tool-tile {
-    width: 110px;
-    height: 110px;
+    width: 100px;
+    height: 100px;
   }
 
   .tool-tiles-area {
-    gap: 20px;
+    gap: 18px;
+  }
+
+  .tool-panel-main-row {
+    gap: 16px;
   }
 }
 
