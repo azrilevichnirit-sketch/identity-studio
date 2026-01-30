@@ -751,14 +751,10 @@
   overflow: hidden;
 }
 
-/* Info button on the tool tile (use tokens, avoid slate/white) */
+/* Info button on the tool tile - positioned inside the tool */
 .tool-info-btn {
-  position: absolute;
-  bottom: -2px;
-  left: -2px;
-  z-index: 10;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border-radius: 999px;
   display: flex;
   align-items: center;
@@ -777,7 +773,6 @@
   transform: scale(1.08);
   background: hsl(var(--toolpanel-bg) / 0.90);
   border-color: hsl(var(--tooltip-border) / 0.35);
-  /* Requested: subtle glow in bubble color to signal interactivity */
   box-shadow:
     0 0 0 2px hsl(var(--bubble-glow) / 0.35),
     0 0 14px hsl(var(--bubble-glow) / 0.22),
@@ -801,8 +796,8 @@
 }
 
 .tool-info-icon {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
 }
 
 /* ============================================
@@ -859,8 +854,8 @@
 
 .tool-info-wrapper {
   position: absolute;
-  bottom: -2px;
-  left: -2px;
+  bottom: 4px;
+  left: 4px;
   z-index: 10;
 }
 
