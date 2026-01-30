@@ -1157,10 +1157,10 @@
    So overrides must target the *desktop* selectors.
 */
 @media (min-width: 768px) and (max-width: 1023px) {
-  /* Tablet: lift hero so it won't sit on top of the tool panel */
+  /* Tablet: position hero so avatar is above the debug icon */
   .missionScreen .mission-hero-desktop {
-    right: clamp(24px, 4vw, 60px);
-    bottom: clamp(150px, 20vh, 220px);
+    right: clamp(12px, 2vw, 40px);
+    bottom: clamp(120px, 18vh, 180px);
   }
 
   /* Tablet: cap bubble width so it doesn't collide with the tool panel */
