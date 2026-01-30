@@ -543,6 +543,22 @@
   animation: npc-enter 800ms ease-out forwards;
 }
 
+/* Tool appear (no transform) - prevents scale/position glitches on absolutely-positioned assets */
+@keyframes tool-appear {
+  from {
+    opacity: 0;
+    filter: brightness(1) drop-shadow(0 8px 16px rgba(0,0,0,0.5));
+  }
+  to {
+    opacity: 1;
+    filter: brightness(1) drop-shadow(0 8px 16px rgba(0,0,0,0.5));
+  }
+}
+
+.animate-tool-appear {
+  animation: tool-appear 220ms ease-out forwards;
+}
+
 /* Tool "lock" confirmation - subtle glow pulse without scale to avoid layout shift */
 @keyframes tool-lock-confirm {
   0% {
