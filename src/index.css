@@ -852,11 +852,11 @@
    DESKTOP HOVER TOOLTIP (pure CSS, simple)
    ============================================ */
 
-/* Info icon wrapper - outside tool corner for visibility */
+/* Info icon wrapper - close to tool corner */
 .tool-info-wrapper {
   position: absolute;
-  bottom: -6px;
-  left: -6px;
+  bottom: 0px;
+  left: 0px;
   z-index: 10;
 }
 
