@@ -1016,7 +1016,7 @@
     pointer-events: none;
   }
 
-  /* Mission bubble - positioned behind avatar (shifted right) */
+  /* Mission bubble - positioned behind avatar (shifted more right) */
   .missionScreen .mission-bubble-mobile {
     order: 1;
     z-index: 15; /* Behind avatar */
@@ -1026,8 +1026,9 @@
     max-width: 65%;
     pointer-events: auto;
     direction: rtl;
-    /* Shift right so bubble goes behind avatar */
-    margin-right: -40px;
+    /* Shift more right so bubble goes behind avatar */
+    margin-right: -80px;
+    margin-left: 40px;
     margin-bottom: 30px;
   }
 
