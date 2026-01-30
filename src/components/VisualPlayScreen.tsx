@@ -1,6 +1,6 @@
 import { useMemo, useState, useRef, useCallback, useEffect } from 'react';
 import type { Mission, HollandCode, AvatarGender, PickRecord, MissionOption, AnchorRef } from '@/types/identity';
-import { getToolImage, getBackgroundForMission, getAvatarImage, getBackgroundKey, getBackgroundByName, getPanoramicBackground } from '@/lib/assetUtils';
+import { getToolImage, getBackgroundForMission, getAvatarImage, getBackgroundKey, getBackgroundByName, getPanoramicBackground, preloadBackground } from '@/lib/assetUtils';
 import { getAnchorPosition } from '@/lib/jsonDataLoader';
 import { SpeechBubble } from './SpeechBubble';
 import { Info, Hand, X } from 'lucide-react';
@@ -76,6 +76,19 @@ export function VisualPlayScreen({
     return placedProps.some((p) => p.missionId === 'studio_01' && p.key === 'a');
   }, [placedProps]);
 
+  // Preload the “painted walls” background to avoid a flash/jump on transition.
+  useEffect(() => {
+    preloadBackground(PAINTED_WALLS_BG_KEY);
+  }, []);
+
+  // After we advanced to the next mission, rely on normal background selection.
+  useEffect(() => {
+    if (mission.mission_id !== 'studio_01' && localBgOverride?.key === PAINTED_WALLS_BG_KEY) {
+      const id = window.setTimeout(() => setLocalBgOverride(null), 50);
+      return () => window.clearTimeout(id);
+    }
+  }, [mission.mission_id, localBgOverride]);
+
   // Get the *actual* previous mission pick (Object.values order is not reliable)
   const previousBgOverride = useMemo(() => {
     // Product rule: if player painted in mission 01, mission 02+ walls are white
@@ -147,8 +160,8 @@ export function VisualPlayScreen({
       const wallBack = getAnchorPosition(currentBgKey, 'wall_back');
       const floor = getAnchorPosition(currentBgKey, 'floor');
       if (wallBack && floor) {
-        // ~72% of the way from wall_back to floor feels like “near wall on the floor” in perspective
-        const y = wallBack.y + (floor.y - wallBack.y) * 0.35;
+        // Place marker ON the floor line, close to the wall (צמוד לקיר)
+        const y = Math.max(0, floor.y - 6);
         return { x: wallBack.x, y, scale: 1, z_layer: 'mid' as const };
       }
     }
@@ -196,7 +209,8 @@ export function VisualPlayScreen({
       // Mission 01 A: place -> blink -> paint -> only then allow transition
       const isMission01Paint = mission.mission_id === 'studio_01' && variant === 'a';
       const beatDelay = isMission01Paint ? 900 : 900;
-      const clearDelay = isMission01Paint ? 2600 : 1800;
+      // Give enough time to notice the duplication + blink, then see the walls turn white.
+      const clearDelay = isMission01Paint ? 2900 : 1800;
       const paintTarget = isMission01Paint
         ? { key: PAINTED_WALLS_BG_KEY, image: getBackgroundByName(PAINTED_WALLS_BG_KEY) || currentBg }
         : getTargetBgForOption(option);
@@ -215,10 +229,10 @@ export function VisualPlayScreen({
     // Step 3: Wait for animation to complete, then transition to next mission
     // Animation is 800ms per item + 300ms stagger × 3 items = ~1700ms total
     // We wait 2500ms to ensure users see the full blink effect + painted walls
-    const advanceDelay = (mission.mission_id === 'studio_01' && variant === 'a') ? 2800 : 2500;
+    // Mission 01 paint: only advance after the player clearly sees the “painted walls” beat.
+    const advanceDelay = (mission.mission_id === 'studio_01' && variant === 'a') ? 3400 : 2500;
     const advanceId = window.setTimeout(() => {
       setLocalPlacement(null);
-      setLocalBgOverride(null);
       setJustPlaced(null);
       onSelect(mission.mission_id, variant, option.holland_code as HollandCode, option);
     }, advanceDelay);
@@ -508,10 +522,12 @@ export function VisualPlayScreen({
     // Product rule: Mission 01 tool A duplicates to 3 placements (one per wall)
     // Position: on the floor, adjacent to the wall (small offsetY to get floor-near-wall position)
     if (prop.missionId === 'studio_01' && prop.key === 'a') {
+      // Anchor to FLOOR, then spread left/center/right along the floor near the wall.
+      // This prevents the duplicates from appearing on windows (wall anchors).
       return [
-        { anchor: 'wall_left', offsetX: 5, offsetY: 18, customScale: 0.9 },
-        { anchor: 'wall_back', offsetX: 0, offsetY: 20, customScale: 1.0 },
-        { anchor: 'wall_right', offsetX: -5, offsetY: 18, customScale: 0.9 },
+        { anchor: 'floor', offsetX: -22, offsetY: -2, customScale: 1.0 },
+        { anchor: 'floor', offsetX: 0, offsetY: -2, customScale: 1.0 },
+        { anchor: 'floor', offsetX: 22, offsetY: -2, customScale: 1.0 },
       ];
     }
 

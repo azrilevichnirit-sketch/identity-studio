@@ -5,6 +5,7 @@ import type { AvatarGender, Mission } from '@/types/identity';
 // Background imports - ONLY using the new stylized background
 // All old backgrounds removed per product requirements
 import galleryMainStylized from '@/assets/backgrounds/gallery_main_stylized_v3.webp';
+import galleryMainStylizedWhite from '@/assets/backgrounds/gallery_main_stylized_white_v1.webp';
 
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
@@ -129,22 +130,30 @@ const toolAssets: Record<string, string> = {
 };
 
 // Background asset lookup by CSV bg_override name
-// NOTE: All old backgrounds removed - using only gallery_main_stylized_v3
+// NOTE: Default background is the (current) stylized room.
+// Mission 01 special: choosing tool A "paints" walls white for Mission 02+.
 const backgroundAssets: Record<string, string> = {
+  // Default room ("before paint")
   studio_front_bg: galleryMainStylized,
   studio_in_entrance_view_bg: galleryMainStylized,
   studio_in_gallery_bg: galleryMainStylized,
-  studio_in_gallery_wall_bg: galleryMainStylized,
   studio_in_storage_bg: galleryMainStylized,
   studio_in_workshop_bg: galleryMainStylized,
   studio_entry_inside_bg: galleryMainStylized,
+
+  // "After paint" (white walls)
+  studio_in_gallery_wall_bg: galleryMainStylizedWhite,
+
+  // Named keys
   gallery_main_stylized: galleryMainStylized,
+  gallery_main_stylized_white: galleryMainStylizedWhite,
 };
 
 // Wide panoramic backgrounds for mobile panning (key -> asset)
 const panoramicBackgrounds: Record<string, string> = {
   studio_in_gallery_bg: galleryMainStylized,
   studio_entry_inside_bg: galleryMainStylized,
+  studio_in_gallery_wall_bg: galleryMainStylizedWhite,
 };
 
 export function getPanoramicBackground(bgKey: string): string | null {
