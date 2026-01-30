@@ -703,8 +703,8 @@
 @media (min-width: 768px) and (max-width: 1023px) {
   /* Hero row - pushed more to the right */
   .missionScreen .mission-hero-desktop {
-    right: 4px;
-    bottom: 42px;
+    right: -2px;
+    bottom: 46px;
   }
 
   /* Bubble - fits content width, moved up */
@@ -712,7 +712,7 @@
     max-width: min(460px, 55vw);
     width: fit-content;
     margin-right: 30px;
-    margin-bottom: 24px;
+    margin-bottom: 32px;
   }
 
   /* Avatar - larger with overlap on bubble, moved right */
