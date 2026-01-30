@@ -127,11 +127,12 @@ export function VisualPlayScreen({
     setJustPlaced(`${mission.mission_id}-${variant}`);
     
     // Delay the mission transition to allow placement animation to complete
-    // Animation is 500ms, so we wait 600ms before transitioning
+    // Animation is 500ms per item + 400ms stagger = ~1100ms total for 3 items
+    // We wait 1500ms to ensure users see the full animation
     setTimeout(() => {
       setJustPlaced(null);
       onSelect(mission.mission_id, variant, option.holland_code as HollandCode, option);
-    }, 600);
+    }, 1500);
     
     setCarryModeTool(null);
   }, [mission.mission_id, optionA, optionB, onSelect, hasDraggedOnce]);
@@ -256,8 +257,10 @@ export function VisualPlayScreen({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [carryModeTool]);
 
+  // Show all placed props (not just those with persist === 'keep')
+  // For now, show all placements to debug tool placement issues
   const persistedProps = useMemo(() => {
-    return placedProps.filter(p => p.persist === 'keep');
+    return placedProps;
   }, [placedProps]);
 
   const targetPosition = useMemo(() => {
@@ -392,14 +395,23 @@ export function VisualPlayScreen({
     </div>
   ) : null;
 
-  // Special duplication logic for certain missions (e.g., studio_01 option A duplicates to 3 wall corners)
-  const getDuplicateAnchors = (prop: typeof persistedProps[0]): AnchorRef[] => {
-    // Mission 1, option A: duplicate to 3 wall corners
+  // Special duplication logic for certain missions (e.g., studio_01 option A duplicates to 3 floor corners)
+  // For mission 1, the paint buckets should be placed on the floor near the walls
+  const getDuplicateAnchors = (prop: typeof persistedProps[0]): { anchor: AnchorRef; offsetX: number; offsetY: number }[] => {
+    // Mission 1, option A: duplicate to 3 floor positions near walls
     if (prop.missionId === 'studio_01' && prop.key === 'a') {
-      return ['wall_left', 'wall_back', 'wall_right'];
+      return [
+        { anchor: 'floor', offsetX: -30, offsetY: -5 },  // Left side of floor
+        { anchor: 'floor', offsetX: 0, offsetY: -10 },   // Center back
+        { anchor: 'floor', offsetX: 30, offsetY: -5 },   // Right side of floor
+      ];
     }
     // Default: no duplication, use original anchor
-    return prop.anchorRef ? [prop.anchorRef as AnchorRef] : [];
+    if (prop.anchorRef) {
+      return [{ anchor: prop.anchorRef as AnchorRef, offsetX: 0, offsetY: 0 }];
+    }
+    // Fallback to floor if no anchor specified
+    return [{ anchor: 'floor', offsetX: 0, offsetY: 0 }];
   };
 
   const placedPropsElement = (
@@ -410,23 +422,23 @@ export function VisualPlayScreen({
         
         if (!toolImg) return null;
         
-        const anchors = getDuplicateAnchors(prop);
+        const anchorInfos = getDuplicateAnchors(prop);
         const isJustPlaced = justPlaced === `${prop.missionId}-${prop.key}`;
         
-        return anchors.map((anchorRef, idx) => {
-          const anchorPos = getAnchorPosition(displayBgKey, anchorRef);
+        return anchorInfos.map((anchorInfo, idx) => {
+          const anchorPos = getAnchorPosition(displayBgKey, anchorInfo.anchor);
           if (!anchorPos) return null;
           
           // Stagger animation for duplicates
-          const animationDelay = idx * 150;
+          const animationDelay = idx * 200;
           
           return (
             <div
               key={`${prop.missionId}-${propIdx}-${idx}`}
               className={`absolute pointer-events-none ${isJustPlaced ? 'animate-snap-pop-blink' : 'animate-snap-place'}`}
               style={{
-                left: `${anchorPos.x + (prop.offsetX || 0)}%`,
-                top: `${anchorPos.y + (prop.offsetY || 0)}%`,
+                left: `${anchorPos.x + anchorInfo.offsetX}%`,
+                top: `${anchorPos.y + anchorInfo.offsetY}%`,
                 // Bigger, more realistic size
                 transform: `translate(-50%, -50%) scale(${(prop.scale || 1) * anchorPos.scale * 1.8})`,
                 zIndex: anchorPos.z_layer === 'back' ? 5 : anchorPos.z_layer === 'mid' ? 10 : 15,
