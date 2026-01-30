@@ -709,9 +709,9 @@
 
   /* Bubble - fits content width, no extra space */
   .missionScreen .mission-bubble-desktop {
-    max-width: min(380px, 44vw);
+    max-width: min(460px, 55vw);
     width: fit-content;
-    margin-right: 40px;
+    margin-right: 30px;
     margin-bottom: 14px;
   }
 

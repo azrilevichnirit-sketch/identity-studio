@@ -465,25 +465,18 @@ export function VisualPlayScreen({
 
   const speechBubbleElement = (
     <SpeechBubble tailDirection="right">
-      <div 
-        className="overflow-y-auto"
+      <p 
+        className="font-medium text-sm md:text-base"
         style={{ 
-          maxHeight: 'calc(22vh - 28px)',
+          lineHeight: 1.45,
           direction: 'rtl',
           textAlign: 'right',
+          maxHeight: 'calc(22vh - 28px)',
+          overflowY: 'auto',
         }}
       >
-        <p 
-          className="font-medium text-sm md:text-base"
-          style={{ 
-            lineHeight: 1.45,
-            direction: 'rtl',
-            textAlign: 'right',
-          }}
-        >
-          {taskText}
-        </p>
-      </div>
+        {taskText}
+      </p>
     </SpeechBubble>
   );
 
