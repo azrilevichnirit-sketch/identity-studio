@@ -1027,8 +1027,8 @@
     pointer-events: auto;
     direction: rtl;
     /* Shift more right so bubble goes behind avatar */
-    margin-right: -80px;
-    margin-left: 40px;
+    margin-right: -95px;
+    margin-left: 55px;
     margin-bottom: 30px;
   }
 
