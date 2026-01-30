@@ -61,12 +61,15 @@
     /* Tool panel + tooltip tokens (game UI) */
     --toolpanel-bg: 220 25% 10%;
     --toolpanel-border: 0 0% 100%;
-    /* Tooltip: darker, game-like */
-    --tooltip-bg: 220 22% 14%;
-    --tooltip-bg-2: 220 22% 10%;
-    --tooltip-text: 0 0% 96%;
+    /* Bubble UI (speech bubbles + tool tooltips) */
+    --bubble-bg: 48 100% 97%;
+    --bubble-fg: 0 0% 7%;
+    --bubble-ui-bg: 220 12% 90%;
+    --bubble-ui-fg: 220 18% 28%;
+    --bubble-glow: 48 100% 92%;
+
+    /* Tooltip accent (keep game primary as accent ring) */
     --tooltip-border: 170 80% 45%;
-    --tooltip-muted: 0 0% 78%;
 
     --sidebar-background: 220 18% 12%;
     --sidebar-foreground: 0 0% 95%;
@@ -616,21 +619,23 @@
 
 /* Tooltip - speech bubble style matching game bubbles */
 .tooltip-area {
-  margin-top: 10px;
+  margin-top: 6px;
   padding: 10px 14px;
   padding-left: 38px;
   width: fit-content;
   min-width: 100px;
   max-width: min(260px, 42vw);
-  background: #FFFCF5;
+  background: hsl(var(--bubble-bg));
   border-radius: 14px;
   position: relative;
+  isolation: isolate;
   direction: rtl;
   text-align: right;
   border: none;
-  box-shadow:
-    0 8px 24px -12px hsl(0 0% 0% / 0.45),
-    0 2px 6px hsl(0 0% 0% / 0.12);
+  /* Use drop-shadow so body+tail share one shadow (prevents visible seam) */
+  filter:
+    drop-shadow(0 8px 20px hsl(0 0% 0% / 0.18))
+    drop-shadow(0 2px 6px hsl(0 0% 0% / 0.10));
   animation: tooltip-pop 180ms ease-out;
   overflow: visible;
 }
@@ -639,15 +644,20 @@
 .tooltip-area::before {
   content: '';
   position: absolute;
-  top: -7px;
+  top: -6px;
   left: 50%;
   width: 14px;
   height: 14px;
-  background: #FFFCF5;
+  background: hsl(var(--bubble-bg));
   transform: translateX(-50%) rotate(45deg);
   border-radius: 2px;
-  box-shadow: -2px -2px 4px hsl(0 0% 0% / 0.08);
-  z-index: -1;
+  /* Keep tail inside same stacking context so no join-line appears */
+  z-index: 0;
+}
+
+.tooltip-area > * {
+  position: relative;
+  z-index: 1;
 }
 
 @keyframes tooltip-pop {
@@ -663,25 +673,25 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: hsl(220 15% 88%);
+  background: hsl(var(--bubble-ui-bg));
   display: flex;
   align-items: center;
   justify-content: center;
-  color: hsl(220 15% 35%);
+  color: hsl(var(--bubble-ui-fg));
   border: none;
   cursor: pointer;
   transition: background 0.15s, transform 0.15s;
 }
 
 .tooltip-close-btn:hover {
-  background: hsl(220 15% 80%);
+  background: hsl(var(--bubble-ui-bg) / 0.92);
   transform: scale(1.08);
 }
 
 .tooltip-text {
   font-size: 13px;
   font-weight: 600;
-  color: #111;
+  color: hsl(var(--bubble-fg));
   line-height: 1.45;
   font-family: 'Rubik', sans-serif;
   margin: 0;
@@ -707,7 +717,7 @@
   transition: transform 150ms ease, background 150ms ease, border-color 150ms ease;
   background: hsl(var(--toolpanel-bg) / 0.75);
   border: 1px solid hsl(var(--tooltip-border) / 0.20);
-  color: hsl(var(--tooltip-text) / 0.92);
+  color: hsl(var(--bubble-bg) / 0.92);
   box-shadow:
     0 10px 18px -14px hsl(0 0% 0% / 0.65),
     inset 0 1px 0 hsl(0 0% 100% / 0.05);
@@ -717,14 +727,27 @@
   transform: scale(1.08);
   background: hsl(var(--toolpanel-bg) / 0.90);
   border-color: hsl(var(--tooltip-border) / 0.35);
+  /* Requested: subtle glow in bubble color to signal interactivity */
+  box-shadow:
+    0 0 0 2px hsl(var(--bubble-glow) / 0.35),
+    0 0 14px hsl(var(--bubble-glow) / 0.22),
+    0 10px 18px -14px hsl(0 0% 0% / 0.65);
 }
 
 .tool-info-btn.is-active {
   background: hsl(var(--tooltip-border) / 0.22);
   border-color: hsl(var(--tooltip-border) / 0.50);
   box-shadow:
-    0 0 0 2px hsl(var(--tooltip-border) / 0.18),
+    0 0 0 2px hsl(var(--bubble-glow) / 0.45),
+    0 0 18px hsl(var(--bubble-glow) / 0.25),
     0 16px 26px -18px hsl(0 0% 0% / 0.75);
+}
+
+.tool-info-btn:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 3px hsl(var(--bubble-glow) / 0.40),
+    0 0 18px hsl(var(--bubble-glow) / 0.20);
 }
 
 .tool-info-icon {
@@ -885,7 +908,8 @@
   /* Mission tool panel - bottom-left, fits content */
   .missionScreen .mission-tool-panel-mobile {
     position: fixed;
-    z-index: 70;
+    /* Ensure tooltips never fall behind the mission bubble */
+    z-index: 95;
     left: 10px;
     bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
     width: fit-content;
@@ -928,7 +952,7 @@
 
   /* Mobile tooltip - speech bubble style */
   .mobile-layout .tooltip-area {
-    margin-top: 8px;
+    margin-top: 4px;
     padding: 8px 10px;
     padding-left: 32px;
     border-radius: 12px;
@@ -977,32 +1001,20 @@
    So overrides must target the *desktop* selectors.
 */
 @media (min-width: 768px) and (max-width: 1023px) {
-  /* Hero row - pushed higher so it doesn't overlap tool panel */
+  /* Tablet: keep hero positioning consistent with desktop to avoid layout jumps */
   .missionScreen .mission-hero-desktop {
-    right: 8px;
-    bottom: clamp(180px, 26vh, 260px);
+    right: clamp(24px, 4vw, 60px);
+    bottom: clamp(28px, 5vh, 60px);
   }
 
-  /* Bubble - fits content width */
+  /* Tablet: cap bubble width so it doesn't collide with the tool panel */
   .missionScreen .mission-bubble-desktop {
-    max-width: min(420px, 50vw);
-    width: fit-content;
-    margin-right: 20px;
-    margin-bottom: 24px;
+    max-width: min(360px, 40vw);
   }
 
-  /* Avatar - proportional */
-  .missionScreen .mission-avatar-desktop {
-    width: min(360px, 38vw);
-    margin-left: -140px;
-  }
-
-  /* Tools panel - positioned safely at bottom-left, not overlapping bubble */
+  /* Tablet: keep tool panel readable without affecting hero */
   .missionScreen .mission-tool-panel-desktop {
-    left: 14px;
-    bottom: 14px;
-    max-width: min(380px, 48vw);
-    z-index: 25;
+    max-width: min(420px, 46vw);
   }
 
   /* Tablet tool panel */
