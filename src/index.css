@@ -1089,33 +1089,39 @@
     min-height: 84px;
   }
 
-  /* Mobile tooltip - speech bubble style */
+  /* Mobile tooltip - dark compact style like desktop */
   .mobile-layout .tooltip-area {
     margin-top: 4px;
-    padding: 8px 10px;
-    padding-left: 32px;
-    border-radius: 12px;
-    max-width: min(220px, 55vw);
+    padding: 10px 12px;
+    padding-left: 30px;
+    border-radius: 14px;
+    max-width: min(200px, 52vw);
+    /* Dark background like desktop */
+    background: hsl(0 0% 12%);
+    border: 1px solid hsl(0 0% 22%);
   }
 
   .mobile-layout .tooltip-area::before {
     top: -6px;
     width: 12px;
     height: 12px;
+    /* Match dark background */
+    background: hsl(0 0% 12%);
+    border: 1px solid hsl(0 0% 22%);
   }
 
   .mobile-layout .tooltip-area[data-placement="tool"] {
-    /* Mobile: show ABOVE the tool to avoid colliding with mission bubble */
-    top: auto;
-    bottom: calc(100% + 6px);
-    max-width: min(190px, 64vw);
+    /* Mobile: show BELOW the tool like desktop */
+    top: calc(100% + 6px);
+    bottom: auto;
+    max-width: min(200px, 60vw);
   }
 
   .mobile-layout .tooltip-area[data-placement="tool"]::before {
-    top: auto;
-    bottom: -6px;
+    top: -6px;
+    bottom: auto;
     left: 18px;
-    transform: translateY(-1px) rotate(45deg);
+    transform: translateY(1px) rotate(45deg);
   }
 
   .mobile-layout .tooltip-area[data-placement="tool"][data-variant="b"]::before {
@@ -1128,11 +1134,16 @@
     height: 16px;
     left: 6px;
     top: 6px;
+    background: hsl(0 0% 20%);
+    border: 1px solid hsl(0 0% 30%);
+    color: hsl(0 0% 100%);
   }
 
   .mobile-layout .tooltip-text {
-    font-size: 11.5px;
+    font-size: 12px;
     line-height: 1.4;
+    /* White text on dark background */
+    color: hsl(0 0% 100%);
   }
 
   .mobile-layout .tool-info-btn {
