@@ -200,16 +200,24 @@ export function VisualPlayScreen({
     return getAnchorPosition(targetBgKey, anchorRef);
   }, [optionA, optionB, currentBgKey, mission.mission_id, FLOOR_NEAR_WALL_Y]);
 
+  // Flash cue when mission changes (helps player notice the transition)
+  const [showMissionFlash, setShowMissionFlash] = useState(false);
+  
   useEffect(() => {
-    // Tool-swap cue (very subtle) to help the player notice that the mission advanced.
+    // Tool-swap cue to help the player notice that the mission advanced.
     // Skip first mount to avoid flashing on initial load.
     if (!didMountRef.current) {
       didMountRef.current = true;
       return;
     }
     setShowToolSwapCue(true);
-    const id = window.setTimeout(() => setShowToolSwapCue(false), 420);
-    return () => window.clearTimeout(id);
+    setShowMissionFlash(true);
+    const toolId = window.setTimeout(() => setShowToolSwapCue(false), 420);
+    const flashId = window.setTimeout(() => setShowMissionFlash(false), 600);
+    return () => {
+      window.clearTimeout(toolId);
+      window.clearTimeout(flashId);
+    };
   }, [mission.mission_id]);
 
   useEffect(() => {
@@ -479,13 +487,25 @@ export function VisualPlayScreen({
   );
 
   const gradientOverlayElement = (
-    <div 
-      className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none"
-      style={{
-        background: 'linear-gradient(to top, rgba(0,0,0,0.25) 0%, transparent 100%)',
-        zIndex: 1,
-      }}
-    />
+    <>
+      <div 
+        className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none"
+        style={{
+          background: 'linear-gradient(to top, rgba(0,0,0,0.25) 0%, transparent 100%)',
+          zIndex: 1,
+        }}
+      />
+      {/* Mission change flash - brief bright overlay to signal new mission */}
+      {showMissionFlash && (
+        <div 
+          className="absolute inset-0 pointer-events-none animate-mission-flash"
+          style={{
+            background: 'radial-gradient(ellipse at center, hsl(var(--primary) / 0.18) 0%, transparent 70%)',
+            zIndex: 2,
+          }}
+        />
+      )}
+    </>
   );
 
   // Scene extras - DISABLED for now
