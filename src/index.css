@@ -1178,9 +1178,9 @@
   }
 
   /* Tablet: keep tool panel readable, shift right */
-  .missionScreen .mission-tool-panel-desktop {
+  .missionScreen.desktop-layout .mission-tool-panel-desktop {
     max-width: min(380px, 44vw);
-    left: clamp(50px, 7vw, 90px);
+    left: clamp(60px, 8vw, 100px);
   }
 
   /* Tablet tool panel */
