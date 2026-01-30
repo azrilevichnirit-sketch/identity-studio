@@ -703,22 +703,22 @@
 @media (min-width: 768px) and (max-width: 1023px) {
   /* Hero row - pushed more to the right */
   .missionScreen .mission-hero-desktop {
-    right: 8px;
-    bottom: 36px;
+    right: 4px;
+    bottom: 42px;
   }
 
-  /* Bubble - fits content width, no extra space */
+  /* Bubble - fits content width, moved up */
   .missionScreen .mission-bubble-desktop {
     max-width: min(460px, 55vw);
     width: fit-content;
     margin-right: 30px;
-    margin-bottom: 14px;
+    margin-bottom: 24px;
   }
 
-  /* Avatar - larger with overlap on bubble */
+  /* Avatar - larger with overlap on bubble, moved right */
   .missionScreen .mission-avatar-desktop {
     width: min(420px, 42vw);
-    margin-left: -200px;
+    margin-left: -190px;
   }
 
   /* Tools panel - proper sizing and positioning */
