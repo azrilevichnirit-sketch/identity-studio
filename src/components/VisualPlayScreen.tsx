@@ -188,17 +188,25 @@ export function VisualPlayScreen({
   const displayBgKey = localBgOverride?.key || dragPreviewBg?.key || currentBgKey;
 
   // Get target anchor for currently selected tool
-  // For mission 1, target the FLOOR area so drop zone appears on the floor near walls
+  // For mission 1: Tool A targets BACK floor (near walls), Tool B targets CENTER floor
   const getTargetAnchor = useCallback((variant: 'a' | 'b') => {
     const option = variant === 'a' ? optionA : optionB;
     const targetBgKey = option.next_bg_override || currentBgKey;
 
-    // Mission 01: target FLOOR-NEAR-WALL (baseboard line) so indicator isn't on windows or front floor
+    // Mission 01: separate drop zones for Tool A (back near walls) and Tool B (center floor)
     if (mission.mission_id === 'studio_01') {
-      const wallBack = getAnchorPosition(currentBgKey, 'wall_back');
-      if (wallBack) {
-        // Place marker at 50% X (center) and fixed Y for floor near wall
-        return { x: wallBack.x, y: FLOOR_NEAR_WALL_Y, scale: 1, z_layer: 'mid' as const };
+      if (variant === 'a') {
+        // Tool A: drop zone at BACK of room, near the walls (under windows)
+        const wallBack = getAnchorPosition(currentBgKey, 'wall_back');
+        if (wallBack) {
+          return { x: 50, y: FLOOR_NEAR_WALL_Y, scale: 1, z_layer: 'mid' as const };
+        }
+      } else {
+        // Tool B: drop zone at CENTER of floor (where the current indicator shows)
+        const floor = getAnchorPosition(currentBgKey, 'floor');
+        if (floor) {
+          return { x: 50, y: floor.y - 8, scale: 1, z_layer: 'mid' as const };
+        }
       }
     }
 
