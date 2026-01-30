@@ -1167,8 +1167,8 @@
   /* Tablet: bubble positioned all the way right to connect with avatar */
   .missionScreen .mission-bubble-desktop {
     max-width: min(420px, 46vw);
-    /* Move all the way right - no margin */
-    margin-right: 0;
+    /* Move slightly more right */
+    margin-right: -10px;
     /* Ensure bubble is behind avatar */
     z-index: 15;
   }
