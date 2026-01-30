@@ -481,16 +481,16 @@ export function VisualPlayScreen({
   );
 
   const toolPanelElement = (
-    <div className="layout-tool-panel-inner tool-panel-responsive">
-      {/* Desktop: Progress tank on left, tools on right */}
+    <div className="layout-tool-panel-inner tool-panel-responsive" style={{ direction: 'ltr' }}>
+      {/* Main row: Progress tank LEFT (visual), tools RIGHT */}
       <div className="tool-panel-main-row">
-        {/* Progress tank - vertical on desktop */}
-        <div className="progress-tank-container">
+        {/* Progress tank - on the LEFT side (visual) */}
+        <div className="progress-tank-wrapper">
           <ProgressTank value={(currentIndex + 1) / totalMissions} />
         </div>
 
-        {/* Tool tiles with drag hint */}
-        <div className="flex-1 flex gap-3 md:gap-4 lg:gap-5 justify-center items-center relative tool-tiles-container">
+        {/* Tool tiles - take remaining space */}
+        <div className="tool-tiles-area">
           <DraggableToolTile
             image={toolAImage}
             onPointerDown={(e) => handlePointerDown('a', e)}
@@ -516,40 +516,24 @@ export function VisualPlayScreen({
           
           {/* Animated drag hint */}
           {!hasDraggedOnce && !draggingTool && !carryModeTool && (
-            <div className="absolute -top-7 sm:-top-8 md:-top-9 left-1/2 -translate-x-1/2 flex flex-col items-center">
+            <div className="absolute -top-8 left-1/2 -translate-x-1/2 flex flex-col items-center">
               <DragHint />
             </div>
           )}
         </div>
       </div>
 
-      {/* Tooltip tray - below everything */}
+      {/* Tooltip - appears below, full width */}
       {activeTooltip && (
-        <div 
-          className="tooltip-tray-desktop mt-2 rounded-xl p-3 relative animate-fade-in"
-          style={{
-            background: 'linear-gradient(135deg, #FFFCF5 0%, #FFF8E8 100%)',
-            boxShadow: '0 4px 16px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.8)',
-            border: '1px solid rgba(200, 180, 140, 0.3)',
-          }}
-        >
+        <div className="tooltip-area">
           <button
             onClick={() => setActiveTooltip(null)}
-            className="absolute top-2 left-2 w-6 h-6 rounded-full bg-slate-200/80 hover:bg-slate-300 flex items-center justify-center transition-colors"
+            className="tooltip-close-btn"
           >
-            <X className="w-3.5 h-3.5 text-slate-600" />
+            <X className="w-3 h-3" />
           </button>
           
-          <p 
-            className="text-sm font-medium pr-2 pl-8"
-            style={{
-              color: '#1a1a1a',
-              direction: 'rtl',
-              textAlign: 'right',
-              fontFamily: "'Rubik', sans-serif",
-              lineHeight: 1.5,
-            }}
-          >
+          <p className="tooltip-text">
             {activeTooltip === 'a' 
               ? (optionA.tooltip_heb || 'MISSING: option_a_tooltip_heb')
               : (optionB.tooltip_heb || 'MISSING: option_b_tooltip_heb')
