@@ -481,14 +481,14 @@ export function VisualPlayScreen({
   );
 
   const toolPanelElement = (
-    <div className="layout-tool-panel-inner">
+    <div className="layout-tool-panel-inner tool-panel-responsive">
       {/* Progress tank */}
-      <div className="flex justify-center mb-1.5">
+      <div className="flex justify-center mb-1 md:mb-1.5">
         <ProgressTank value={(currentIndex + 1) / totalMissions} />
       </div>
 
       {/* Tool tiles with drag hint */}
-      <div className="flex-1 flex gap-3 md:gap-4 justify-center items-center relative">
+      <div className="flex-1 flex gap-2 sm:gap-3 md:gap-4 justify-center items-center relative tool-tiles-container">
         <DraggableToolTile
           image={toolAImage}
           onPointerDown={(e) => handlePointerDown('a', e)}
@@ -514,7 +514,7 @@ export function VisualPlayScreen({
         
         {/* Animated drag hint */}
         {!hasDraggedOnce && !draggingTool && !carryModeTool && (
-          <div className="absolute -top-9 left-1/2 -translate-x-1/2 flex flex-col items-center">
+          <div className="absolute -top-7 sm:-top-8 md:-top-9 left-1/2 -translate-x-1/2 flex flex-col items-center">
             <DragHint />
           </div>
         )}
@@ -523,7 +523,7 @@ export function VisualPlayScreen({
       {/* Tooltip tray */}
       {activeTooltip && (
         <div 
-          className="mt-2 rounded-xl p-2.5 relative animate-fade-in"
+          className="tooltip-tray mt-1.5 sm:mt-2 rounded-lg sm:rounded-xl p-2 sm:p-2.5 relative animate-fade-in"
           style={{
             background: '#FFFCF5',
             boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.08)',
@@ -531,19 +531,19 @@ export function VisualPlayScreen({
         >
           <button
             onClick={() => setActiveTooltip(null)}
-            className="absolute top-1.5 left-1.5 w-5 h-5 rounded-full bg-slate-200 hover:bg-slate-300 flex items-center justify-center transition-colors"
+            className="absolute top-1 left-1 sm:top-1.5 sm:left-1.5 w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-slate-200 hover:bg-slate-300 flex items-center justify-center transition-colors"
           >
-            <X className="w-3 h-3 text-slate-600" />
+            <X className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-slate-600" />
           </button>
           
           <p 
-            className="text-xs font-medium pr-2 pl-5"
+            className="text-[11px] sm:text-xs font-medium pr-1.5 pl-4 sm:pr-2 sm:pl-5"
             style={{
               color: '#111',
               direction: 'rtl',
               textAlign: 'right',
               fontFamily: "'Rubik', sans-serif",
-              lineHeight: 1.45,
+              lineHeight: 1.4,
             }}
           >
             {activeTooltip === 'a' 
@@ -644,13 +644,7 @@ function DraggableToolTile({
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
-        className="draggable-tool group relative overflow-visible transition-all duration-200 hover:scale-110 active:scale-95 cursor-grab active:cursor-grabbing"
-        style={{
-          width: 'clamp(56px, 11vw, 90px)',
-          height: 'clamp(56px, 11vw, 90px)',
-          minWidth: '56px',
-          minHeight: '56px',
-        }}
+        className="draggable-tool group relative overflow-visible transition-all duration-200 hover:scale-110 active:scale-95 cursor-grab active:cursor-grabbing tool-tile"
       >
         {/* Tool image - transparent PNG with subtle shadow */}
         <div className="absolute inset-0 flex items-center justify-center">
@@ -665,7 +659,7 @@ function DraggableToolTile({
               draggable={false}
             />
           ) : (
-            <span className="text-2xl md:text-3xl">{variant === 'a' ? '🔧' : '🎨'}</span>
+            <span className="text-xl sm:text-2xl md:text-3xl">{variant === 'a' ? '🔧' : '🎨'}</span>
           )}
         </div>
         
@@ -680,7 +674,7 @@ function DraggableToolTile({
 
       {/* Info icon - BOTTOM-LEFT corner */}
       <button 
-        className={`absolute -bottom-0.5 -left-0.5 z-10 w-5 h-5 rounded-full flex items-center justify-center shadow-md transition-all hover:scale-110 ${
+        className={`absolute -bottom-0.5 -left-0.5 z-10 w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center shadow-md transition-all hover:scale-110 ${
           isInfoActive 
             ? 'bg-white ring-2 ring-slate-400' 
             : 'bg-slate-800/90'
@@ -690,7 +684,7 @@ function DraggableToolTile({
           onInfoClick();
         }}
       >
-        <Info className={`w-2.5 h-2.5 ${isInfoActive ? 'text-slate-700' : 'text-white/90'}`} />
+        <Info className={`w-2 h-2 sm:w-2.5 sm:h-2.5 ${isInfoActive ? 'text-slate-700' : 'text-white/90'}`} />
       </button>
     </div>
   );
