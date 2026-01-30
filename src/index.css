@@ -846,30 +846,28 @@
   z-index: 10;
 }
 
-/* Desktop tooltip - uniform size, anchored to right to prevent left clipping */
+/* Desktop tooltip - fits text, minimal padding */
 .desktop-hover-tooltip {
   position: absolute;
   bottom: calc(100% + 6px);
-  /* Anchor to right side to prevent clipping on left edge */
   right: -8px;
   left: auto;
   transform: none;
   background: hsl(var(--tooltip-bg, 0 0% 10%));
   color: hsl(var(--tooltip-text, 0 0% 100%));
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 13px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
   font-weight: 500;
   font-family: 'Rubik', sans-serif;
   direction: rtl;
   text-align: right;
-  white-space: normal;
-  /* Uniform width for all tooltips */
-  width: 180px;
-  min-width: 180px;
-  max-width: 180px;
-  line-height: 1.4;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  white-space: nowrap;
+  width: auto;
+  min-width: unset;
+  max-width: unset;
+  line-height: 1.3;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.15s ease, visibility 0.15s ease;
