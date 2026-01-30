@@ -705,9 +705,10 @@
     bottom: 36px;
   }
 
-  /* Bubble - narrower, more margin from avatar */
+  /* Bubble - fits content width, no extra space */
   .missionScreen .mission-bubble-desktop {
     max-width: min(380px, 44vw);
+    width: fit-content;
     margin-right: 40px;
     margin-bottom: 14px;
   }
