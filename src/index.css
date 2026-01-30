@@ -905,7 +905,8 @@
   flex-direction: row;
   align-items: flex-end;
   gap: 0;
-  z-index: 30;
+  /* Above Debug button (z-40) but still below dialogs/overlays (z-50+) */
+  z-index: 45;
   pointer-events: none;
   direction: ltr;
 }
