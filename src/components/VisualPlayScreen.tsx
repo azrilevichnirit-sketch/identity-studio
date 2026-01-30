@@ -12,6 +12,7 @@ import { MissionLayout } from './layouts/MissionLayout';
 import { usePanningBackground } from '@/hooks/usePanningBackground';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { BackgroundCrossfade } from './BackgroundCrossfade';
+import { AnchorDebugOverlay } from './AnchorDebugOverlay';
 import femaleStaffWalk from '@/assets/avatars/studio_01_female_staff_walk.webp';
 import maleStaffWalk from '@/assets/avatars/studio_01_male_staff_walk.webp';
 // import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter'; // Disabled
@@ -53,6 +54,7 @@ export function VisualPlayScreen({
   // Carry mode for touch fallback - tap to pick up, tap target to place
   const [carryModeTool, setCarryModeTool] = useState<'a' | 'b' | null>(null);
   const [showToolSwapCue, setShowToolSwapCue] = useState(false);
+  const [showDebugOverlay, setShowDebugOverlay] = useState(false);
   
   // Local placement state - shows tool BEFORE it's added to global placedProps
   const [localPlacement, setLocalPlacement] = useState<{
@@ -113,36 +115,29 @@ export function VisualPlayScreen({
   const currentBg = useMemo(() => getBackgroundForMission(mission, previousBgOverride), [mission, previousBgOverride]);
   const currentBgKey = useMemo(() => getBackgroundKey(mission, previousBgOverride), [mission, previousBgOverride]);
 
-  // Mission 01: derive "floor near wall" from anchors.
-  // In perspective, the back-floor plane sits *above* the foreground floor.
-  // We bias toward the floor anchor so the marker/tools sit under the windows (on the floor plane), not mid-wall.
-  const FLOOR_NEAR_WALL_Y = useMemo(() => {
-    const wallBack = getAnchorPosition(currentBgKey, 'wall_back');
-    const floor = getAnchorPosition(currentBgKey, 'floor');
-    if (!wallBack || !floor) return 74;
-
-    const y = wallBack.y + (floor.y - wallBack.y) * 0.72;
-    const minY = wallBack.y + 10;
-    const maxY = floor.y - 4;
-    return Math.max(minY, Math.min(maxY, y));
-  }, [currentBgKey]);
-
-  // Mission 01 duplicates: keep them near the back wall (on the floor close to the walls).
-  const DUPLICATE_BUCKETS_Y = useMemo(() => {
-    const wallBack = getAnchorPosition(currentBgKey, 'wall_back');
-    const floor = getAnchorPosition(currentBgKey, 'floor');
-    // Fallback tuned to this game's backgrounds: "under windows" but still on the floor plane
-    if (!wallBack || !floor) return 78;
-
-    // Keep duplicates slightly lower than the marker so they visually "sit" on the floor.
-    const y = FLOOR_NEAR_WALL_Y + (floor.y - FLOOR_NEAR_WALL_Y) * 0.22;
-    const minY = FLOOR_NEAR_WALL_Y + 3;
-    const maxY = floor.y - 4;
-    return Math.max(minY, Math.min(maxY, y));
-  }, [currentBgKey]);
-
-  // Mission 01 Tool B: the asset has extra bottom padding; nudge it down so it touches the floor.
-  const M01_TOOL_B_Y = useMemo(() => DUPLICATE_BUCKETS_Y + 6, [DUPLICATE_BUCKETS_Y]);
+  // ==================== FIXED ANCHOR MAPPING ====================
+  // Hard-coded Y positions for Mission 01 to avoid calculation errors
+  // These are absolute percentages from top of viewport
+  // 
+  // Background: gallery_main_stylized_v3 / gallery_main_stylized_white_v1
+  // - wall_back (windows): ~38%
+  // - floor (front): ~87%
+  // - "back floor" (floor near walls): ~58% (just below windows, on the floor plane)
+  // - "mid floor": ~72% (middle of the visible floor)
+  // - "front floor": ~80% (closer to camera)
+  // ================================================================
+  
+  // Mission 01 Tool A: "back floor" - very close to the walls, just below windows
+  const BACK_FLOOR_Y = 58; // Fixed: on the floor plane, very close to walls
+  
+  // Mission 01 Tool A placement (after drop): slightly lower for visual "sitting" on floor
+  const DUPLICATE_BUCKETS_Y = 62; // Fixed: where the 3 paint buckets appear
+  
+  // Mission 01 Tool B: center floor area
+  const CENTER_FLOOR_Y = 78; // Fixed: center of the visible floor
+  
+  // Mission 01 Tool B placement position
+  const M01_TOOL_B_Y = CENTER_FLOOR_Y;
 
   const avatarImage = getAvatarImage(avatarGender, 'idle');
   const toolAImage = getToolImage(optionA.asset);
@@ -195,28 +190,18 @@ export function VisualPlayScreen({
 
     // Mission 01: separate drop zones for Tool A (back near walls) and Tool B (center floor)
     if (mission.mission_id === 'studio_01') {
-      const wallBack = getAnchorPosition(currentBgKey, 'wall_back');
-      const floor = getAnchorPosition(currentBgKey, 'floor');
-      
       if (variant === 'a') {
-        // Tool A: drop zone on the FLOOR but at the BACK of the room (near the walls, under windows)
-        // wallBack.y is ~38%, floor.y is ~87%
-        // We want to be on the floor plane but at the back - around 72-75%
-        if (wallBack && floor) {
-          const backFloorY = wallBack.y + (floor.y - wallBack.y) * 0.72; // ~73% - floor at the back
-          return { x: 50, y: backFloorY, scale: 1, z_layer: 'mid' as const };
-        }
+        // Tool A: drop zone at BACK of room, very close to walls (using fixed value)
+        return { x: 50, y: BACK_FLOOR_Y, scale: 1, z_layer: 'mid' as const };
       } else {
-        // Tool B: drop zone at CENTER of floor (forward in the room)
-        if (floor) {
-          return { x: 50, y: floor.y - 8, scale: 1, z_layer: 'mid' as const };
-        }
+        // Tool B: drop zone at CENTER of floor
+        return { x: 50, y: CENTER_FLOOR_Y, scale: 1, z_layer: 'mid' as const };
       }
     }
 
     const anchorRef = option.anchor_ref as AnchorRef;
     return getAnchorPosition(targetBgKey, anchorRef);
-  }, [optionA, optionB, currentBgKey, mission.mission_id, FLOOR_NEAR_WALL_Y]);
+  }, [optionA, optionB, currentBgKey, mission.mission_id, BACK_FLOOR_Y, CENTER_FLOOR_Y]);
 
   // Flash cue when mission changes (helps player notice the transition)
   const [showMissionFlash, setShowMissionFlash] = useState(false);
@@ -1051,22 +1036,38 @@ export function VisualPlayScreen({
     </div>
   ) : null;
 
+  // Debug overlay anchors
+  const debugAnchors = useMemo(() => [
+    { name: 'wall_back', y: 38, color: '#e74c3c' },
+    { name: 'BACK_FLOOR (Tool A)', y: BACK_FLOOR_Y, color: '#2ecc71' },
+    { name: 'BUCKETS_Y', y: DUPLICATE_BUCKETS_Y, color: '#27ae60' },
+    { name: 'CENTER_FLOOR (Tool B)', y: CENTER_FLOOR_Y, color: '#3498db' },
+    { name: 'floor', y: 87, color: '#9b59b6' },
+  ], [BACK_FLOOR_Y, DUPLICATE_BUCKETS_Y, CENTER_FLOOR_Y]);
+
   return (
-    <MissionLayout
-      stageRef={stageRef}
-      background={backgroundElement}
-      gradientOverlay={gradientOverlayElement}
-      sceneExtras={sceneExtrasElement}
-      targetZone={targetZoneElement}
-      placedProps={placedPropsElement}
-      undoButton={undoButtonElement}
-      avatar={avatarElement}
-      speechBubble={speechBubbleElement}
-      toolPanel={toolPanelElement}
-      draggingGhost={draggingGhostElement}
-      isCarryMode={!!carryModeTool}
-      onCancelCarry={handleCancelCarry}
-    />
+    <>
+      <MissionLayout
+        stageRef={stageRef}
+        background={backgroundElement}
+        gradientOverlay={gradientOverlayElement}
+        sceneExtras={sceneExtrasElement}
+        targetZone={targetZoneElement}
+        placedProps={placedPropsElement}
+        undoButton={undoButtonElement}
+        avatar={avatarElement}
+        speechBubble={speechBubbleElement}
+        toolPanel={toolPanelElement}
+        draggingGhost={draggingGhostElement}
+        isCarryMode={!!carryModeTool}
+        onCancelCarry={handleCancelCarry}
+      />
+      <AnchorDebugOverlay
+        anchors={debugAnchors}
+        isVisible={showDebugOverlay}
+        onToggle={() => setShowDebugOverlay(!showDebugOverlay)}
+      />
+    </>
   );
 }
 
