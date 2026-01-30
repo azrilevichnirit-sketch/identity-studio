@@ -1177,9 +1177,10 @@
     margin-left: clamp(-190px, -18vw, -140px);
   }
 
-  /* Tablet: keep tool panel readable without affecting hero */
+  /* Tablet: keep tool panel readable, shift right */
   .missionScreen .mission-tool-panel-desktop {
     max-width: min(380px, 44vw);
+    left: clamp(50px, 7vw, 90px);
   }
 
   /* Tablet tool panel */
