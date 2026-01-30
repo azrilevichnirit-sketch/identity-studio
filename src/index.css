@@ -489,6 +489,23 @@
   animation: snap-pop-blink 800ms ease-out forwards;
 }
 
+/* Softer lock animation (used for Mission 01 paint buckets) */
+@keyframes snap-lock-soft {
+  0% {
+    filter: brightness(1);
+  }
+  55% {
+    filter: brightness(1.06);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
+.animate-snap-lock-soft {
+  animation: snap-lock-soft 320ms ease-out forwards;
+}
+
 .animate-drag-pulse {
   animation: drag-pulse 1.5s ease-in-out infinite;
 }

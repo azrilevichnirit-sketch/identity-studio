@@ -11,6 +11,7 @@ import { DragHint } from './DragHint';
 import { MissionLayout } from './layouts/MissionLayout';
 import { usePanningBackground } from '@/hooks/usePanningBackground';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { BackgroundCrossfade } from './BackgroundCrossfade';
 // import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter'; // Disabled
 
 const DRAG_HINT_STORAGE_KEY = 'ie_hasDraggedOnce';
@@ -107,9 +108,17 @@ export function VisualPlayScreen({
   const currentBg = useMemo(() => getBackgroundForMission(mission, previousBgOverride), [mission, previousBgOverride]);
   const currentBgKey = useMemo(() => getBackgroundKey(mission, previousBgOverride), [mission, previousBgOverride]);
 
-  // Fixed Y position for "floor near wall" - 52% is the sweet spot
-  // where items appear on the floor but close to the back wall.
-  const FLOOR_NEAR_WALL_Y = 52;
+  // Mission 01: derive "floor near wall" from anchors so it never drifts onto windows.
+  const FLOOR_NEAR_WALL_Y = useMemo(() => {
+    const wallBack = getAnchorPosition(currentBgKey, 'wall_back');
+    const floor = getAnchorPosition(currentBgKey, 'floor');
+    if (!wallBack || !floor) return 64;
+
+    const midpoint = wallBack.y + (floor.y - wallBack.y) * 0.5;
+    const minY = wallBack.y + 6;
+    const maxY = floor.y - 6;
+    return Math.max(minY, Math.min(maxY, midpoint));
+  }, [currentBgKey]);
   const avatarImage = getAvatarImage(avatarGender, 'idle');
   const toolAImage = getToolImage(optionA.asset);
   const toolBImage = getToolImage(optionB.asset);
@@ -170,7 +179,7 @@ export function VisualPlayScreen({
 
     const anchorRef = option.anchor_ref as AnchorRef;
     return getAnchorPosition(targetBgKey, anchorRef);
-  }, [optionA, optionB, currentBgKey, mission.mission_id]);
+  }, [optionA, optionB, currentBgKey, mission.mission_id, FLOOR_NEAR_WALL_Y]);
 
   useEffect(() => {
     return () => {
@@ -411,18 +420,15 @@ export function VisualPlayScreen({
   const effectiveBgSize = isMobile && panoramicBg ? 'auto 100%' : 'cover';
 
   const backgroundElement = (
-    <div 
-      className="absolute inset-0 layout-bg"
-      style={{ 
-        backgroundImage: `url(${effectiveBg})`,
-        backgroundSize: effectiveBgSize,
-        backgroundPosition: effectiveBgPosition,
-        backgroundRepeat: 'no-repeat',
-        filter: 'saturate(1.18) contrast(1.08)',
-        zIndex: 0,
-        // Smooth crossfade for background transitions (especially walls turning white)
-        transition: 'background-image 500ms ease-in-out',
-      }}
+    <BackgroundCrossfade
+      src={effectiveBg}
+      className="layout-bg"
+      backgroundSize={effectiveBgSize}
+      backgroundPosition={effectiveBgPosition}
+      backgroundRepeat="no-repeat"
+      filter="saturate(1.18) contrast(1.08)"
+      durationMs={900}
+      zIndex={0}
     />
   );
 
@@ -572,7 +578,7 @@ export function VisualPlayScreen({
           return (
             <div
               key={`${prop.missionId}-${propIdx}-${idx}`}
-              className={`absolute pointer-events-none ${isJustPlaced ? 'animate-snap-pop-blink' : 'animate-snap-place'}`}
+              className={`absolute pointer-events-none ${isJustPlaced ? (prop.missionId === 'studio_01' && prop.key === 'a' ? 'animate-snap-lock-soft' : 'animate-snap-pop-blink') : 'animate-snap-place'}`}
               style={{
                 left: `${anchorPos.x + anchorInfo.offsetX}%`,
                 top: `${topValue}%`,
