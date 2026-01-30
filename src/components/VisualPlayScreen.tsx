@@ -542,24 +542,27 @@ export function VisualPlayScreen({
   );
 
   // Scene extras - Female staff NPC appears after Mission 01 Tool B placement
+  // She stands on the floor looking at Tool B (positioned to her right)
   const sceneExtrasElement = showFemaleStaff ? (
     <div 
       className="absolute pointer-events-none animate-npc-enter"
       style={{
-        // Position near the Tool B (center-left of the room, on the floor)
-        left: '38%',
-        bottom: '18%',
+        // Position on the floor, to the left of center (looking right at the tool)
+        left: '32%',
+        bottom: '8%',
         zIndex: 14,
         transform: 'translateX(-50%)',
+        transformOrigin: 'bottom center',
       }}
     >
       <img 
         src={femaleStaffWalk}
         alt="Staff member"
-        className="h-36 md:h-48 w-auto object-contain"
+        className="w-auto object-contain"
         style={{
-          filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-          transform: 'scaleX(-1)', // Face the tool (which is to her right)
+          height: 'clamp(180px, 32vh, 320px)',
+          filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
+          transform: 'scaleX(-1)', // Face right (toward the tool)
         }}
       />
     </div>
