@@ -25,8 +25,6 @@ export function SpeechBubble({
   className = '',
   style = {},
 }: SpeechBubbleProps) {
-  // Wrapper applies drop-shadow filter to the entire shape (body + tail)
-  // This creates a unified shadow that wraps both elements seamlessly
   return (
     <div 
       className={`speech-bubble-wrapper ${className}`}
@@ -36,13 +34,14 @@ export function SpeechBubble({
         ...style,
       }}
     >
-      {/* Main bubble body with ::after tail */}
+      {/* Main bubble body */}
       <div 
-        className={`speech-bubble-body speech-bubble-tail-${tailDirection}`}
+        className="speech-bubble-body"
         style={{
           position: 'relative',
           background: '#FFFDF8',
           borderRadius: '18px',
+          overflow: 'visible',
         }}
       >
         {/* Content area */}
@@ -60,35 +59,23 @@ export function SpeechBubble({
         >
           {children}
         </div>
+        
+        {/* Tail - rendered as a sibling with proper stacking */}
+        <div
+          style={{
+            position: 'absolute',
+            width: '20px',
+            height: '20px',
+            background: '#FFFDF8',
+            borderRadius: '4px',
+            bottom: '20px',
+            ...(tailDirection === 'right' 
+              ? { right: '-7px', transform: 'rotate(45deg)' }
+              : { left: '-7px', transform: 'rotate(45deg)' }
+            ),
+          }}
+        />
       </div>
-
-      {/* 
-        Inline style tag for ::after pseudo-element
-        This is cleaner than injecting global CSS and keeps the component self-contained
-      */}
-      <style>{`
-        .speech-bubble-tail-right::after,
-        .speech-bubble-tail-left::after {
-          content: '';
-          position: absolute;
-          width: 20px;
-          height: 20px;
-          background: #FFFDF8;
-          border-radius: 4px;
-          bottom: 20px;
-          z-index: -1;
-        }
-        
-        .speech-bubble-tail-right::after {
-          right: -7px;
-          transform: rotate(45deg);
-        }
-        
-        .speech-bubble-tail-left::after {
-          left: -7px;
-          transform: rotate(45deg);
-        }
-      `}</style>
     </div>
   );
 }

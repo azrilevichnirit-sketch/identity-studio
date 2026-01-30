@@ -515,7 +515,7 @@
   transform: none;
 }
 
-/* Desktop: Avatar - right side, large, foreground */
+/* Desktop: Avatar - right side, large, foreground, overlaps bubble */
 .desktop-avatar {
   position: absolute;
   z-index: 25;
@@ -524,13 +524,15 @@
   height: clamp(340px, 32vh, 440px);
   pointer-events: none;
   filter: drop-shadow(0 14px 32px rgba(0,0,0,0.5));
+  /* Move avatar slightly left to overlap bubble */
+  margin-right: -30px;
 }
 
 /* Desktop: Speech bubble - near avatar, behind it */
 .desktop-bubble {
   position: absolute;
   z-index: 15;
-  right: clamp(280px, 24vw, 420px);
+  right: clamp(220px, 20vw, 380px);
   bottom: 100px;
   max-width: 440px;
   min-width: 300px;
@@ -592,23 +594,23 @@
     background-position: center center;
   }
 
-  /* Mobile: Avatar - right side, foreground (z-25) */
+  /* Mobile: Avatar - right side, foreground (z-25), overlaps bubble */
   .mobile-avatar {
     position: absolute;
     z-index: 25;
-    right: 8px;
+    right: -10px;
     bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
     height: clamp(260px, 38vh, 380px);
     pointer-events: none;
     filter: drop-shadow(0 10px 24px rgba(0,0,0,0.45));
   }
 
-  /* Mobile: Speech bubble - above tray, reserves space for avatar (z-20) */
+  /* Mobile: Speech bubble - above tray, allows avatar overlap (z-20) */
   .mobile-bubble {
     position: absolute;
     z-index: 20;
     left: 12px;
-    right: calc(12px + clamp(130px, 34vw, 200px)); /* Reserve space for avatar */
+    right: calc(clamp(90px, 26vw, 150px)); /* Less space - allows overlap */
     bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(95px, 15vh, 140px) + 16px);
     max-height: 28vh;
     overflow-y: auto;
