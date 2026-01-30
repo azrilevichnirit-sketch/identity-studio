@@ -712,10 +712,10 @@
     margin-bottom: 14px;
   }
 
-  /* Avatar - slightly smaller, less overlap */
+  /* Avatar - larger with overlap on bubble */
   .missionScreen .mission-avatar-desktop {
-    width: min(280px, 30vw);
-    margin-left: -100px;
+    width: min(340px, 36vw);
+    margin-left: -180px;
   }
 
   /* Tools panel - proper sizing and positioning */
