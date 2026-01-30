@@ -1157,9 +1157,9 @@
    So overrides must target the *desktop* selectors.
 */
 @media (min-width: 768px) and (max-width: 1023px) {
-  /* Tablet: position hero so avatar is above the debug icon - far right */
+  /* Tablet: position hero so avatar is above the debug icon */
   .missionScreen .mission-hero-desktop {
-    right: -120px;
+    right: -40px;
     bottom: clamp(40px, 10vh, 100px);
   }
 
