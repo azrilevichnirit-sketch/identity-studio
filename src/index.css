@@ -614,49 +614,45 @@
   height: 112px;
 }
 
-/* Tooltip - compact, one line if possible */
+/* Tooltip - speech bubble style matching game bubbles */
 .tooltip-area {
-  margin-top: 4px;
-  padding: 10px 12px;
-  padding-left: 36px;
-  width: min(280px, 46vw);
-  max-width: 280px;
-  background: linear-gradient(
-    180deg,
-    hsl(var(--tooltip-bg) / 0.92) 0%,
-    hsl(var(--tooltip-bg-2) / 0.92) 100%
-  );
-  border-radius: 12px;
+  margin-top: 10px;
+  padding: 10px 14px;
+  padding-left: 38px;
+  width: fit-content;
+  min-width: 100px;
+  max-width: min(260px, 42vw);
+  background: #FFFCF5;
+  border-radius: 14px;
   position: relative;
   direction: rtl;
   text-align: right;
-  border: 1px solid hsl(var(--tooltip-border) / 0.35);
+  border: none;
   box-shadow:
-    0 14px 34px -24px hsl(0 0% 0% / 0.75),
-    0 0 0 1px hsl(var(--tooltip-border) / 0.14),
-    inset 0 1px 0 hsl(0 0% 100% / 0.06);
+    0 8px 24px -12px hsl(0 0% 0% / 0.45),
+    0 2px 6px hsl(0 0% 0% / 0.12);
   animation: tooltip-pop 180ms ease-out;
-  overflow: hidden;
+  overflow: visible;
 }
 
-/* Tail (points up to the tool) */
+/* Tail - rotated square like speech bubbles */
 .tooltip-area::before {
   content: '';
   position: absolute;
-  top: -8px;
+  top: -7px;
   left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-bottom: 8px solid hsl(var(--tooltip-bg) / 0.92);
-  filter: drop-shadow(0 6px 10px hsl(0 0% 0% / 0.35));
+  width: 14px;
+  height: 14px;
+  background: #FFFCF5;
+  transform: translateX(-50%) rotate(45deg);
+  border-radius: 2px;
+  box-shadow: -2px -2px 4px hsl(0 0% 0% / 0.08);
+  z-index: -1;
 }
 
 @keyframes tooltip-pop {
-  0% { opacity: 0; transform: translateY(4px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% { opacity: 0; transform: translateY(6px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .tooltip-close-btn {
@@ -667,29 +663,30 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: hsl(var(--tooltip-border) / 0.18);
+  background: hsl(220 15% 88%);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: hsl(var(--tooltip-text));
-  border: 1px solid hsl(var(--tooltip-border) / 0.22);
+  color: hsl(220 15% 35%);
+  border: none;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.15s, transform 0.15s;
 }
 
 .tooltip-close-btn:hover {
-  background: hsl(var(--tooltip-border) / 0.28);
+  background: hsl(220 15% 80%);
+  transform: scale(1.08);
 }
 
 .tooltip-text {
-  font-size: 12.5px;
-  font-weight: 650;
-  color: hsl(var(--tooltip-text));
-  line-height: 1.4;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111;
+  line-height: 1.45;
   font-family: 'Rubik', sans-serif;
   margin: 0;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -929,24 +926,31 @@
     min-height: 84px;
   }
 
-  /* Mobile tooltip */
+  /* Mobile tooltip - speech bubble style */
   .mobile-layout .tooltip-area {
-    margin-top: 0;
-    padding: 6px 8px;
-    padding-left: 30px;
-    border-radius: 10px;
+    margin-top: 8px;
+    padding: 8px 10px;
+    padding-left: 32px;
+    border-radius: 12px;
+    max-width: min(220px, 55vw);
+  }
+
+  .mobile-layout .tooltip-area::before {
+    top: -6px;
+    width: 12px;
+    height: 12px;
   }
 
   .mobile-layout .tooltip-close-btn {
-    width: 18px;
-    height: 18px;
-    left: 7px;
-    top: 7px;
+    width: 16px;
+    height: 16px;
+    left: 6px;
+    top: 6px;
   }
 
   .mobile-layout .tooltip-text {
-    font-size: 12px;
-    line-height: 1.35;
+    font-size: 11.5px;
+    line-height: 1.4;
   }
 
   .mobile-layout .tool-info-btn {
@@ -973,31 +977,32 @@
    So overrides must target the *desktop* selectors.
 */
 @media (min-width: 768px) and (max-width: 1023px) {
-  /* Hero row - pushed more to the right */
+  /* Hero row - pushed higher so it doesn't overlap tool panel */
   .missionScreen .mission-hero-desktop {
-    right: -2px;
-    bottom: 46px;
+    right: 8px;
+    bottom: clamp(180px, 26vh, 260px);
   }
 
-  /* Bubble - fits content width, moved up */
+  /* Bubble - fits content width */
   .missionScreen .mission-bubble-desktop {
-    max-width: min(460px, 55vw);
+    max-width: min(420px, 50vw);
     width: fit-content;
-    margin-right: 30px;
-    margin-bottom: 32px;
+    margin-right: 20px;
+    margin-bottom: 24px;
   }
 
-  /* Avatar - larger with overlap on bubble, moved right */
+  /* Avatar - proportional */
   .missionScreen .mission-avatar-desktop {
-    width: min(420px, 42vw);
-    margin-left: -170px;
+    width: min(360px, 38vw);
+    margin-left: -140px;
   }
 
-  /* Tools panel - fits content */
+  /* Tools panel - positioned safely at bottom-left, not overlapping bubble */
   .missionScreen .mission-tool-panel-desktop {
-    left: 16px;
-    bottom: 16px;
-    max-width: min(440px, 52vw);
+    left: 14px;
+    bottom: 14px;
+    max-width: min(380px, 48vw);
+    z-index: 25;
   }
 
   /* Tablet tool panel */
