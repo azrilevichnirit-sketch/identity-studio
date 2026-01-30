@@ -482,68 +482,72 @@ export function VisualPlayScreen({
 
   const toolPanelElement = (
     <div className="layout-tool-panel-inner tool-panel-responsive">
-      {/* Progress tank */}
-      <div className="flex justify-center mb-1 md:mb-1.5">
-        <ProgressTank value={(currentIndex + 1) / totalMissions} />
+      {/* Desktop: Progress tank on left, tools on right */}
+      <div className="tool-panel-main-row">
+        {/* Progress tank - vertical on desktop */}
+        <div className="progress-tank-container">
+          <ProgressTank value={(currentIndex + 1) / totalMissions} />
+        </div>
+
+        {/* Tool tiles with drag hint */}
+        <div className="flex-1 flex gap-3 md:gap-4 lg:gap-5 justify-center items-center relative tool-tiles-container">
+          <DraggableToolTile
+            image={toolAImage}
+            onPointerDown={(e) => handlePointerDown('a', e)}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onInfoClick={() => setActiveTooltip(activeTooltip === 'a' ? null : 'a')}
+            variant="a"
+            isDragging={draggingTool === 'a'}
+            isCarryMode={carryModeTool === 'a'}
+            isInfoActive={activeTooltip === 'a'}
+          />
+          <DraggableToolTile
+            image={toolBImage}
+            onPointerDown={(e) => handlePointerDown('b', e)}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onInfoClick={() => setActiveTooltip(activeTooltip === 'b' ? null : 'b')}
+            variant="b"
+            isDragging={draggingTool === 'b'}
+            isCarryMode={carryModeTool === 'b'}
+            isInfoActive={activeTooltip === 'b'}
+          />
+          
+          {/* Animated drag hint */}
+          {!hasDraggedOnce && !draggingTool && !carryModeTool && (
+            <div className="absolute -top-7 sm:-top-8 md:-top-9 left-1/2 -translate-x-1/2 flex flex-col items-center">
+              <DragHint />
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Tool tiles with drag hint */}
-      <div className="flex-1 flex gap-2 sm:gap-3 md:gap-4 justify-center items-center relative tool-tiles-container">
-        <DraggableToolTile
-          image={toolAImage}
-          onPointerDown={(e) => handlePointerDown('a', e)}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          onInfoClick={() => setActiveTooltip(activeTooltip === 'a' ? null : 'a')}
-          variant="a"
-          isDragging={draggingTool === 'a'}
-          isCarryMode={carryModeTool === 'a'}
-          isInfoActive={activeTooltip === 'a'}
-        />
-        <DraggableToolTile
-          image={toolBImage}
-          onPointerDown={(e) => handlePointerDown('b', e)}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          onInfoClick={() => setActiveTooltip(activeTooltip === 'b' ? null : 'b')}
-          variant="b"
-          isDragging={draggingTool === 'b'}
-          isCarryMode={carryModeTool === 'b'}
-          isInfoActive={activeTooltip === 'b'}
-        />
-        
-        {/* Animated drag hint */}
-        {!hasDraggedOnce && !draggingTool && !carryModeTool && (
-          <div className="absolute -top-7 sm:-top-8 md:-top-9 left-1/2 -translate-x-1/2 flex flex-col items-center">
-            <DragHint />
-          </div>
-        )}
-      </div>
-
-      {/* Tooltip tray */}
+      {/* Tooltip tray - below everything */}
       {activeTooltip && (
         <div 
-          className="tooltip-tray mt-1.5 sm:mt-2 rounded-lg sm:rounded-xl p-2 sm:p-2.5 relative animate-fade-in"
+          className="tooltip-tray-desktop mt-2 rounded-xl p-3 relative animate-fade-in"
           style={{
-            background: '#FFFCF5',
-            boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.08)',
+            background: 'linear-gradient(135deg, #FFFCF5 0%, #FFF8E8 100%)',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.8)',
+            border: '1px solid rgba(200, 180, 140, 0.3)',
           }}
         >
           <button
             onClick={() => setActiveTooltip(null)}
-            className="absolute top-1 left-1 sm:top-1.5 sm:left-1.5 w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-slate-200 hover:bg-slate-300 flex items-center justify-center transition-colors"
+            className="absolute top-2 left-2 w-6 h-6 rounded-full bg-slate-200/80 hover:bg-slate-300 flex items-center justify-center transition-colors"
           >
-            <X className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-slate-600" />
+            <X className="w-3.5 h-3.5 text-slate-600" />
           </button>
           
           <p 
-            className="text-[11px] sm:text-xs font-medium pr-1.5 pl-4 sm:pr-2 sm:pl-5"
+            className="text-sm font-medium pr-2 pl-8"
             style={{
-              color: '#111',
+              color: '#1a1a1a',
               direction: 'rtl',
               textAlign: 'right',
               fontFamily: "'Rubik', sans-serif",
-              lineHeight: 1.4,
+              lineHeight: 1.5,
             }}
           >
             {activeTooltip === 'a' 
