@@ -850,8 +850,9 @@
 .desktop-hover-tooltip {
   position: absolute;
   bottom: calc(100% + 6px);
-  right: -8px;
-  left: auto;
+  /* Anchor to LEFT so it expands toward center, not off-screen */
+  left: -8px;
+  right: auto;
   transform: none;
   background: hsl(var(--tooltip-bg, 0 0% 10%));
   color: hsl(var(--tooltip-text, 0 0% 100%));
@@ -875,19 +876,23 @@
   pointer-events: none;
 }
 
-/* Arrow pointing down - adjusted for right anchor */
+/* Arrow pointing down - adjusted for left anchor */
 .desktop-hover-tooltip::after {
   content: '';
   position: absolute;
   top: 100%;
-  right: 12px;
-  left: auto;
+  left: 12px;
+  right: auto;
   transform: none;
   border: 6px solid transparent;
   border-top-color: hsl(var(--tooltip-bg, 0 0% 10%));
 }
 
 /* Show on hover */
+.tool-info-wrapper:hover .desktop-hover-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
 .tool-info-wrapper:hover .desktop-hover-tooltip {
   opacity: 1;
   visibility: visible;
