@@ -662,8 +662,8 @@
     pointer-events: none;
     position: relative;
     width: 180px;
-    margin-left: -160px;
-    transform: scale(2.2);
+    margin-left: -180px;
+    transform: scale(2.5);
     transform-origin: bottom center;
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6));
   }
@@ -708,8 +708,8 @@
 
   .missionScreen .mission-avatar-mobile {
     width: 240px;
-    margin-left: -180px;
-    transform: scale(2.4);
+    margin-left: -200px;
+    transform: scale(2.6);
   }
 
   .missionScreen .mission-tool-panel-mobile {
@@ -730,8 +730,8 @@
 
   .missionScreen .mission-avatar-mobile {
     width: 140px;
-    margin-left: -130px;
-    transform: scale(2);
+    margin-left: -145px;
+    transform: scale(2.3);
   }
 
   .missionScreen .mission-tool-panel-mobile {
