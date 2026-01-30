@@ -1,6 +1,6 @@
 import type { AvatarGender } from "@/types/identity";
 import { getAvatarImage } from "@/lib/assetUtils";
-import studioEntryBg from "@/assets/backgrounds/studio_entry_inside_bg.png";
+import galleryMainBg from "@/assets/backgrounds/gallery_main_stylized_v3.webp";
 import { SpeechBubble } from "./SpeechBubble";
 import { ArrowLeft } from "lucide-react";
 import { GameStage } from "./GameStage";
@@ -22,7 +22,7 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
   const arenaName = "סטודיו";
 
   return (
-    <GameStage backgroundImage={studioEntryBg} enhanceBackground className="welcomeScreen">
+    <GameStage backgroundImage={galleryMainBg} enhanceBackground className="welcomeScreen">
       {/* Bottom gradient for grounding */}
       <div
         className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none"
