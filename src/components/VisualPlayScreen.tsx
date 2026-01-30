@@ -429,37 +429,55 @@ export function VisualPlayScreen({
     </div>
   ) : null;
 
+  // Special duplication logic for certain missions (e.g., studio_01 option A duplicates to 3 wall corners)
+  const getDuplicateAnchors = (prop: typeof persistedProps[0]): AnchorRef[] => {
+    // Mission 1, option A: duplicate to 3 wall corners
+    if (prop.missionId === 'studio_01' && prop.key === 'a') {
+      return ['wall_left', 'wall_back', 'wall_right'];
+    }
+    // Default: no duplication, use original anchor
+    return prop.anchorRef ? [prop.anchorRef as AnchorRef] : [];
+  };
+
   const placedPropsElement = (
     <>
-      {persistedProps.map((prop, idx) => {
+      {persistedProps.flatMap((prop, propIdx) => {
         const assetName = prop.assetName || `${prop.missionId.replace('studio_', 'studio_')}_${prop.key}`;
         const toolImg = getToolImage(assetName);
-        const anchorPos = prop.anchorRef 
-          ? getAnchorPosition(displayBgKey, prop.anchorRef as AnchorRef)
-          : null;
         
-        if (!toolImg || !anchorPos) return null;
+        if (!toolImg) return null;
         
+        const anchors = getDuplicateAnchors(prop);
         const isJustPlaced = justPlaced === `${prop.missionId}-${prop.key}`;
         
-        return (
-          <div
-            key={`${prop.missionId}-${idx}`}
-            className={`absolute pointer-events-none ${isJustPlaced ? 'animate-snap-pop' : 'animate-snap-place'}`}
-            style={{
-              left: `${anchorPos.x + (prop.offsetX || 0)}%`,
-              top: `${anchorPos.y + (prop.offsetY || 0)}%`,
-              transform: `translate(-50%, -50%) scale(${(prop.scale || 1) * anchorPos.scale})`,
-              zIndex: anchorPos.z_layer === 'back' ? 5 : anchorPos.z_layer === 'mid' ? 10 : 15,
-            }}
-          >
-            <img 
-              src={toolImg}
-              alt=""
-              className="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-lg"
-            />
-          </div>
-        );
+        return anchors.map((anchorRef, idx) => {
+          const anchorPos = getAnchorPosition(displayBgKey, anchorRef);
+          if (!anchorPos) return null;
+          
+          // Stagger animation for duplicates
+          const animationDelay = idx * 150;
+          
+          return (
+            <div
+              key={`${prop.missionId}-${propIdx}-${idx}`}
+              className={`absolute pointer-events-none ${isJustPlaced ? 'animate-snap-pop-blink' : 'animate-snap-place'}`}
+              style={{
+                left: `${anchorPos.x + (prop.offsetX || 0)}%`,
+                top: `${anchorPos.y + (prop.offsetY || 0)}%`,
+                // Bigger, more realistic size
+                transform: `translate(-50%, -50%) scale(${(prop.scale || 1) * anchorPos.scale * 1.8})`,
+                zIndex: anchorPos.z_layer === 'back' ? 5 : anchorPos.z_layer === 'mid' ? 10 : 15,
+                animationDelay: `${animationDelay}ms`,
+              }}
+            >
+              <img 
+                src={toolImg}
+                alt=""
+                className="w-20 h-20 md:w-28 md:h-28 object-contain drop-shadow-lg"
+              />
+            </div>
+          );
+        });
       })}
     </>
   );

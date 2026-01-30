@@ -460,6 +460,37 @@
   animation: snap-pop 250ms ease-out forwards;
 }
 
+/* Snap pop with blink effect for placed tools */
+@keyframes snap-pop-blink {
+  0% {
+    transform: scale(0.5) translate(-50%, -50%);
+    opacity: 0;
+    filter: brightness(1);
+  }
+  30% {
+    transform: scale(1.15) translate(-50%, -50%);
+    opacity: 1;
+    filter: brightness(1.8) drop-shadow(0 0 20px hsl(170 80% 50% / 0.8));
+  }
+  50% {
+    transform: scale(0.95) translate(-50%, -50%);
+    filter: brightness(1.5) drop-shadow(0 0 15px hsl(170 80% 50% / 0.6));
+  }
+  70% {
+    transform: scale(1.05) translate(-50%, -50%);
+    filter: brightness(1.2) drop-shadow(0 0 10px hsl(170 80% 50% / 0.4));
+  }
+  100% {
+    transform: scale(1) translate(-50%, -50%);
+    opacity: 1;
+    filter: brightness(1) drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+  }
+}
+
+.animate-snap-pop-blink {
+  animation: snap-pop-blink 500ms ease-out forwards;
+}
+
 .animate-drag-pulse {
   animation: drag-pulse 1.5s ease-in-out infinite;
 }
