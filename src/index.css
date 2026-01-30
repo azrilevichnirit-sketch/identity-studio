@@ -701,7 +701,7 @@
 @media (min-width: 768px) and (max-width: 1023px) {
   /* Hero row - pushed more to the right */
   .missionScreen .mission-hero-desktop {
-    right: 16px;
+    right: 8px;
     bottom: 36px;
   }
 
