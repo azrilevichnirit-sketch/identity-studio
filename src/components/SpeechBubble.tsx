@@ -50,7 +50,7 @@ export function SpeechBubble({
         <div 
           className="speech-bubble-content"
           style={{
-            padding: '14px 18px',
+            padding: '12px 14px',
             fontFamily: "'Rubik', sans-serif",
             fontSize: '15px',
             lineHeight: '1.55',
