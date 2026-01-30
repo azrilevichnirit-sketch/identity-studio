@@ -128,14 +128,14 @@ export function VisualPlayScreen({
   const DUPLICATE_BUCKETS_Y = useMemo(() => {
     const wallBack = getAnchorPosition(currentBgKey, 'wall_back');
     const floor = getAnchorPosition(currentBgKey, 'floor');
-    if (!wallBack || !floor) return 58;
+    // Fallback tuned to this game's backgrounds: "under windows" but still on the floor plane
+    if (!wallBack || !floor) return 70;
 
-    // Position buckets closer to the back wall (lower Y = higher on screen = further back in room)
-    // Target: roughly 1/3 of the way from wall_back to floor (so they appear "against the wall")
-    const delta = floor.y - wallBack.y;
-    const y = wallBack.y + delta * 0.38;
-    const minY = wallBack.y + 8;
-    const maxY = floor.y - 12;
+    // We keep the *drop marker* at FLOOR_NEAR_WALL_Y, but for the duplicated buckets
+    // we want them a bit LOWER (closer to the actual floor) so they never sit in the window area.
+    const y = FLOOR_NEAR_WALL_Y + (floor.y - FLOOR_NEAR_WALL_Y) * 0.25;
+    const minY = FLOOR_NEAR_WALL_Y + 4;
+    const maxY = floor.y - 6;
     return Math.max(minY, Math.min(maxY, y));
   }, [currentBgKey]);
   const avatarImage = getAvatarImage(avatarGender, 'idle');
@@ -606,6 +606,7 @@ export function VisualPlayScreen({
         
         const anchorInfos = getDuplicateAnchors(prop);
         const isJustPlaced = justPlaced === `${prop.missionId}-${prop.key}`;
+        const isMission01Buckets = prop.missionId === 'studio_01' && prop.key === 'a';
         
         return anchorInfos.map((anchorInfo, idx) => {
           // Mission 01 paint: keep tool coordinates stable even while the background is crossfading.
@@ -640,7 +641,7 @@ export function VisualPlayScreen({
               <img 
                 src={toolImg}
                 alt=""
-                className={`w-24 h-24 md:w-32 md:h-32 object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
+                className={`${isMission01Buckets ? 'w-28 h-28 md:w-36 md:h-36' : 'w-24 h-24 md:w-32 md:h-32'} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
                 style={{
                   filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
                 }}
