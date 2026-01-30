@@ -504,6 +504,7 @@ export function VisualPlayScreen({
               isCarryMode={carryModeTool === 'a'}
               isInfoActive={activeTooltip === 'a'}
               tooltipText={optionA.tooltip_heb || 'MISSING: option_a_tooltip_heb'}
+              isMobile={isMobile}
             />
             <DraggableToolTile
               image={toolBImage}
@@ -517,6 +518,7 @@ export function VisualPlayScreen({
               isCarryMode={carryModeTool === 'b'}
               isInfoActive={activeTooltip === 'b'}
               tooltipText={optionB.tooltip_heb || 'MISSING: option_b_tooltip_heb'}
+              isMobile={isMobile}
             />
           </div>
 
@@ -601,6 +603,7 @@ interface DraggableToolTileProps {
   isCarryMode: boolean;
   isInfoActive: boolean;
   tooltipText: string;
+  isMobile: boolean;
 }
 
 function DraggableToolTile({ 
@@ -615,6 +618,7 @@ function DraggableToolTile({
   isCarryMode,
   isInfoActive,
   tooltipText,
+  isMobile,
 }: DraggableToolTileProps) {
   return (
     <div className={`relative ${isDragging ? 'opacity-40' : ''} ${isCarryMode ? 'carry-mode-active' : ''}`}>
@@ -651,63 +655,28 @@ function DraggableToolTile({
         />
       </div>
 
-      {/* Info icon - BOTTOM-LEFT corner */}
-      <button 
-        className={`tool-info-btn ${isInfoActive ? 'is-active' : ''}`}
-        onClick={(e) => {
-          e.stopPropagation();
-          onInfoClick();
-        }}
-      >
-        <Info className="tool-info-icon" />
-      </button>
+      {/* Info icon - ONLY ON MOBILE (hidden on desktop) */}
+      {isMobile && (
+        <button 
+          className={`tool-info-btn ${isInfoActive ? 'is-active' : ''}`}
+          onClick={(e) => {
+            e.stopPropagation();
+            onInfoClick();
+          }}
+        >
+          <Info className="tool-info-icon" />
+        </button>
+      )}
 
-      {/* Tooltip bubble - styled inline to match game speech bubbles */}
-      {isInfoActive && (
+      {/* Tooltip bubble - ONLY ON MOBILE */}
+      {isMobile && isInfoActive && (
         <div
           role="note"
           aria-live="polite"
           onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => e.stopPropagation()}
-          style={{
-            position: 'absolute',
-            top: 'calc(100% + 12px)',
-            left: variant === 'a' ? '-8px' : 'auto',
-            right: variant === 'b' ? '-8px' : 'auto',
-            zIndex: 50,
-            // Speech bubble styling (matches game bubbles)
-            background: '#FFFDF8',
-            borderRadius: '18px',
-            padding: '14px 16px',
-            paddingLeft: '38px',
-            minWidth: '200px',
-            maxWidth: '280px',
-            width: 'max-content',
-            direction: 'rtl',
-            textAlign: 'right',
-            // Unified shadow via filter (no seam between body and tail)
-            filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.18)) drop-shadow(0 2px 6px rgba(0,0,0,0.10))',
-            border: '1px solid rgba(45, 212, 191, 0.12)',
-            pointerEvents: 'auto',
-          }}
+          className="mobile-tool-tooltip"
         >
-          {/* Tail pointing up to the tool */}
-          <div
-            style={{
-              position: 'absolute',
-              top: '-8px',
-              left: variant === 'a' ? '24px' : 'auto',
-              right: variant === 'b' ? '24px' : 'auto',
-              width: '18px',
-              height: '18px',
-              background: '#FFFDF8',
-              transform: 'rotate(45deg)',
-              borderRadius: '4px',
-              borderTop: '1px solid rgba(45, 212, 191, 0.10)',
-              borderLeft: '1px solid rgba(45, 212, 191, 0.10)',
-              zIndex: -1,
-            }}
-          />
           {/* Close button */}
           <button
             onClick={(e) => {
@@ -715,44 +684,12 @@ function DraggableToolTile({
               onInfoClose();
             }}
             aria-label="סגירה"
-            style={{
-              position: 'absolute',
-              top: '10px',
-              left: '10px',
-              width: '20px',
-              height: '20px',
-              borderRadius: '50%',
-              background: 'rgba(220, 220, 215, 0.7)',
-              border: '1px solid rgba(45, 212, 191, 0.15)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              color: '#444',
-              transition: 'background 0.15s, transform 0.15s',
-            }}
-            onMouseOver={(e) => {
-              (e.target as HTMLElement).style.background = 'rgba(200, 200, 195, 0.9)';
-              (e.target as HTMLElement).style.transform = 'scale(1.1)';
-            }}
-            onMouseOut={(e) => {
-              (e.target as HTMLElement).style.background = 'rgba(220, 220, 215, 0.7)';
-              (e.target as HTMLElement).style.transform = 'scale(1)';
-            }}
+            className="mobile-tooltip-close"
           >
             <X className="w-3 h-3" />
           </button>
           {/* Tooltip text */}
-          <p
-            style={{
-              margin: 0,
-              fontSize: '14px',
-              fontWeight: 500,
-              lineHeight: 1.5,
-              color: '#1a1a1a',
-              fontFamily: "'Rubik', sans-serif",
-            }}
-          >
+          <p className="mobile-tooltip-text">
             {tooltipText}
           </p>
         </div>
