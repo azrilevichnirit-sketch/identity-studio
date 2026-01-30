@@ -19,9 +19,9 @@ export function AnchorDebugOverlay({ anchors, isVisible, onToggle }: AnchorDebug
     return (
       <button
         onClick={onToggle}
-        className="fixed bottom-2 right-2 z-[100] px-2 py-1 text-xs bg-black/70 text-white rounded hover:bg-black/90"
+        className="fixed bottom-4 right-28 z-[100] px-2 py-1 text-xs bg-black/70 text-white rounded hover:bg-black/90"
       >
-        Debug 📍
+        📍 Anchors
       </button>
     );
   }
@@ -54,9 +54,9 @@ export function AnchorDebugOverlay({ anchors, isVisible, onToggle }: AnchorDebug
       {/* Close button */}
       <button
         onClick={onToggle}
-        className="fixed bottom-2 right-2 z-[100] px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700"
+        className="fixed bottom-4 right-28 z-[100] px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700"
       >
-        Close Debug ✕
+        📍 Close
       </button>
     </>
   );
