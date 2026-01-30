@@ -107,15 +107,9 @@ export function VisualPlayScreen({
   const currentBg = useMemo(() => getBackgroundForMission(mission, previousBgOverride), [mission, previousBgOverride]);
   const currentBgKey = useMemo(() => getBackgroundKey(mission, previousBgOverride), [mission, previousBgOverride]);
 
-  // A derived "floor-near-wall" Y position for Mission 01.
-  // Smaller Y = closer to wall in perspective (higher on the screen).
-  const floorNearWallY = useMemo(() => {
-    const wallBack = getAnchorPosition(currentBgKey, 'wall_back');
-    const floor = getAnchorPosition(currentBgKey, 'floor');
-    if (!wallBack || !floor) return null;
-    // Midway between wall_back and floor reads as "on the floor near the wall".
-    return wallBack.y + (floor.y - wallBack.y) * 0.5;
-  }, [currentBgKey]);
+  // Fixed Y position for "floor near wall" - 52% is the sweet spot
+  // where items appear on the floor but close to the back wall.
+  const FLOOR_NEAR_WALL_Y = 52;
   const avatarImage = getAvatarImage(avatarGender, 'idle');
   const toolAImage = getToolImage(optionA.asset);
   const toolBImage = getToolImage(optionB.asset);
@@ -168,17 +162,15 @@ export function VisualPlayScreen({
     // Mission 01: target FLOOR-NEAR-WALL (baseboard line) so indicator isn't on windows or front floor
     if (mission.mission_id === 'studio_01') {
       const wallBack = getAnchorPosition(currentBgKey, 'wall_back');
-      const floor = getAnchorPosition(currentBgKey, 'floor');
-      if (wallBack && floor) {
-        // Place marker on the floor but close to the wall (צמוד לקיר)
-        const y = floorNearWallY ?? (wallBack.y + (floor.y - wallBack.y) * 0.5);
-        return { x: wallBack.x, y, scale: 1, z_layer: 'mid' as const };
+      if (wallBack) {
+        // Place marker at 50% X (center) and fixed Y for floor near wall
+        return { x: wallBack.x, y: FLOOR_NEAR_WALL_Y, scale: 1, z_layer: 'mid' as const };
       }
     }
 
     const anchorRef = option.anchor_ref as AnchorRef;
     return getAnchorPosition(targetBgKey, anchorRef);
-  }, [optionA, optionB, currentBgKey, mission.mission_id, floorNearWallY]);
+  }, [optionA, optionB, currentBgKey, mission.mission_id]);
 
   useEffect(() => {
     return () => {
@@ -218,9 +210,14 @@ export function VisualPlayScreen({
     if (hasBgBeat) {
       // Mission 01 A: place -> blink -> paint -> only then allow transition
       const isMission01Paint = mission.mission_id === 'studio_01' && variant === 'a';
-      const beatDelay = isMission01Paint ? 900 : 900;
-      // Give enough time to notice the duplication + blink, then see the walls turn white.
-      const clearDelay = isMission01Paint ? 2900 : 1800;
+      // TIMING FOR MISSION 01 PAINT:
+      // 1. Tools appear on floor (instant)
+      // 2. 1000ms later - blink/lock animation plays (800ms duration)
+      // 3. 2000ms after blink starts - walls turn white (crossfade)
+      // 4. 2000ms of white walls visible
+      // 5. Advance to mission 2
+      const beatDelay = isMission01Paint ? 2000 : 900; // Wait 2s before showing white walls
+      const clearDelay = isMission01Paint ? 4500 : 1800; // Keep placement visible longer
       const paintTarget = isMission01Paint
         ? { key: PAINTED_WALLS_BG_KEY, image: getBackgroundByName(PAINTED_WALLS_BG_KEY) || currentBg }
         : getTargetBgForOption(option);
@@ -240,7 +237,7 @@ export function VisualPlayScreen({
     // Animation is 800ms per item + 300ms stagger × 3 items = ~1700ms total
     // We wait 2500ms to ensure users see the full blink effect + painted walls
     // Mission 01 paint: only advance after the player clearly sees the “painted walls” beat.
-    const advanceDelay = (mission.mission_id === 'studio_01' && variant === 'a') ? 3400 : 2500;
+    const advanceDelay = (mission.mission_id === 'studio_01' && variant === 'a') ? 5000 : 2500;
     const advanceId = window.setTimeout(() => {
       setLocalPlacement(null);
       setJustPlaced(null);
@@ -415,7 +412,7 @@ export function VisualPlayScreen({
 
   const backgroundElement = (
     <div 
-      className="absolute inset-0 transition-all duration-300 layout-bg"
+      className="absolute inset-0 layout-bg"
       style={{ 
         backgroundImage: `url(${effectiveBg})`,
         backgroundSize: effectiveBgSize,
@@ -423,6 +420,8 @@ export function VisualPlayScreen({
         backgroundRepeat: 'no-repeat',
         filter: 'saturate(1.18) contrast(1.08)',
         zIndex: 0,
+        // Smooth crossfade for background transitions (especially walls turning white)
+        transition: 'background-image 500ms ease-in-out',
       }}
     />
   );
@@ -528,20 +527,16 @@ export function VisualPlayScreen({
   // Special duplication logic for certain missions (e.g., studio_01 option A duplicates to 3 floor corners)
   // For mission 1, the paint buckets should be placed near EACH WALL (left, back, right)
   // צמוד לקיר = close to wall, on the floor
-  const getDuplicateAnchors = (prop: typeof displayedPlacement[0]): { anchor: AnchorRef; offsetX: number; offsetY: number; customScale?: number }[] => {
+  const getDuplicateAnchors = (prop: typeof displayedPlacement[0]): { anchor: AnchorRef; offsetX: number; offsetY: number; customScale?: number; absoluteY?: number }[] => {
     // Product rule: Mission 01 tool A duplicates to 3 placements (one per wall)
-    // Position: on the floor, adjacent to the wall (small offsetY to get floor-near-wall position)
+    // Position: on the floor adjacent to each wall (left/center/right)
     if (prop.missionId === 'studio_01' && prop.key === 'a') {
-      // Anchor to wall anchors but push DOWN to the derived floor-near-wall line.
-      // This keeps them adjacent to the wall (not on windows, not on the front floor).
-      const y = floorNearWallY;
-      // Our anchor map has wall_* around ~40% and floor around ~86-88%.
-      // Offsets are in percentage points.
-      const offsetToNearWallFloor = y ? Math.max(0, y - 40) : 24;
+      // Use fixed X positions for left/center/right walls (22%, 50%, 78%)
+      // and a fixed Y at the floor-near-wall line (52%)
       return [
-        { anchor: 'wall_left', offsetX: 0, offsetY: offsetToNearWallFloor, customScale: 1.0 },
-        { anchor: 'wall_back', offsetX: 0, offsetY: offsetToNearWallFloor, customScale: 1.0 },
-        { anchor: 'wall_right', offsetX: 0, offsetY: offsetToNearWallFloor, customScale: 1.0 },
+        { anchor: 'floor', offsetX: -28, offsetY: 0, customScale: 1.2, absoluteY: FLOOR_NEAR_WALL_Y },
+        { anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: FLOOR_NEAR_WALL_Y },
+        { anchor: 'floor', offsetX: 28, offsetY: 0, customScale: 1.2, absoluteY: FLOOR_NEAR_WALL_Y },
       ];
     }
 
@@ -569,13 +564,18 @@ export function VisualPlayScreen({
           // Use custom scale if provided, otherwise default
           const finalScale = anchorInfo.customScale || (anchorPos.scale * 2.2);
           
+          // Use absoluteY if provided (for fixed floor-near-wall positioning)
+          const topValue = anchorInfo.absoluteY !== undefined 
+            ? anchorInfo.absoluteY 
+            : anchorPos.y + anchorInfo.offsetY;
+          
           return (
             <div
               key={`${prop.missionId}-${propIdx}-${idx}`}
               className={`absolute pointer-events-none ${isJustPlaced ? 'animate-snap-pop-blink' : 'animate-snap-place'}`}
               style={{
                 left: `${anchorPos.x + anchorInfo.offsetX}%`,
-                top: `${anchorPos.y + anchorInfo.offsetY}%`,
+                top: `${topValue}%`,
                 // Use calculated scale
                 transform: `translate(-50%, -100%) scale(${finalScale})`,
                 // Ensure tools near walls are visible above floor elements
