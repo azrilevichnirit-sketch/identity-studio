@@ -55,6 +55,12 @@ export function VisualPlayScreen({
     key: 'a' | 'b';
     assetName: string;
   } | null>(null);
+
+  // Local background override for “painted walls” beat before advancing missions
+  const [localBgOverride, setLocalBgOverride] = useState<{ key: string; image: string } | null>(null);
+
+  // Track and cleanup staged timeouts (avoid state updates after unmount)
+  const timeoutsRef = useRef<number[]>([]);
   
   const stageRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
@@ -108,8 +114,9 @@ export function VisualPlayScreen({
     return null;
   }, [activeToolVariant, optionA, optionB, getTargetBgForOption, currentBgKey]);
 
-  const displayBg = dragPreviewBg?.image || currentBg;
-  const displayBgKey = dragPreviewBg?.key || currentBgKey;
+  // Priority: local “painted” beat > drag preview > current
+  const displayBg = localBgOverride?.image || dragPreviewBg?.image || currentBg;
+  const displayBgKey = localBgOverride?.key || dragPreviewBg?.key || currentBgKey;
 
   // Get target anchor for currently selected tool
   // For mission 1, override to floor anchor for better visual placement
@@ -126,6 +133,13 @@ export function VisualPlayScreen({
     return getAnchorPosition(targetBgKey, anchorRef);
   }, [optionA, optionB, currentBgKey, mission.mission_id]);
 
+  useEffect(() => {
+    return () => {
+      timeoutsRef.current.forEach((id) => window.clearTimeout(id));
+      timeoutsRef.current = [];
+    };
+  }, []);
+
   const handleUndoConfirm = () => {
     onUndo();
     setShowUndoDialog(false);
@@ -139,6 +153,10 @@ export function VisualPlayScreen({
       localStorage.setItem(DRAG_HINT_STORAGE_KEY, 'true');
     }
     
+    // Clear any previous staged transitions
+    timeoutsRef.current.forEach((id) => window.clearTimeout(id));
+    timeoutsRef.current = [];
+
     // Step 1: Immediately show the tool on the floor (local state, before global update)
     setLocalPlacement({
       missionId: mission.mission_id,
@@ -146,18 +164,32 @@ export function VisualPlayScreen({
       assetName: option.asset,
     });
     setJustPlaced(`${mission.mission_id}-${variant}`);
+
+    // Step 2: “Painted walls” beat before transitioning (only if the option defines it)
+    // We want: place tool -> see it + blink -> walls turn white -> tool disappears -> mission advances.
+    const hasBgBeat = !!option.next_bg_override;
+    if (hasBgBeat) {
+      const beatId = window.setTimeout(() => {
+        setLocalBgOverride(getTargetBgForOption(option));
+        // Once walls are painted, the tool should disappear (so mission 2 starts clean)
+        setLocalPlacement(null);
+      }, 900);
+      timeoutsRef.current.push(beatId);
+    }
     
     // Step 2: Wait for animation to complete, then transition to next mission
     // Animation is 800ms per item + 300ms stagger × 3 items = ~1700ms total
     // We wait 2500ms to ensure users see the full blink effect + painted walls
-    setTimeout(() => {
+    const advanceId = window.setTimeout(() => {
       setLocalPlacement(null);
+      setLocalBgOverride(null);
       setJustPlaced(null);
       onSelect(mission.mission_id, variant, option.holland_code as HollandCode, option);
     }, 2500);
+    timeoutsRef.current.push(advanceId);
     
     setCarryModeTool(null);
-  }, [mission.mission_id, optionA, optionB, onSelect, hasDraggedOnce]);
+  }, [mission.mission_id, optionA, optionB, onSelect, hasDraggedOnce, getTargetBgForOption]);
 
   // Pointer Events for unified mouse/touch handling
   const handlePointerDown = useCallback((variant: 'a' | 'b', e: React.PointerEvent) => {
@@ -222,6 +254,10 @@ export function VisualPlayScreen({
       const rect = stageRef.current.getBoundingClientRect();
       const dropX = ((e.clientX - rect.left) / rect.width) * 100;
       const dropY = ((e.clientY - rect.top) / rect.height) * 100;
+
+      const isMission01 = mission.mission_id === 'studio_01';
+      // Force “drop on the floor” feel for mission 01: bottom band only
+      const isInFloorBand = dropY > 62 && dropY < 98;
       
       // Get target position for current tool
       const target = getTargetAnchor(draggingTool);
@@ -231,14 +267,19 @@ export function VisualPlayScreen({
         const dy = dropY - target.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
         
-        // Accept drop if within 20% radius or in upper 75% of screen
-        if (distance < 20 || (dropY < 75 && dropY > 5)) {
+        // Mission 01: accept only if user drops on the floor band
+        // Other missions: keep existing generous rules
+        const accepted = isMission01
+          ? isInFloorBand
+          : (distance < 20 || (dropY < 75 && dropY > 5));
+
+        if (accepted) {
           completePlacement(draggingTool);
         }
         // Otherwise return to tray (no placement)
       } else {
         // Fallback: accept if in valid zone
-        if (dropY < 75 && dropY > 5) {
+        if (isMission01 ? isInFloorBand : (dropY < 75 && dropY > 5)) {
           completePlacement(draggingTool);
         }
       }
@@ -254,7 +295,7 @@ export function VisualPlayScreen({
     
     // Reset pan when drag ends
     resetPan();
-  }, [draggingTool, completePlacement, getTargetAnchor, resetPan]);
+  }, [draggingTool, completePlacement, getTargetAnchor, resetPan, mission.mission_id]);
 
   // Handle tap on drop zone in carry mode
   const handleDropZoneTap = useCallback(() => {
@@ -429,20 +470,20 @@ export function VisualPlayScreen({
   // For mission 1, the paint buckets should be placed on the floor NEAR THE WALLS
   const getDuplicateAnchors = (prop: typeof displayedPlacement[0]): { anchor: AnchorRef; offsetX: number; offsetY: number; customScale?: number }[] => {
     // Mission 1, option A: duplicate to 3 floor positions near walls
-    // Using wall_left/wall_right/wall_back y positions but floor-level
+    // NOTE: offset values are PERCENTAGES (not pixels)
     if (prop.missionId === 'studio_01' && prop.key === 'a') {
       return [
-        { anchor: 'wall_left', offsetX: 5, offsetY: 30, customScale: 2.5 },   // Left wall, on floor
-        { anchor: 'wall_back', offsetX: 0, offsetY: 35, customScale: 2.5 },   // Back wall, on floor  
-        { anchor: 'wall_right', offsetX: -5, offsetY: 30, customScale: 2.5 }, // Right wall, on floor
+        { anchor: 'floor', offsetX: -36, offsetY: 0, customScale: 2.6 },
+        { anchor: 'floor', offsetX: 0, offsetY: -2, customScale: 2.6 },
+        { anchor: 'floor', offsetX: 36, offsetY: 0, customScale: 2.6 },
       ];
     }
     // Mission 1, option B: same duplication pattern
     if (prop.missionId === 'studio_01' && prop.key === 'b') {
       return [
-        { anchor: 'wall_left', offsetX: 5, offsetY: 30, customScale: 2.5 },
-        { anchor: 'wall_back', offsetX: 0, offsetY: 35, customScale: 2.5 },
-        { anchor: 'wall_right', offsetX: -5, offsetY: 30, customScale: 2.5 },
+        { anchor: 'floor', offsetX: -36, offsetY: 0, customScale: 2.6 },
+        { anchor: 'floor', offsetX: 0, offsetY: -2, customScale: 2.6 },
+        { anchor: 'floor', offsetX: 36, offsetY: 0, customScale: 2.6 },
       ];
     }
     // Default: no duplication, use original anchor
