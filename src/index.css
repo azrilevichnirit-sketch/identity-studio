@@ -517,7 +517,7 @@
 /* Desktop: Tool panel inner styling */
 .layout-tool-panel-inner {
   border-radius: 1rem;
-  padding: 0.75rem 1.25rem;
+  padding: 0.75rem 1rem;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -527,15 +527,41 @@
   border: 1px solid rgba(255,255,255,0.08);
 }
 
-/* Tool tile responsive sizing */
-.tool-tile {
-  width: clamp(60px, 12vw, 95px);
-  height: clamp(60px, 12vw, 95px);
-  min-width: 60px;
-  min-height: 60px;
+/* Desktop: Main row with progress tank on left, tools on right */
+.tool-panel-main-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
 }
 
-/* Tooltip tray responsive */
+/* Progress tank container - vertical alignment */
+.progress-tank-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-90deg);
+  transform-origin: center;
+  width: 24px;
+  flex-shrink: 0;
+}
+
+/* Tool tile responsive sizing - LARGER on desktop */
+.tool-tile {
+  width: clamp(85px, 8vw, 110px);
+  height: clamp(85px, 8vw, 110px);
+  min-width: 85px;
+  min-height: 85px;
+}
+
+/* Desktop tooltip tray - improved styling */
+.tooltip-tray-desktop {
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+/* Legacy tooltip tray responsive */
 .tooltip-tray {
   max-height: 80px;
   overflow-y: auto;
@@ -594,8 +620,8 @@
   z-index: 20;
   bottom: 24px;
   left: 24px;
-  width: clamp(320px, 26vw, 420px);
-  height: 140px;
+  width: clamp(380px, 32vw, 500px);
+  height: 160px;
 }
 
 /* ============================================
@@ -844,8 +870,16 @@
   }
 
   .missionScreen .mission-tool-panel-desktop {
-    width: 400px;
-    height: 150px;
+    width: 520px;
+    height: 170px;
+  }
+
+  /* Larger tools on big screens */
+  .missionScreen .tool-tile {
+    width: clamp(95px, 7vw, 120px);
+    height: clamp(95px, 7vw, 120px);
+    min-width: 95px;
+    min-height: 95px;
   }
 }
 
