@@ -854,6 +854,59 @@
 }
 
 /* ============================================
+   DESKTOP HOVER TOOLTIP (pure CSS, simple)
+   ============================================ */
+
+.tool-info-wrapper {
+  position: absolute;
+  bottom: -2px;
+  left: -2px;
+  z-index: 10;
+}
+
+.desktop-hover-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a1a1a;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Rubik', sans-serif;
+  direction: rtl;
+  text-align: right;
+  white-space: normal;
+  min-width: 120px;
+  max-width: 200px;
+  line-height: 1.4;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, visibility 0.15s ease;
+  pointer-events: none;
+}
+
+/* Arrow pointing down */
+.desktop-hover-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #1a1a1a;
+}
+
+/* Show on hover */
+.tool-info-wrapper:hover .desktop-hover-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ============================================
    MISSION SCREEN - DESKTOP (>=1024px)
    Hero row with bubble + avatar like Welcome
    ============================================ */

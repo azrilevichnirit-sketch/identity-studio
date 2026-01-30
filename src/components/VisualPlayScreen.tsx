@@ -655,20 +655,30 @@ function DraggableToolTile({
         />
       </div>
 
-      {/* Info icon - ONLY ON MOBILE (hidden on desktop) */}
-      {isMobile && (
+      {/* Info button with tooltip - different behavior per device */}
+      <div className="tool-info-wrapper">
         <button 
           className={`tool-info-btn ${isInfoActive ? 'is-active' : ''}`}
           onClick={(e) => {
             e.stopPropagation();
-            onInfoClick();
+            if (isMobile) {
+              onInfoClick();
+            }
           }}
+          aria-label="מידע על הכלי"
         >
           <Info className="tool-info-icon" />
         </button>
-      )}
+        
+        {/* Desktop: CSS hover tooltip (simple, always works) */}
+        {!isMobile && (
+          <div className="desktop-hover-tooltip" role="tooltip">
+            <span>{tooltipText}</span>
+          </div>
+        )}
+      </div>
 
-      {/* Tooltip bubble - ONLY ON MOBILE */}
+      {/* Mobile: Click-activated tooltip with close button */}
       {isMobile && isInfoActive && (
         <div
           role="note"
@@ -677,7 +687,6 @@ function DraggableToolTile({
           onClick={(e) => e.stopPropagation()}
           className="mobile-tool-tooltip"
         >
-          {/* Close button */}
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -688,7 +697,6 @@ function DraggableToolTile({
           >
             <X className="w-3 h-3" />
           </button>
-          {/* Tooltip text */}
           <p className="mobile-tooltip-text">
             {tooltipText}
           </p>
