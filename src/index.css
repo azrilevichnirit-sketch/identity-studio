@@ -561,7 +561,7 @@
   width: min(280px, 24vw);
   pointer-events: none;
   order: 2;
-  margin-left: -180px;
+  margin-left: -230px;
   filter: drop-shadow(0 14px 32px rgba(0,0,0,0.5));
 }
 
@@ -658,7 +658,7 @@
     pointer-events: none;
     position: relative;
     width: 120px;
-    margin-left: -85px;
+    margin-left: -120px;
     transform: scale(1.8);
     transform-origin: bottom center;
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6));
@@ -701,7 +701,7 @@
 
   .missionScreen .mission-avatar-mobile {
     width: 140px;
-    margin-left: -50px;
+    margin-left: -95px;
     transform: scale(1.6);
   }
 
@@ -723,7 +723,7 @@
 
   .missionScreen .mission-avatar-mobile {
     width: 100px;
-    margin-left: -30px;
+    margin-left: -65px;
     transform: scale(1.6);
   }
 
@@ -746,7 +746,7 @@
 
   .missionScreen .mission-avatar-desktop {
     width: 320px;
-    margin-left: -120px;
+    margin-left: -230px;
   }
 
   .missionScreen .mission-tool-panel-desktop {
