@@ -467,11 +467,19 @@ export function VisualPlayScreen({
     <SpeechBubble tailDirection="right">
       <div 
         className="overflow-y-auto"
-        style={{ maxHeight: 'calc(22vh - 28px)' }}
+        style={{ 
+          maxHeight: 'calc(22vh - 28px)',
+          direction: 'rtl',
+          textAlign: 'right',
+        }}
       >
         <p 
-          className="font-medium text-sm md:text-base pr-3 md:pr-5"
-          style={{ lineHeight: 1.45 }}
+          className="font-medium text-sm md:text-base"
+          style={{ 
+            lineHeight: 1.45,
+            direction: 'rtl',
+            textAlign: 'right',
+          }}
         >
           {taskText}
         </p>
