@@ -662,7 +662,9 @@
     pointer-events: none;
     position: relative;
     width: 180px;
-    margin-left: 50px;
+    margin-left: 0;
+    /* Move avatar further RIGHT on mobile; negative `right` shifts it right (relative positioning) */
+    right: -50px;
     transform: scale(2.2);
     transform-origin: bottom center;
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6));
@@ -708,7 +710,8 @@
 
   .missionScreen .mission-avatar-mobile {
     width: 240px;
-    margin-left: -140px;
+    margin-left: 0;
+    right: -50px;
     transform: scale(2.4);
   }
 
@@ -730,7 +733,8 @@
 
   .missionScreen .mission-avatar-mobile {
     width: 140px;
-    margin-left: -120px;
+    margin-left: 0;
+    right: -50px;
     transform: scale(2);
   }
 
