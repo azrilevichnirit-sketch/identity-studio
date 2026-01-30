@@ -1169,6 +1169,8 @@
     max-width: min(420px, 46vw);
     /* Move slightly more right */
     margin-right: -10px;
+    /* Move up a bit */
+    margin-bottom: 50px;
     /* Ensure bubble is behind avatar */
     z-index: 15;
   }
