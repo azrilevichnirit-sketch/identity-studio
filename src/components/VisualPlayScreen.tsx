@@ -498,10 +498,12 @@ export function VisualPlayScreen({
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
               onInfoClick={() => setActiveTooltip(activeTooltip === 'a' ? null : 'a')}
+              onInfoClose={() => setActiveTooltip(null)}
               variant="a"
               isDragging={draggingTool === 'a'}
               isCarryMode={carryModeTool === 'a'}
               isInfoActive={activeTooltip === 'a'}
+              tooltipText={optionA.tooltip_heb || 'MISSING: option_a_tooltip_heb'}
             />
             <DraggableToolTile
               image={toolBImage}
@@ -509,51 +511,14 @@ export function VisualPlayScreen({
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
               onInfoClick={() => setActiveTooltip(activeTooltip === 'b' ? null : 'b')}
+              onInfoClose={() => setActiveTooltip(null)}
               variant="b"
               isDragging={draggingTool === 'b'}
               isCarryMode={carryModeTool === 'b'}
               isInfoActive={activeTooltip === 'b'}
+              tooltipText={optionB.tooltip_heb || 'MISSING: option_b_tooltip_heb'}
             />
           </div>
-
-          {/* Tooltip - anchored under the active tool (A/B) */}
-          {activeTooltip && (
-            <div className="tool-tooltip-row" data-variant={activeTooltip}>
-              <div className="tool-tooltip-col" data-col="a">
-                {activeTooltip === 'a' && (
-                  <div className="tooltip-area" role="note" aria-live="polite">
-                    <button
-                      onClick={() => setActiveTooltip(null)}
-                      className="tooltip-close-btn"
-                      aria-label="סגירה"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                    <p className="tooltip-text">
-                      {optionA.tooltip_heb || 'MISSING: option_a_tooltip_heb'}
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              <div className="tool-tooltip-col" data-col="b">
-                {activeTooltip === 'b' && (
-                  <div className="tooltip-area" role="note" aria-live="polite">
-                    <button
-                      onClick={() => setActiveTooltip(null)}
-                      className="tooltip-close-btn"
-                      aria-label="סגירה"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                    <p className="tooltip-text">
-                      {optionB.tooltip_heb || 'MISSING: option_b_tooltip_heb'}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
 
           {/* Animated drag hint */}
           {!hasDraggedOnce && !draggingTool && !carryModeTool && (
@@ -630,10 +595,12 @@ interface DraggableToolTileProps {
   onPointerMove: (e: React.PointerEvent) => void;
   onPointerUp: (e: React.PointerEvent) => void;
   onInfoClick: () => void;
+  onInfoClose: () => void;
   variant: 'a' | 'b';
   isDragging: boolean;
   isCarryMode: boolean;
   isInfoActive: boolean;
+  tooltipText: string;
 }
 
 function DraggableToolTile({ 
@@ -642,10 +609,12 @@ function DraggableToolTile({
   onPointerMove, 
   onPointerUp, 
   onInfoClick, 
+  onInfoClose,
   variant, 
   isDragging, 
   isCarryMode,
-  isInfoActive 
+  isInfoActive,
+  tooltipText,
 }: DraggableToolTileProps) {
   return (
     <div className={`relative ${isDragging ? 'opacity-40' : ''} ${isCarryMode ? 'carry-mode-active' : ''}`}>
@@ -692,6 +661,31 @@ function DraggableToolTile({
       >
         <Info className="tool-info-icon" />
       </button>
+
+      {/* Tooltip bubble (absolute overlay; does not change layout height) */}
+      {isInfoActive && (
+        <div
+          className="tooltip-area"
+          data-placement="tool"
+          data-variant={variant}
+          role="note"
+          aria-live="polite"
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onInfoClose();
+            }}
+            className="tooltip-close-btn"
+            aria-label="סגירה"
+          >
+            <X className="w-3 h-3" />
+          </button>
+          <p className="tooltip-text">{tooltipText}</p>
+        </div>
+      )}
     </div>
   );
 }
