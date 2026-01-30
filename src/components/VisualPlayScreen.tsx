@@ -255,15 +255,19 @@ export function VisualPlayScreen({
     });
 
     // Let the player *first* see the tool settle, then a subtle lock confirmation.
+    // NOTE: Mission 01 Tool B should NOT re-render as a smaller tool during "lock".
+    // We avoid the justPlaced animation for that case and only use the glow pulse.
     setJustPlaced(null);
     setLockPulseKey(null);
     const isMission01Paint = mission.mission_id === 'studio_01' && variant === 'a';
     const isMission01ToolB = mission.mission_id === 'studio_01' && variant === 'b';
     
-    // Mission 01 Tool B: longer lock delay so player sees tool settle before staff enters
-    const lockDelayMs = isMission01Paint ? 900 : (isMission01ToolB ? 600 : 120);
+    // Mission 01 Tool B: lock should feel immediate (glow only), no transform-based animation.
+    const lockDelayMs = isMission01Paint ? 900 : 120;
     const lockOnId = window.setTimeout(() => {
-      setJustPlaced(`${mission.mission_id}-${variant}`);
+      if (!isMission01ToolB) {
+        setJustPlaced(`${mission.mission_id}-${variant}`);
+      }
       setLockPulseKey(`${mission.mission_id}-${variant}`);
     }, lockDelayMs);
     timeoutsRef.current.push(lockOnId);
@@ -493,8 +497,8 @@ export function VisualPlayScreen({
     return null;
   }, [activeToolVariant, getTargetAnchor]);
 
-  // Scene extras (NPCs) - show female staff AFTER Mission 01 Tool B lock animation completes
-  // She enters with a delayed animation so the sequence is: tool locks → staff walks in → mission advances
+  // Scene extras (NPCs)
+  // Mission 01 Tool B: staff should enter shortly AFTER placement (not after a secondary lock animation).
   const [staffEnterReady, setStaffEnterReady] = useState(false);
   
   // Mission 02: track which tool was selected for male staff placement
@@ -519,13 +523,13 @@ export function VisualPlayScreen({
     }
   }, [mission.mission_id, placedProps]);
   
-  // Trigger female staff entry after tool lock pulse finishes (lockPulseKey set → wait 600ms → show staff)
+  // Trigger female staff entry shortly after Mission 01 Tool B is placed
   useEffect(() => {
-    if (lockPulseKey === 'studio_01-b') {
-      const id = window.setTimeout(() => setStaffEnterReady(true), 650);
+    if (localPlacement?.missionId === 'studio_01' && localPlacement.key === 'b') {
+      const id = window.setTimeout(() => setStaffEnterReady(true), 350);
       return () => window.clearTimeout(id);
     }
-  }, [lockPulseKey]);
+  }, [localPlacement]);
   
   // Trigger male staff entry after Mission 02 tool lock pulse finishes
   useEffect(() => {
@@ -831,10 +835,18 @@ export function VisualPlayScreen({
             : `translate(-50%, -100%) scale(${finalScale})`;
           
           return (
-            <div
-              key={`${prop.missionId}-${propIdx}-${idx}`}
-              className={`absolute pointer-events-none ${isPersisted ? '' : (isJustPlaced ? (prop.missionId === 'studio_01' && prop.key === 'a' ? 'animate-snap-place' : 'animate-snap-pop-blink') : 'animate-snap-place')}`}
-              style={{
+              <div
+                key={`${prop.missionId}-${propIdx}-${idx}`}
+                className={`absolute pointer-events-none ${
+                  isPersisted
+                    ? ''
+                    : (isMission01ToolB
+                        ? 'animate-tool-appear'
+                        : (isJustPlaced
+                            ? (prop.missionId === 'studio_01' && prop.key === 'a' ? 'animate-snap-place' : 'animate-snap-pop-blink')
+                            : 'animate-snap-place'))
+                }`}
+                style={{
                 left: `${leftValue}%`,
                 top: `${topValue}%`,
                 // Use calculated scale
