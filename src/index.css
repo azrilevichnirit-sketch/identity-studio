@@ -1169,6 +1169,8 @@
     max-width: min(420px, 46vw);
     /* shift left so avatar overlap doesn't hide the Hebrew text */
     margin-right: clamp(110px, 14vw, 160px);
+    /* Ensure bubble is behind avatar */
+    z-index: 15;
   }
 
   /* Tablet: keep avatar large and prominent (forward), above debug panel */
