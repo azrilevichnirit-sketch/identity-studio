@@ -523,6 +523,26 @@
   animation: mission-flash 600ms ease-out forwards;
 }
 
+/* NPC entrance animation - slide in from side */
+@keyframes npc-enter {
+  0% {
+    opacity: 0;
+    transform: translateX(-80%);
+  }
+  60% {
+    opacity: 1;
+    transform: translateX(-45%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%);
+  }
+}
+
+.animate-npc-enter {
+  animation: npc-enter 800ms ease-out forwards;
+}
+
 /* Tool "lock" confirmation - applied to the <img> so it won't override positioned transforms */
 @keyframes tool-lock-confirm {
   0% {
