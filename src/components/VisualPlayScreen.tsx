@@ -13,6 +13,7 @@ import { usePanningBackground } from '@/hooks/usePanningBackground';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { BackgroundCrossfade } from './BackgroundCrossfade';
 import femaleStaffWalk from '@/assets/avatars/studio_01_female_staff_walk.webp';
+import maleStaffWalk from '@/assets/avatars/studio_01_male_staff_walk.webp';
 // import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter'; // Disabled
 
 const DRAG_HINT_STORAGE_KEY = 'ie_hasDraggedOnce';
@@ -297,7 +298,8 @@ export function VisualPlayScreen({
     // Animation is 800ms per item + 300ms stagger × 3 items = ~1700ms total
     // We wait 2500ms to ensure users see the full blink effect + painted walls
     // Mission 01 paint: only advance after the player clearly sees the “painted walls” beat.
-    const advanceDelay = isMission01Paint ? 3200 : (isMission01ToolB ? 2600 : 2500);
+    const isMission02 = mission.mission_id === 'studio_02';
+    const advanceDelay = isMission01Paint ? 3200 : (isMission01ToolB ? 2600 : (isMission02 ? 2600 : 2500));
     const advanceId = window.setTimeout(() => {
       // For Mission 01 Tool B: DON'T clear localPlacement before onSelect
       // This prevents the tool from disappearing before it's added to placedProps
@@ -493,9 +495,13 @@ export function VisualPlayScreen({
   // She enters with a delayed animation so the sequence is: tool locks → staff walks in → mission advances
   const [staffEnterReady, setStaffEnterReady] = useState(false);
   
+  // Mission 02: track which tool was selected for male staff placement
+  const [mission02ToolSelected, setMission02ToolSelected] = useState<'a' | 'b' | null>(null);
+  const [maleStaffEnterReady, setMaleStaffEnterReady] = useState(false);
+  
   // Reset staff visibility when mission changes (except when going to mission 02 with Tool B)
   useEffect(() => {
-    // Only show staff if we're in mission 02 AND Tool B was chosen
+    // Only show female staff if we're in mission 02 AND Tool B was chosen in mission 01
     const hasMission01ToolB = placedProps.some(p => p.missionId === 'studio_01' && p.key === 'b');
     if (mission.mission_id === 'studio_02' && hasMission01ToolB) {
       setStaffEnterReady(true);
@@ -503,9 +509,15 @@ export function VisualPlayScreen({
       // Reset when back in mission 1 (fresh start or undo)
       setStaffEnterReady(false);
     }
+    
+    // Reset male staff when mission changes
+    if (mission.mission_id !== 'studio_02') {
+      setMission02ToolSelected(null);
+      setMaleStaffEnterReady(false);
+    }
   }, [mission.mission_id, placedProps]);
   
-  // Trigger staff entry after tool lock pulse finishes (lockPulseKey set → wait 600ms → show staff)
+  // Trigger female staff entry after tool lock pulse finishes (lockPulseKey set → wait 600ms → show staff)
   useEffect(() => {
     if (lockPulseKey === 'studio_01-b') {
       const id = window.setTimeout(() => setStaffEnterReady(true), 650);
@@ -513,7 +525,18 @@ export function VisualPlayScreen({
     }
   }, [lockPulseKey]);
   
+  // Trigger male staff entry after Mission 02 tool lock pulse finishes
+  useEffect(() => {
+    if (lockPulseKey === 'studio_02-a' || lockPulseKey === 'studio_02-b') {
+      const variant = lockPulseKey === 'studio_02-a' ? 'a' : 'b';
+      setMission02ToolSelected(variant);
+      const id = window.setTimeout(() => setMaleStaffEnterReady(true), 650);
+      return () => window.clearTimeout(id);
+    }
+  }, [lockPulseKey]);
+  
   const showFemaleStaff = staffEnterReady;
+  const showMaleStaff = maleStaffEnterReady && mission02ToolSelected !== null;
   
   const sceneExtras: never[] = []; // Keep the original array empty for now
 
@@ -554,7 +577,7 @@ export function VisualPlayScreen({
 
   // Scene extras - Female staff NPC appears after Mission 01 Tool B placement.
   // Position her relative to Tool B (so she's close and clearly looking at it).
-  const staffStandPos = useMemo(() => {
+  const femaleStaffPos = useMemo(() => {
     const floor = getAnchorPosition(displayBgKey, 'floor');
     const toolBX = (floor?.x ?? 50) + 8; // matches getDuplicateAnchors() offsetX for M01 Tool B
     const staffX = Math.max(8, Math.min(92, toolBX - 10));
@@ -564,29 +587,82 @@ export function VisualPlayScreen({
     };
   }, [displayBgKey]);
 
-  const sceneExtrasElement = showFemaleStaff ? (
-    <div
-      className="absolute pointer-events-none animate-npc-enter"
-      style={{
-        left: staffStandPos.left,
-        bottom: staffStandPos.bottom,
-        zIndex: 18,
-        transform: 'translateX(-50%)',
-        transformOrigin: 'bottom center',
-      }}
-    >
-      <img
-        src={femaleStaffWalk}
-        alt="Staff member"
-        className="w-auto object-contain animate-subtle-idle"
-        style={{
-          height: 'clamp(280px, 48vh, 460px)',
-          filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
-          transform: 'scaleX(-1)', // Face right toward the tool
-        }}
-      />
-    </div>
-  ) : null;
+  // Male staff position for Mission 02
+  // Tool A: stands near the tool (which is before the plant pot, ~30% from left)
+  // Tool B: stands facing the wall-mounted tool (tool on wall ~70%, staff at ~55%)
+  const maleStaffPos = useMemo(() => {
+    if (mission02ToolSelected === 'a') {
+      // Tool A is positioned ~30% from left (before plant pot area)
+      // Male staff stands slightly to the right of the tool
+      return {
+        left: '38%',
+        bottom: '6%',
+        facingRight: false, // Face left toward tool
+      };
+    } else {
+      // Tool B hangs on wall (~70% from left)
+      // Male staff stands facing it from ~55%
+      return {
+        left: '55%',
+        bottom: '6%',
+        facingRight: true, // Face right toward wall-mounted tool
+      };
+    }
+  }, [mission02ToolSelected]);
+
+  const sceneExtrasElement = (
+    <>
+      {/* Female staff - Mission 01 Tool B */}
+      {showFemaleStaff && (
+        <div
+          className="absolute pointer-events-none animate-npc-enter"
+          style={{
+            left: femaleStaffPos.left,
+            bottom: femaleStaffPos.bottom,
+            zIndex: 18,
+            transform: 'translateX(-50%)',
+            transformOrigin: 'bottom center',
+          }}
+        >
+          <img
+            src={femaleStaffWalk}
+            alt="Staff member"
+            className="w-auto object-contain animate-subtle-idle"
+            style={{
+              height: 'clamp(280px, 48vh, 460px)',
+              filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
+              transform: 'scaleX(-1)', // Face right toward the tool
+            }}
+          />
+        </div>
+      )}
+      
+      {/* Male staff - Mission 02 */}
+      {showMaleStaff && (
+        <div
+          className="absolute pointer-events-none animate-npc-enter"
+          style={{
+            left: maleStaffPos.left,
+            bottom: maleStaffPos.bottom,
+            zIndex: 18,
+            transform: 'translateX(-50%)',
+            transformOrigin: 'bottom center',
+          }}
+        >
+          <img
+            src={maleStaffWalk}
+            alt="Staff member"
+            className="w-auto object-contain animate-subtle-idle"
+            style={{
+              height: 'clamp(260px, 44vh, 420px)',
+              filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
+              transform: maleStaffPos.facingRight ? 'scaleX(1)' : 'scaleX(-1)',
+            }}
+          />
+        </div>
+      )}
+    </>
+  );
 
   const targetZoneElement = activeToolVariant && targetPosition ? (
     <div 
@@ -676,7 +752,7 @@ export function VisualPlayScreen({
   // Special duplication logic for certain missions (e.g., studio_01 option A duplicates to 3 floor corners)
   // For mission 1, the paint buckets should be placed near EACH WALL (left, back, right)
   // צמוד לקיר = close to wall, on the floor
-  const getDuplicateAnchors = (prop: typeof displayedPlacement[0]): { anchor: AnchorRef; offsetX: number; offsetY: number; customScale?: number; absoluteY?: number }[] => {
+  const getDuplicateAnchors = (prop: typeof displayedPlacement[0]): { anchor: AnchorRef; offsetX: number; offsetY: number; customScale?: number; absoluteY?: number; absoluteX?: number; wallMount?: boolean }[] => {
     // Product rule: Mission 01 tool A duplicates to 3 placements (one per wall)
     // Position: on the floor adjacent to each wall (left/center/right)
     if (prop.missionId === 'studio_01' && prop.key === 'a') {
@@ -692,6 +768,17 @@ export function VisualPlayScreen({
     // Mission 01 Tool B: single placement on the back floor plane, persists into Mission 02
     if (prop.missionId === 'studio_01' && prop.key === 'b') {
       return [{ anchor: 'floor', offsetX: 8, offsetY: 0, customScale: 1.8, absoluteY: M01_TOOL_B_Y }];
+    }
+    
+    // Mission 02 Tool A: positioned before the plant pot area (~30% from left)
+    if (prop.missionId === 'studio_02' && prop.key === 'a') {
+      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 1.6, absoluteY: DUPLICATE_BUCKETS_Y, absoluteX: 30 }];
+    }
+    
+    // Mission 02 Tool B: hangs on the wall (~70% from left, higher up)
+    if (prop.missionId === 'studio_02' && prop.key === 'b') {
+      const wallY = 52; // On the wall, higher than floor
+      return [{ anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.4, absoluteY: wallY, absoluteX: 70, wallMount: true }];
     }
 
     // Default: single placement at floor
@@ -726,18 +813,29 @@ export function VisualPlayScreen({
             ? anchorInfo.absoluteY 
             : anchorPos.y + anchorInfo.offsetY;
           
+          // Use absoluteX if provided (for fixed horizontal positioning)
+          const leftValue = anchorInfo.absoluteX !== undefined
+            ? anchorInfo.absoluteX
+            : anchorPos.x + anchorInfo.offsetX;
+          
           const isPersisted = 'isPersisted' in prop && prop.isPersisted;
           const isMission01ToolB = prop.missionId === 'studio_01' && prop.key === 'b';
+          const isMission02ToolB = prop.missionId === 'studio_02' && prop.key === 'b';
+          
+          // Wall-mounted tools use center transform, floor tools use bottom-anchored
+          const transformStyle = anchorInfo.wallMount
+            ? `translate(-50%, -50%) scale(${finalScale})`
+            : `translate(-50%, -100%) scale(${finalScale})`;
           
           return (
             <div
               key={`${prop.missionId}-${propIdx}-${idx}`}
               className={`absolute pointer-events-none ${isPersisted ? '' : (isJustPlaced ? (prop.missionId === 'studio_01' && prop.key === 'a' ? 'animate-snap-place' : 'animate-snap-pop-blink') : 'animate-snap-place')}`}
               style={{
-                left: `${anchorPos.x + anchorInfo.offsetX}%`,
+                left: `${leftValue}%`,
                 top: `${topValue}%`,
                 // Use calculated scale
-                transform: `translate(-50%, -100%) scale(${finalScale})`,
+                transform: transformStyle,
                 // Ensure tools near walls are visible above floor elements
                 zIndex: 15 + idx,
                 animationDelay: isPersisted ? '0ms' : `${animationDelay}ms`,
@@ -746,7 +844,7 @@ export function VisualPlayScreen({
               <img 
                 src={toolImg}
                 alt=""
-                className={`${isMission01Buckets ? 'w-28 h-28 md:w-36 md:h-36' : (isMission01ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32')} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
+                className={`${isMission01Buckets ? 'w-28 h-28 md:w-36 md:h-36' : (isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32')} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
                 style={{
                   filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
                   // Rotate Tool B counterclockwise so it faces the staff member
