@@ -806,6 +806,54 @@
 }
 
 /* ============================================
+   MOBILE-ONLY TOOLTIP (simple bottom panel)
+   ============================================ */
+
+.mobile-tool-tooltip {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  background: #FFFDF8;
+  border-radius: 12px;
+  padding: 10px 14px;
+  padding-left: 32px;
+  min-width: 140px;
+  max-width: 200px;
+  direction: rtl;
+  text-align: right;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  pointer-events: auto;
+  animation: tooltip-pop 0.15s ease-out;
+}
+
+.mobile-tooltip-close {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(200, 200, 195, 0.6);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #444;
+}
+
+.mobile-tooltip-text {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #1a1a1a;
+  font-family: 'Rubik', sans-serif;
+}
+
+/* ============================================
    MISSION SCREEN - DESKTOP (>=1024px)
    Hero row with bubble + avatar like Welcome
    ============================================ */
