@@ -13,7 +13,7 @@
         "asset": "studio_01_a",
         "tooltip_heb": "דליי צבע ומברשות",
         "view": "in",
-        "next_bg_override": "studio_in_gallery_bg",
+        "next_bg_override": "studio_in_gallery_wall_bg",
         "anchor_ref": "floor",
         "placement_mode": "floor_near_wall"
       },
