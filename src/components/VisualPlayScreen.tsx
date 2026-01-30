@@ -120,21 +120,21 @@ export function VisualPlayScreen({
   // These are absolute percentages from top of viewport
   // 
   // Background: gallery_main_stylized_v3 / gallery_main_stylized_white_v1
-  // - wall_back (windows): ~38%
+  // - wall_back (windows bottom edge): ~52%
   // - floor (front): ~87%
-  // - "back floor" (floor near walls): ~58% (just below windows, on the floor plane)
-  // - "mid floor": ~72% (middle of the visible floor)
-  // - "front floor": ~80% (closer to camera)
+  // - "back floor" (floor near walls, just below windows): ~68%
+  // - "mid floor": ~78% (middle of the visible floor)
+  // - "front floor": ~85% (closer to camera)
   // ================================================================
   
-  // Mission 01 Tool A: "back floor" - very close to the walls, just below windows
-  const BACK_FLOOR_Y = 58; // Fixed: on the floor plane, very close to walls
+  // Mission 01 Tool A: drop zone - on the floor, just below the windows
+  const BACK_FLOOR_Y = 68; // Fixed: drop zone Y position
   
-  // Mission 01 Tool A placement (after drop): slightly lower for visual "sitting" on floor
-  const DUPLICATE_BUCKETS_Y = 62; // Fixed: where the 3 paint buckets appear
+  // Mission 01 Tool A placement (after drop): where the 3 paint buckets appear
+  const DUPLICATE_BUCKETS_Y = 71; // Fixed: placement Y - on the back floor plane
   
   // Mission 01 Tool B: center floor area
-  const CENTER_FLOOR_Y = 78; // Fixed: center of the visible floor
+  const CENTER_FLOOR_Y = 80; // Fixed: center of the visible floor
   
   // Mission 01 Tool B placement position
   const M01_TOOL_B_Y = CENTER_FLOOR_Y;
@@ -1038,11 +1038,12 @@ export function VisualPlayScreen({
 
   // Debug overlay anchors
   const debugAnchors = useMemo(() => [
-    { name: 'wall_back', y: 38, color: '#e74c3c' },
-    { name: 'BACK_FLOOR (Tool A)', y: BACK_FLOOR_Y, color: '#2ecc71' },
-    { name: 'BUCKETS_Y', y: DUPLICATE_BUCKETS_Y, color: '#27ae60' },
+    { name: 'wall_back (windows)', y: 38, color: '#e74c3c' },
+    { name: 'windows_bottom', y: 52, color: '#e67e22' },
+    { name: 'BACK_FLOOR (Tool A drop)', y: BACK_FLOOR_Y, color: '#2ecc71' },
+    { name: 'BUCKETS_Y (placement)', y: DUPLICATE_BUCKETS_Y, color: '#27ae60' },
     { name: 'CENTER_FLOOR (Tool B)', y: CENTER_FLOOR_Y, color: '#3498db' },
-    { name: 'floor', y: 87, color: '#9b59b6' },
+    { name: 'floor (front)', y: 87, color: '#9b59b6' },
   ], [BACK_FLOOR_Y, DUPLICATE_BUCKETS_Y, CENTER_FLOOR_Y]);
 
   return (
