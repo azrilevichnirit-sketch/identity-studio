@@ -463,18 +463,25 @@ export function VisualPlayScreen({
     />
   ) : null;
 
-  // Split task text after comma for better readability
-  const formattedTaskText = taskText.split(',').map((part, index, arr) => (
-    <span key={index}>
-      {part.trim()}
-      {index < arr.length - 1 && (
-        <>
-          ,
-          <br />
-        </>
-      )}
-    </span>
-  ));
+  // Split task text after comma for better readability (tablet/mobile only)
+  const formattedTaskText = useMemo(() => {
+    if (!isMobile) {
+      // Desktop: no line breaks
+      return taskText;
+    }
+    // Tablet/Mobile: split after commas
+    return taskText.split(',').map((part, index, arr) => (
+      <span key={index}>
+        {part.trim()}
+        {index < arr.length - 1 && (
+          <>
+            ,
+            <br />
+          </>
+        )}
+      </span>
+    ));
+  }, [taskText, isMobile]);
 
   const speechBubbleElement = (
     <SpeechBubble tailDirection="right">
