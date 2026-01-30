@@ -699,29 +699,37 @@
    So overrides must target the *desktop* selectors.
 */
 @media (min-width: 768px) and (max-width: 1023px) {
+  /* Hero row - pushed more to the right */
   .missionScreen .mission-hero-desktop {
-    right: 28px;
-    bottom: 42px;
+    right: 16px;
+    bottom: 36px;
   }
 
-  /* Slight overlap like mobile/desktop, but keep bubble readable */
+  /* Bubble - narrower, more margin from avatar */
   .missionScreen .mission-bubble-desktop {
-    max-width: min(420px, 46vw);
-    margin-right: 55px;
-    margin-bottom: 18px;
+    max-width: min(380px, 44vw);
+    margin-right: 40px;
+    margin-bottom: 14px;
   }
 
+  /* Avatar - slightly smaller, less overlap */
   .missionScreen .mission-avatar-desktop {
-    width: min(360px, 34vw);
-    margin-left: -180px;
+    width: min(280px, 30vw);
+    margin-left: -100px;
   }
 
-  /* Smaller tools panel on tablet */
+  /* Tools panel - proper sizing and positioning */
   .missionScreen .mission-tool-panel-desktop {
-    left: 18px;
-    bottom: 18px;
-    width: clamp(260px, 24vw, 330px);
-    height: 120px;
+    left: 16px;
+    bottom: 16px;
+    width: clamp(220px, 28vw, 280px);
+    height: 110px;
+  }
+
+  /* Fix tool panel inner for tablet */
+  .missionScreen .layout-tool-panel-inner {
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.75rem;
   }
 }
 
