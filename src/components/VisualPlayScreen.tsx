@@ -105,12 +105,19 @@ export function VisualPlayScreen({
   const displayBgKey = dragPreviewBg?.key || currentBgKey;
 
   // Get target anchor for currently selected tool
+  // For mission 1, override to floor anchor for better visual placement
   const getTargetAnchor = useCallback((variant: 'a' | 'b') => {
     const option = variant === 'a' ? optionA : optionB;
-    const anchorRef = option.anchor_ref as AnchorRef;
     const targetBgKey = option.next_bg_override || currentBgKey;
+    
+    // Override: Mission 1 tools should target the floor area, not walls/windows
+    if (mission.mission_id === 'studio_01') {
+      return getAnchorPosition(targetBgKey, 'floor');
+    }
+    
+    const anchorRef = option.anchor_ref as AnchorRef;
     return getAnchorPosition(targetBgKey, anchorRef);
-  }, [optionA, optionB, currentBgKey]);
+  }, [optionA, optionB, currentBgKey, mission.mission_id]);
 
   const handleUndoConfirm = () => {
     onUndo();
@@ -127,12 +134,12 @@ export function VisualPlayScreen({
     setJustPlaced(`${mission.mission_id}-${variant}`);
     
     // Delay the mission transition to allow placement animation to complete
-    // Animation is 500ms per item + 400ms stagger = ~1100ms total for 3 items
-    // We wait 1500ms to ensure users see the full animation
+    // Animation is 800ms per item + 300ms stagger × 3 items = ~1700ms total
+    // We wait 2200ms to ensure users see the full blink effect
     setTimeout(() => {
       setJustPlaced(null);
       onSelect(mission.mission_id, variant, option.holland_code as HollandCode, option);
-    }, 1500);
+    }, 2200);
     
     setCarryModeTool(null);
   }, [mission.mission_id, optionA, optionB, onSelect, hasDraggedOnce]);
@@ -396,14 +403,23 @@ export function VisualPlayScreen({
   ) : null;
 
   // Special duplication logic for certain missions (e.g., studio_01 option A duplicates to 3 floor corners)
-  // For mission 1, the paint buckets should be placed on the floor near the walls
-  const getDuplicateAnchors = (prop: typeof persistedProps[0]): { anchor: AnchorRef; offsetX: number; offsetY: number }[] => {
+  // For mission 1, the paint buckets should be placed on the floor NEAR THE WALLS
+  const getDuplicateAnchors = (prop: typeof persistedProps[0]): { anchor: AnchorRef; offsetX: number; offsetY: number; customScale?: number }[] => {
     // Mission 1, option A: duplicate to 3 floor positions near walls
+    // Using wall_left/wall_right/wall_back y positions but floor-level
     if (prop.missionId === 'studio_01' && prop.key === 'a') {
       return [
-        { anchor: 'floor', offsetX: -30, offsetY: -5 },  // Left side of floor
-        { anchor: 'floor', offsetX: 0, offsetY: -10 },   // Center back
-        { anchor: 'floor', offsetX: 30, offsetY: -5 },   // Right side of floor
+        { anchor: 'wall_left', offsetX: 5, offsetY: 30, customScale: 2.5 },   // Left wall, on floor
+        { anchor: 'wall_back', offsetX: 0, offsetY: 35, customScale: 2.5 },   // Back wall, on floor  
+        { anchor: 'wall_right', offsetX: -5, offsetY: 30, customScale: 2.5 }, // Right wall, on floor
+      ];
+    }
+    // Mission 1, option B: same duplication pattern
+    if (prop.missionId === 'studio_01' && prop.key === 'b') {
+      return [
+        { anchor: 'wall_left', offsetX: 5, offsetY: 30, customScale: 2.5 },
+        { anchor: 'wall_back', offsetX: 0, offsetY: 35, customScale: 2.5 },
+        { anchor: 'wall_right', offsetX: -5, offsetY: 30, customScale: 2.5 },
       ];
     }
     // Default: no duplication, use original anchor
@@ -429,8 +445,10 @@ export function VisualPlayScreen({
           const anchorPos = getAnchorPosition(displayBgKey, anchorInfo.anchor);
           if (!anchorPos) return null;
           
-          // Stagger animation for duplicates
-          const animationDelay = idx * 200;
+          // Stagger animation for duplicates - longer delay for better visibility
+          const animationDelay = idx * 300;
+          // Use custom scale if provided, otherwise default
+          const finalScale = anchorInfo.customScale || ((prop.scale || 1) * anchorPos.scale * 2.2);
           
           return (
             <div
@@ -439,16 +457,20 @@ export function VisualPlayScreen({
               style={{
                 left: `${anchorPos.x + anchorInfo.offsetX}%`,
                 top: `${anchorPos.y + anchorInfo.offsetY}%`,
-                // Bigger, more realistic size
-                transform: `translate(-50%, -50%) scale(${(prop.scale || 1) * anchorPos.scale * 1.8})`,
-                zIndex: anchorPos.z_layer === 'back' ? 5 : anchorPos.z_layer === 'mid' ? 10 : 15,
+                // Use calculated scale
+                transform: `translate(-50%, -100%) scale(${finalScale})`,
+                // Ensure tools near walls are visible above floor elements
+                zIndex: 15 + idx,
                 animationDelay: `${animationDelay}ms`,
               }}
             >
               <img 
                 src={toolImg}
                 alt=""
-                className="w-20 h-20 md:w-28 md:h-28 object-contain drop-shadow-lg"
+                className="w-24 h-24 md:w-32 md:h-32 object-contain"
+                style={{
+                  filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
+                }}
               />
             </div>
           );
