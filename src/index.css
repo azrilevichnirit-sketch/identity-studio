@@ -670,7 +670,10 @@
   bottom: auto;
   left: -6px;
   margin-top: 0;
-  max-width: min(220px, 22vw);
+  /* In-world bubble sizing (avoid tiny "label" look) */
+  width: clamp(180px, 16vw, 240px);
+  min-width: 180px;
+  max-width: 260px;
   z-index: 40;
   pointer-events: auto;
 }
@@ -678,6 +681,16 @@
 .tooltip-area[data-placement="tool"][data-variant="b"] {
   left: auto;
   right: -6px;
+}
+
+/* Tool tooltip: allow proper wrapping (no clamp) */
+.tooltip-area[data-placement="tool"] .tooltip-text {
+  display: block;
+  -webkit-line-clamp: unset;
+  -webkit-box-orient: unset;
+  overflow: visible;
+  white-space: normal;
+  line-height: 1.5;
 }
 
 /* Tail points DOWN to the info icon */
