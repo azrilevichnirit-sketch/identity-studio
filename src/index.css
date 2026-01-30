@@ -1164,11 +1164,11 @@
     bottom: clamp(40px, 10vh, 100px);
   }
 
-  /* Tablet: cap bubble width so it doesn't collide with the tool panel */
+  /* Tablet: bubble positioned to connect with avatar */
   .missionScreen .mission-bubble-desktop {
     max-width: min(420px, 46vw);
-    /* shift left so avatar overlap doesn't hide the Hebrew text */
-    margin-right: clamp(110px, 14vw, 160px);
+    /* Move right to connect with avatar - reduce margin */
+    margin-right: clamp(20px, 4vw, 50px);
     /* Ensure bubble is behind avatar */
     z-index: 15;
   }
