@@ -655,16 +655,17 @@
     margin-bottom: 20px;
   }
 
-  /* Mission avatar - overlaps bubble from right */
+  /* Mission avatar - positioned above Debug button, right side */
   .missionScreen .mission-avatar-mobile {
     order: 2;
     z-index: 100;
     pointer-events: none;
-    position: relative;
-    width: 180px;
-    margin-left: -220px;
-    transform: scale(2.5);
-    transform-origin: bottom center;
+    position: fixed;
+    right: 12px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 60px);
+    width: 120px;
+    transform: scale(2.2);
+    transform-origin: bottom right;
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6));
   }
 
