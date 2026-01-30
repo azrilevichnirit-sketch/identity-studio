@@ -126,19 +126,19 @@ export function VisualPlayScreen({
   const displayBgKey = localBgOverride?.key || dragPreviewBg?.key || currentBgKey;
 
   // Get target anchor for currently selected tool
-  // For mission 1, target the WALL area (center of room) so drop zone appears near walls
+  // For mission 1, target the FLOOR area so drop zone appears on the floor near walls
   const getTargetAnchor = useCallback((variant: 'a' | 'b') => {
     const option = variant === 'a' ? optionA : optionB;
     const targetBgKey = option.next_bg_override || currentBgKey;
 
-    // Mission 01: target a *floor-near-wall* point (baseboard line), not the window.
-    // We derive it from anchors so it stays consistent across backgrounds.
+    // Mission 01: target the FLOOR (y ~75-80%) - NOT the window area
+    // This puts the drop indicator on the wooden floor where paint buckets belong
     if (mission.mission_id === 'studio_01') {
-      const floor = getAnchorPosition(targetBgKey, 'floor');
-      const wallBack = getAnchorPosition(targetBgKey, 'wall_back');
-      if (floor && wallBack) {
-        const y = wallBack.y + (floor.y - wallBack.y) * 0.75;
-        return { x: wallBack.x, y, scale: 1, z_layer: 'mid' as const };
+      // Use floor anchor position directly - it's at y=88% which is the floor
+      const floor = getAnchorPosition(currentBgKey, 'floor');
+      if (floor) {
+        // Position drop zone at floor level, centered
+        return { x: 50, y: floor.y - 8, scale: 1, z_layer: 'mid' as const };
       }
     }
 
@@ -276,9 +276,9 @@ export function VisualPlayScreen({
       const dropY = ((e.clientY - rect.top) / rect.height) * 100;
 
       const isMission01 = mission.mission_id === 'studio_01';
-      // For mission 01: accept drops on the FLOOR NEAR WALLS (not windows).
-      // Make it generous for mobile.
-      const isInWallArea = dropY > 55 && dropY < 95 && dropX > 8 && dropX < 92;
+      // For mission 01: accept drops on the FLOOR (bottom portion of screen, y > 65%)
+      // This is the wooden floor area, NOT the windows
+      const isOnFloor = dropY > 65 && dropY < 98 && dropX > 5 && dropX < 95;
       
       // Get target position for current tool
       const target = getTargetAnchor(draggingTool);
@@ -288,10 +288,10 @@ export function VisualPlayScreen({
         const dy = dropY - target.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
         
-        // Mission 01: accept if user drops in wall area (center of room)
+        // Mission 01: accept if user drops on the floor
         // Other missions: keep existing generous rules
         const accepted = isMission01
-          ? isInWallArea
+          ? isOnFloor
           : (distance < 20 || (dropY < 75 && dropY > 5));
 
         if (accepted) {
@@ -300,7 +300,7 @@ export function VisualPlayScreen({
         // Otherwise return to tray (no placement)
       } else {
         // Fallback: accept if in valid zone
-        if (isMission01 ? isInWallArea : (dropY < 75 && dropY > 5)) {
+        if (isMission01 ? isOnFloor : (dropY < 75 && dropY > 5)) {
           completePlacement(draggingTool);
         }
       }
@@ -490,23 +490,22 @@ export function VisualPlayScreen({
   // Special duplication logic for certain missions (e.g., studio_01 option A duplicates to 3 floor corners)
   // For mission 1, the paint buckets should be placed near EACH WALL (left, back, right)
   const getDuplicateAnchors = (prop: typeof displayedPlacement[0]): { anchor: AnchorRef; offsetX: number; offsetY: number; customScale?: number }[] => {
-    // Mission 1, option A: place one bucket near each wall
-    // wall_left is at x=20%, wall_back at x=50%, wall_right at x=80%
-    // We position tools at floor level (y=70-75%) but spread across the room
+    // Mission 1, option A: place 3 paint buckets - one near each wall on the floor
+    // Normal size (scale ~1.0), positioned on the floor near left/back/right walls
     if (prop.missionId === 'studio_01' && prop.key === 'a') {
       return [
-        // Push down to the baseboard line so they sit on the floor near each wall.
-        { anchor: 'wall_left', offsetX: 6, offsetY: 38, customScale: 2.45 },   // Left wall
-        { anchor: 'wall_back', offsetX: 0, offsetY: 44, customScale: 2.45 },   // Back wall
-        { anchor: 'wall_right', offsetX: -6, offsetY: 38, customScale: 2.45 }, // Right wall
+        // Floor positions near each wall - normal scale (1.0)
+        { anchor: 'floor', offsetX: -30, offsetY: -5, customScale: 1.0 },  // Near left wall
+        { anchor: 'floor', offsetX: 0, offsetY: -10, customScale: 1.0 },   // Near back wall (center)
+        { anchor: 'floor', offsetX: 30, offsetY: -5, customScale: 1.0 },   // Near right wall
       ];
     }
     // Mission 1, option B: same pattern for drafting tools
     if (prop.missionId === 'studio_01' && prop.key === 'b') {
       return [
-        { anchor: 'wall_left', offsetX: 6, offsetY: 38, customScale: 2.45 },
-        { anchor: 'wall_back', offsetX: 0, offsetY: 44, customScale: 2.45 },
-        { anchor: 'wall_right', offsetX: -6, offsetY: 38, customScale: 2.45 },
+        { anchor: 'floor', offsetX: -30, offsetY: -5, customScale: 1.0 },
+        { anchor: 'floor', offsetX: 0, offsetY: -10, customScale: 1.0 },
+        { anchor: 'floor', offsetX: 30, offsetY: -5, customScale: 1.0 },
       ];
     }
     // Default: single placement at floor
