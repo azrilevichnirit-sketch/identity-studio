@@ -463,9 +463,18 @@ export function VisualPlayScreen({
     />
   ) : null;
 
+  // Check if we're on tablet or mobile (< 1024px) for text wrapping
+  const [isTabletOrMobile, setIsTabletOrMobile] = useState(false);
+  useEffect(() => {
+    const checkWidth = () => setIsTabletOrMobile(window.innerWidth < 1024);
+    checkWidth();
+    window.addEventListener('resize', checkWidth);
+    return () => window.removeEventListener('resize', checkWidth);
+  }, []);
+
   // Split task text after comma for better readability (tablet/mobile only)
   const formattedTaskText = useMemo(() => {
-    if (!isMobile) {
+    if (!isTabletOrMobile) {
       // Desktop: no line breaks
       return taskText;
     }
@@ -481,7 +490,7 @@ export function VisualPlayScreen({
         )}
       </span>
     ));
-  }, [taskText, isMobile]);
+  }, [taskText, isTabletOrMobile]);
 
   const speechBubbleElement = (
     <SpeechBubble tailDirection="right">
