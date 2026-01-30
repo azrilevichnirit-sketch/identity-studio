@@ -16,6 +16,26 @@
   }
 }
 
+/* Walking animation - subtle bounce */
+@keyframes walk-bounce {
+  0%, 100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  25% {
+    transform: translateY(-3px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(0) rotate(1deg);
+  }
+  75% {
+    transform: translateY(-3px) rotate(0deg);
+  }
+}
+
+.animate-walk {
+  animation: walk-bounce 0.4s ease-in-out infinite;
+}
+
 /* Identity Engine Design System - Dark, focused, minimal */
 
 @layer base {
