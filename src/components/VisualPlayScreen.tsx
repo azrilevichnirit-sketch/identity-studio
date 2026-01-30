@@ -123,18 +123,19 @@ export function VisualPlayScreen({
     return Math.max(minY, Math.min(maxY, midpoint));
   }, [currentBgKey]);
 
-  // Mission 01 duplicates: keep them *on the floor* (not windows).
+  // Mission 01 duplicates: keep them near the back wall (on the floor close to the walls).
   // Important: do NOT change the target marker (FLOOR_NEAR_WALL_Y) since it's already correct.
   const DUPLICATE_BUCKETS_Y = useMemo(() => {
     const wallBack = getAnchorPosition(currentBgKey, 'wall_back');
     const floor = getAnchorPosition(currentBgKey, 'floor');
-    if (!wallBack || !floor) return 84;
+    if (!wallBack || !floor) return 58;
 
-    // A point close to the floor but slightly above it (baseboard line)
+    // Position buckets closer to the back wall (lower Y = higher on screen = further back in room)
+    // Target: roughly 1/3 of the way from wall_back to floor (so they appear "against the wall")
     const delta = floor.y - wallBack.y;
-    const y = floor.y - Math.max(4, delta * 0.12);
-    const minY = wallBack.y + 14;
-    const maxY = floor.y - 4;
+    const y = wallBack.y + delta * 0.38;
+    const minY = wallBack.y + 8;
+    const maxY = floor.y - 12;
     return Math.max(minY, Math.min(maxY, y));
   }, [currentBgKey]);
   const avatarImage = getAvatarImage(avatarGender, 'idle');
@@ -583,11 +584,11 @@ export function VisualPlayScreen({
     // Position: on the floor adjacent to each wall (left/center/right)
     if (prop.missionId === 'studio_01' && prop.key === 'a') {
       // Use fixed X positions for left/center/right walls (22%, 50%, 78%)
-      // and a fixed Y close to the floor (NOT windows)
+      // Position close to back wall with larger scale so they look like real tools
       return [
-        { anchor: 'floor', offsetX: -28, offsetY: 0, customScale: 1.2, absoluteY: DUPLICATE_BUCKETS_Y },
-        { anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: DUPLICATE_BUCKETS_Y },
-        { anchor: 'floor', offsetX: 28, offsetY: 0, customScale: 1.2, absoluteY: DUPLICATE_BUCKETS_Y },
+        { anchor: 'floor', offsetX: -28, offsetY: 0, customScale: 2.0, absoluteY: DUPLICATE_BUCKETS_Y },
+        { anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: DUPLICATE_BUCKETS_Y },
+        { anchor: 'floor', offsetX: 28, offsetY: 0, customScale: 2.0, absoluteY: DUPLICATE_BUCKETS_Y },
       ];
     }
 
