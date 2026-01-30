@@ -12,14 +12,20 @@
         "holland_code": "r",
         "asset": "studio_01_a",
         "tooltip_heb": "דליי צבע ומברשות",
-        "view": "in"
+        "view": "in",
+        "next_bg_override": "studio_in_gallery_bg",
+        "anchor_ref": "floor",
+        "placement_mode": "floor_near_wall"
       },
       {
         "key": "b",
         "holland_code": "i",
         "asset": "studio_01_b",
         "tooltip_heb": "ערכת שרטוט",
-        "view": "in"
+        "view": "in",
+        "next_bg_override": "studio_entry_inside_bg",
+        "anchor_ref": "floor",
+        "placement_mode": "floor_near_wall"
       }
     ]
   },
