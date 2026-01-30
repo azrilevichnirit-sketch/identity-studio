@@ -148,7 +148,7 @@ export function VisualPlayScreen({
       const floor = getAnchorPosition(currentBgKey, 'floor');
       if (wallBack && floor) {
         // ~72% of the way from wall_back to floor feels like “near wall on the floor” in perspective
-        const y = wallBack.y + (floor.y - wallBack.y) * 0.72;
+        const y = wallBack.y + (floor.y - wallBack.y) * 0.35;
         return { x: wallBack.x, y, scale: 1, z_layer: 'mid' as const };
       }
     }
@@ -503,14 +503,15 @@ export function VisualPlayScreen({
 
   // Special duplication logic for certain missions (e.g., studio_01 option A duplicates to 3 floor corners)
   // For mission 1, the paint buckets should be placed near EACH WALL (left, back, right)
+  // צמוד לקיר = close to wall, on the floor
   const getDuplicateAnchors = (prop: typeof displayedPlacement[0]): { anchor: AnchorRef; offsetX: number; offsetY: number; customScale?: number }[] => {
     // Product rule: Mission 01 tool A duplicates to 3 placements (one per wall)
-    // Keep NORMAL size and push down to the floor-near-wall line.
+    // Position: on the floor, adjacent to the wall (small offsetY to get floor-near-wall position)
     if (prop.missionId === 'studio_01' && prop.key === 'a') {
       return [
-        { anchor: 'wall_left', offsetX: 0, offsetY: 33, customScale: 1.0 },
-        { anchor: 'wall_back', offsetX: 0, offsetY: 36, customScale: 1.0 },
-        { anchor: 'wall_right', offsetX: 0, offsetY: 33, customScale: 1.0 },
+        { anchor: 'wall_left', offsetX: 5, offsetY: 18, customScale: 0.9 },
+        { anchor: 'wall_back', offsetX: 0, offsetY: 20, customScale: 1.0 },
+        { anchor: 'wall_right', offsetX: -5, offsetY: 18, customScale: 0.9 },
       ];
     }
 
