@@ -260,6 +260,7 @@ export function VisualPlayScreen({
     setJustPlaced(null);
     setLockPulseKey(null);
     const isMission01Paint = mission.mission_id === 'studio_01' && variant === 'a';
+    const isMission01ToolB = mission.mission_id === 'studio_01' && variant === 'b';
     const lockDelayMs = isMission01Paint ? 900 : 120;
     const lockOnId = window.setTimeout(() => {
       setJustPlaced(`${mission.mission_id}-${variant}`);
@@ -272,17 +273,9 @@ export function VisualPlayScreen({
     }, lockDelayMs + 650);
     timeoutsRef.current.push(lockOffId);
 
-    // Step 2: "Painted walls" beat before transitioning (only if the option defines it)
-    // We want: place tool -> SEE it near the walls -> walls turn white -> tool disappears -> mission advances.
-    const hasBgBeat = !!option.next_bg_override || (mission.mission_id === 'studio_01' && variant === 'a');
-    if (hasBgBeat) {
-      // Mission 01 A: place -> blink -> paint -> only then allow transition
-      // TIMING FOR MISSION 01 PAINT:
-      // 1. Tools appear on floor (instant)
-      // 2. ~900ms later - subtle lock confirmation
-      // 3. Shortly after - walls turn white (crossfade)
-      // 4. Brief white-walls hold for comprehension
-      // 5. Advance to mission 2
+    // Step 2: "Painted walls" beat before transitioning (only for Tool A paint scenario, NOT for Tool B)
+    const hasBgBeat = !!option.next_bg_override || isMission01Paint;
+    if (hasBgBeat && !isMission01ToolB) {
       const beatDelay = isMission01Paint ? 1600 : 900;
       const clearDelay = isMission01Paint ? 2300 : 1800;
       const paintTarget = isMission01Paint
@@ -304,12 +297,20 @@ export function VisualPlayScreen({
     // Animation is 800ms per item + 300ms stagger × 3 items = ~1700ms total
     // We wait 2500ms to ensure users see the full blink effect + painted walls
     // Mission 01 paint: only advance after the player clearly sees the “painted walls” beat.
-    const advanceDelay = (mission.mission_id === 'studio_01' && variant === 'a') ? 3200 : 2500;
+    const advanceDelay = isMission01Paint ? 3200 : (isMission01ToolB ? 2600 : 2500);
     const advanceId = window.setTimeout(() => {
-      setLocalPlacement(null);
+      // For Mission 01 Tool B: DON'T clear localPlacement before onSelect
+      // This prevents the tool from disappearing before it's added to placedProps
+      if (!isMission01ToolB) {
+        setLocalPlacement(null);
+      }
       setJustPlaced(null);
       setLockPulseKey(null);
       onSelect(mission.mission_id, variant, option.holland_code as HollandCode, option);
+      // Clear localPlacement AFTER onSelect has added it to placedProps (next tick)
+      if (isMission01ToolB) {
+        window.setTimeout(() => setLocalPlacement(null), 100);
+      }
     }, advanceDelay);
     timeoutsRef.current.push(advanceId);
     
