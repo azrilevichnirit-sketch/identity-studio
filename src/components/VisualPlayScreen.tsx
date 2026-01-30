@@ -106,6 +106,13 @@ export function VisualPlayScreen({
   const activeToolVariant = draggingTool || carryModeTool;
   const dragPreviewBg = useMemo(() => {
     if (!activeToolVariant) return null;
+
+    // Mission 01 (paint): don't preview the post-paint background while dragging.
+    // The player should drag/place on the current scene, then see the walls turn white.
+    if (mission.mission_id === 'studio_01' && activeToolVariant === 'a') {
+      return null;
+    }
+
     const option = activeToolVariant === 'a' ? optionA : optionB;
     const target = getTargetBgForOption(option);
     if (target.key !== currentBgKey) {
@@ -123,14 +130,18 @@ export function VisualPlayScreen({
   const getTargetAnchor = useCallback((variant: 'a' | 'b') => {
     const option = variant === 'a' ? optionA : optionB;
     const targetBgKey = option.next_bg_override || currentBgKey;
-    
-    // Override: Mission 1 tools should target the wall area (center of room, not front floor)
-    // This makes the drop zone appear in the middle where walls are visible
+
+    // Mission 01: target a *floor-near-wall* point (baseboard line), not the window.
+    // We derive it from anchors so it stays consistent across backgrounds.
     if (mission.mission_id === 'studio_01') {
-      // Return a custom position in the center-back of the room (near walls)
-      return { x: 50, y: 55, scale: 1, z_layer: 'mid' as const };
+      const floor = getAnchorPosition(targetBgKey, 'floor');
+      const wallBack = getAnchorPosition(targetBgKey, 'wall_back');
+      if (floor && wallBack) {
+        const y = wallBack.y + (floor.y - wallBack.y) * 0.75;
+        return { x: wallBack.x, y, scale: 1, z_layer: 'mid' as const };
+      }
     }
-    
+
     const anchorRef = option.anchor_ref as AnchorRef;
     return getAnchorPosition(targetBgKey, anchorRef);
   }, [optionA, optionB, currentBgKey, mission.mission_id]);
@@ -168,15 +179,22 @@ export function VisualPlayScreen({
     setJustPlaced(`${mission.mission_id}-${variant}`);
 
     // Step 2: "Painted walls" beat before transitioning (only if the option defines it)
-    // We want: place tool -> see it + blink -> walls turn white -> tool disappears -> mission advances.
+    // We want: place tool -> SEE it near the walls -> walls turn white -> tool disappears -> mission advances.
     const hasBgBeat = !!option.next_bg_override;
     if (hasBgBeat) {
+      // Mission 01 requires a clearer beat: show the placed tool first, then paint, then clear.
+      const beatDelay = (mission.mission_id === 'studio_01' && variant === 'a') ? 1100 : 900;
+      const clearDelay = (mission.mission_id === 'studio_01' && variant === 'a') ? 1800 : beatDelay;
+
       const beatId = window.setTimeout(() => {
         setLocalBgOverride(getTargetBgForOption(option));
-        // Once walls are painted, the tool should disappear (so mission 2 starts clean)
-        setLocalPlacement(null);
-      }, 900);
+      }, beatDelay);
       timeoutsRef.current.push(beatId);
+
+      const clearId = window.setTimeout(() => {
+        setLocalPlacement(null);
+      }, clearDelay);
+      timeoutsRef.current.push(clearId);
     }
     
     // Step 3: Wait for animation to complete, then transition to next mission
@@ -258,9 +276,9 @@ export function VisualPlayScreen({
       const dropY = ((e.clientY - rect.top) / rect.height) * 100;
 
       const isMission01 = mission.mission_id === 'studio_01';
-      // For mission 01: accept drops in the WALL area (center/back of room, y between 35-75%)
-      // This is where the walls are visible and where paint buckets should go
-      const isInWallArea = dropY > 35 && dropY < 75;
+      // For mission 01: accept drops on the FLOOR NEAR WALLS (not windows).
+      // Make it generous for mobile.
+      const isInWallArea = dropY > 55 && dropY < 95 && dropX > 8 && dropX < 92;
       
       // Get target position for current tool
       const target = getTargetAnchor(draggingTool);
@@ -477,17 +495,18 @@ export function VisualPlayScreen({
     // We position tools at floor level (y=70-75%) but spread across the room
     if (prop.missionId === 'studio_01' && prop.key === 'a') {
       return [
-        { anchor: 'wall_left', offsetX: 3, offsetY: 28, customScale: 2.4 },   // Left wall, on floor
-        { anchor: 'wall_back', offsetX: 0, offsetY: 32, customScale: 2.4 },   // Back wall, on floor  
-        { anchor: 'wall_right', offsetX: -3, offsetY: 28, customScale: 2.4 }, // Right wall, on floor
+        // Push down to the baseboard line so they sit on the floor near each wall.
+        { anchor: 'wall_left', offsetX: 6, offsetY: 38, customScale: 2.45 },   // Left wall
+        { anchor: 'wall_back', offsetX: 0, offsetY: 44, customScale: 2.45 },   // Back wall
+        { anchor: 'wall_right', offsetX: -6, offsetY: 38, customScale: 2.45 }, // Right wall
       ];
     }
     // Mission 1, option B: same pattern for drafting tools
     if (prop.missionId === 'studio_01' && prop.key === 'b') {
       return [
-        { anchor: 'wall_left', offsetX: 3, offsetY: 28, customScale: 2.4 },
-        { anchor: 'wall_back', offsetX: 0, offsetY: 32, customScale: 2.4 },
-        { anchor: 'wall_right', offsetX: -3, offsetY: 28, customScale: 2.4 },
+        { anchor: 'wall_left', offsetX: 6, offsetY: 38, customScale: 2.45 },
+        { anchor: 'wall_back', offsetX: 0, offsetY: 44, customScale: 2.45 },
+        { anchor: 'wall_right', offsetX: -6, offsetY: 38, customScale: 2.45 },
       ];
     }
     // Default: single placement at floor
