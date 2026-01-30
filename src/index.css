@@ -846,7 +846,7 @@
   z-index: 10;
 }
 
-/* Desktop tooltip - fits text, minimal padding */
+/* Desktop tooltip - fits text, allows wrapping */
 .desktop-hover-tooltip {
   position: absolute;
   bottom: calc(100% + 6px);
@@ -855,18 +855,19 @@
   transform: none;
   background: hsl(var(--tooltip-bg, 0 0% 10%));
   color: hsl(var(--tooltip-text, 0 0% 100%));
-  padding: 4px 8px;
-  border-radius: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
   font-size: 12px;
   font-weight: 500;
   font-family: 'Rubik', sans-serif;
   direction: rtl;
   text-align: right;
-  white-space: nowrap;
-  width: auto;
+  /* Allow text wrapping */
+  white-space: normal;
+  width: max-content;
   min-width: unset;
-  max-width: unset;
-  line-height: 1.3;
+  max-width: min(180px, 45vw);
+  line-height: 1.4;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   opacity: 0;
   visibility: hidden;
