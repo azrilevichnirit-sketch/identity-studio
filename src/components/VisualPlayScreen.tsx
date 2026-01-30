@@ -11,7 +11,7 @@ import { DragHint } from './DragHint';
 import { MissionLayout } from './layouts/MissionLayout';
 import { usePanningBackground } from '@/hooks/usePanningBackground';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter';
+// import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter'; // Disabled
 
 const DRAG_HINT_STORAGE_KEY = 'ie_hasDraggedOnce';
 
@@ -48,9 +48,6 @@ export function VisualPlayScreen({
   });
   // Carry mode for touch fallback - tap to pick up, tap target to place
   const [carryModeTool, setCarryModeTool] = useState<'a' | 'b' | null>(null);
-  // Staff characters state (for mission 1)
-  const [staffCharacterState, setStaffCharacterState] = useState<CharacterState>('entering');
-  const [staffTargetX, setStaffTargetX] = useState<number>(50);
   
   const stageRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
@@ -128,20 +125,16 @@ export function VisualPlayScreen({
       localStorage.setItem(DRAG_HINT_STORAGE_KEY, 'true');
     }
     setJustPlaced(`${mission.mission_id}-${variant}`);
-    setTimeout(() => setJustPlaced(null), 300);
     
-    // Animate staff characters to walk toward the placed tool (mission 1)
-    if (mission.mission_id === 'studio_01') {
-      const anchor = getTargetAnchor(variant);
-      if (anchor) {
-        setStaffTargetX(anchor.x);
-        setStaffCharacterState('walking-to-tool');
-      }
-    }
+    // Delay the mission transition to allow placement animation to complete
+    // Animation is 500ms, so we wait 600ms before transitioning
+    setTimeout(() => {
+      setJustPlaced(null);
+      onSelect(mission.mission_id, variant, option.holland_code as HollandCode, option);
+    }, 600);
     
-    onSelect(mission.mission_id, variant, option.holland_code as HollandCode, option);
     setCarryModeTool(null);
-  }, [mission.mission_id, optionA, optionB, onSelect, hasDraggedOnce, getTargetAnchor]);
+  }, [mission.mission_id, optionA, optionB, onSelect, hasDraggedOnce]);
 
   // Pointer Events for unified mouse/touch handling
   const handlePointerDown = useCallback((variant: 'a' | 'b', e: React.PointerEvent) => {
