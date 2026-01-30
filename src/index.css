@@ -714,8 +714,8 @@
 
   /* Avatar - larger with overlap on bubble */
   .missionScreen .mission-avatar-desktop {
-    width: min(340px, 36vw);
-    margin-left: -180px;
+    width: min(420px, 42vw);
+    margin-left: -200px;
   }
 
   /* Tools panel - proper sizing and positioning */
