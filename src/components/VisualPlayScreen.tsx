@@ -463,6 +463,19 @@ export function VisualPlayScreen({
     />
   ) : null;
 
+  // Split task text after comma for better readability
+  const formattedTaskText = taskText.split(',').map((part, index, arr) => (
+    <span key={index}>
+      {part.trim()}
+      {index < arr.length - 1 && (
+        <>
+          ,
+          <br />
+        </>
+      )}
+    </span>
+  ));
+
   const speechBubbleElement = (
     <SpeechBubble tailDirection="right">
       <p 
@@ -475,7 +488,7 @@ export function VisualPlayScreen({
           overflowY: 'auto',
         }}
       >
-        {taskText}
+        {formattedTaskText}
       </p>
     </SpeechBubble>
   );
