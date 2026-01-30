@@ -506,6 +506,27 @@
   animation: snap-lock-soft 320ms ease-out forwards;
 }
 
+/* Tool "lock" confirmation - applied to the <img> so it won't override positioned transforms */
+@keyframes tool-lock-confirm {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  40% {
+    transform: scale(1.035);
+    filter: brightness(1.12) drop-shadow(0 0 18px hsl(var(--primary) / 0.35));
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+.tool-lock-confirm {
+  animation: tool-lock-confirm 560ms ease-out forwards;
+  will-change: transform, filter;
+}
+
 .animate-drag-pulse {
   animation: drag-pulse 1.5s ease-in-out infinite;
 }

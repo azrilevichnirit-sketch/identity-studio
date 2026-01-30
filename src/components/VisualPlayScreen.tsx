@@ -43,12 +43,14 @@ export function VisualPlayScreen({
   const [draggingTool, setDraggingTool] = useState<'a' | 'b' | null>(null);
   const [dragPosition, setDragPosition] = useState<{ x: number; y: number } | null>(null);
   const [justPlaced, setJustPlaced] = useState<string | null>(null);
+  const [lockPulseKey, setLockPulseKey] = useState<string | null>(null);
   const [activeTooltip, setActiveTooltip] = useState<'a' | 'b' | null>(null);
   const [hasDraggedOnce, setHasDraggedOnce] = useState(() => {
     return localStorage.getItem(DRAG_HINT_STORAGE_KEY) === 'true';
   });
   // Carry mode for touch fallback - tap to pick up, tap target to place
   const [carryModeTool, setCarryModeTool] = useState<'a' | 'b' | null>(null);
+  const [showToolSwapCue, setShowToolSwapCue] = useState(false);
   
   // Local placement state - shows tool BEFORE it's added to global placedProps
   const [localPlacement, setLocalPlacement] = useState<{
@@ -62,6 +64,7 @@ export function VisualPlayScreen({
 
   // Track and cleanup staged timeouts (avoid state updates after unmount)
   const timeoutsRef = useRef<number[]>([]);
+  const didMountRef = useRef(false);
   
   const stageRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
@@ -118,6 +121,21 @@ export function VisualPlayScreen({
     const minY = wallBack.y + 6;
     const maxY = floor.y - 6;
     return Math.max(minY, Math.min(maxY, midpoint));
+  }, [currentBgKey]);
+
+  // Mission 01 duplicates: keep them *on the floor* (not windows).
+  // Important: do NOT change the target marker (FLOOR_NEAR_WALL_Y) since it's already correct.
+  const DUPLICATE_BUCKETS_Y = useMemo(() => {
+    const wallBack = getAnchorPosition(currentBgKey, 'wall_back');
+    const floor = getAnchorPosition(currentBgKey, 'floor');
+    if (!wallBack || !floor) return 84;
+
+    // A point close to the floor but slightly above it (baseboard line)
+    const delta = floor.y - wallBack.y;
+    const y = floor.y - Math.max(4, delta * 0.12);
+    const minY = wallBack.y + 14;
+    const maxY = floor.y - 4;
+    return Math.max(minY, Math.min(maxY, y));
   }, [currentBgKey]);
   const avatarImage = getAvatarImage(avatarGender, 'idle');
   const toolAImage = getToolImage(optionA.asset);
@@ -182,6 +200,18 @@ export function VisualPlayScreen({
   }, [optionA, optionB, currentBgKey, mission.mission_id, FLOOR_NEAR_WALL_Y]);
 
   useEffect(() => {
+    // Tool-swap cue (very subtle) to help the player notice that the mission advanced.
+    // Skip first mount to avoid flashing on initial load.
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      return;
+    }
+    setShowToolSwapCue(true);
+    const id = window.setTimeout(() => setShowToolSwapCue(false), 420);
+    return () => window.clearTimeout(id);
+  }, [mission.mission_id]);
+
+  useEffect(() => {
     return () => {
       timeoutsRef.current.forEach((id) => window.clearTimeout(id));
       timeoutsRef.current = [];
@@ -211,22 +241,36 @@ export function VisualPlayScreen({
       key: variant,
       assetName: option.asset,
     });
-    setJustPlaced(`${mission.mission_id}-${variant}`);
+
+    // Let the player *first* see the tool settle, then a subtle lock confirmation.
+    setJustPlaced(null);
+    setLockPulseKey(null);
+    const isMission01Paint = mission.mission_id === 'studio_01' && variant === 'a';
+    const lockDelayMs = isMission01Paint ? 900 : 120;
+    const lockOnId = window.setTimeout(() => {
+      setJustPlaced(`${mission.mission_id}-${variant}`);
+      setLockPulseKey(`${mission.mission_id}-${variant}`);
+    }, lockDelayMs);
+    timeoutsRef.current.push(lockOnId);
+
+    const lockOffId = window.setTimeout(() => {
+      setLockPulseKey(null);
+    }, lockDelayMs + 650);
+    timeoutsRef.current.push(lockOffId);
 
     // Step 2: "Painted walls" beat before transitioning (only if the option defines it)
     // We want: place tool -> SEE it near the walls -> walls turn white -> tool disappears -> mission advances.
     const hasBgBeat = !!option.next_bg_override || (mission.mission_id === 'studio_01' && variant === 'a');
     if (hasBgBeat) {
       // Mission 01 A: place -> blink -> paint -> only then allow transition
-      const isMission01Paint = mission.mission_id === 'studio_01' && variant === 'a';
       // TIMING FOR MISSION 01 PAINT:
       // 1. Tools appear on floor (instant)
-      // 2. 1000ms later - blink/lock animation plays (800ms duration)
-      // 3. 2000ms after blink starts - walls turn white (crossfade)
-      // 4. 2000ms of white walls visible
+      // 2. ~900ms later - subtle lock confirmation
+      // 3. Shortly after - walls turn white (crossfade)
+      // 4. Brief white-walls hold for comprehension
       // 5. Advance to mission 2
-      const beatDelay = isMission01Paint ? 2000 : 900; // Wait 2s before showing white walls
-      const clearDelay = isMission01Paint ? 4500 : 1800; // Keep placement visible longer
+      const beatDelay = isMission01Paint ? 1600 : 900;
+      const clearDelay = isMission01Paint ? 2300 : 1800;
       const paintTarget = isMission01Paint
         ? { key: PAINTED_WALLS_BG_KEY, image: getBackgroundByName(PAINTED_WALLS_BG_KEY) || currentBg }
         : getTargetBgForOption(option);
@@ -246,10 +290,11 @@ export function VisualPlayScreen({
     // Animation is 800ms per item + 300ms stagger × 3 items = ~1700ms total
     // We wait 2500ms to ensure users see the full blink effect + painted walls
     // Mission 01 paint: only advance after the player clearly sees the “painted walls” beat.
-    const advanceDelay = (mission.mission_id === 'studio_01' && variant === 'a') ? 5000 : 2500;
+    const advanceDelay = (mission.mission_id === 'studio_01' && variant === 'a') ? 3200 : 2500;
     const advanceId = window.setTimeout(() => {
       setLocalPlacement(null);
       setJustPlaced(null);
+      setLockPulseKey(null);
       onSelect(mission.mission_id, variant, option.holland_code as HollandCode, option);
     }, advanceDelay);
     timeoutsRef.current.push(advanceId);
@@ -427,7 +472,7 @@ export function VisualPlayScreen({
       backgroundPosition={effectiveBgPosition}
       backgroundRepeat="no-repeat"
       filter="saturate(1.18) contrast(1.08)"
-      durationMs={900}
+      durationMs={1200}
       zIndex={0}
     />
   );
@@ -538,11 +583,11 @@ export function VisualPlayScreen({
     // Position: on the floor adjacent to each wall (left/center/right)
     if (prop.missionId === 'studio_01' && prop.key === 'a') {
       // Use fixed X positions for left/center/right walls (22%, 50%, 78%)
-      // and a fixed Y at the floor-near-wall line (52%)
+      // and a fixed Y close to the floor (NOT windows)
       return [
-        { anchor: 'floor', offsetX: -28, offsetY: 0, customScale: 1.2, absoluteY: FLOOR_NEAR_WALL_Y },
-        { anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: FLOOR_NEAR_WALL_Y },
-        { anchor: 'floor', offsetX: 28, offsetY: 0, customScale: 1.2, absoluteY: FLOOR_NEAR_WALL_Y },
+        { anchor: 'floor', offsetX: -28, offsetY: 0, customScale: 1.2, absoluteY: DUPLICATE_BUCKETS_Y },
+        { anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: DUPLICATE_BUCKETS_Y },
+        { anchor: 'floor', offsetX: 28, offsetY: 0, customScale: 1.2, absoluteY: DUPLICATE_BUCKETS_Y },
       ];
     }
 
@@ -562,7 +607,9 @@ export function VisualPlayScreen({
         const isJustPlaced = justPlaced === `${prop.missionId}-${prop.key}`;
         
         return anchorInfos.map((anchorInfo, idx) => {
-          const anchorPos = getAnchorPosition(displayBgKey, anchorInfo.anchor);
+          // Mission 01 paint: keep tool coordinates stable even while the background is crossfading.
+          const anchorKeyForPlacement = (prop.missionId === 'studio_01' && prop.key === 'a') ? currentBgKey : displayBgKey;
+          const anchorPos = getAnchorPosition(anchorKeyForPlacement, anchorInfo.anchor);
           if (!anchorPos) return null;
           
           // Stagger animation for duplicates - longer delay for better visibility
@@ -578,7 +625,7 @@ export function VisualPlayScreen({
           return (
             <div
               key={`${prop.missionId}-${propIdx}-${idx}`}
-              className={`absolute pointer-events-none ${isJustPlaced ? (prop.missionId === 'studio_01' && prop.key === 'a' ? 'animate-snap-lock-soft' : 'animate-snap-pop-blink') : 'animate-snap-place'}`}
+              className={`absolute pointer-events-none ${isJustPlaced ? (prop.missionId === 'studio_01' && prop.key === 'a' ? 'animate-snap-place' : 'animate-snap-pop-blink') : 'animate-snap-place'}`}
               style={{
                 left: `${anchorPos.x + anchorInfo.offsetX}%`,
                 top: `${topValue}%`,
@@ -592,7 +639,7 @@ export function VisualPlayScreen({
               <img 
                 src={toolImg}
                 alt=""
-                className="w-24 h-24 md:w-32 md:h-32 object-contain"
+                className={`w-24 h-24 md:w-32 md:h-32 object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
                 style={{
                   filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
                 }}
@@ -668,7 +715,19 @@ export function VisualPlayScreen({
   );
 
   const toolPanelElement = (
-    <div className="layout-tool-panel-inner tool-panel-responsive" style={{ direction: 'ltr' }}>
+    <div className="layout-tool-panel-inner tool-panel-responsive relative" style={{ direction: 'ltr' }}>
+      {showToolSwapCue && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 2 }}>
+          <div
+            className="absolute inset-y-0 -left-1/3 w-1/2"
+            style={{
+              background: 'linear-gradient(90deg, transparent 0%, hsl(var(--primary) / 0.22) 50%, transparent 100%)',
+              animation: 'shine 420ms ease-out forwards',
+              filter: 'blur(0.5px)',
+            }}
+          />
+        </div>
+      )}
       {/* Main row: Progress tank (horizontal), tools */}
       <div className="tool-panel-main-row">
         {/* Progress tank */}
