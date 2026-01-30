@@ -1159,8 +1159,8 @@
 @media (min-width: 768px) and (max-width: 1023px) {
   /* Tablet: position hero so avatar is above the debug icon - far right */
   .missionScreen .mission-hero-desktop {
-    right: -80px;
-    bottom: clamp(60px, 12vh, 120px);
+    right: -120px;
+    bottom: clamp(40px, 10vh, 100px);
   }
 
   /* Tablet: cap bubble width so it doesn't collide with the tool panel */
