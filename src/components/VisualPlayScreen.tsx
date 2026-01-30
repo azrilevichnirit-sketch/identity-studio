@@ -488,16 +488,27 @@ export function VisualPlayScreen({
     return null;
   }, [activeToolVariant, getTargetAnchor]);
 
-  // Scene extras (NPCs) - show female staff after Mission 01 Tool B is placed
-  const showFemaleStaff = useMemo(() => {
-    // Show staff if: Mission 01 Tool B was chosen AND we're still in mission 01 (after placement) or in mission 02
-    const hasMission01ToolB = placedProps.some(p => p.missionId === 'studio_01' && p.key === 'b');
-    const isPlacingToolB = localPlacement?.missionId === 'studio_01' && localPlacement?.key === 'b';
-    const isInMission02 = mission.mission_id === 'studio_02';
-    
-    // Show after placement animation completes (when justPlaced is set) or in mission 02
-    return (hasMission01ToolB && isInMission02) || (isPlacingToolB && justPlaced === 'studio_01-b');
-  }, [placedProps, localPlacement, mission.mission_id, justPlaced]);
+  // Scene extras (NPCs) - show female staff AFTER Mission 01 Tool B lock animation completes
+  // She enters with a delayed animation so the sequence is: tool locks → staff walks in → mission advances
+  const [staffEnterReady, setStaffEnterReady] = useState(false);
+  
+  // Trigger staff entry after tool lock pulse finishes (lockPulseKey set → wait 600ms → show staff)
+  useEffect(() => {
+    if (lockPulseKey === 'studio_01-b') {
+      const id = window.setTimeout(() => setStaffEnterReady(true), 650);
+      return () => window.clearTimeout(id);
+    }
+  }, [lockPulseKey]);
+  
+  // Keep staff visible once she's entered (even after mission changes)
+  useEffect(() => {
+    if (mission.mission_id === 'studio_02') {
+      const hasMission01ToolB = placedProps.some(p => p.missionId === 'studio_01' && p.key === 'b');
+      if (hasMission01ToolB) setStaffEnterReady(true);
+    }
+  }, [mission.mission_id, placedProps]);
+  
+  const showFemaleStaff = staffEnterReady;
   
   const sceneExtras: never[] = []; // Keep the original array empty for now
 
@@ -532,16 +543,7 @@ export function VisualPlayScreen({
           zIndex: 1,
         }}
       />
-      {/* Mission change flash - brief bright overlay to signal new mission */}
-      {showMissionFlash && (
-        <div 
-          className="absolute inset-0 pointer-events-none animate-mission-flash"
-          style={{
-            background: 'radial-gradient(ellipse at center, hsl(var(--primary) / 0.18) 0%, transparent 70%)',
-            zIndex: 2,
-          }}
-        />
-      )}
+      {/* Mission change flash removed from full screen - now applied only to speech bubble */}
     </>
   );
 
@@ -571,11 +573,11 @@ export function VisualPlayScreen({
       <img
         src={femaleStaffWalk}
         alt="Staff member"
-        className="w-auto object-contain"
+        className="w-auto object-contain animate-subtle-idle"
         style={{
-          height: 'clamp(320px, 58vh, 560px)',
-          filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.45))',
-          // Keep unflipped so she faces the tool (most sprites face right by default).
+          height: 'clamp(240px, 42vh, 400px)',
+          filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
+          transform: 'scaleX(-1)', // Face right toward the tool
         }}
       />
     </div>
@@ -798,20 +800,32 @@ export function VisualPlayScreen({
   }, [taskText, isTabletOrMobile]);
 
   const speechBubbleElement = (
-    <SpeechBubble tailDirection="right">
-      <p 
-        className="font-medium text-sm md:text-base"
-        style={{ 
-          lineHeight: 1.45,
-          direction: 'rtl',
-          textAlign: 'right',
-          maxHeight: 'calc(22vh - 28px)',
-          overflowY: 'auto',
-        }}
-      >
-        {formattedTaskText}
-      </p>
-    </SpeechBubble>
+    <div className="relative">
+      {/* Subtle flash on mission change - only on the bubble */}
+      {showMissionFlash && (
+        <div 
+          className="absolute inset-0 rounded-2xl pointer-events-none animate-mission-flash"
+          style={{
+            background: 'radial-gradient(ellipse at center, hsl(var(--primary) / 0.22) 0%, transparent 80%)',
+            zIndex: 5,
+          }}
+        />
+      )}
+      <SpeechBubble tailDirection="right">
+        <p 
+          className="font-medium text-sm md:text-base"
+          style={{ 
+            lineHeight: 1.45,
+            direction: 'rtl',
+            textAlign: 'right',
+            maxHeight: 'calc(22vh - 28px)',
+            overflowY: 'auto',
+          }}
+        >
+          {formattedTaskText}
+        </p>
+      </SpeechBubble>
+    </div>
   );
 
   const toolPanelElement = (
