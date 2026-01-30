@@ -482,65 +482,87 @@ export function VisualPlayScreen({
 
   const toolPanelElement = (
     <div className="layout-tool-panel-inner tool-panel-responsive" style={{ direction: 'ltr' }}>
-      {/* Main row: Progress tank LEFT (visual), tools RIGHT */}
+      {/* Main row: Progress tank (horizontal), tools */}
       <div className="tool-panel-main-row">
-        {/* Progress tank - on the LEFT side (visual) */}
+        {/* Progress tank */}
         <div className="progress-tank-wrapper">
           <ProgressTank value={(currentIndex + 1) / totalMissions} />
         </div>
 
-        {/* Tool tiles - take remaining space */}
+        {/* Tool tiles */}
         <div className="tool-tiles-area">
-          <DraggableToolTile
-            image={toolAImage}
-            onPointerDown={(e) => handlePointerDown('a', e)}
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
-            onInfoClick={() => setActiveTooltip(activeTooltip === 'a' ? null : 'a')}
-            variant="a"
-            isDragging={draggingTool === 'a'}
-            isCarryMode={carryModeTool === 'a'}
-            isInfoActive={activeTooltip === 'a'}
-          />
-          <DraggableToolTile
-            image={toolBImage}
-            onPointerDown={(e) => handlePointerDown('b', e)}
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
-            onInfoClick={() => setActiveTooltip(activeTooltip === 'b' ? null : 'b')}
-            variant="b"
-            isDragging={draggingTool === 'b'}
-            isCarryMode={carryModeTool === 'b'}
-            isInfoActive={activeTooltip === 'b'}
-          />
-          
+          <div className="tool-tiles-row">
+            <DraggableToolTile
+              image={toolAImage}
+              onPointerDown={(e) => handlePointerDown('a', e)}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+              onInfoClick={() => setActiveTooltip(activeTooltip === 'a' ? null : 'a')}
+              variant="a"
+              isDragging={draggingTool === 'a'}
+              isCarryMode={carryModeTool === 'a'}
+              isInfoActive={activeTooltip === 'a'}
+            />
+            <DraggableToolTile
+              image={toolBImage}
+              onPointerDown={(e) => handlePointerDown('b', e)}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+              onInfoClick={() => setActiveTooltip(activeTooltip === 'b' ? null : 'b')}
+              variant="b"
+              isDragging={draggingTool === 'b'}
+              isCarryMode={carryModeTool === 'b'}
+              isInfoActive={activeTooltip === 'b'}
+            />
+          </div>
+
+          {/* Tooltip - anchored under the active tool (A/B) */}
+          {activeTooltip && (
+            <div className="tool-tooltip-row" data-variant={activeTooltip}>
+              <div className="tool-tooltip-col" data-col="a">
+                {activeTooltip === 'a' && (
+                  <div className="tooltip-area" role="note" aria-live="polite">
+                    <button
+                      onClick={() => setActiveTooltip(null)}
+                      className="tooltip-close-btn"
+                      aria-label="סגירה"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                    <p className="tooltip-text">
+                      {optionA.tooltip_heb || 'MISSING: option_a_tooltip_heb'}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <div className="tool-tooltip-col" data-col="b">
+                {activeTooltip === 'b' && (
+                  <div className="tooltip-area" role="note" aria-live="polite">
+                    <button
+                      onClick={() => setActiveTooltip(null)}
+                      className="tooltip-close-btn"
+                      aria-label="סגירה"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                    <p className="tooltip-text">
+                      {optionB.tooltip_heb || 'MISSING: option_b_tooltip_heb'}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Animated drag hint */}
           {!hasDraggedOnce && !draggingTool && !carryModeTool && (
-            <div className="absolute -top-8 left-1/2 -translate-x-1/2 flex flex-col items-center">
+            <div className="tool-drag-hint">
               <DragHint />
             </div>
           )}
         </div>
       </div>
-
-      {/* Tooltip - appears below, full width */}
-      {activeTooltip && (
-        <div className="tooltip-area">
-          <button
-            onClick={() => setActiveTooltip(null)}
-            className="tooltip-close-btn"
-          >
-            <X className="w-3 h-3" />
-          </button>
-          
-          <p className="tooltip-text">
-            {activeTooltip === 'a' 
-              ? (optionA.tooltip_heb || 'MISSING: option_a_tooltip_heb')
-              : (optionB.tooltip_heb || 'MISSING: option_b_tooltip_heb')
-            }
-          </p>
-        </div>
-      )}
     </div>
   );
 
@@ -662,17 +684,13 @@ function DraggableToolTile({
 
       {/* Info icon - BOTTOM-LEFT corner */}
       <button 
-        className={`absolute -bottom-0.5 -left-0.5 z-10 w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center shadow-md transition-all hover:scale-110 ${
-          isInfoActive 
-            ? 'bg-white ring-2 ring-slate-400' 
-            : 'bg-slate-800/90'
-        }`}
+        className={`tool-info-btn ${isInfoActive ? 'is-active' : ''}`}
         onClick={(e) => {
           e.stopPropagation();
           onInfoClick();
         }}
       >
-        <Info className={`w-2 h-2 sm:w-2.5 sm:h-2.5 ${isInfoActive ? 'text-slate-700' : 'text-white/90'}`} />
+        <Info className="tool-info-icon" />
       </button>
     </div>
   );
