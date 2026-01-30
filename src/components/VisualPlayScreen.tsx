@@ -12,6 +12,7 @@ import { MissionLayout } from './layouts/MissionLayout';
 import { usePanningBackground } from '@/hooks/usePanningBackground';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { BackgroundCrossfade } from './BackgroundCrossfade';
+import femaleStaffWalk from '@/assets/avatars/studio_01_female_staff_walk.webp';
 // import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter'; // Disabled
 
 const DRAG_HINT_STORAGE_KEY = 'ie_hasDraggedOnce';
@@ -439,19 +440,42 @@ export function VisualPlayScreen({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [carryModeTool]);
 
-  // Only show the current local placement (tool being placed in this mission)
-  // Don't show tools from previous missions - they disappear after transition
+  // Show the current local placement AND persisted tools from previous missions
   const displayedPlacement = useMemo(() => {
+    const placements: Array<{
+      missionId: string;
+      key: 'a' | 'b';
+      assetName: string;
+      hollandCode: HollandCode;
+      isPersisted?: boolean;
+    }> = [];
+    
+    // Add persisted tools from previous missions (e.g., Mission 01 Tool B persists to Mission 02)
+    placedProps.forEach((prop) => {
+      // Mission 01 Tool B persists into Mission 02
+      if (prop.missionId === 'studio_01' && prop.key === 'b' && mission.mission_id === 'studio_02') {
+        placements.push({
+          missionId: prop.missionId,
+          key: prop.key,
+          assetName: prop.assetName || 'studio_01_b',
+          hollandCode: prop.hollandCode,
+          isPersisted: true,
+        });
+      }
+    });
+    
+    // Add current local placement (tool being placed in this mission)
     if (localPlacement) {
-      return [{
+      placements.push({
         missionId: localPlacement.missionId,
         key: localPlacement.key as 'a' | 'b',
         assetName: localPlacement.assetName,
         hollandCode: 'r' as HollandCode, // Not used for display
-      }];
+      });
     }
-    return [];
-  }, [localPlacement]);
+    
+    return placements;
+  }, [localPlacement, placedProps, mission.mission_id]);
 
   const targetPosition = useMemo(() => {
     if (activeToolVariant) {
@@ -460,9 +484,18 @@ export function VisualPlayScreen({
     return null;
   }, [activeToolVariant, getTargetAnchor]);
 
-  // Scene extras (NPCs) - DISABLED for now until we have proper assets
-  // const sceneExtras = useSceneExtras(mission.mission_id, currentIndex, placedProps);
-  const sceneExtras: never[] = []; // Empty array to disable NPC rendering
+  // Scene extras (NPCs) - show female staff after Mission 01 Tool B is placed
+  const showFemaleStaff = useMemo(() => {
+    // Show staff if: Mission 01 Tool B was chosen AND we're still in mission 01 (after placement) or in mission 02
+    const hasMission01ToolB = placedProps.some(p => p.missionId === 'studio_01' && p.key === 'b');
+    const isPlacingToolB = localPlacement?.missionId === 'studio_01' && localPlacement?.key === 'b';
+    const isInMission02 = mission.mission_id === 'studio_02';
+    
+    // Show after placement animation completes (when justPlaced is set) or in mission 02
+    return (hasMission01ToolB && isInMission02) || (isPlacingToolB && justPlaced === 'studio_01-b');
+  }, [placedProps, localPlacement, mission.mission_id, justPlaced]);
+  
+  const sceneExtras: never[] = []; // Keep the original array empty for now
 
   // ========== RENDER ELEMENTS ==========
   // These are passed to the layout wrapper
@@ -508,8 +541,29 @@ export function VisualPlayScreen({
     </>
   );
 
-  // Scene extras - DISABLED for now
-  const sceneExtrasElement = null;
+  // Scene extras - Female staff NPC appears after Mission 01 Tool B placement
+  const sceneExtrasElement = showFemaleStaff ? (
+    <div 
+      className="absolute pointer-events-none animate-npc-enter"
+      style={{
+        // Position near the Tool B (center-left of the room, on the floor)
+        left: '38%',
+        bottom: '18%',
+        zIndex: 14,
+        transform: 'translateX(-50%)',
+      }}
+    >
+      <img 
+        src={femaleStaffWalk}
+        alt="Staff member"
+        className="h-36 md:h-48 w-auto object-contain"
+        style={{
+          filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
+          transform: 'scaleX(-1)', // Face the tool (which is to her right)
+        }}
+      />
+    </div>
+  ) : null;
 
   const targetZoneElement = activeToolVariant && targetPosition ? (
     <div 
@@ -611,6 +665,11 @@ export function VisualPlayScreen({
         { anchor: 'floor', offsetX: 28, offsetY: 0, customScale: 2.0, absoluteY: DUPLICATE_BUCKETS_Y },
       ];
     }
+    
+    // Mission 01 Tool B: single placement in back-center, persists into Mission 02
+    if (prop.missionId === 'studio_01' && prop.key === 'b') {
+      return [{ anchor: 'floor', offsetX: 8, offsetY: 0, customScale: 1.8, absoluteY: DUPLICATE_BUCKETS_Y }];
+    }
 
     // Default: single placement at floor
     return [{ anchor: 'floor', offsetX: 0, offsetY: 0 }];
@@ -644,10 +703,13 @@ export function VisualPlayScreen({
             ? anchorInfo.absoluteY 
             : anchorPos.y + anchorInfo.offsetY;
           
+          const isPersisted = 'isPersisted' in prop && prop.isPersisted;
+          const isMission01ToolB = prop.missionId === 'studio_01' && prop.key === 'b';
+          
           return (
             <div
               key={`${prop.missionId}-${propIdx}-${idx}`}
-              className={`absolute pointer-events-none ${isJustPlaced ? (prop.missionId === 'studio_01' && prop.key === 'a' ? 'animate-snap-place' : 'animate-snap-pop-blink') : 'animate-snap-place'}`}
+              className={`absolute pointer-events-none ${isPersisted ? '' : (isJustPlaced ? (prop.missionId === 'studio_01' && prop.key === 'a' ? 'animate-snap-place' : 'animate-snap-pop-blink') : 'animate-snap-place')}`}
               style={{
                 left: `${anchorPos.x + anchorInfo.offsetX}%`,
                 top: `${topValue}%`,
@@ -655,13 +717,13 @@ export function VisualPlayScreen({
                 transform: `translate(-50%, -100%) scale(${finalScale})`,
                 // Ensure tools near walls are visible above floor elements
                 zIndex: 15 + idx,
-                animationDelay: `${animationDelay}ms`,
+                animationDelay: isPersisted ? '0ms' : `${animationDelay}ms`,
               }}
             >
               <img 
                 src={toolImg}
                 alt=""
-                className={`${isMission01Buckets ? 'w-28 h-28 md:w-36 md:h-36' : 'w-24 h-24 md:w-32 md:h-32'} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
+                className={`${isMission01Buckets ? 'w-28 h-28 md:w-36 md:h-36' : (isMission01ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32')} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
                 style={{
                   filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
                 }}
