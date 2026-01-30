@@ -7,7 +7,7 @@ import { Info, Hand, X } from 'lucide-react';
 import { UndoConfirmPopover } from './UndoConfirmDialog';
 import { ProgressTank } from './ProgressTank';
 import { DragHint } from './DragHint';
-import { useSceneExtras } from '@/hooks/useSceneExtras';
+// import { useSceneExtras } from '@/hooks/useSceneExtras'; // Disabled for now
 import { MissionLayout } from './layouts/MissionLayout';
 import { usePanningBackground } from '@/hooks/usePanningBackground';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -274,8 +274,9 @@ export function VisualPlayScreen({
     return null;
   }, [activeToolVariant, getTargetAnchor]);
 
-  // Scene extras (NPCs) based on current mission and picks
-  const sceneExtras = useSceneExtras(mission.mission_id, currentIndex, placedProps);
+  // Scene extras (NPCs) - DISABLED for now until we have proper assets
+  // const sceneExtras = useSceneExtras(mission.mission_id, currentIndex, placedProps);
+  const sceneExtras: never[] = []; // Empty array to disable NPC rendering
 
   // ========== RENDER ELEMENTS ==========
   // These are passed to the layout wrapper
@@ -310,39 +311,8 @@ export function VisualPlayScreen({
     />
   );
 
-  const sceneExtrasElement = (
-    <>
-      {sceneExtras.map((extra) => {
-        const anchorPos = getAnchorPosition(displayBgKey, extra.anchorRef);
-        if (!anchorPos) return null;
-        
-        return (
-          <div
-            key={extra.id}
-            className="absolute pointer-events-none animate-fade-in"
-            style={{
-              left: `${anchorPos.x + extra.offsetX}%`,
-              top: `${anchorPos.y + extra.offsetY}%`,
-              transform: `translate(-50%, -50%) scale(${extra.scale * anchorPos.scale})`,
-              zIndex: extra.zLayer === 'back' ? 3 : extra.zLayer === 'mid' ? 6 : 8,
-            }}
-          >
-            <img 
-              src={extra.image}
-              alt=""
-              className="h-24 md:h-32 w-auto object-contain drop-shadow-lg"
-              style={{
-                filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.3))',
-              }}
-            />
-          </div>
-        );
-      })}
-      
-      {/* TODO: Animated staff characters - disabled for now, needs better animation frames */}
-      {/* {mission.mission_id === 'studio_01' && (...)} */}
-    </>
-  );
+  // Scene extras - DISABLED for now
+  const sceneExtrasElement = null;
 
   const targetZoneElement = activeToolVariant && targetPosition ? (
     <div 
