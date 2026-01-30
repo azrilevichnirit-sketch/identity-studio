@@ -199,10 +199,11 @@ export function VisualPlayScreen({
       const floor = getAnchorPosition(currentBgKey, 'floor');
       
       if (variant === 'a') {
-        // Tool A: drop zone at BACK of room, right under the windows (very close to wall_back)
-        // Use wallBack.y + small offset to place it just below the windows
-        if (wallBack) {
-          const backFloorY = wallBack.y + 12; // Just below the windows
+        // Tool A: drop zone on the FLOOR but at the BACK of the room (near the walls, under windows)
+        // wallBack.y is ~38%, floor.y is ~87%
+        // We want to be on the floor plane but at the back - around 72-75%
+        if (wallBack && floor) {
+          const backFloorY = wallBack.y + (floor.y - wallBack.y) * 0.72; // ~73% - floor at the back
           return { x: 50, y: backFloorY, scale: 1, z_layer: 'mid' as const };
         }
       } else {
