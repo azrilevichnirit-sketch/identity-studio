@@ -661,9 +661,9 @@
     z-index: 100;
     pointer-events: none;
     position: relative;
-    width: 140px;
-    margin-left: -130px;
-    transform: scale(2);
+    width: 180px;
+    margin-left: -160px;
+    transform: scale(2.2);
     transform-origin: bottom center;
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6));
   }
@@ -696,22 +696,25 @@
 /* Tablet/intermediate screens (768-1023px) */
 @media (min-width: 768px) and (max-width: 1023px) {
   .missionScreen .mission-hero-mobile {
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 160px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 180px);
+    right: 24px;
   }
 
   .missionScreen .mission-bubble-mobile {
-    max-width: 55%;
+    max-width: 48%;
+    margin-right: 80px;
+    margin-bottom: 30px;
   }
 
   .missionScreen .mission-avatar-mobile {
-    width: 140px;
-    margin-left: -95px;
-    transform: scale(1.6);
+    width: 200px;
+    margin-left: -180px;
+    transform: scale(2);
   }
 
   .missionScreen .mission-tool-panel-mobile {
-    width: clamp(260px, 35vw, 340px);
-    height: 140px;
+    width: clamp(220px, 28vw, 300px);
+    height: 130px;
   }
 }
 
@@ -726,9 +729,9 @@
   }
 
   .missionScreen .mission-avatar-mobile {
-    width: 100px;
-    margin-left: -65px;
-    transform: scale(1.6);
+    width: 140px;
+    margin-left: -120px;
+    transform: scale(2);
   }
 
   .missionScreen .mission-tool-panel-mobile {
