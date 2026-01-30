@@ -16,24 +16,38 @@
   }
 }
 
-/* Walking animation - subtle bounce */
+/* Walking animation - subtle bounce for movement */
 @keyframes walk-bounce {
   0%, 100% {
-    transform: translateY(0) rotate(-1deg);
+    transform: translateY(0) rotate(-0.5deg);
   }
   25% {
-    transform: translateY(-3px) rotate(0deg);
+    transform: translateY(-4px) rotate(0deg);
   }
   50% {
-    transform: translateY(0) rotate(1deg);
+    transform: translateY(0) rotate(0.5deg);
   }
   75% {
-    transform: translateY(-3px) rotate(0deg);
+    transform: translateY(-4px) rotate(0deg);
+  }
+}
+
+/* Idle animation - very subtle breathing/working motion */
+@keyframes subtle-idle {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-2px) rotate(0.3deg);
   }
 }
 
 .animate-walk {
-  animation: walk-bounce 0.4s ease-in-out infinite;
+  animation: walk-bounce 0.35s ease-in-out infinite;
+}
+
+.animate-subtle-idle {
+  animation: subtle-idle 2.5s ease-in-out infinite;
 }
 
 /* Identity Engine Design System - Dark, focused, minimal */

@@ -345,23 +345,24 @@ export function VisualPlayScreen({
           <AnimatedStaffCharacter
             gender="female"
             state={staffCharacterState}
-            startX={-15}
-            targetX={staffTargetX - 8}
-            bottomY={18}
-            scale={0.9}
+            startX={-12}
+            idleX={22}
+            targetX={staffTargetX - 10}
+            bottomY={6}
+            scale={1.3}
             zIndex={20}
-            delay={300}
+            delay={400}
           />
           <AnimatedStaffCharacter
             gender="male"
             state={staffCharacterState}
-            startX={-10}
-            targetX={staffTargetX + 8}
-            bottomY={16}
-            scale={0.95}
+            startX={-8}
+            idleX={38}
+            targetX={staffTargetX + 10}
+            bottomY={5}
+            scale={1.35}
             zIndex={21}
-            delay={600}
-            flipX={true}
+            delay={800}
           />
         </>
       )}
