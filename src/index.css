@@ -660,6 +660,36 @@
   z-index: 1;
 }
 
+/* Tooltip placement when opened from a tool tile (absolute overlay; no layout shift) */
+.tooltip-area[data-placement="tool"] {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: -8px;
+  margin-top: 0;
+  max-width: min(240px, 72vw);
+  z-index: 40;
+  pointer-events: auto;
+}
+
+.tooltip-area[data-placement="tool"][data-variant="b"] {
+  left: auto;
+  right: -8px;
+}
+
+/* Tail points DOWN to the info icon */
+.tooltip-area[data-placement="tool"]::before {
+  top: auto;
+  bottom: -6px;
+  left: 18px;
+  /* slight overlap into body to avoid anti-aliased seam */
+  transform: translateY(-1px) rotate(45deg);
+}
+
+.tooltip-area[data-placement="tool"][data-variant="b"]::before {
+  left: auto;
+  right: 18px;
+}
+
 @keyframes tooltip-pop {
   0% { opacity: 0; transform: translateY(6px) scale(0.95); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
@@ -908,8 +938,7 @@
   /* Mission tool panel - bottom-left, fits content */
   .missionScreen .mission-tool-panel-mobile {
     position: fixed;
-    /* Ensure tooltips never fall behind the mission bubble */
-    z-index: 95;
+    z-index: 70;
     left: 10px;
     bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
     width: fit-content;
@@ -965,6 +994,23 @@
     height: 12px;
   }
 
+  .mobile-layout .tooltip-area[data-placement="tool"] {
+    bottom: calc(100% + 6px);
+    max-width: min(220px, 78vw);
+  }
+
+  .mobile-layout .tooltip-area[data-placement="tool"]::before {
+    top: auto;
+    bottom: -6px;
+    left: 18px;
+    transform: translateY(-1px) rotate(45deg);
+  }
+
+  .mobile-layout .tooltip-area[data-placement="tool"][data-variant="b"]::before {
+    left: auto;
+    right: 18px;
+  }
+
   .mobile-layout .tooltip-close-btn {
     width: 16px;
     height: 16px;
@@ -1009,12 +1055,21 @@
 
   /* Tablet: cap bubble width so it doesn't collide with the tool panel */
   .missionScreen .mission-bubble-desktop {
-    max-width: min(360px, 40vw);
+    max-width: min(420px, 46vw);
+    /* shift left so avatar overlap doesn't hide the Hebrew text */
+    margin-right: clamp(110px, 14vw, 160px);
+  }
+
+  /* Tablet: keep avatar large enough (avoid "tiny avatar" look) */
+  .missionScreen .mission-avatar-desktop {
+    width: min(420px, 44vw);
+    /* reduce overlap vs desktop so it won't cover bubble text */
+    margin-left: clamp(-190px, -18vw, -140px);
   }
 
   /* Tablet: keep tool panel readable without affecting hero */
   .missionScreen .mission-tool-panel-desktop {
-    max-width: min(420px, 46vw);
+    max-width: min(380px, 44vw);
   }
 
   /* Tablet tool panel */
@@ -1038,8 +1093,8 @@
 
   /* Tablet tool tiles */
   .tool-tile {
-    width: 104px;
-    height: 104px;
+    width: 96px;
+    height: 96px;
   }
 
   /* Tablet tooltip */
