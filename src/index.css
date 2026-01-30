@@ -507,45 +507,11 @@
 
 /* ============================================
    DESKTOP LAYOUT (>=1024px) - BASE STYLES
-   Tray bottom-LEFT, bubble near avatar on right
    ============================================ */
 
 /* Desktop: Background - no zoom */
 .desktop-layout .layout-bg {
   transform: none;
-}
-
-/* Desktop: Avatar - right side, large, foreground, overlaps bubble */
-.desktop-avatar {
-  position: absolute;
-  z-index: 25;
-  right: clamp(60px, 10vw, 140px);
-  bottom: 28px;
-  height: clamp(340px, 32vh, 440px);
-  pointer-events: none;
-  filter: drop-shadow(0 14px 32px rgba(0,0,0,0.5));
-  /* Move avatar slightly left to overlap bubble */
-  margin-right: -30px;
-}
-
-/* Desktop: Speech bubble - near avatar, behind it */
-.desktop-bubble {
-  position: absolute;
-  z-index: 15;
-  right: clamp(220px, 20vw, 380px);
-  bottom: 100px;
-  max-width: 440px;
-  min-width: 300px;
-}
-
-/* Desktop: Tool panel - BOTTOM LEFT */
-.desktop-tool-panel {
-  position: absolute;
-  z-index: 20;
-  bottom: 24px;
-  left: 24px;
-  width: clamp(360px, 28vw, 480px);
-  height: 150px;
 }
 
 /* Desktop: Tool panel inner styling */
@@ -562,9 +528,60 @@
 }
 
 /* ============================================
+   MISSION SCREEN - DESKTOP (>=1024px)
+   Hero row with bubble + avatar like Welcome
+   ============================================ */
+
+.missionScreen .mission-hero-desktop {
+  position: absolute;
+  right: clamp(24px, 4vw, 60px);
+  bottom: clamp(28px, 5vh, 60px);
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 0;
+  z-index: 30;
+  pointer-events: none;
+  direction: ltr;
+}
+
+.missionScreen .mission-bubble-desktop {
+  max-width: min(420px, 36vw);
+  position: relative;
+  z-index: 20;
+  pointer-events: auto;
+  order: 1;
+  direction: rtl;
+}
+
+.missionScreen .mission-avatar-desktop {
+  position: relative;
+  z-index: 25;
+  flex: 0 0 auto;
+  width: min(280px, 24vw);
+  pointer-events: none;
+  order: 2;
+  margin-left: -100px;
+  filter: drop-shadow(0 14px 32px rgba(0,0,0,0.5));
+}
+
+.missionScreen .mission-avatar-desktop img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.missionScreen .mission-tool-panel-desktop {
+  position: absolute;
+  z-index: 20;
+  bottom: 24px;
+  left: 24px;
+  width: clamp(320px, 26vw, 420px);
+  height: 140px;
+}
+
+/* ============================================
    MOBILE LAYOUT (<1024px)
-   Stage fills viewport, tray bottom-left,
-   bubble above tray, avatar right foreground
    ============================================ */
 
 @media (max-width: 1023px) {
@@ -588,110 +605,153 @@
     overflow: hidden;
   }
 
-  /* Mobile: Background - centered to show walls on both sides */
+  /* Mobile: Background - centered */
   .mobile-layout .layout-bg {
     transform: none;
     background-position: center center;
-  }
-
-  /* Mobile: Avatar - right side, foreground (z-25), overlaps bubble */
-  .mobile-avatar {
-    position: absolute;
-    z-index: 25;
-    right: -10px;
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
-    height: clamp(260px, 38vh, 380px);
-    pointer-events: none;
-    filter: drop-shadow(0 10px 24px rgba(0,0,0,0.45));
-  }
-
-  /* Mobile: Speech bubble - above tray, allows avatar overlap (z-20) */
-  .mobile-bubble {
-    position: absolute;
-    z-index: 20;
-    left: 12px;
-    right: calc(clamp(90px, 26vw, 150px)); /* Less space - allows overlap */
-    bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(95px, 15vh, 140px) + 16px);
-    max-height: 28vh;
-    overflow-y: auto;
-  }
-
-  /* Mobile: Tool panel - bottom-left, compact (z-18) */
-  .mobile-tool-panel {
-    position: absolute;
-    z-index: 18;
-    left: 12px;
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
-    width: clamp(140px, 40vw, 200px);
-    height: clamp(90px, 14vh, 125px);
   }
 
   /* Mobile: Tool panel inner - tighter padding */
   .mobile-layout .layout-tool-panel-inner {
     padding: 0.5rem 0.75rem;
   }
+}
 
-  /* Mobile: Undo button with safe area (z-30) */
-  .mobile-undo-btn {
+/* ============================================
+   MISSION SCREEN - MOBILE (<1024px)
+   Hero row with bubble + avatar like Welcome
+   ============================================ */
+
+@media (max-width: 1023px) {
+  /* Mission hero row - flex layout like Welcome */
+  .missionScreen .mission-hero-mobile {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(100px, 16vh, 150px) + 12px);
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 0;
+    z-index: 80;
+    direction: ltr;
+    pointer-events: none;
+  }
+
+  /* Mission bubble - fits content */
+  .missionScreen .mission-bubble-mobile {
+    order: 1;
+    z-index: 85;
+    flex: 0 1 auto;
+    min-width: 0;
+    width: fit-content;
+    max-width: 68%;
+    pointer-events: auto;
+    direction: rtl;
+  }
+
+  /* Mission avatar - overlaps bubble from right */
+  .missionScreen .mission-avatar-mobile {
+    order: 2;
+    z-index: 100;
+    pointer-events: none;
+    position: relative;
+    width: 120px;
+    margin-left: -40px;
+    transform: scale(1.8);
+    transform-origin: bottom center;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6));
+  }
+
+  .missionScreen .mission-avatar-mobile img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Mission tool panel - bottom-left */
+  .missionScreen .mission-tool-panel-mobile {
+    position: fixed;
+    z-index: 70;
+    left: 12px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+    width: clamp(160px, 45vw, 220px);
+    height: clamp(90px, 14vh, 130px);
+  }
+
+  /* Mission undo button */
+  .missionScreen .mission-undo-btn {
     position: absolute;
-    z-index: 30;
+    z-index: 90;
     top: max(env(safe-area-inset-top, 12px), 16px);
     right: max(env(safe-area-inset-right, 12px), 16px);
   }
 }
 
-/* Small mobile (<400px) additional adjustments */
-@media (max-width: 399px) {
-  .mobile-avatar {
-    height: clamp(220px, 34vh, 320px);
-    right: 4px;
+/* Tablet/intermediate screens (768-1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .missionScreen .mission-hero-mobile {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 160px);
   }
 
-  .mobile-bubble {
-    left: 10px;
-    right: calc(10px + clamp(110px, 30vw, 160px));
+  .missionScreen .mission-bubble-mobile {
+    max-width: 55%;
   }
 
-  .mobile-tool-panel {
-    width: clamp(120px, 42vw, 170px);
-    height: clamp(80px, 13vh, 110px);
-    left: 10px;
+  .missionScreen .mission-avatar-mobile {
+    width: 140px;
+    margin-left: -50px;
+    transform: scale(1.6);
+  }
+
+  .missionScreen .mission-tool-panel-mobile {
+    width: clamp(260px, 35vw, 340px);
+    height: 140px;
   }
 }
 
-/* Tablet landscape (768-1023px) */
-@media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
-  .mobile-avatar {
-    height: clamp(280px, 40vh, 360px);
-    right: 20px;
+/* Small mobile (<400px) additional adjustments */
+@media (max-width: 399px) {
+  .missionScreen .mission-hero-mobile {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(85px, 14vh, 120px) + 10px);
   }
 
-  .mobile-bubble {
-    right: calc(20px + clamp(160px, 28vw, 240px));
-    max-width: 400px;
+  .missionScreen .mission-bubble-mobile {
+    max-width: 72%;
   }
 
-  .mobile-tool-panel {
-    width: clamp(280px, 32vw, 360px);
-    height: 130px;
+  .missionScreen .mission-avatar-mobile {
+    width: 100px;
+    margin-left: -30px;
+    transform: scale(1.6);
+  }
+
+  .missionScreen .mission-tool-panel-mobile {
+    width: clamp(130px, 44vw, 180px);
+    height: clamp(80px, 13vh, 110px);
   }
 }
 
 /* Large desktop (>=1280px) */
 @media (min-width: 1280px) {
-  .desktop-avatar {
-    right: 100px;
-    height: 420px;
+  .missionScreen .mission-hero-desktop {
+    right: 60px;
+    bottom: 50px;
   }
 
-  .desktop-bubble {
-    right: 400px;
-    max-width: 480px;
+  .missionScreen .mission-bubble-desktop {
+    max-width: 460px;
   }
 
-  .desktop-tool-panel {
-    width: 440px;
-    height: 160px;
+  .missionScreen .mission-avatar-desktop {
+    width: 320px;
+    margin-left: -120px;
+  }
+
+  .missionScreen .mission-tool-panel-desktop {
+    width: 400px;
+    height: 150px;
   }
 }
 
