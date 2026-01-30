@@ -57,7 +57,7 @@ export function SpeechBubble({
             textAlign: 'right',
           }}
         >
-          <div style={{ direction: 'rtl', textAlign: 'right', width: '100%' }}>
+          <div style={{ direction: 'rtl', textAlign: 'right' }}>
             {children}
           </div>
         </div>
