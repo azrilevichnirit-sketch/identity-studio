@@ -562,10 +562,10 @@
   position: relative;
   z-index: 25;
   flex: 0 0 auto;
-  width: min(320px, 28vw);
+  width: min(380px, 32vw);
   pointer-events: none;
   order: 2;
-  margin-left: -230px;
+  margin-left: -260px;
   filter: drop-shadow(0 14px 32px rgba(0,0,0,0.5));
 }
 
