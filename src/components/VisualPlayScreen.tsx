@@ -106,6 +106,16 @@ export function VisualPlayScreen({
 
   const currentBg = useMemo(() => getBackgroundForMission(mission, previousBgOverride), [mission, previousBgOverride]);
   const currentBgKey = useMemo(() => getBackgroundKey(mission, previousBgOverride), [mission, previousBgOverride]);
+
+  // A derived "floor-near-wall" Y position for Mission 01.
+  // Smaller Y = closer to wall in perspective (higher on the screen).
+  const floorNearWallY = useMemo(() => {
+    const wallBack = getAnchorPosition(currentBgKey, 'wall_back');
+    const floor = getAnchorPosition(currentBgKey, 'floor');
+    if (!wallBack || !floor) return null;
+    // Midway between wall_back and floor reads as "on the floor near the wall".
+    return wallBack.y + (floor.y - wallBack.y) * 0.5;
+  }, [currentBgKey]);
   const avatarImage = getAvatarImage(avatarGender, 'idle');
   const toolAImage = getToolImage(optionA.asset);
   const toolBImage = getToolImage(optionB.asset);
@@ -160,15 +170,15 @@ export function VisualPlayScreen({
       const wallBack = getAnchorPosition(currentBgKey, 'wall_back');
       const floor = getAnchorPosition(currentBgKey, 'floor');
       if (wallBack && floor) {
-        // Place marker ON the floor line, close to the wall (צמוד לקיר)
-        const y = Math.max(0, floor.y - 6);
+        // Place marker on the floor but close to the wall (צמוד לקיר)
+        const y = floorNearWallY ?? (wallBack.y + (floor.y - wallBack.y) * 0.5);
         return { x: wallBack.x, y, scale: 1, z_layer: 'mid' as const };
       }
     }
 
     const anchorRef = option.anchor_ref as AnchorRef;
     return getAnchorPosition(targetBgKey, anchorRef);
-  }, [optionA, optionB, currentBgKey, mission.mission_id]);
+  }, [optionA, optionB, currentBgKey, mission.mission_id, floorNearWallY]);
 
   useEffect(() => {
     return () => {
@@ -522,12 +532,16 @@ export function VisualPlayScreen({
     // Product rule: Mission 01 tool A duplicates to 3 placements (one per wall)
     // Position: on the floor, adjacent to the wall (small offsetY to get floor-near-wall position)
     if (prop.missionId === 'studio_01' && prop.key === 'a') {
-      // Anchor to FLOOR, then spread left/center/right along the floor near the wall.
-      // This prevents the duplicates from appearing on windows (wall anchors).
+      // Anchor to wall anchors but push DOWN to the derived floor-near-wall line.
+      // This keeps them adjacent to the wall (not on windows, not on the front floor).
+      const y = floorNearWallY;
+      // Our anchor map has wall_* around ~40% and floor around ~86-88%.
+      // Offsets are in percentage points.
+      const offsetToNearWallFloor = y ? Math.max(0, y - 40) : 24;
       return [
-        { anchor: 'floor', offsetX: -22, offsetY: -2, customScale: 1.0 },
-        { anchor: 'floor', offsetX: 0, offsetY: -2, customScale: 1.0 },
-        { anchor: 'floor', offsetX: 22, offsetY: -2, customScale: 1.0 },
+        { anchor: 'wall_left', offsetX: 0, offsetY: offsetToNearWallFloor, customScale: 1.0 },
+        { anchor: 'wall_back', offsetX: 0, offsetY: offsetToNearWallFloor, customScale: 1.0 },
+        { anchor: 'wall_right', offsetX: 0, offsetY: offsetToNearWallFloor, customScale: 1.0 },
       ];
     }
 
