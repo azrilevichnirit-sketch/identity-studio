@@ -61,11 +61,12 @@
     /* Tool panel + tooltip tokens (game UI) */
     --toolpanel-bg: 220 25% 10%;
     --toolpanel-border: 0 0% 100%;
-    --tooltip-bg: 44 100% 96%;
-    --tooltip-bg-2: 42 100% 93%;
-    --tooltip-text: 220 25% 14%;
+    /* Tooltip: darker, game-like */
+    --tooltip-bg: 220 22% 14%;
+    --tooltip-bg-2: 220 22% 10%;
+    --tooltip-text: 0 0% 96%;
     --tooltip-border: 170 80% 45%;
-    --tooltip-muted: 220 10% 45%;
+    --tooltip-muted: 0 0% 78%;
 
     --sidebar-background: 220 18% 12%;
     --sidebar-foreground: 0 0% 95%;
@@ -557,7 +558,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 140px;
+  /* Desktop: keep it horizontal, give it room */
+  width: clamp(128px, 12vw, 176px);
   flex-shrink: 0;
 }
 
@@ -573,8 +575,8 @@
 
 /* Tool tile - fits nicely */
 .tool-tile {
-  width: 104px;
-  height: 104px;
+  width: 112px;
+  height: 112px;
 }
 
 /* Tooltip - compact, one line if possible */
@@ -582,22 +584,25 @@
   margin-top: 2px;
   padding: 8px 10px;
   padding-left: 30px;
+  width: fit-content;
+  max-width: min(280px, 100%);
+  align-self: flex-start;
   background: linear-gradient(
-    145deg,
-    hsl(var(--tooltip-bg)) 0%,
-    hsl(var(--tooltip-bg-2)) 100%
+    180deg,
+    hsl(var(--tooltip-bg) / 0.92) 0%,
+    hsl(var(--tooltip-bg-2) / 0.92) 100%
   );
   border-radius: 12px;
   position: relative;
   direction: rtl;
   text-align: right;
-  border: 2px solid hsl(var(--tooltip-border) / 0.35);
+  border: 1px solid hsl(var(--tooltip-border) / 0.35);
   box-shadow:
-    0 10px 26px -18px hsl(0 0% 0% / 0.55),
-    0 0 0 1px hsl(var(--tooltip-border) / 0.12),
-    inset 0 1px 0 hsl(0 0% 100% / 0.75);
+    0 14px 34px -24px hsl(0 0% 0% / 0.75),
+    0 0 0 1px hsl(var(--tooltip-border) / 0.14),
+    inset 0 1px 0 hsl(0 0% 100% / 0.06);
   animation: tooltip-pop 180ms ease-out;
-  max-height: 64px;
+  max-height: 52px;
   overflow: auto;
 }
 
@@ -614,22 +619,22 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: hsl(var(--tooltip-border) / 0.16);
+  background: hsl(var(--tooltip-border) / 0.18);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: hsl(var(--tooltip-muted));
-  border: 1px solid hsl(var(--tooltip-border) / 0.25);
+  color: hsl(var(--tooltip-text));
+  border: 1px solid hsl(var(--tooltip-border) / 0.22);
   cursor: pointer;
   transition: background 0.15s;
 }
 
 .tooltip-close-btn:hover {
-  background: hsl(var(--tooltip-border) / 0.24);
+  background: hsl(var(--tooltip-border) / 0.28);
 }
 
 .tooltip-text {
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 600;
   color: hsl(var(--tooltip-text));
   line-height: 1.4;
@@ -691,7 +696,7 @@
   bottom: 24px;
   left: 24px;
   width: fit-content;
-  max-width: min(520px, 46vw);
+  max-width: min(440px, 42vw);
 }
 
 /* ============================================
@@ -822,10 +827,10 @@
 
   /* Mobile tool tiles - bigger */
   .mobile-layout .tool-tile {
-    width: 72px;
-    height: 72px;
-    min-width: 72px;
-    min-height: 72px;
+    width: 84px;
+    height: 84px;
+    min-width: 84px;
+    min-height: 84px;
   }
 
   /* Mobile tooltip */
@@ -905,8 +910,8 @@
 
   /* Tablet tool tiles */
   .tool-tile {
-    width: 88px;
-    height: 88px;
+    width: 104px;
+    height: 104px;
   }
 
   /* Tablet tooltip */
@@ -914,6 +919,7 @@
     padding: 7px 10px;
     padding-left: 28px;
     max-height: 60px;
+    max-width: min(260px, 100%);
   }
 
   .tooltip-text {
@@ -938,10 +944,10 @@
   }
 
   .mobile-layout .tool-tile {
-    width: 64px;
-    height: 64px;
-    min-width: 64px;
-    min-height: 64px;
+    width: 76px;
+    height: 76px;
+    min-width: 76px;
+    min-height: 76px;
   }
 
   .tool-tiles-area {
@@ -987,8 +993,8 @@
 
   /* Larger tools on big screens */
   .tool-tile {
-    width: 100px;
-    height: 100px;
+    width: 124px;
+    height: 124px;
   }
 
   .tool-tiles-area {
