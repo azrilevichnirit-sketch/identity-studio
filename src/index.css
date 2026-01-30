@@ -663,7 +663,9 @@
 /* Tooltip placement when opened from a tool tile (absolute overlay; no layout shift) */
 .tooltip-area[data-placement="tool"] {
   position: absolute;
-  bottom: calc(100% + 8px);
+  /* Desktop/tablet default: show BELOW the tool so it won't overlap the progress tank */
+  top: calc(100% + 8px);
+  bottom: auto;
   left: -8px;
   margin-top: 0;
   max-width: min(240px, 72vw);
@@ -678,11 +680,11 @@
 
 /* Tail points DOWN to the info icon */
 .tooltip-area[data-placement="tool"]::before {
-  top: auto;
-  bottom: -6px;
+  top: -6px;
+  bottom: auto;
   left: 18px;
   /* slight overlap into body to avoid anti-aliased seam */
-  transform: translateY(-1px) rotate(45deg);
+  transform: translateY(1px) rotate(45deg);
 }
 
 .tooltip-area[data-placement="tool"][data-variant="b"]::before {
@@ -995,8 +997,10 @@
   }
 
   .mobile-layout .tooltip-area[data-placement="tool"] {
+    /* Mobile: show ABOVE the tool to avoid colliding with mission bubble */
+    top: auto;
     bottom: calc(100% + 6px);
-    max-width: min(220px, 78vw);
+    max-width: min(190px, 64vw);
   }
 
   .mobile-layout .tooltip-area[data-placement="tool"]::before {
@@ -1047,10 +1051,10 @@
    So overrides must target the *desktop* selectors.
 */
 @media (min-width: 768px) and (max-width: 1023px) {
-  /* Tablet: keep hero positioning consistent with desktop to avoid layout jumps */
+  /* Tablet: lift hero so it won't sit on top of the tool panel */
   .missionScreen .mission-hero-desktop {
     right: clamp(24px, 4vw, 60px);
-    bottom: clamp(28px, 5vh, 60px);
+    bottom: clamp(150px, 20vh, 220px);
   }
 
   /* Tablet: cap bubble width so it doesn't collide with the tool panel */
@@ -1062,7 +1066,7 @@
 
   /* Tablet: keep avatar large enough (avoid "tiny avatar" look) */
   .missionScreen .mission-avatar-desktop {
-    width: min(420px, 44vw);
+    width: clamp(300px, 40vw, 420px);
     /* reduce overlap vs desktop so it won't cover bubble text */
     margin-left: clamp(-190px, -18vw, -140px);
   }
