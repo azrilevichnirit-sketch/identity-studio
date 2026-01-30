@@ -552,7 +552,7 @@
   pointer-events: auto;
   order: 1;
   direction: rtl;
-  margin-right: 100px;
+  margin-right: 85px;
   margin-bottom: 30px;
 }
 
@@ -651,7 +651,7 @@
     max-width: 58%;
     pointer-events: auto;
     direction: rtl;
-    margin-right: 70px;
+    margin-right: 55px;
     margin-bottom: 20px;
   }
 
