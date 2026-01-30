@@ -11,6 +11,7 @@ import { useSceneExtras } from '@/hooks/useSceneExtras';
 import { MissionLayout } from './layouts/MissionLayout';
 import { usePanningBackground } from '@/hooks/usePanningBackground';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter';
 
 const DRAG_HINT_STORAGE_KEY = 'ie_hasDraggedOnce';
 
@@ -47,6 +48,10 @@ export function VisualPlayScreen({
   });
   // Carry mode for touch fallback - tap to pick up, tap target to place
   const [carryModeTool, setCarryModeTool] = useState<'a' | 'b' | null>(null);
+  // Staff characters state (for mission 1)
+  const [staffCharacterState, setStaffCharacterState] = useState<CharacterState>('entering');
+  const [staffTargetX, setStaffTargetX] = useState<number>(50);
+  
   const stageRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
   const dragStartPosRef = useRef<{ x: number; y: number } | null>(null);
@@ -124,9 +129,19 @@ export function VisualPlayScreen({
     }
     setJustPlaced(`${mission.mission_id}-${variant}`);
     setTimeout(() => setJustPlaced(null), 300);
+    
+    // Animate staff characters to walk toward the placed tool (mission 1)
+    if (mission.mission_id === 'studio_01') {
+      const anchor = getTargetAnchor(variant);
+      if (anchor) {
+        setStaffTargetX(anchor.x);
+        setStaffCharacterState('walking-to-tool');
+      }
+    }
+    
     onSelect(mission.mission_id, variant, option.holland_code as HollandCode, option);
     setCarryModeTool(null);
-  }, [mission.mission_id, optionA, optionB, onSelect, hasDraggedOnce]);
+  }, [mission.mission_id, optionA, optionB, onSelect, hasDraggedOnce, getTargetAnchor]);
 
   // Pointer Events for unified mouse/touch handling
   const handlePointerDown = useCallback((variant: 'a' | 'b', e: React.PointerEvent) => {
@@ -323,6 +338,33 @@ export function VisualPlayScreen({
           </div>
         );
       })}
+      
+      {/* Animated staff characters - only on mission 1 */}
+      {mission.mission_id === 'studio_01' && (
+        <>
+          <AnimatedStaffCharacter
+            gender="female"
+            state={staffCharacterState}
+            startX={-15}
+            targetX={staffTargetX - 8}
+            bottomY={18}
+            scale={0.9}
+            zIndex={20}
+            delay={300}
+          />
+          <AnimatedStaffCharacter
+            gender="male"
+            state={staffCharacterState}
+            startX={-10}
+            targetX={staffTargetX + 8}
+            bottomY={16}
+            scale={0.95}
+            zIndex={21}
+            delay={600}
+            flipX={true}
+          />
+        </>
+      )}
     </>
   );
 
