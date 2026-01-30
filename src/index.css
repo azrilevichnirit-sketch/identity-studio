@@ -561,7 +561,7 @@
   width: min(280px, 24vw);
   pointer-events: none;
   order: 2;
-  margin-left: -140px;
+  margin-left: -180px;
   filter: drop-shadow(0 14px 32px rgba(0,0,0,0.5));
 }
 
@@ -658,7 +658,7 @@
     pointer-events: none;
     position: relative;
     width: 120px;
-    margin-left: -60px;
+    margin-left: -85px;
     transform: scale(1.8);
     transform-origin: bottom center;
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6));
