@@ -697,25 +697,25 @@
 /* Tablet/intermediate screens (768-1023px) */
 @media (min-width: 768px) and (max-width: 1023px) {
   .missionScreen .mission-hero-mobile {
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 180px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 140px);
     right: 24px;
   }
 
   .missionScreen .mission-bubble-mobile {
-    max-width: 45%;
-    margin-right: 120px;
-    margin-bottom: 30px;
+    max-width: 42%;
+    margin-right: 80px;
+    margin-bottom: 20px;
   }
 
   .missionScreen .mission-avatar-mobile {
-    width: 240px;
-    margin-left: -200px;
-    transform: scale(2.6);
+    width: 180px;
+    margin-left: -120px;
+    transform: scale(2.2);
   }
 
   .missionScreen .mission-tool-panel-mobile {
-    width: clamp(220px, 28vw, 300px);
-    height: 130px;
+    width: clamp(180px, 22vw, 240px);
+    height: 110px;
   }
 }
 
