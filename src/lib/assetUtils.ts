@@ -7,8 +7,8 @@ import studioFrontBg from '@/assets/backgrounds/studio_front_stylized_v3.webp';
 import studioEntranceViewBg from '@/assets/backgrounds/studio_in_entrance_view_bg.webp';
 import studioGalleryBg from '@/assets/backgrounds/studio_in_gallery_bg.webp';
 import studioGalleryWallBg from '@/assets/backgrounds/studio_in_gallery_wall_bg.webp';
-import studioStorageBg from '@/assets/backgrounds/studio_in_storage_bg.webp';
-import studioWorkshopBg from '@/assets/backgrounds/studio_in_workshop_bg.webp';
+import studioStorageBg from '@/assets/backgrounds/studio_in_storage_v2.webp';
+import studioWorkshopBg from '@/assets/backgrounds/studio_in_workshop_v2.webp';
 import studioEntryInsideBg from '@/assets/backgrounds/studio_entry_inside_bg.png';
 import galleryMainStylized from '@/assets/backgrounds/gallery_main_stylized_v3.webp';
 
