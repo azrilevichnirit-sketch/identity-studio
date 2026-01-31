@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { RotateCw, ZoomIn, ZoomOut, FlipHorizontal, RotateCcw } from 'lucide-react';
 
 interface DraggableItem {
@@ -65,6 +65,92 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
     ...npcs.map(n => ({ ...n, type: 'npc' as const })),
     ...tools.map(t => ({ ...t, type: 'tool' as const })),
   ];
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    if (!isEnabled) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if typing in an input
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      
+      const key = e.key.toLowerCase();
+      
+      // R = rotate 15°, Shift+R = rotate -15°
+      if (key === 'r' && selectedId) {
+        e.preventDefault();
+        const delta = e.shiftKey ? -15 : 15;
+        setTransforms(prev => {
+          const current = prev[selectedId] || { left: 0, top: 0, scale: 1, rotation: 0, flipX: false };
+          return { ...prev, [selectedId]: { ...current, rotation: current.rotation + delta } };
+        });
+      }
+      
+      // + or = for scale up
+      if ((key === '+' || key === '=') && selectedId) {
+        e.preventDefault();
+        setTransforms(prev => {
+          const current = prev[selectedId] || { left: 0, top: 0, scale: 1, rotation: 0, flipX: false };
+          return { ...prev, [selectedId]: { ...current, scale: Math.min(current.scale + 0.1, 5) } };
+        });
+      }
+      
+      // - for scale down
+      if (key === '-' && selectedId) {
+        e.preventDefault();
+        setTransforms(prev => {
+          const current = prev[selectedId] || { left: 0, top: 0, scale: 1, rotation: 0, flipX: false };
+          return { ...prev, [selectedId]: { ...current, scale: Math.max(current.scale - 0.1, 0.1) } };
+        });
+      }
+      
+      // F = flip horizontal
+      if (key === 'f' && selectedId) {
+        e.preventDefault();
+        setTransforms(prev => {
+          const current = prev[selectedId] || { left: 0, top: 0, scale: 1, rotation: 0, flipX: false };
+          return { ...prev, [selectedId]: { ...current, flipX: !current.flipX } };
+        });
+      }
+      
+      // Escape = deselect
+      if (key === 'escape') {
+        setSelectedId(null);
+      }
+      
+      // Delete or Backspace = reset selected item
+      if ((key === 'delete' || key === 'backspace') && selectedId) {
+        e.preventDefault();
+        setTransforms(prev => {
+          const newTransforms = { ...prev };
+          delete newTransforms[selectedId];
+          return newTransforms;
+        });
+      }
+      
+      // Arrow keys for fine position adjustment
+      if (selectedId && ['arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(key)) {
+        e.preventDefault();
+        const step = e.shiftKey ? 1 : 0.5; // Shift for larger steps
+        setTransforms(prev => {
+          const item = allItems.find(i => i.id === selectedId);
+          const current = prev[selectedId] || { left: item?.left || 0, top: item?.top || 0, scale: 1, rotation: 0, flipX: false };
+          let newLeft = current.left;
+          let newTop = current.top;
+          
+          if (key === 'arrowleft') newLeft = Math.max(0, current.left - step);
+          if (key === 'arrowright') newLeft = Math.min(100, current.left + step);
+          if (key === 'arrowup') newTop = Math.max(0, current.top - step);
+          if (key === 'arrowdown') newTop = Math.min(100, current.top + step);
+          
+          return { ...prev, [selectedId]: { ...current, left: newLeft, top: newTop } };
+        });
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isEnabled, selectedId, allItems]);
 
   const getTransform = (id: string, original: { left: number; top: number }): TransformState => {
     return transforms[id] || { 
