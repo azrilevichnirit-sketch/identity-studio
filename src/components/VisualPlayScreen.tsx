@@ -224,13 +224,22 @@ export function VisualPlayScreen({
 
   // Get target anchor for currently selected tool
   // Uses anchor_ref from quest data to look up coordinates in anchor map
+  // IMPORTANT: Look up anchor in the CURRENT background (where placement happens),
+  // not in next_bg_override (which is the background AFTER placement)
   const getTargetAnchor = useCallback((variant: 'a' | 'b') => {
     const option = variant === 'a' ? optionA : optionB;
-    const targetBgKey = option.next_bg_override || currentBgKey;
-
+    
     // Use anchor_ref from quest data (e.g. m01_tool_a, m01_tool_b)
     const anchorRef = option.anchor_ref as AnchorRef;
-    const anchorPos = getAnchorPosition(targetBgKey, anchorRef);
+    
+    // Try current background first (where the tool will be placed)
+    let anchorPos = getAnchorPosition(currentBgKey, anchorRef);
+    
+    // If not found, try the next background (fallback)
+    if (!anchorPos) {
+      const nextBgKey = option.next_bg_override || currentBgKey;
+      anchorPos = getAnchorPosition(nextBgKey, anchorRef);
+    }
     
     if (anchorPos) {
       return anchorPos;
