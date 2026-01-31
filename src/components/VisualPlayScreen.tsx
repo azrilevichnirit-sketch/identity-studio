@@ -100,17 +100,17 @@ export function VisualPlayScreen({
   // Product rule: Mission 02 uses white walls. Mission 03+ uses workshop background.
   const previousBgOverride = useMemo(() => {
     // Mission 02 only: always use white walls
-    if (mission.phase === 'main' && mission.sequence === 2) {
+    if (mission.phase === 'main' && (mission.mission_id === 'studio_02' || mission.sequence === 2)) {
       return PAINTED_WALLS_BG_KEY;
     }
     
     // Mission 03+: use the workshop background (or let the mission's bg_override take over)
-    if (mission.phase === 'main' && mission.sequence >= 3) {
+    if (mission.phase === 'main' && (mission.mission_id === 'studio_03' || mission.sequence >= 3)) {
       return 'studio_in_workshop_bg';
     }
 
     return undefined;
-  }, [mission.phase, mission.sequence]);
+  }, [mission.phase, mission.sequence, mission.mission_id]);
 
   const currentBg = useMemo(() => getBackgroundForMission(mission, previousBgOverride), [mission, previousBgOverride]);
   const currentBgKey = useMemo(() => getBackgroundKey(mission, previousBgOverride), [mission, previousBgOverride]);
@@ -145,9 +145,12 @@ export function VisualPlayScreen({
   
   // Mobile panning support
   const isMobile = useIsMobile();
-  // Product rule: Mission 02 uses white walls, Mission 03+ uses workshop.
-  const isWhiteWallsLocked = mission.phase === 'main' && mission.sequence === 2;
-  const isWorkshopLocked = mission.phase === 'main' && mission.sequence >= 3;
+  // Product rule: Mission 02 uses white walls, Mission 03 uses workshop.
+  // Guardrail: lock by mission_id too (in case sequence is inconsistent).
+  const isWhiteWallsLocked =
+    mission.phase === 'main' && (mission.mission_id === 'studio_02' || mission.sequence === 2);
+  const isWorkshopLocked =
+    mission.phase === 'main' && (mission.mission_id === 'studio_03' || mission.sequence >= 3);
   const bgKeyForPanorama = isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY : (isWorkshopLocked ? 'studio_in_workshop_bg' : currentBgKey);
   const panoramicBg = useMemo(() => getPanoramicBackground(bgKeyForPanorama), [bgKeyForPanorama]);
   const { backgroundPosition, updatePanFromDrag, resetPan } = usePanningBackground({
@@ -158,13 +161,13 @@ export function VisualPlayScreen({
 
   // Get the target background for a tool option
   const getTargetBgForOption = useCallback((option: MissionOption) => {
-    // Product rule: Mission 02 locked to white walls, Mission 03+ locked to workshop
-    if (mission.phase === 'main' && mission.sequence === 2) {
+    // Product rule: Mission 02 locked to white walls, Mission 03 locked to workshop
+    if (mission.phase === 'main' && (mission.mission_id === 'studio_02' || mission.sequence === 2)) {
       const lockedKey = PAINTED_WALLS_BG_KEY;
       const lockedImage = getBackgroundByName(lockedKey) || currentBg;
       return { key: lockedKey, image: lockedImage };
     }
-    if (mission.phase === 'main' && mission.sequence >= 3) {
+    if (mission.phase === 'main' && (mission.mission_id === 'studio_03' || mission.sequence >= 3)) {
       const lockedKey = 'studio_in_workshop_bg';
       const lockedImage = getBackgroundByName(lockedKey) || currentBg;
       return { key: lockedKey, image: lockedImage };
@@ -173,7 +176,7 @@ export function VisualPlayScreen({
     const targetBgKey = option.next_bg_override || currentBgKey;
     const targetBgImage = getBackgroundByName(targetBgKey) || currentBg;
     return { key: targetBgKey, image: targetBgImage };
-  }, [currentBgKey, currentBg, mission.phase, mission.sequence, PAINTED_WALLS_BG_KEY]);
+  }, [currentBgKey, currentBg, mission.phase, mission.sequence, mission.mission_id, PAINTED_WALLS_BG_KEY]);
 
   // Determine which background to show during drag/carry
   const activeToolVariant = draggingTool || carryModeTool;
@@ -661,7 +664,7 @@ export function VisualPlayScreen({
   // Male staff position for Mission 02
   // Tool A: stands near the tool (which is before the plant pot, ~30% from left)
   // Tool B: stands facing the wall-mounted tool (tool on wall ~70%, staff at ~55%)
-  const maleStaffPos = useMemo(() => {
+  const maleStaffPos = useMemo((): { left: string; bottom?: string; top?: string; facingRight: boolean } => {
     if (mission02ToolSelected === 'a') {
       // Tool A is positioned ~30% from left (before plant pot area)
       // Male staff stands slightly to the right of the tool
@@ -675,7 +678,8 @@ export function VisualPlayScreen({
       // Male staff stands facing it from ~55%
       return {
         left: '55%',
-        bottom: '6%',
+        // Requested: align to the wall line (~52% from top)
+        top: '52%',
         facingRight: true, // Face right toward wall-mounted tool
       };
     }
@@ -715,8 +719,9 @@ export function VisualPlayScreen({
           style={{
             left: maleStaffPos.left,
             bottom: maleStaffPos.bottom,
+            top: maleStaffPos.top,
             zIndex: 8, // Behind tools (tools are ~15-20)
-            transform: 'translateX(-50%)',
+            transform: maleStaffPos.top ? 'translate(-50%, -50%)' : 'translateX(-50%)',
             transformOrigin: 'bottom center',
           }}
         >
