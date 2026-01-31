@@ -783,7 +783,7 @@ export function VisualPlayScreen({
               style={{
                 height: 'clamp(200px, 32vh, 320px)',
                 filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
-                transform: 'scaleX(-1)', // Face right, toward the female
+                transform: 'scaleX(-1) rotate(-25deg)', // Rotated quarter turn clockwise
               }}
             />
           </div>
@@ -805,7 +805,7 @@ export function VisualPlayScreen({
               style={{
                 height: 'clamp(200px, 32vh, 320px)',
                 filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
-                // Face left, toward the male (default orientation)
+                transform: 'rotate(25deg)', // Rotated quarter turn clockwise
               }}
             />
           </div>
