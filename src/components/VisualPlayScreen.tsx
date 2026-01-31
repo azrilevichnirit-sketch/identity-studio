@@ -695,17 +695,17 @@ export function VisualPlayScreen({
     }
   }, [mission02ToolSelected]);
 
-  // Mission 03+: two staff members waiting near the windows (48% Y line - more back)
-  // Facing the camera, positioned in the back of the room
+  // Mission 03+: two staff members facing each other near the back (45% Y)
+  // Positioned close to the back wall, facing each other
   const workshopWaitingStaffPos = useMemo(() => {
     return {
       male: {
-        left: '30%',
-        top: '48%',
+        left: '32%',
+        top: '45%',
       },
       female: {
-        left: '42%',
-        top: '48%',
+        left: '40%',
+        top: '45%',
       },
     };
   }, []);
@@ -781,8 +781,9 @@ export function VisualPlayScreen({
               alt="דמות צוות מחכה"
               className="w-auto object-contain animate-subtle-idle"
               style={{
-                height: 'clamp(220px, 36vh, 360px)',
+                height: 'clamp(200px, 32vh, 320px)',
                 filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
+                transform: 'scaleX(-1)', // Face right, toward the female
               }}
             />
           </div>
@@ -802,8 +803,9 @@ export function VisualPlayScreen({
               alt="דמות צוות מחכה"
               className="w-auto object-contain animate-subtle-idle"
               style={{
-                height: 'clamp(220px, 36vh, 360px)',
+                height: 'clamp(200px, 32vh, 320px)',
                 filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
+                // Face left, toward the male (default orientation)
               }}
             />
           </div>
