@@ -36,7 +36,10 @@ export type AnchorRef =
   | 'm02_tool_a'
   | 'm02_tool_b'
   | 'm03_tool_a'
-  | 'm03_tool_b';
+  | 'm03_tool_b'
+  | 'm01_npc_female'
+  | 'm02_npc_male_a'
+  | 'm02_npc_male_b';
 
 export interface MissionOption {
   key: 'a' | 'b';
