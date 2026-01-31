@@ -1008,7 +1008,7 @@ export function VisualPlayScreen({
   // Special duplication logic for certain missions (e.g., studio_01 option A duplicates to 3 floor corners)
   // For mission 1, the paint buckets should be placed near EACH WALL (left, back, right)
   // צמוד לקיר = close to wall, on the floor
-  const getDuplicateAnchors = (prop: typeof displayedPlacement[0]): { anchor: AnchorRef; offsetX: number; offsetY: number; customScale?: number; absoluteY?: number; absoluteX?: number; wallMount?: boolean }[] => {
+  const getDuplicateAnchors = (prop: typeof displayedPlacement[0]): { anchor: AnchorRef; offsetX: number; offsetY: number; customScale?: number; absoluteY?: number; absoluteX?: number; wallMount?: boolean; flipX?: boolean }[] => {
     // Product rule: Mission 01 tool A duplicates to 3 placements (one per wall)
     // Position: on the floor adjacent to each wall (left/center/right)
     if (prop.missionId === 'studio_01' && prop.key === 'a') {
@@ -1022,31 +1022,94 @@ export function VisualPlayScreen({
       ];
     }
     
-    // Mission 01 Tool B: single placement on the back floor plane, persists into Mission 02
+    // Mission 01 Tool B: use anchor map coordinates
     if (prop.missionId === 'studio_01' && prop.key === 'b') {
+      const anchorPos = getAnchorPosition(currentBgKey, 'm01_tool_b');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm01_tool_b' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX
+        }];
+      }
+      // Fallback
       return [{ anchor: 'floor', offsetX: 8, offsetY: 0, customScale: 1.8, absoluteY: M01_TOOL_B_Y }];
     }
     
-    // Mission 02 Tool A: positioned before the plant pot area (~30% from left)
+    // Mission 02 Tool A: use anchor map coordinates
     if (prop.missionId === 'studio_02' && prop.key === 'a') {
+      const anchorPos = getAnchorPosition(lockedBgKey, 'm02_tool_a');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm02_tool_a' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX
+        }];
+      }
+      // Fallback
       return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 1.6, absoluteY: DUPLICATE_BUCKETS_Y, absoluteX: 30 }];
     }
     
-    // Mission 02 Tool B: hangs on the LEFT wall (~25% from left, higher up)
+    // Mission 02 Tool B: use anchor map coordinates
     if (prop.missionId === 'studio_02' && prop.key === 'b') {
-      const wallY = 52; // On the wall, higher than floor
-      return [{ anchor: 'wall_left', offsetX: 0, offsetY: 0, customScale: 1.4, absoluteY: wallY, absoluteX: 25, wallMount: true }];
+      const anchorPos = getAnchorPosition(lockedBgKey, 'm02_tool_b');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm02_tool_b' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          wallMount: true,
+          flipX: anchorPos.flipX
+        }];
+      }
+      // Fallback
+      return [{ anchor: 'wall_left', offsetX: 0, offsetY: 0, customScale: 1.4, absoluteY: 52, absoluteX: 25, wallMount: true }];
     }
 
-    // Mission 03 Tool A (workbench): large center table grounded on floor
+    // Mission 03 Tool A (workbench): use anchor map coordinates
     if (prop.missionId === 'studio_03' && prop.key === 'a') {
-      // Align to grid: centered on the boundary between squares 18-19 (x=60), row 4 (y~70)
-      // Keep a consistent placement point so the tool doesn't feel like it shifts between missions.
+      const anchorPos = getAnchorPosition(lockedBgKey, 'm03_tool_a');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm03_tool_a' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX
+        }];
+      }
+      // Fallback
       return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 3.0, absoluteY: 70, absoluteX: 60 }];
     }
     
-    // Mission 03 Tool B (sound desk): on floor (71% Y), large like A
+    // Mission 03 Tool B (sound desk): use anchor map coordinates
     if (prop.missionId === 'studio_03' && prop.key === 'b') {
+      const anchorPos = getAnchorPosition(lockedBgKey, 'm03_tool_b');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm03_tool_b' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX
+        }];
+      }
+      // Fallback
       return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.2, absoluteY: 71, absoluteX: 18 }];
     }
 
@@ -1125,10 +1188,10 @@ export function VisualPlayScreen({
                 className={`${isMission01Buckets ? 'w-28 h-28 md:w-36 md:h-36' : (isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32')} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
                  style={{
                    filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
-                   // Only rotate Mission 01 Tool B
+                   // Apply rotation for Mission 01 Tool B, and flipX from anchor map
                     transform: isMission01ToolB
                       ? 'rotate(-15deg) scaleX(-1)'
-                      : undefined,
+                      : (anchorInfo.flipX ? 'scaleX(-1)' : undefined),
                  }}
               />
             </div>
