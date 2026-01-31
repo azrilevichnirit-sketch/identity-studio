@@ -87,6 +87,7 @@ export function VisualPlayScreen({
   // Preload the “painted walls” background to avoid a flash/jump on transition.
   useEffect(() => {
     preloadBackground(PAINTED_WALLS_BG_KEY);
+    preloadBackground('studio_in_workshop_bg'); // Mission 03 workshop
   }, []);
 
   // Clear any staged background override whenever the mission changes.
@@ -661,7 +662,7 @@ export function VisualPlayScreen({
       backgroundPosition={effectiveBgPosition}
       backgroundRepeat="no-repeat"
       filter="saturate(1.18) contrast(1.08)"
-      durationMs={1200}
+      durationMs={1500}
       zIndex={0}
     />
   );
