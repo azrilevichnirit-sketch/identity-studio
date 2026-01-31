@@ -98,19 +98,15 @@ export function VisualPlayScreen({
   }, [mission.mission_id, localBgOverride]);
 
   // Get the *actual* previous mission pick (Object.values order is not reliable)
+  // Product rule: from mission 02 onwards, walls are ALWAYS white (regardless of mission 01 choice)
   const previousBgOverride = useMemo(() => {
-    // Product rule: if player painted in mission 01, mission 02+ walls are white
-    if (mission.phase === 'main' && mission.sequence >= 2 && hasPaintedWalls) {
+    // From mission 02 onwards, always use white walls
+    if (mission.phase === 'main' && mission.sequence >= 2) {
       return PAINTED_WALLS_BG_KEY;
     }
 
-    if (mission.phase !== 'main' || mission.sequence <= 1) return undefined;
-
-    const prevSeq = mission.sequence - 1;
-    const prevMissionId = `studio_${String(prevSeq).padStart(2, '0')}`;
-    const prevPick = placedProps.find((p) => p.missionId === prevMissionId);
-    return prevPick?.nextBgOverride;
-  }, [placedProps, mission.phase, mission.sequence, hasPaintedWalls]);
+    return undefined;
+  }, [mission.phase, mission.sequence]);
 
   const currentBg = useMemo(() => getBackgroundForMission(mission, previousBgOverride), [mission, previousBgOverride]);
   const currentBgKey = useMemo(() => getBackgroundKey(mission, previousBgOverride), [mission, previousBgOverride]);
