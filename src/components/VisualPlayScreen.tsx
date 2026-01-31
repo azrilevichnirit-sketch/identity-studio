@@ -695,17 +695,17 @@ export function VisualPlayScreen({
     }
   }, [mission02ToolSelected]);
 
-  // Mission 03+: two staff members waiting in the back corner near the window
-  // Position at 52% from bottom (back of room), in corner near window
+  // Mission 03+: two staff members waiting on the left side of the room on the floor
+  // Same size as the player avatar, positioned on floor level
   const workshopWaitingStaffPos = useMemo(() => {
     return {
       male: {
-        left: '78%',
-        bottom: '52%',
+        left: '15%',
+        bottom: '8%',
       },
       female: {
-        left: '85%',
-        bottom: '52%',
+        left: '25%',
+        bottom: '8%',
       },
     };
   }, []);
