@@ -7,8 +7,11 @@ interface DraggableItem {
   left: number; // percentage
   top: number;  // percentage
   height: string;
-  imageSrc: string;
-  type: 'npc' | 'tool' | 'avatar';
+  imageSrc?: string;
+  type: 'npc' | 'tool' | 'avatar' | 'bubble';
+  // For bubble type
+  content?: React.ReactNode;
+  width?: string;
 }
 
 interface TransformState {
@@ -19,11 +22,22 @@ interface TransformState {
   flipX: boolean;
 }
 
+interface BubbleItem {
+  id: string;
+  label: string;
+  left: number;
+  top: number;
+  height: string;
+  width?: string;
+  content?: React.ReactNode;
+}
+
 interface DraggableNpcEditorProps {
   isEnabled: boolean;
   npcs: Omit<DraggableItem, 'type'>[];
   tools?: Omit<DraggableItem, 'type'>[];
   avatar?: Omit<DraggableItem, 'type'>;
+  bubble?: BubbleItem;
   onPositionChange?: (id: string, left: number, top: number) => void;
 }
 
@@ -32,6 +46,7 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
   npcs,
   tools = [],
   avatar,
+  bubble,
   onPositionChange,
 }) => {
   const [transforms, setTransforms] = useState<Record<string, TransformState>>({});
@@ -41,9 +56,11 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
   const [showNpcs, setShowNpcs] = useState(true);
   const [showTools, setShowTools] = useState(true);
   const [showAvatar, setShowAvatar] = useState(true);
+  const [showBubble, setShowBubble] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const allItems: DraggableItem[] = [
+    ...(bubble ? [{ ...bubble, type: 'bubble' as const, imageSrc: undefined }] : []),
     ...(avatar ? [{ ...avatar, type: 'avatar' as const }] : []),
     ...npcs.map(n => ({ ...n, type: 'npc' as const })),
     ...tools.map(t => ({ ...t, type: 'tool' as const })),
@@ -145,7 +162,8 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
       .filter(item => 
         (item.type === 'npc' && showNpcs) || 
         (item.type === 'tool' && showTools) ||
-        (item.type === 'avatar' && showAvatar)
+        (item.type === 'avatar' && showAvatar) ||
+        (item.type === 'bubble' && showBubble)
       )
       .map(item => {
         const t = getTransform(item.id, { left: item.left, top: item.top });
@@ -170,21 +188,26 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
   const visibleItems = allItems.filter(item => 
     (item.type === 'npc' && showNpcs) || 
     (item.type === 'tool' && showTools) ||
-    (item.type === 'avatar' && showAvatar)
+    (item.type === 'avatar' && showAvatar) ||
+    (item.type === 'bubble' && showBubble)
   );
 
   const selectedItem = visibleItems.find(i => i.id === selectedId);
 
-  const getItemColor = (type: 'npc' | 'tool' | 'avatar') => {
+  type ItemType = 'npc' | 'tool' | 'avatar' | 'bubble';
+
+  const getItemColor = (type: ItemType) => {
     switch (type) {
+      case 'bubble': return { border: 'border-orange-500', bg: 'bg-orange-500', text: 'text-orange-400' };
       case 'avatar': return { border: 'border-yellow-500', bg: 'bg-yellow-500', text: 'text-yellow-400' };
       case 'npc': return { border: 'border-green-500', bg: 'bg-green-500', text: 'text-green-400' };
       case 'tool': return { border: 'border-purple-500', bg: 'bg-purple-500', text: 'text-purple-400' };
     }
   };
 
-  const getItemIcon = (type: 'npc' | 'tool' | 'avatar') => {
+  const getItemIcon = (type: ItemType) => {
     switch (type) {
+      case 'bubble': return '💬';
       case 'avatar': return '🧑';
       case 'npc': return '👤';
       case 'tool': return '🔧';
@@ -224,6 +247,12 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
         
         {/* Toggle filters - separated */}
         <div className="flex flex-wrap gap-2 mb-2">
+          <button
+            onClick={() => setShowBubble(!showBubble)}
+            className={`px-2 py-1 rounded text-[10px] ${showBubble ? 'bg-orange-600' : 'bg-gray-700'}`}
+          >
+            💬 Bubble {showBubble ? '✓' : '○'}
+          </button>
           <button
             onClick={() => setShowAvatar(!showAvatar)}
             className={`px-2 py-1 rounded text-[10px] ${showAvatar ? 'bg-yellow-600' : 'bg-gray-700'}`}
@@ -319,6 +348,36 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
         )}
         
         {/* Items list - grouped by type */}
+        {showBubble && bubble && (
+          <div className="mb-2">
+            <div className="text-orange-400 text-[10px] font-bold mb-1 border-b border-orange-600 pb-1">💬 Speech Bubble</div>
+            {visibleItems.filter(i => i.type === 'bubble').map(item => {
+              const t = getTransform(item.id, { left: item.left, top: item.top });
+              const isSelected = selectedId === item.id;
+              return (
+                <div 
+                  key={item.id} 
+                  className={`flex items-center justify-between py-1 cursor-pointer hover:bg-gray-800/50 ${isSelected ? 'bg-yellow-900/30' : ''}`}
+                  onClick={(e) => { e.stopPropagation(); setSelectedId(item.id); }}
+                >
+                  <span className="text-orange-400">{item.label}</span>
+                  <div className="flex items-center gap-1">
+                    <span className="text-[9px] text-gray-500">
+                      {t.left.toFixed(0)}%,{t.top.toFixed(0)}% s:{t.scale.toFixed(1)} r:{t.rotation}°
+                    </span>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); copyTransform(item); }}
+                      className="px-1 py-0.5 bg-gray-700 hover:bg-gray-600 rounded text-[10px]"
+                    >
+                      {copiedId === item.id ? '✓' : '📋'}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+        
         {showAvatar && avatar && (
           <div className="mb-2">
             <div className="text-yellow-400 text-[10px] font-bold mb-1 border-b border-yellow-600 pb-1">🧑 Avatar</div>
@@ -416,6 +475,50 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
         const isDragging = draggingId === item.id;
         const isSelected = selectedId === item.id;
         const colors = getItemColor(item.type);
+        
+        // Special rendering for bubble type
+        if (item.type === 'bubble') {
+          return (
+            <div
+              key={item.id}
+              className={`absolute cursor-grab active:cursor-grabbing ${isDragging ? 'ring-2 ring-yellow-400' : ''} ${isSelected ? 'ring-2 ring-white' : ''}`}
+              style={{
+                left: `${t.left}%`,
+                top: `${t.top}%`,
+                transform: `translate(-50%, -50%) scale(${t.scale}) rotate(${t.rotation}deg) ${t.flipX ? 'scaleX(-1)' : ''}`,
+                transformOrigin: 'center center',
+                zIndex: isDragging || isSelected ? 10001 : 10000,
+                width: item.width || 'auto',
+                maxWidth: '400px',
+              }}
+              onPointerDown={(e) => handlePointerDown(e, item.id)}
+              onClick={(e) => { e.stopPropagation(); setSelectedId(item.id); }}
+            >
+              <div className={`relative border-2 ${colors.border} rounded-lg bg-[#FFFDF8] p-3`}>
+                <div 
+                  className="text-[12px] text-[#1a1a1a] font-sans"
+                  style={{ direction: 'rtl', textAlign: 'right' }}
+                >
+                  {item.content || 'Speech Bubble Preview'}
+                </div>
+              </div>
+              {/* Label */}
+              <div 
+                className={`absolute -top-6 left-1/2 -translate-x-1/2 ${colors.bg} text-white px-2 py-0.5 rounded text-[10px] whitespace-nowrap`}
+                style={{ transform: `translateX(-50%) rotate(${-t.rotation}deg) ${t.flipX ? 'scaleX(-1)' : ''}` }}
+              >
+                {getItemIcon(item.type)} {item.label}
+              </div>
+              {/* Position indicator */}
+              <div 
+                className="absolute -bottom-4 left-1/2 bg-yellow-500 text-black px-1 py-0.5 rounded text-[9px] font-mono whitespace-nowrap"
+                style={{ transform: `translateX(-50%) rotate(${-t.rotation}deg) ${t.flipX ? 'scaleX(-1)' : ''}` }}
+              >
+                {t.left.toFixed(0)}%, {t.top.toFixed(0)}% | s:{t.scale.toFixed(1)}
+              </div>
+            </div>
+          );
+        }
         
         return (
           <div
