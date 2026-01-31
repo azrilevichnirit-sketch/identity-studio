@@ -774,17 +774,16 @@ export function VisualPlayScreen({
   }, []);
 
   // After Mission 03 Tool A (workbench): staff on table sides
-  // Workbench is centered around squares 18-19 (~35%-65% X)
-  // Staff positioned at each side of the table, close to it
+  // Both staff stand together in square 18 at 52% Y
   const workshopTableStaffPos = useMemo(() => {
     return {
       male: {
-        left: '68%', // Right side of table (inside square 19)
-        top: '70%',  // Same level as table
+        left: '55%', // Right side of square 18
+        top: '52%',
       },
       female: {
-        left: '35%', // Left side of table (boundary of squares 17-18)
-        top: '70%',  // Same level as table
+        left: '45%', // Left side of square 18
+        top: '52%',
       },
     };
   }, []);
