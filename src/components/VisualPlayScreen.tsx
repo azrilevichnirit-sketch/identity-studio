@@ -837,18 +837,25 @@ export function VisualPlayScreen({
         </div>
       )}
 
-      {/* Mission 03+: Before Tool A - staff waits near the back wall */}
-      {isWorkshopLocked && !shouldShowWorkshopStaffAtTable && (
+      {/* Mission 03+: Staff in workshop - single render with dynamic position */}
+      {isWorkshopLocked && (
         <>
+          {/* Male staff */}
           {maleStaffEnterReady && mission02ToolSelected !== null && (
             <div
-              className="absolute pointer-events-none animate-fade-in"
+              key="workshop-male-staff"
+              className="absolute pointer-events-none"
               style={{
-                left: workshopWaitingStaffPos.male.left,
-                top: workshopWaitingStaffPos.male.top,
+                left: shouldShowWorkshopStaffAtTable 
+                  ? workshopTableStaffPos.male.left 
+                  : workshopWaitingStaffPos.male.left,
+                top: shouldShowWorkshopStaffAtTable 
+                  ? workshopTableStaffPos.male.top 
+                  : workshopWaitingStaffPos.male.top,
                 zIndex: 10,
                 transform: 'translate(-50%, -100%)',
                 transformOrigin: 'bottom center',
+                transition: 'left 0.6s ease-out, top 0.6s ease-out',
               }}
             >
               <img
@@ -856,23 +863,33 @@ export function VisualPlayScreen({
                 alt="דמות צוות מחכה"
                 className="w-auto object-contain animate-subtle-idle"
                 style={{
-                  height: 'clamp(220px, 34vh, 340px)',
+                  height: shouldShowWorkshopStaffAtTable 
+                    ? 'clamp(180px, 28vh, 280px)' 
+                    : 'clamp(220px, 34vh, 340px)',
                   filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
                   transform: 'scaleX(-1)',
+                  transition: 'height 0.6s ease-out',
                 }}
               />
             </div>
           )}
 
+          {/* Female staff */}
           {staffEnterReady && (
             <div
-              className="absolute pointer-events-none animate-fade-in"
+              key="workshop-female-staff"
+              className="absolute pointer-events-none"
               style={{
-                left: workshopWaitingStaffPos.female.left,
-                top: workshopWaitingStaffPos.female.top,
+                left: shouldShowWorkshopStaffAtTable 
+                  ? workshopTableStaffPos.female.left 
+                  : workshopWaitingStaffPos.female.left,
+                top: shouldShowWorkshopStaffAtTable 
+                  ? workshopTableStaffPos.female.top 
+                  : workshopWaitingStaffPos.female.top,
                 zIndex: 10,
                 transform: 'translate(-50%, -100%)',
                 transformOrigin: 'bottom center',
+                transition: 'left 0.6s ease-out, top 0.6s ease-out',
               }}
             >
               <img
@@ -880,61 +897,11 @@ export function VisualPlayScreen({
                 alt="דמות צוות מחכה"
                 className="w-auto object-contain animate-subtle-idle"
                 style={{
-                  height: 'clamp(220px, 34vh, 340px)',
+                  height: shouldShowWorkshopStaffAtTable 
+                    ? 'clamp(180px, 28vh, 280px)' 
+                    : 'clamp(220px, 34vh, 340px)',
                   filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
-                }}
-              />
-            </div>
-          )}
-        </>
-      )}
-
-      {/* Mission 03+: After Tool A - staff moves to table sides */}
-      {isWorkshopLocked && shouldShowWorkshopStaffAtTable && (
-        <>
-          {maleStaffEnterReady && mission02ToolSelected !== null && (
-            <div
-              className="absolute pointer-events-none animate-fade-in"
-              style={{
-                left: workshopTableStaffPos.male.left,
-                top: workshopTableStaffPos.male.top,
-                zIndex: 10,
-                transform: 'translate(-50%, -100%)',
-                transformOrigin: 'bottom center',
-              }}
-            >
-              <img
-                src={maleStaffWalk}
-                alt="דמות צוות מחכה"
-                className="w-auto object-contain animate-subtle-idle"
-                style={{
-                  height: 'clamp(180px, 28vh, 280px)',
-                  filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
-                  transform: 'scaleX(-1)', // Face right toward table
-                }}
-              />
-            </div>
-          )}
-
-          {staffEnterReady && (
-            <div
-              className="absolute pointer-events-none animate-fade-in"
-              style={{
-                left: workshopTableStaffPos.female.left,
-                top: workshopTableStaffPos.female.top,
-                zIndex: 10,
-                transform: 'translate(-50%, -100%)',
-                transformOrigin: 'bottom center',
-              }}
-            >
-              <img
-                src={femaleStaffWalk}
-                alt="דמות צוות מחכה"
-                className="w-auto object-contain animate-subtle-idle"
-                style={{
-                  height: 'clamp(180px, 28vh, 280px)',
-                  filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
-                  // Face left toward table (default orientation)
+                  transition: 'height 0.6s ease-out',
                 }}
               />
             </div>
