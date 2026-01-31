@@ -120,6 +120,13 @@ const Index = () => {
             onSelect={handleSelect}
             onUndo={undo}
             npcEditMode={npcEditMode}
+            onEditorNextMission={() => {
+              // Auto-select Tool A to advance to next mission in editor mode
+              const optionA = currentMission.options.find(o => o.key === 'a');
+              if (optionA) {
+                handleSelect(currentMission.mission_id, 'a', optionA.holland_code, optionA);
+              }
+            }}
           />
         )}
 
@@ -135,6 +142,12 @@ const Index = () => {
             onSelect={handleSelect}
             onUndo={undo}
             npcEditMode={npcEditMode}
+            onEditorNextMission={() => {
+              const optionA = currentMission.options.find(o => o.key === 'a');
+              if (optionA) {
+                handleSelect(currentMission.mission_id, 'a', optionA.holland_code, optionA);
+              }
+            }}
           />
         )}
 
