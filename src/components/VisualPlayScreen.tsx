@@ -230,6 +230,17 @@ export function VisualPlayScreen({
       }
     }
 
+    // Mission 03: Tool A -> left wall at 68%, Tool B -> center of room
+    if (mission.mission_id === 'studio_03') {
+      if (variant === 'a') {
+        // Tool A: drop zone on left wall, 68% from top
+        return { x: 22, y: 68, scale: 1, z_layer: 'mid' as const };
+      } else {
+        // Tool B: drop zone at center of room
+        return { x: 50, y: 65, scale: 1, z_layer: 'mid' as const };
+      }
+    }
+
     const anchorRef = option.anchor_ref as AnchorRef;
     return getAnchorPosition(targetBgKey, anchorRef);
   }, [optionA, optionB, currentBgKey, mission.mission_id, BACK_FLOOR_Y, CENTER_FLOOR_Y]);
@@ -921,8 +932,18 @@ export function VisualPlayScreen({
       return [{ anchor: 'wall_left', offsetX: 0, offsetY: 0, customScale: 1.4, absoluteY: wallY, absoluteX: 25, wallMount: true }];
     }
 
-    // Default: single placement at floor
-    return [{ anchor: 'floor', offsetX: 0, offsetY: 0 }];
+    // Mission 03 Tool A: attached to left wall at 68% Y, realistic size
+    if (prop.missionId === 'studio_03' && prop.key === 'a') {
+      return [{ anchor: 'wall_left', offsetX: 0, offsetY: 0, customScale: 1.8, absoluteY: 68, absoluteX: 22, wallMount: true }];
+    }
+    
+    // Mission 03 Tool B: center of the room, realistic size
+    if (prop.missionId === 'studio_03' && prop.key === 'b') {
+      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: 65, absoluteX: 50 }];
+    }
+
+    // Default: single placement at floor with realistic size
+    return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 1.8 }];
   };
 
   const placedPropsElement = (
