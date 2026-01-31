@@ -951,9 +951,9 @@ export function VisualPlayScreen({
       return [{ anchor: 'wall_left', offsetX: 0, offsetY: 0, customScale: 1.4, absoluteY: wallY, absoluteX: 25, wallMount: true }];
     }
 
-    // Mission 03 Tool A (workbench): center of floor, realistic size
+    // Mission 03 Tool A (workbench): dead center of room (12-6 o'clock alignment), large and prominent
     if (prop.missionId === 'studio_03' && prop.key === 'a') {
-      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: 80, absoluteX: 50 }];
+      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.5, absoluteY: 72, absoluteX: 50 }];
     }
     
     // Mission 03 Tool B: on floor near the wall, realistic size
