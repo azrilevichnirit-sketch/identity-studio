@@ -695,17 +695,17 @@ export function VisualPlayScreen({
     }
   }, [mission02ToolSelected]);
 
-  // Mission 03+: two staff members waiting near the windows (52% Y line)
-  // Larger size, positioned closer to the windows in the back
+  // Mission 03+: two staff members waiting near the windows (48% Y line - more back)
+  // Facing the camera, positioned in the back of the room
   const workshopWaitingStaffPos = useMemo(() => {
     return {
       male: {
         left: '30%',
-        top: '52%',
+        top: '48%',
       },
       female: {
         left: '42%',
-        top: '52%',
+        top: '48%',
       },
     };
   }, []);
@@ -783,7 +783,6 @@ export function VisualPlayScreen({
               style={{
                 height: 'clamp(220px, 36vh, 360px)',
                 filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
-                transform: 'scaleX(-1)',
               }}
             />
           </div>
@@ -805,7 +804,6 @@ export function VisualPlayScreen({
               style={{
                 height: 'clamp(220px, 36vh, 360px)',
                 filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
-                transform: 'scaleX(-1)',
               }}
             />
           </div>
