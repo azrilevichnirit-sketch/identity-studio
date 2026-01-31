@@ -72,6 +72,22 @@
     "z_layer": "mid"
   },
   {
+    "background_asset_key": "studio_entry_inside_bg",
+    "anchor_ref": "m01_tool_a",
+    "x_pct": 0.494,
+    "y_pct": 0.735,
+    "scale": 1.4,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_entry_inside_bg",
+    "anchor_ref": "m01_tool_b",
+    "x_pct": 0.613,
+    "y_pct": 0.872,
+    "scale": 1.9,
+    "z_layer": "mid"
+  },
+  {
     "background_asset_key": "studio_front_bg",
     "anchor_ref": "wall_back",
     "x_pct": 0.5,
