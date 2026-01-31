@@ -1401,6 +1401,33 @@ export function VisualPlayScreen({
   const editorTools = useMemo(() => {
     const tools = [];
     
+    // Add current mission tools (available in tray) - these can be dragged to test positions
+    const toolAImage = getToolImage(optionA.asset);
+    const toolBImage = getToolImage(optionB.asset);
+    
+    if (toolAImage && !localPlacement) {
+      const anchor = getTargetAnchor('a');
+      tools.push({
+        id: `current-${mission.mission_id}-a`,
+        label: `${mission.mission_id.replace('studio_', 'M')} A (target)`,
+        left: anchor?.x ?? 50,
+        top: anchor?.y ?? 70,
+        height: 'clamp(80px, 15vh, 150px)',
+        imageSrc: toolAImage,
+      });
+    }
+    if (toolBImage && !localPlacement) {
+      const anchor = getTargetAnchor('b');
+      tools.push({
+        id: `current-${mission.mission_id}-b`,
+        label: `${mission.mission_id.replace('studio_', 'M')} B (target)`,
+        left: anchor?.x ?? 50,
+        top: anchor?.y ?? 70,
+        height: 'clamp(80px, 15vh, 150px)',
+        imageSrc: toolBImage,
+      });
+    }
+    
     // Add placed props with their calculated positions
     for (const prop of placedProps) {
       const toolImage = getToolImage(prop.assetName);
@@ -1427,7 +1454,7 @@ export function VisualPlayScreen({
       
       tools.push({
         id: `tool-${prop.missionId}-${prop.key}`,
-        label: `${prop.missionId.replace('studio_', 'M')} ${prop.key.toUpperCase()}`,
+        label: `${prop.missionId.replace('studio_', 'M')} ${prop.key.toUpperCase()} (placed)`,
         left: x,
         top: y,
         height: 'clamp(80px, 15vh, 150px)',
@@ -1452,7 +1479,7 @@ export function VisualPlayScreen({
     }
     
     return tools;
-  }, [placedProps, localPlacement, getTargetAnchor]);
+  }, [placedProps, localPlacement, getTargetAnchor, mission.mission_id, optionA.asset, optionB.asset]);
 
   return (
     <>
