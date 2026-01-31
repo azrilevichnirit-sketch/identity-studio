@@ -410,60 +410,64 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
               </button>
             </div>
             
-            {/* Transform controls */}
-            <div className="grid grid-cols-2 gap-2">
-              {/* Scale */}
-              <div className="flex items-center gap-1">
-                <span className="text-[10px] text-gray-400">Scale:</span>
-                <button
-                  onClick={() => handleScale(selectedItem.id, -0.1)}
-                  className="p-1 bg-gray-700 hover:bg-gray-600 rounded"
-                >
-                  <ZoomOut className="w-3 h-3" />
-                </button>
-                <span className="text-[10px] w-8 text-center">
-                  {(transforms[selectedItem.id]?.scale || 1).toFixed(1)}
-                </span>
-                <button
-                  onClick={() => handleScale(selectedItem.id, 0.1)}
-                  className="p-1 bg-gray-700 hover:bg-gray-600 rounded"
-                >
-                  <ZoomIn className="w-3 h-3" />
-                </button>
+            {/* Transform controls - larger buttons */}
+            <div className="space-y-3">
+              {/* Scale row */}
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs text-gray-300 font-medium w-14">Scale:</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleScale(selectedItem.id, -0.1)}
+                    className="p-2.5 bg-gray-700 hover:bg-gray-600 active:bg-gray-500 rounded-lg transition-colors"
+                  >
+                    <ZoomOut className="w-5 h-5" />
+                  </button>
+                  <span className="text-sm font-mono w-12 text-center bg-gray-800 py-1 rounded">
+                    {(transforms[selectedItem.id]?.scale || 1).toFixed(1)}
+                  </span>
+                  <button
+                    onClick={() => handleScale(selectedItem.id, 0.1)}
+                    className="p-2.5 bg-gray-700 hover:bg-gray-600 active:bg-gray-500 rounded-lg transition-colors"
+                  >
+                    <ZoomIn className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
               
-              {/* Rotation */}
-              <div className="flex items-center gap-1">
-                <span className="text-[10px] text-gray-400">Rotate:</span>
-                <button
-                  onClick={() => handleRotate(selectedItem.id, -15)}
-                  className="p-1 bg-gray-700 hover:bg-gray-600 rounded"
-                >
-                  <RotateCw className="w-3 h-3 -scale-x-100" />
-                </button>
-                <span className="text-[10px] w-8 text-center">
-                  {transforms[selectedItem.id]?.rotation || 0}°
-                </span>
-                <button
-                  onClick={() => handleRotate(selectedItem.id, 15)}
-                  className="p-1 bg-gray-700 hover:bg-gray-600 rounded"
-                >
-                  <RotateCw className="w-3 h-3" />
-                </button>
+              {/* Rotation row */}
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs text-gray-300 font-medium w-14">Rotate:</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleRotate(selectedItem.id, -15)}
+                    className="p-2.5 bg-gray-700 hover:bg-gray-600 active:bg-gray-500 rounded-lg transition-colors"
+                  >
+                    <RotateCw className="w-5 h-5 -scale-x-100" />
+                  </button>
+                  <span className="text-sm font-mono w-12 text-center bg-gray-800 py-1 rounded">
+                    {transforms[selectedItem.id]?.rotation || 0}°
+                  </span>
+                  <button
+                    onClick={() => handleRotate(selectedItem.id, 15)}
+                    className="p-2.5 bg-gray-700 hover:bg-gray-600 active:bg-gray-500 rounded-lg transition-colors"
+                  >
+                    <RotateCw className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
               
-              {/* Flip */}
-              <div className="flex items-center gap-1 col-span-2">
-                <button
-                  onClick={() => handleFlip(selectedItem.id)}
-                  className={`flex items-center gap-1 px-2 py-1 rounded text-[10px] ${
-                    transforms[selectedItem.id]?.flipX ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'
-                  }`}
-                >
-                  <FlipHorizontal className="w-3 h-3" />
-                  <span>Flip X {transforms[selectedItem.id]?.flipX ? '✓' : ''}</span>
-                </button>
-              </div>
+              {/* Flip button - full width */}
+              <button
+                onClick={() => handleFlip(selectedItem.id)}
+                className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  transforms[selectedItem.id]?.flipX 
+                    ? 'bg-blue-600 hover:bg-blue-500' 
+                    : 'bg-gray-700 hover:bg-gray-600'
+                }`}
+              >
+                <FlipHorizontal className="w-5 h-5" />
+                <span>Flip X {transforms[selectedItem.id]?.flipX ? '✓' : ''}</span>
+              </button>
             </div>
           </div>
         )}
