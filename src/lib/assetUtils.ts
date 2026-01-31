@@ -3,14 +3,12 @@
 import type { AvatarGender, Mission } from '@/types/identity';
 
 // Background imports - ONLY these 3 backgrounds are used:
-// 1. Mission 01 only: stylized room (before paint)
-// 2. Mission 02: white walls (after paint)
-// 3. Mission 03+: workshop with windows to park
+// 1. Mission 01 only: stylized room (before paint) - gallery_main_stylized_v3
+// 2. Mission 02: white walls (after paint) - gallery_main_stylized_white_v1
+// 3. Mission 03+: workshop with windows to park - studio_in_workshop_v3
+import galleryMainStylized from '@/assets/backgrounds/gallery_main_stylized_v3.webp';
 import galleryMainStylizedWhite from '@/assets/backgrounds/gallery_main_stylized_white_v1.webp';
 import studioWorkshopBg from '@/assets/backgrounds/studio_in_workshop_v3.webp';
-
-// Mission 01 uses the white walls too (no more cracked walls)
-const galleryMainStylized = galleryMainStylizedWhite;
 
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
