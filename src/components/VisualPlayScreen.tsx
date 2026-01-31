@@ -140,7 +140,11 @@ export function VisualPlayScreen({
   
   // Mobile panning support
   const isMobile = useIsMobile();
-  const panoramicBg = useMemo(() => getPanoramicBackground(currentBgKey), [currentBgKey]);
+  // Product rule: from mission 02 onwards, background must be the white-walls variant.
+  // We also use this key for panoramic selection so mobile never pulls the cracked variant.
+  const isWhiteWallsLocked = mission.phase === 'main' && mission.sequence >= 2;
+  const bgKeyForPanorama = isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY : currentBgKey;
+  const panoramicBg = useMemo(() => getPanoramicBackground(bgKeyForPanorama), [bgKeyForPanorama]);
   const { backgroundPosition, updatePanFromDrag, resetPan } = usePanningBackground({
     enabled: isMobile && !!panoramicBg,
   });
@@ -190,6 +194,10 @@ export function VisualPlayScreen({
   // Priority: local "painted" beat > drag preview > current
   const displayBg = localBgOverride?.image || dragPreviewBg?.image || currentBg;
   const displayBgKey = localBgOverride?.key || dragPreviewBg?.key || currentBgKey;
+
+  // Final guardrail: from mission 02 onwards, force white walls regardless of any transient state.
+  const lockedBgKey = isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY : displayBgKey;
+  const lockedBg = isWhiteWallsLocked ? (getBackgroundByName(PAINTED_WALLS_BG_KEY) || displayBg) : displayBg;
 
   // Get target anchor for currently selected tool
   // For mission 1: Tool A targets BACK floor (near walls), Tool B targets CENTER floor
@@ -583,7 +591,7 @@ export function VisualPlayScreen({
   // These are passed to the layout wrapper
 
   // Use panoramic background on mobile if available
-  const effectiveBg = isMobile && panoramicBg ? panoramicBg : displayBg;
+  const effectiveBg = isMobile && panoramicBg ? panoramicBg : lockedBg;
   const effectiveBgPosition = isMobile && panoramicBg ? backgroundPosition : 'center';
   // For panoramic backgrounds, use 'auto 100%' to show full height and allow horizontal pan
   const effectiveBgSize = isMobile && panoramicBg ? 'auto 100%' : 'cover';
@@ -617,14 +625,14 @@ export function VisualPlayScreen({
   // Scene extras - Female staff NPC appears after Mission 01 Tool B placement.
   // Position her relative to Tool B (so she's close and clearly looking at it).
   const femaleStaffPos = useMemo(() => {
-    const floor = getAnchorPosition(displayBgKey, 'floor');
+    const floor = getAnchorPosition(lockedBgKey, 'floor');
     const toolBX = (floor?.x ?? 50) + 8; // matches getDuplicateAnchors() offsetX for M01 Tool B
     const staffX = Math.max(8, Math.min(92, toolBX - 10));
     return {
       left: `${staffX}%`,
       bottom: '6%',
     };
-  }, [displayBgKey]);
+  }, [lockedBgKey]);
 
   // Male staff position for Mission 02
   // Tool A: stands near the tool (which is before the plant pot, ~30% from left)
@@ -839,7 +847,7 @@ export function VisualPlayScreen({
         
         return anchorInfos.map((anchorInfo, idx) => {
           // Mission 01 paint: keep tool coordinates stable even while the background is crossfading.
-          const anchorKeyForPlacement = (prop.missionId === 'studio_01' && prop.key === 'a') ? currentBgKey : displayBgKey;
+          const anchorKeyForPlacement = (prop.missionId === 'studio_01' && prop.key === 'a') ? currentBgKey : lockedBgKey;
           const anchorPos = getAnchorPosition(anchorKeyForPlacement, anchorInfo.anchor);
           if (!anchorPos) return null;
           
