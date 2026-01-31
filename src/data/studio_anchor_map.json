@@ -85,7 +85,8 @@
     "x_pct": 0.613,
     "y_pct": 0.872,
     "scale": 1.9,
-    "z_layer": "mid"
+    "z_layer": "mid",
+    "flipX": true
   },
   {
     "background_asset_key": "studio_front_bg",
