@@ -15,6 +15,7 @@ export interface AnchorCoordinate {
   y_pct: number;
   scale: number;
   z_layer: 'back' | 'mid' | 'front';
+  flipX?: boolean;
 }
 
 // Parse a raw quest row into MissionOption
@@ -108,6 +109,7 @@ export function parseAnchorMap(): AnchorCoordinate[] {
     y_pct: Number(row.y_pct) || 0.5,
     scale: Number(row.scale) || 1.0,
     z_layer: (row.z_layer || 'mid') as 'back' | 'mid' | 'front',
+    flipX: row.flipX === true,
   }));
 }
 
@@ -146,7 +148,7 @@ export function getAnchorMap(): AnchorCoordinate[] {
 }
 
 // Helper to get anchor coordinates for a specific background and anchor_ref
-export function getAnchorPosition(bgKey: string, anchorRef: AnchorRef): { x: number; y: number; scale: number; z_layer: string } | null {
+export function getAnchorPosition(bgKey: string, anchorRef: AnchorRef): { x: number; y: number; scale: number; z_layer: string; flipX: boolean } | null {
   const anchors = getAnchorMap();
   const match = anchors.find(a => a.background_asset_key === bgKey && a.anchor_ref === anchorRef);
   
@@ -156,6 +158,7 @@ export function getAnchorPosition(bgKey: string, anchorRef: AnchorRef): { x: num
       y: match.y_pct * 100,
       scale: match.scale,
       z_layer: match.z_layer,
+      flipX: match.flipX || false,
     };
   }
   
@@ -172,5 +175,5 @@ export function getAnchorPosition(bgKey: string, anchorRef: AnchorRef): { x: num
   };
   
   const fb = fallbacks[anchorRef] || { x: 50, y: 60 };
-  return { x: fb.x, y: fb.y, scale: 1, z_layer: 'mid' };
+  return { x: fb.x, y: fb.y, scale: 1, z_layer: 'mid', flipX: false };
 }
