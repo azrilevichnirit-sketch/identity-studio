@@ -230,14 +230,14 @@ export function VisualPlayScreen({
       }
     }
 
-    // Mission 03: Tool A -> left wall at 68%, Tool B -> center of room
+    // Mission 03: Tool A (workbench) -> center of floor, Tool B -> near wall
     if (mission.mission_id === 'studio_03') {
       if (variant === 'a') {
-        // Tool A: drop zone on left wall, 68% from top
-        return { x: 22, y: 68, scale: 1, z_layer: 'mid' as const };
+        // Tool A (workbench): drop zone at CENTER of floor
+        return { x: 50, y: 80, scale: 1, z_layer: 'mid' as const };
       } else {
-        // Tool B: drop zone at center of room
-        return { x: 50, y: 65, scale: 1, z_layer: 'mid' as const };
+        // Tool B: drop zone near the wall (back floor area)
+        return { x: 25, y: 68, scale: 1, z_layer: 'mid' as const };
       }
     }
 
@@ -695,17 +695,17 @@ export function VisualPlayScreen({
     }
   }, [mission02ToolSelected]);
 
-  // Mission 03+: two staff members waiting on the left side of the room on the floor
-  // Same size as the player avatar, positioned on floor level
+  // Mission 03+: two staff members waiting near the back wall (68% Y line)
+  // Standing on the floor near the wall, same size as the player avatar
   const workshopWaitingStaffPos = useMemo(() => {
     return {
       male: {
-        left: '15%',
-        bottom: '8%',
+        left: '35%',
+        top: '68%',
       },
       female: {
-        left: '25%',
-        bottom: '8%',
+        left: '45%',
+        top: '68%',
       },
     };
   }, []);
@@ -763,16 +763,16 @@ export function VisualPlayScreen({
         </div>
       )}
 
-      {/* Mission 03+: Both staff members waiting on the right side */}
+      {/* Mission 03+: Both staff members waiting near the back wall */}
       {isWorkshopLocked && (
         <>
           <div
             className="absolute pointer-events-none animate-fade-in"
             style={{
               left: workshopWaitingStaffPos.male.left,
-              bottom: workshopWaitingStaffPos.male.bottom,
+              top: workshopWaitingStaffPos.male.top,
               zIndex: 10,
-              transform: 'translateX(-50%)',
+              transform: 'translate(-50%, -100%)',
               transformOrigin: 'bottom center',
             }}
           >
@@ -781,7 +781,7 @@ export function VisualPlayScreen({
               alt="דמות צוות מחכה"
               className="w-auto object-contain animate-subtle-idle"
               style={{
-                height: 'clamp(260px, 44vh, 420px)',
+                height: 'clamp(180px, 28vh, 280px)',
                 filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
                 transform: 'scaleX(-1)',
               }}
@@ -792,9 +792,9 @@ export function VisualPlayScreen({
             className="absolute pointer-events-none animate-fade-in"
             style={{
               left: workshopWaitingStaffPos.female.left,
-              bottom: workshopWaitingStaffPos.female.bottom,
+              top: workshopWaitingStaffPos.female.top,
               zIndex: 10,
-              transform: 'translateX(-50%)',
+              transform: 'translate(-50%, -100%)',
               transformOrigin: 'bottom center',
             }}
           >
@@ -803,7 +803,7 @@ export function VisualPlayScreen({
               alt="דמות צוות מחכה"
               className="w-auto object-contain animate-subtle-idle"
               style={{
-                height: 'clamp(280px, 48vh, 460px)',
+                height: 'clamp(180px, 28vh, 280px)',
                 filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
                 transform: 'scaleX(-1)',
               }}
@@ -932,14 +932,14 @@ export function VisualPlayScreen({
       return [{ anchor: 'wall_left', offsetX: 0, offsetY: 0, customScale: 1.4, absoluteY: wallY, absoluteX: 25, wallMount: true }];
     }
 
-    // Mission 03 Tool A: attached to left wall at 68% Y, realistic size
+    // Mission 03 Tool A (workbench): center of floor, realistic size
     if (prop.missionId === 'studio_03' && prop.key === 'a') {
-      return [{ anchor: 'wall_left', offsetX: 0, offsetY: 0, customScale: 1.8, absoluteY: 68, absoluteX: 22, wallMount: true }];
+      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: 80, absoluteX: 50 }];
     }
     
-    // Mission 03 Tool B: center of the room, realistic size
+    // Mission 03 Tool B: on floor near the wall, realistic size
     if (prop.missionId === 'studio_03' && prop.key === 'b') {
-      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: 65, absoluteX: 50 }];
+      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 1.8, absoluteY: 68, absoluteX: 25 }];
     }
 
     // Default: single placement at floor with realistic size
