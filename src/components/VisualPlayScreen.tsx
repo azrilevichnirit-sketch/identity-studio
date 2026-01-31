@@ -927,14 +927,29 @@ export function VisualPlayScreen({
     return () => window.removeEventListener('resize', checkWidth);
   }, []);
 
+  // Get mission number for display (1-12 for main, special for tie)
+  const missionDisplayNumber = useMemo(() => {
+    if (mission.phase === 'main') {
+      return mission.sequence;
+    }
+    return null; // Tie-breaker missions don't show number
+  }, [mission.phase, mission.sequence]);
+
   // Split task text after comma for better readability (tablet/mobile only)
+  // Also prepend mission number in bold
   const formattedTaskText = useMemo(() => {
+    const missionPrefix = missionDisplayNumber ? (
+      <span>
+        <strong>משימה {missionDisplayNumber}:</strong>{' '}
+      </span>
+    ) : null;
+
     if (!isTabletOrMobile) {
       // Desktop: no line breaks
-      return taskText;
+      return <>{missionPrefix}{taskText}</>;
     }
     // Tablet/Mobile: split after commas
-    return taskText.split(',').map((part, index, arr) => (
+    const textParts = taskText.split(',').map((part, index, arr) => (
       <span key={index}>
         {part.trim()}
         {index < arr.length - 1 && (
@@ -945,7 +960,8 @@ export function VisualPlayScreen({
         )}
       </span>
     ));
-  }, [taskText, isTabletOrMobile]);
+    return <>{missionPrefix}{textParts}</>;
+  }, [taskText, isTabletOrMobile, missionDisplayNumber]);
 
   const speechBubbleElement = (
     <div className="relative">
