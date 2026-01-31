@@ -2,10 +2,15 @@
 
 import type { AvatarGender, Mission } from '@/types/identity';
 
-// Background imports
-import galleryMainStylized from '@/assets/backgrounds/gallery_main_stylized_v3.webp';
+// Background imports - ONLY these 3 backgrounds are used:
+// 1. Mission 01 only: stylized room (before paint)
+// 2. Mission 02: white walls (after paint)
+// 3. Mission 03+: workshop with windows to park
 import galleryMainStylizedWhite from '@/assets/backgrounds/gallery_main_stylized_white_v1.webp';
-import studioWorkshopBg from '@/assets/backgrounds/studio_in_workshop_bg.webp';
+import studioWorkshopBg from '@/assets/backgrounds/studio_in_workshop_v2.webp';
+
+// Mission 01 uses the white walls too (no more cracked walls)
+const galleryMainStylized = galleryMainStylizedWhite;
 
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
@@ -129,32 +134,29 @@ const toolAssets: Record<string, string> = {
   studio_tie_15_b: studioTie15b,
 };
 
-// Background asset lookup by CSV bg_override name
-// NOTE: Default background is the (current) stylized room.
-// Mission 01 special: choosing tool A "paints" walls white for Mission 02+.
+// Background asset lookup - SIMPLIFIED: only 2 actual backgrounds used
+// All keys map to either white walls or workshop (no more cracked walls)
 const backgroundAssets: Record<string, string> = {
-  // Default room ("before paint" - cracked walls)
-  studio_front_bg: galleryMainStylized,
-  studio_in_entrance_view_bg: galleryMainStylized,
-  studio_in_gallery_bg: galleryMainStylized,
-  studio_in_storage_bg: galleryMainStylized,
-  studio_entry_inside_bg: galleryMainStylized,
-
-  // "After paint" (white walls) - Mission 02
+  // All interior keys -> white walls (Mission 01-02)
+  studio_front_bg: galleryMainStylizedWhite,
+  studio_in_entrance_view_bg: galleryMainStylizedWhite,
+  studio_in_gallery_bg: galleryMainStylizedWhite,
+  studio_in_storage_bg: galleryMainStylizedWhite,
+  studio_entry_inside_bg: galleryMainStylizedWhite,
   studio_in_gallery_wall_bg: galleryMainStylizedWhite,
 
   // Workshop (Mission 03+)
   studio_in_workshop_bg: studioWorkshopBg,
 
   // Named keys
-  gallery_main_stylized: galleryMainStylized,
+  gallery_main_stylized: galleryMainStylizedWhite,
   gallery_main_stylized_white: galleryMainStylizedWhite,
 };
 
 // Wide panoramic backgrounds for mobile panning (key -> asset)
 const panoramicBackgrounds: Record<string, string> = {
-  studio_in_gallery_bg: galleryMainStylized,
-  studio_entry_inside_bg: galleryMainStylized,
+  studio_in_gallery_bg: galleryMainStylizedWhite,
+  studio_entry_inside_bg: galleryMainStylizedWhite,
   studio_in_gallery_wall_bg: galleryMainStylizedWhite,
   studio_in_workshop_bg: studioWorkshopBg,
 };
@@ -163,11 +165,11 @@ export function getPanoramicBackground(bgKey: string): string | null {
   return panoramicBackgrounds[bgKey] || null;
 }
 
-// Fallback background mapping by (world, view) - all use the same stylized bg now
+// Fallback background mapping - all use white walls now (no more cracked walls)
 const backgroundFallback: Record<string, string> = {
-  'studio_in': galleryMainStylized,
-  'studio_front': galleryMainStylized,
-  'studio_out': galleryMainStylized,
+  'studio_in': galleryMainStylizedWhite,
+  'studio_front': galleryMainStylizedWhite,
+  'studio_out': galleryMainStylizedWhite,
 };
 
 export function getToolImage(assetName: string): string | null {
@@ -191,8 +193,8 @@ export function getBackgroundForMission(mission: Mission, previousPickBgOverride
     return backgroundFallback[fallbackKey];
   }
   
-  // Default fallback - use the single stylized background
-  return galleryMainStylized;
+  // Default fallback - use white walls
+  return galleryMainStylizedWhite;
 }
 
 // Get the background key (for anchor map lookups)
