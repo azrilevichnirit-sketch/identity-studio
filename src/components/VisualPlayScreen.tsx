@@ -1341,22 +1341,23 @@ export function VisualPlayScreen({
     { name: 'floor (front)', y: 87, color: '#9b59b6' },
   ], [BACK_FLOOR_Y, DUPLICATE_BUCKETS_Y, CENTER_FLOOR_Y]);
 
-  // NPC positions for the editor (including avatar)
+  // Avatar for the editor (separate from NPCs)
+  const editorAvatar = useMemo(() => {
+    const avatarImg = getAvatarImage(avatarGender, 'idle');
+    if (!avatarImg) return undefined;
+    return {
+      id: 'player-avatar',
+      label: `Avatar (${avatarGender})`,
+      left: 85,
+      top: 85,
+      height: 'clamp(300px, 50vh, 500px)',
+      imageSrc: avatarImg,
+    };
+  }, [avatarGender]);
+
+  // NPC positions for the editor (staff only)
   const editorNpcs = useMemo(() => {
     const npcs = [];
-    
-    // Add the player avatar
-    const avatarImg = getAvatarImage(avatarGender, 'idle');
-    if (avatarImg) {
-      npcs.push({
-        id: 'player-avatar',
-        label: `Avatar (${avatarGender})`,
-        left: 85, // Default right side position
-        top: 85,  // Bottom area
-        height: 'clamp(300px, 50vh, 500px)',
-        imageSrc: avatarImg,
-      });
-    }
     
     // Workshop staff positions
     if (isWorkshopLocked) {
@@ -1408,7 +1409,7 @@ export function VisualPlayScreen({
     }
     
     return npcs;
-  }, [avatarGender, isWorkshopLocked, shouldShowWorkshopStaffAtTable, workshopTableStaffPos, workshopWaitingStaffPos, showFemaleStaff, showMaleStaff, femaleStaffPos, maleStaffPos]);
+  }, [isWorkshopLocked, shouldShowWorkshopStaffAtTable, workshopTableStaffPos, workshopWaitingStaffPos, showFemaleStaff, showMaleStaff, femaleStaffPos, maleStaffPos]);
 
   // Tools/Props positions for the editor
   const editorTools = useMemo(() => {
@@ -1523,12 +1524,13 @@ export function VisualPlayScreen({
         cols={5}
       />
       
-      {/* NPC + Tools Visual Editor */}
+      {/* NPC + Tools + Avatar Visual Editor */}
       {npcEditMode && (
         <DraggableNpcEditor
           isEnabled={npcEditMode}
           npcs={editorNpcs}
           tools={editorTools}
+          avatar={editorAvatar}
         />
       )}
     </>
