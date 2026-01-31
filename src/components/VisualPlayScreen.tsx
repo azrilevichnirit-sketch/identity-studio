@@ -954,7 +954,7 @@ export function VisualPlayScreen({
 
     // Mission 03 Tool A (workbench): large center table grounded on floor
     if (prop.missionId === 'studio_03' && prop.key === 'a') {
-      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 3.0, absoluteY: 88, absoluteX: 50 }];
+      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 4.0, absoluteY: 88, absoluteX: 50 }];
     }
     
     // Mission 03 Tool B (sound desk): on floor (71% Y), large like A
@@ -1041,7 +1041,7 @@ export function VisualPlayScreen({
                   transform: isMission01ToolB 
                     ? 'rotate(-15deg) scaleX(-1)' 
                     : (prop.missionId === 'studio_03' && prop.key === 'a'
-                        ? 'rotate(8deg)' // Opposite rotation for room perspective
+                        ? 'rotate(15deg)' // Stronger rotation for room perspective
                         : (prop.missionId === 'studio_03' && prop.key === 'b'
                             ? 'rotate(-12deg)' 
                             : undefined)),
