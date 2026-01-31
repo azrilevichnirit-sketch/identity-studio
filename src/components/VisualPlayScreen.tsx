@@ -13,6 +13,7 @@ import { usePanningBackground } from '@/hooks/usePanningBackground';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { BackgroundCrossfade } from './BackgroundCrossfade';
 import { AnchorDebugOverlay } from './AnchorDebugOverlay';
+import { GridDebugOverlay } from './GridDebugOverlay';
 import femaleStaffWalk from '@/assets/avatars/studio_01_female_staff_walk.webp';
 import maleStaffWalk from '@/assets/avatars/studio_01_male_staff_walk.webp';
 // import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter'; // Disabled
@@ -55,6 +56,7 @@ export function VisualPlayScreen({
   const [carryModeTool, setCarryModeTool] = useState<'a' | 'b' | null>(null);
   const [showToolSwapCue, setShowToolSwapCue] = useState(false);
   const [showDebugOverlay, setShowDebugOverlay] = useState(false);
+  const [showGridOverlay, setShowGridOverlay] = useState(false);
   
   // Local placement state - shows tool BEFORE it's added to global placedProps
   const [localPlacement, setLocalPlacement] = useState<{
@@ -1385,6 +1387,12 @@ export function VisualPlayScreen({
         anchors={debugAnchors}
         isVisible={showDebugOverlay}
         onToggle={() => setShowDebugOverlay(!showDebugOverlay)}
+      />
+      <GridDebugOverlay
+        isVisible={showGridOverlay}
+        onToggle={() => setShowGridOverlay(!showGridOverlay)}
+        rows={5}
+        cols={5}
       />
     </>
   );
