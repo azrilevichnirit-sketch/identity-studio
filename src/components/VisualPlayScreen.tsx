@@ -685,17 +685,16 @@ export function VisualPlayScreen({
   }, [mission02ToolSelected]);
 
   // Mission 03+: two staff members waiting on the side of the workshop
+  // Position at 38% Y (floor line), realistic size matching Mission 01-02 NPCs
   const workshopWaitingStaffPos = useMemo(() => {
-    const npc1 = getAnchorPosition('studio_in_workshop_bg', 'floor_right_npc');
-    const npc2 = getAnchorPosition('studio_in_workshop_bg', 'floor_right_npc_2');
     return {
       male: {
-        left: `${(npc1?.x ?? 82)}%`,
-        top: `${(npc1?.y ?? 72)}%`,
+        left: '82%',
+        bottom: '38%',
       },
       female: {
-        left: `${(npc2?.x ?? 90)}%`,
-        top: `${(npc2?.y ?? 72)}%`,
+        left: '90%',
+        bottom: '38%',
       },
     };
   }, []);
@@ -760,9 +759,9 @@ export function VisualPlayScreen({
             className="absolute pointer-events-none animate-fade-in"
             style={{
               left: workshopWaitingStaffPos.male.left,
-              top: workshopWaitingStaffPos.male.top,
+              bottom: workshopWaitingStaffPos.male.bottom,
               zIndex: 10,
-              transform: 'translate(-50%, -100%)',
+              transform: 'translateX(-50%)',
               transformOrigin: 'bottom center',
             }}
           >
@@ -771,7 +770,7 @@ export function VisualPlayScreen({
               alt="דמות צוות מחכה"
               className="w-auto object-contain animate-subtle-idle"
               style={{
-                height: 'clamp(220px, 38vh, 360px)',
+                height: 'clamp(260px, 44vh, 420px)',
                 filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
                 transform: 'scaleX(-1)',
               }}
@@ -782,9 +781,9 @@ export function VisualPlayScreen({
             className="absolute pointer-events-none animate-fade-in"
             style={{
               left: workshopWaitingStaffPos.female.left,
-              top: workshopWaitingStaffPos.female.top,
+              bottom: workshopWaitingStaffPos.female.bottom,
               zIndex: 10,
-              transform: 'translate(-50%, -100%)',
+              transform: 'translateX(-50%)',
               transformOrigin: 'bottom center',
             }}
           >
@@ -793,7 +792,7 @@ export function VisualPlayScreen({
               alt="דמות צוות מחכה"
               className="w-auto object-contain animate-subtle-idle"
               style={{
-                height: 'clamp(230px, 40vh, 380px)',
+                height: 'clamp(280px, 48vh, 460px)',
                 filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
                 transform: 'scaleX(-1)',
               }}
