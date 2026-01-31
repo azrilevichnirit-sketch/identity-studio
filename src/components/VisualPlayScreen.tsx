@@ -756,11 +756,11 @@ export function VisualPlayScreen({
   const workshopWaitingStaffPos = useMemo(() => {
     return {
       male: {
-        left: '60%', // Right side, closer to center
+        left: '55%', // Right side, even closer to center
         top: '50%', // Very close to back wall
       },
       female: {
-        left: '40%', // Left side, closer to center
+        left: '45%', // Left side, even closer to center
         top: '50%', // Very close to back wall
       },
     };
@@ -852,7 +852,7 @@ export function VisualPlayScreen({
                 alt="דמות צוות מחכה"
                 className="w-auto object-contain animate-subtle-idle"
                 style={{
-                  height: 'clamp(180px, 28vh, 280px)',
+                  height: 'clamp(220px, 34vh, 340px)',
                   filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
                   transform: 'scaleX(-1)',
                 }}
@@ -876,7 +876,7 @@ export function VisualPlayScreen({
                 alt="דמות צוות מחכה"
                 className="w-auto object-contain animate-subtle-idle"
                 style={{
-                  height: 'clamp(180px, 28vh, 280px)',
+                  height: 'clamp(220px, 34vh, 340px)',
                   filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
                 }}
               />
