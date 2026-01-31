@@ -233,11 +233,11 @@ export function VisualPlayScreen({
     // Mission 03: Tool A (workbench) -> center of floor, Tool B (sound desk) -> on floor near left wall
     if (mission.mission_id === 'studio_03') {
       if (variant === 'a') {
-        // Tool A (workbench): drop zone at CENTER of floor
-        return { x: 50, y: 72, scale: 1, z_layer: 'mid' as const };
+        // Tool A (workbench): drop zone at CENTER of floor, properly grounded
+        return { x: 50, y: 82, scale: 1, z_layer: 'mid' as const };
       } else {
         // Tool B (sound desk): drop zone on floor, closer to front, near left side
-        return { x: 30, y: 78, scale: 1, z_layer: 'mid' as const };
+        return { x: 30, y: 82, scale: 1, z_layer: 'mid' as const };
       }
     }
 
@@ -951,14 +951,14 @@ export function VisualPlayScreen({
       return [{ anchor: 'wall_left', offsetX: 0, offsetY: 0, customScale: 1.4, absoluteY: wallY, absoluteX: 25, wallMount: true }];
     }
 
-    // Mission 03 Tool A (workbench): dead center of room (12-6 o'clock alignment), large and prominent
+    // Mission 03 Tool A (workbench): dead center of room, properly grounded on floor
     if (prop.missionId === 'studio_03' && prop.key === 'a') {
-      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.5, absoluteY: 72, absoluteX: 50 }];
+      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.2, absoluteY: 82, absoluteX: 50 }];
     }
     
     // Mission 03 Tool B (sound desk): placed on floor, realistic size, bottom-anchored
     if (prop.missionId === 'studio_03' && prop.key === 'b') {
-      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.2, absoluteY: 78, absoluteX: 30 }];
+      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: 82, absoluteX: 30 }];
     }
 
     // Default: single placement at floor with realistic size
