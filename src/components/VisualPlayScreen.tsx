@@ -752,17 +752,16 @@ export function VisualPlayScreen({
     }
   }, [mission02ToolSelected]);
 
-  // Mission 03+: two staff members facing each other near the back (45% Y)
-  // Positioned close to the back wall, facing each other
+  // Mission 03+: two staff members facing each other near the back wall
   const workshopWaitingStaffPos = useMemo(() => {
     return {
       male: {
         left: '70%', // Right side (swapped)
-        top: '58%', // More to the back (near wall)
+        top: '50%', // Very close to back wall
       },
       female: {
         left: '30%', // Left side (swapped)
-        top: '58%', // More to the back (near wall)
+        top: '50%', // Very close to back wall
       },
     };
   }, []);
