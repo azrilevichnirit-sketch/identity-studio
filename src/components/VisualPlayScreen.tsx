@@ -721,12 +721,12 @@ export function VisualPlayScreen({
   const workshopWaitingStaffPos = useMemo(() => {
     return {
       male: {
-        left: '32%',
-        top: '45%',
+        left: '25%', // Left side of table
+        top: '72%',
       },
       female: {
-        left: '40%',
-        top: '45%',
+        left: '75%', // Right side of table
+        top: '72%',
       },
     };
   }, []);
@@ -787,6 +787,7 @@ export function VisualPlayScreen({
       {/* Mission 03+: Both staff members waiting near the back wall */}
       {isWorkshopLocked && (
         <>
+          {/* Male staff - left side of table */}
           <div
             className="absolute pointer-events-none animate-fade-in"
             style={{
@@ -802,13 +803,14 @@ export function VisualPlayScreen({
               alt="דמות צוות מחכה"
               className="w-auto object-contain animate-subtle-idle"
               style={{
-                height: 'clamp(200px, 32vh, 320px)',
+                height: 'clamp(180px, 28vh, 280px)',
                 filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
-                transform: 'rotate(90deg)', // Quarter turn clockwise
+                transform: 'scaleX(-1)', // Face right toward table
               }}
             />
           </div>
 
+          {/* Female staff - right side of table */}
           <div
             className="absolute pointer-events-none animate-fade-in"
             style={{
@@ -824,9 +826,9 @@ export function VisualPlayScreen({
               alt="דמות צוות מחכה"
               className="w-auto object-contain animate-subtle-idle"
               style={{
-                height: 'clamp(200px, 32vh, 320px)',
+                height: 'clamp(180px, 28vh, 280px)',
                 filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
-                transform: 'rotate(90deg)', // Quarter turn clockwise
+                // Face left toward table (default orientation)
               }}
             />
           </div>
@@ -956,7 +958,7 @@ export function VisualPlayScreen({
     // Mission 03 Tool A (workbench): large center table grounded on floor
     if (prop.missionId === 'studio_03' && prop.key === 'a') {
       // Slightly smaller than before to avoid the “falling” illusion when rotated.
-      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.5, absoluteY: 82, absoluteX: 50 }];
+      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 3.0, absoluteY: 82, absoluteX: 50 }];
     }
     
     // Mission 03 Tool B (sound desk): on floor (71% Y), large like A
@@ -1042,7 +1044,9 @@ export function VisualPlayScreen({
                    // Only rotate Mission 01 Tool B
                    transform: isMission01ToolB
                      ? 'rotate(-15deg) scaleX(-1)'
-                     : undefined,
+                     : (prop.missionId === 'studio_03' && prop.key === 'a'
+                         ? 'rotate(5deg)' // Slight rotation to align with room perspective
+                         : undefined),
                  }}
               />
             </div>
