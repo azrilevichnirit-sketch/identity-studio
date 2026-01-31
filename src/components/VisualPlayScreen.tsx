@@ -1495,6 +1495,19 @@ export function VisualPlayScreen({
     return tools;
   }, [placedProps, localPlacement, getTargetAnchor, mission.mission_id, optionA.asset, optionB.asset]);
 
+  // Speech bubble for the editor
+  const editorBubble = useMemo(() => {
+    return {
+      id: 'speech-bubble',
+      label: 'Speech Bubble',
+      left: 50,
+      top: 85,
+      height: 'auto',
+      width: 'clamp(200px, 40vw, 400px)',
+      content: taskText,
+    };
+  }, [taskText]);
+
   return (
     <>
       <MissionLayout
@@ -1524,13 +1537,14 @@ export function VisualPlayScreen({
         cols={5}
       />
       
-      {/* NPC + Tools + Avatar Visual Editor */}
+      {/* NPC + Tools + Avatar + Bubble Visual Editor */}
       {npcEditMode && (
         <DraggableNpcEditor
           isEnabled={npcEditMode}
           npcs={editorNpcs}
           tools={editorTools}
           avatar={editorAvatar}
+          bubble={editorBubble}
         />
       )}
     </>
