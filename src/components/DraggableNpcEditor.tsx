@@ -65,6 +65,8 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [showNpcs, setShowNpcs] = useState(true);
   const [showTools, setShowTools] = useState(true);
+  const [showToolA, setShowToolA] = useState(true);
+  const [showToolB, setShowToolB] = useState(true);
   const [showAvatar, setShowAvatar] = useState(true);
   const [showBubble, setShowBubble] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -287,12 +289,19 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
 
   if (!isEnabled) return null;
 
-  const visibleItems = allItems.filter(item => 
-    (item.type === 'npc' && showNpcs) || 
-    (item.type === 'tool' && showTools) ||
-    (item.type === 'avatar' && showAvatar) ||
-    (item.type === 'bubble' && showBubble)
-  );
+  const visibleItems = allItems.filter(item => {
+    if (item.type === 'npc') return showNpcs;
+    if (item.type === 'avatar') return showAvatar;
+    if (item.type === 'bubble') return showBubble;
+    if (item.type === 'tool') {
+      if (!showTools) return false;
+      // Filter by Tool A / Tool B toggle
+      if (item.id.includes('-a') || item.id.includes('_a')) return showToolA;
+      if (item.id.includes('-b') || item.id.includes('_b')) return showToolB;
+      return true; // Other tools (placed props without -a/-b)
+    }
+    return true;
+  });
 
   const selectedItem = visibleItems.find(i => i.id === selectedId);
 
@@ -393,6 +402,28 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
             🔧 Tools {showTools ? '✓' : '○'}
           </button>
         </div>
+        
+        {/* Tool A / Tool B toggles */}
+        {showTools && (
+          <div className="flex gap-2 mb-2">
+            <button
+              onClick={() => setShowToolA(!showToolA)}
+              className={`flex-1 px-2 py-1.5 rounded text-xs font-medium transition-colors ${
+                showToolA ? 'bg-purple-700 text-white' : 'bg-gray-700 text-gray-400'
+              }`}
+            >
+              🅰️ Tool A {showToolA ? '✓' : '○'}
+            </button>
+            <button
+              onClick={() => setShowToolB(!showToolB)}
+              className={`flex-1 px-2 py-1.5 rounded text-xs font-medium transition-colors ${
+                showToolB ? 'bg-purple-700 text-white' : 'bg-gray-700 text-gray-400'
+              }`}
+            >
+              🅱️ Tool B {showToolB ? '✓' : '○'}
+            </button>
+          </div>
+        )}
         
         <div className="text-gray-400 text-[10px] mb-2">לחצי על אלמנט לעריכה מתקדמת</div>
         
