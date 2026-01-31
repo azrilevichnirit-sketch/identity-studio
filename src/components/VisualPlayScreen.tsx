@@ -577,6 +577,11 @@ export function VisualPlayScreen({
   
   // Mission 03: track if Tool A (workbench) was selected - staff moves to table sides
   const [mission03ToolASelected, setMission03ToolASelected] = useState(false);
+
+  // Mission 03: derive if Tool A is already placed (more reliable than only lock pulse)
+  const mission03ToolAPlaced = useMemo(() => {
+    return placedProps.some((p) => p.missionId === 'studio_03' && p.key === 'a');
+  }, [placedProps]);
   
   // Reset staff visibility when mission changes (except when going to mission 02+ with Tool B)
   useEffect(() => {
@@ -645,6 +650,17 @@ export function VisualPlayScreen({
     }
   }, [lockPulseKey]);
 
+  // Keep Mission 03 Tool A state in sync with undo/back navigation
+  useEffect(() => {
+    if (!isWorkshopLocked) {
+      setMission03ToolASelected(false);
+      return;
+    }
+    if (!mission03ToolAPlaced && lockPulseKey !== 'studio_03-a') {
+      setMission03ToolASelected(false);
+    }
+  }, [isWorkshopLocked, mission03ToolAPlaced, lockPulseKey]);
+
   // Trigger male staff entry AFTER Mission 02 lock pulse finishes.
   // (Important: don't schedule off the "lockPulseKey is active" state, because cleanup will cancel it.)
   useEffect(() => {
@@ -659,8 +675,10 @@ export function VisualPlayScreen({
   
   // In Mission 03: show staff in original positions until Tool A is selected
   // After Tool A: staff moves to table sides (handled in workshop section)
-  const showFemaleStaff = staffEnterReady && (!isWorkshopLocked || (isWorkshopLocked && !mission03ToolASelected));
-  const showMaleStaff = maleStaffEnterReady && mission02ToolSelected !== null && (!isWorkshopLocked || (isWorkshopLocked && !mission03ToolASelected));
+  const showFemaleStaff = staffEnterReady && !isWorkshopLocked;
+  const showMaleStaff = maleStaffEnterReady && mission02ToolSelected !== null && !isWorkshopLocked;
+
+  const shouldShowWorkshopStaffAtTable = isWorkshopLocked && (mission03ToolASelected || mission03ToolAPlaced);
   
   const sceneExtras: never[] = []; // Keep the original array empty for now
 
@@ -749,6 +767,20 @@ export function VisualPlayScreen({
     };
   }, []);
 
+  // After Mission 03 Tool A (workbench): staff moves forward to table sides
+  const workshopTableStaffPos = useMemo(() => {
+    return {
+      male: {
+        left: '70%',
+        top: '72%',
+      },
+      female: {
+        left: '30%',
+        top: '72%',
+      },
+    };
+  }, []);
+
   const sceneExtrasElement = (
     <>
       {/* Female staff - Mission 01 Tool B */}
@@ -802,54 +834,108 @@ export function VisualPlayScreen({
         </div>
       )}
 
-      {/* Mission 03+: Staff members at table sides - ONLY after Tool A is selected */}
-      {isWorkshopLocked && mission03ToolASelected && (
+      {/* Mission 03+: Before Tool A - staff waits near the back wall */}
+      {isWorkshopLocked && !shouldShowWorkshopStaffAtTable && (
         <>
-          {/* Male staff - left side of table */}
-          <div
-            className="absolute pointer-events-none animate-fade-in"
-            style={{
-              left: workshopWaitingStaffPos.male.left,
-              top: workshopWaitingStaffPos.male.top,
-              zIndex: 10,
-              transform: 'translate(-50%, -100%)',
-              transformOrigin: 'bottom center',
-            }}
-          >
-            <img
-              src={maleStaffWalk}
-              alt="דמות צוות מחכה"
-              className="w-auto object-contain animate-subtle-idle"
+          {maleStaffEnterReady && mission02ToolSelected !== null && (
+            <div
+              className="absolute pointer-events-none animate-fade-in"
               style={{
-                height: 'clamp(180px, 28vh, 280px)',
-                filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
-                transform: 'scaleX(-1)', // Face right toward table
+                left: workshopWaitingStaffPos.male.left,
+                top: workshopWaitingStaffPos.male.top,
+                zIndex: 10,
+                transform: 'translate(-50%, -100%)',
+                transformOrigin: 'bottom center',
               }}
-            />
-          </div>
+            >
+              <img
+                src={maleStaffWalk}
+                alt="דמות צוות מחכה"
+                className="w-auto object-contain animate-subtle-idle"
+                style={{
+                  height: 'clamp(180px, 28vh, 280px)',
+                  filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
+                  transform: 'scaleX(-1)',
+                }}
+              />
+            </div>
+          )}
 
-          {/* Female staff - right side of table */}
-          <div
-            className="absolute pointer-events-none animate-fade-in"
-            style={{
-              left: workshopWaitingStaffPos.female.left,
-              top: workshopWaitingStaffPos.female.top,
-              zIndex: 10,
-              transform: 'translate(-50%, -100%)',
-              transformOrigin: 'bottom center',
-            }}
-          >
-            <img
-              src={femaleStaffWalk}
-              alt="דמות צוות מחכה"
-              className="w-auto object-contain animate-subtle-idle"
+          {staffEnterReady && (
+            <div
+              className="absolute pointer-events-none animate-fade-in"
               style={{
-                height: 'clamp(180px, 28vh, 280px)',
-                filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
-                // Face left toward table (default orientation)
+                left: workshopWaitingStaffPos.female.left,
+                top: workshopWaitingStaffPos.female.top,
+                zIndex: 10,
+                transform: 'translate(-50%, -100%)',
+                transformOrigin: 'bottom center',
               }}
-            />
-          </div>
+            >
+              <img
+                src={femaleStaffWalk}
+                alt="דמות צוות מחכה"
+                className="w-auto object-contain animate-subtle-idle"
+                style={{
+                  height: 'clamp(180px, 28vh, 280px)',
+                  filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
+                }}
+              />
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Mission 03+: After Tool A - staff moves to table sides */}
+      {isWorkshopLocked && shouldShowWorkshopStaffAtTable && (
+        <>
+          {maleStaffEnterReady && mission02ToolSelected !== null && (
+            <div
+              className="absolute pointer-events-none animate-fade-in"
+              style={{
+                left: workshopTableStaffPos.male.left,
+                top: workshopTableStaffPos.male.top,
+                zIndex: 10,
+                transform: 'translate(-50%, -100%)',
+                transformOrigin: 'bottom center',
+              }}
+            >
+              <img
+                src={maleStaffWalk}
+                alt="דמות צוות מחכה"
+                className="w-auto object-contain animate-subtle-idle"
+                style={{
+                  height: 'clamp(180px, 28vh, 280px)',
+                  filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
+                  transform: 'scaleX(-1)', // Face right toward table
+                }}
+              />
+            </div>
+          )}
+
+          {staffEnterReady && (
+            <div
+              className="absolute pointer-events-none animate-fade-in"
+              style={{
+                left: workshopTableStaffPos.female.left,
+                top: workshopTableStaffPos.female.top,
+                zIndex: 10,
+                transform: 'translate(-50%, -100%)',
+                transformOrigin: 'bottom center',
+              }}
+            >
+              <img
+                src={femaleStaffWalk}
+                alt="דמות צוות מחכה"
+                className="w-auto object-contain animate-subtle-idle"
+                style={{
+                  height: 'clamp(180px, 28vh, 280px)',
+                  filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
+                  // Face left toward table (default orientation)
+                }}
+              />
+            </div>
+          )}
         </>
       )}
     </>
