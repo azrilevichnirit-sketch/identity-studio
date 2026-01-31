@@ -89,13 +89,12 @@ export function VisualPlayScreen({
     preloadBackground(PAINTED_WALLS_BG_KEY);
   }, []);
 
-  // After we advanced to the next mission, rely on normal background selection.
+  // Clear any staged background override whenever the mission changes.
+  // (Otherwise, a previous mission's bg beat can leak into the next mission.)
   useEffect(() => {
-    if (mission.mission_id !== 'studio_01' && localBgOverride?.key === PAINTED_WALLS_BG_KEY) {
-      const id = window.setTimeout(() => setLocalBgOverride(null), 50);
-      return () => window.clearTimeout(id);
-    }
-  }, [mission.mission_id, localBgOverride]);
+    const id = window.setTimeout(() => setLocalBgOverride(null), 0);
+    return () => window.clearTimeout(id);
+  }, [mission.mission_id]);
 
   // Get the *actual* previous mission pick (Object.values order is not reliable)
   // Product rule: from mission 02 onwards, walls are ALWAYS white (regardless of mission 01 choice)
@@ -150,10 +149,18 @@ export function VisualPlayScreen({
 
   // Get the target background for a tool option
   const getTargetBgForOption = useCallback((option: MissionOption) => {
+    // Product rule: from mission 02 onwards, walls are ALWAYS white.
+    // So we don't allow tool hover/drag to preview a different background.
+    if (mission.phase === 'main' && mission.sequence >= 2) {
+      const lockedKey = PAINTED_WALLS_BG_KEY;
+      const lockedImage = getBackgroundByName(lockedKey) || currentBg;
+      return { key: lockedKey, image: lockedImage };
+    }
+
     const targetBgKey = option.next_bg_override || currentBgKey;
     const targetBgImage = getBackgroundByName(targetBgKey) || currentBg;
     return { key: targetBgKey, image: targetBgImage };
-  }, [currentBgKey, currentBg]);
+  }, [currentBgKey, currentBg, mission.phase, mission.sequence, PAINTED_WALLS_BG_KEY]);
 
   // Determine which background to show during drag/carry
   const activeToolVariant = draggingTool || carryModeTool;
@@ -166,9 +173,9 @@ export function VisualPlayScreen({
       return null;
     }
 
-    // If we already have painted walls (from mission 01 tool A), 
-    // don't preview any background change - keep the white walls
-    if (hasPaintedWalls) {
+    // From mission 02 onwards, background is locked to white walls.
+    // Also covers the mission-01 paint path once the player advanced.
+    if ((mission.phase === 'main' && mission.sequence >= 2) || hasPaintedWalls) {
       return null;
     }
 
@@ -178,7 +185,7 @@ export function VisualPlayScreen({
       return target;
     }
     return null;
-  }, [activeToolVariant, optionA, optionB, getTargetBgForOption, currentBgKey, hasPaintedWalls, mission.mission_id]);
+  }, [activeToolVariant, optionA, optionB, getTargetBgForOption, currentBgKey, hasPaintedWalls, mission.mission_id, mission.phase, mission.sequence]);
 
   // Priority: local "painted" beat > drag preview > current
   const displayBg = localBgOverride?.image || dragPreviewBg?.image || currentBg;
@@ -285,7 +292,10 @@ export function VisualPlayScreen({
     timeoutsRef.current.push(lockOffId);
 
     // Step 2: "Painted walls" beat before transitioning (only for Tool A paint scenario, NOT for Tool B)
-    const hasBgBeat = !!option.next_bg_override || isMission01Paint;
+    // Product rule: from mission 02 onwards, walls are ALWAYS white.
+    // So we only allow background beats during mission 01 (paint scenario).
+    const allowBgBeat = mission.phase === 'main' && mission.sequence < 2;
+    const hasBgBeat = allowBgBeat && (!!option.next_bg_override || isMission01Paint);
     if (hasBgBeat && !isMission01ToolB) {
       const beatDelay = isMission01Paint ? 1600 : 900;
       const clearDelay = isMission01Paint ? 2300 : 1800;
