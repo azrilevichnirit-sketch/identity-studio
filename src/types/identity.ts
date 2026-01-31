@@ -30,7 +30,9 @@ export type AnchorRef =
   | 'center' 
   | 'ceiling'
   | 'avatar_hand'
-  | 'table_center';
+  | 'table_center'
+  | 'm01_tool_a'
+  | 'm01_tool_b';
 
 export interface MissionOption {
   key: 'a' | 'b';
