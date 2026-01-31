@@ -575,6 +575,9 @@ export function VisualPlayScreen({
   const [maleStaffEnterReady, setMaleStaffEnterReady] = useState(false);
   const [hadM02Lock, setHadM02Lock] = useState(false);
   
+  // Mission 03: track if Tool A (workbench) was selected - staff moves to table sides
+  const [mission03ToolASelected, setMission03ToolASelected] = useState(false);
+  
   // Reset staff visibility when mission changes (except when going to mission 02 with Tool B)
   useEffect(() => {
     // Only show female staff if we're in mission 02 AND Tool B was chosen in mission 01
@@ -626,6 +629,10 @@ export function VisualPlayScreen({
       setHadM02Lock(true);
       setMission02ToolSelected(lockPulseKey === 'studio_02-a' ? 'a' : 'b');
     }
+    // Track Mission 03 Tool A selection
+    if (lockPulseKey === 'studio_03-a') {
+      setMission03ToolASelected(true);
+    }
   }, [lockPulseKey]);
 
   // Trigger male staff entry AFTER Mission 02 lock pulse finishes.
@@ -640,9 +647,10 @@ export function VisualPlayScreen({
     return () => window.clearTimeout(id);
   }, [hadM02Lock, lockPulseKey, localPlacement, mission.mission_id]);
   
-  // Hide individual Mission 01/02 staff when we're in Mission 03+ (workshop shows both staff differently)
-  const showFemaleStaff = staffEnterReady && !isWorkshopLocked;
-  const showMaleStaff = maleStaffEnterReady && mission02ToolSelected !== null && !isWorkshopLocked;
+  // In Mission 03: show staff in original positions until Tool A is selected
+  // After Tool A: staff moves to table sides (handled in workshop section)
+  const showFemaleStaff = staffEnterReady && (!isWorkshopLocked || (isWorkshopLocked && !mission03ToolASelected));
+  const showMaleStaff = maleStaffEnterReady && mission02ToolSelected !== null && (!isWorkshopLocked || (isWorkshopLocked && !mission03ToolASelected));
   
   const sceneExtras: never[] = []; // Keep the original array empty for now
 
@@ -784,8 +792,8 @@ export function VisualPlayScreen({
         </div>
       )}
 
-      {/* Mission 03+: Both staff members waiting near the back wall */}
-      {isWorkshopLocked && (
+      {/* Mission 03+: Staff members at table sides - ONLY after Tool A is selected */}
+      {isWorkshopLocked && mission03ToolASelected && (
         <>
           {/* Male staff - left side of table */}
           <div
