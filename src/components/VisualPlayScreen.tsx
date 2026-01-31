@@ -1421,10 +1421,39 @@ export function VisualPlayScreen({
   }, [avatarGender]);
 
   // NPC positions for the editor (staff only)
+  // In edit mode, show ALL NPCs for calibration (not just visible ones based on game state)
   const editorNpcs = useMemo(() => {
     const npcs = [];
     
-    // Workshop staff positions
+    // Mission 01-02: Female staff (appears after Tool B selection in M01)
+    // Always show in editor for calibration
+    const isMission01or02 = mission.mission_id === 'studio_01' || mission.mission_id === 'studio_02';
+    if (isMission01or02 || showFemaleStaff) {
+      npcs.push({
+        id: 'mission-female',
+        label: 'Female Staff (M01 Tool B)',
+        left: parseFloat(femaleStaffPos.left || '70'),
+        top: 100 - parseFloat(femaleStaffPos.bottom?.replace('%', '') || '10'),
+        height: 'clamp(280px, 48vh, 460px)',
+        imageSrc: femaleStaffWalk,
+      });
+    }
+    
+    // Mission 02: Male staff (appears after any tool selection in M02)
+    // Always show in editor when in M02 for calibration
+    const isMission02 = mission.mission_id === 'studio_02';
+    if (isMission02 || showMaleStaff) {
+      npcs.push({
+        id: 'mission-male',
+        label: 'Male Staff (M02)',
+        left: parseFloat(maleStaffPos.left?.replace('%', '') || '30'),
+        top: maleStaffPos.top ? parseFloat(maleStaffPos.top.replace('%', '')) : (100 - parseFloat(maleStaffPos.bottom?.replace('%', '') || '10')),
+        height: 'clamp(260px, 44vh, 420px)',
+        imageSrc: maleStaffWalk,
+      });
+    }
+    
+    // Workshop staff positions (Mission 03+)
     if (isWorkshopLocked) {
       const malePos = shouldShowWorkshopStaffAtTable 
         ? workshopTableStaffPos.male 
@@ -1451,30 +1480,8 @@ export function VisualPlayScreen({
       });
     }
     
-    // Mission 1-2 staff
-    if (showFemaleStaff) {
-      npcs.push({
-        id: 'mission-female',
-        label: 'Female Staff (M01)',
-        left: parseFloat(femaleStaffPos.left || '70'),
-        top: 100 - parseFloat(femaleStaffPos.bottom?.replace('%', '') || '10'),
-        height: 'clamp(280px, 48vh, 460px)',
-        imageSrc: femaleStaffWalk,
-      });
-    }
-    if (showMaleStaff) {
-      npcs.push({
-        id: 'mission-male',
-        label: 'Male Staff (M02)',
-        left: parseFloat(maleStaffPos.left?.replace('%', '') || '30'),
-        top: maleStaffPos.top ? parseFloat(maleStaffPos.top.replace('%', '')) : (100 - parseFloat(maleStaffPos.bottom?.replace('%', '') || '10')),
-        height: 'clamp(260px, 44vh, 420px)',
-        imageSrc: maleStaffWalk,
-      });
-    }
-    
     return npcs;
-  }, [isWorkshopLocked, shouldShowWorkshopStaffAtTable, workshopTableStaffPos, workshopWaitingStaffPos, showFemaleStaff, showMaleStaff, femaleStaffPos, maleStaffPos]);
+  }, [mission.mission_id, isWorkshopLocked, shouldShowWorkshopStaffAtTable, workshopTableStaffPos, workshopWaitingStaffPos, showFemaleStaff, showMaleStaff, femaleStaffPos, maleStaffPos]);
 
   // Tools/Props positions for the editor
   // ONLY show tools for the CURRENT mission - not previous missions
