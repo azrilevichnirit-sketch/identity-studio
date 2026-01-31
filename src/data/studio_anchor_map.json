@@ -455,5 +455,22 @@
     "y_pct": 0.72,
     "scale": 1.0,
     "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m03_tool_a",
+    "x_pct": 0.31,
+    "y_pct": 1.0,
+    "scale": 2.4,
+    "z_layer": "mid",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m03_tool_b",
+    "x_pct": 0.193,
+    "y_pct": 0.878,
+    "scale": 1.8,
+    "z_layer": "mid"
   }
 ]
