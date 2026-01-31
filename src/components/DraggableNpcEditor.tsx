@@ -45,6 +45,9 @@ interface DraggableNpcEditorProps {
   missionLabel?: string;
 }
 
+// Persist transforms across mission changes - keyed globally
+const globalTransforms: Record<string, TransformState> = {};
+
 export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
   isEnabled,
   npcs,
@@ -55,7 +58,8 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
   onSaveAndNext,
   missionLabel,
 }) => {
-  const [transforms, setTransforms] = useState<Record<string, TransformState>>({});
+  // Use global transforms for persistence across mission changes
+  const [transforms, setTransforms] = useState<Record<string, TransformState>>(globalTransforms);
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -64,6 +68,12 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
   const [showAvatar, setShowAvatar] = useState(true);
   const [showBubble, setShowBubble] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Sync local state to global storage whenever transforms change
+  useEffect(() => {
+    Object.assign(globalTransforms, transforms);
+  }, [transforms]);
+
 
   const allItems: DraggableItem[] = [
     ...(bubble ? [{ ...bubble, type: 'bubble' as const, imageSrc: undefined }] : []),
