@@ -62,15 +62,17 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
     }));
   };
 
-  const handleMouseDown = useCallback((e: React.MouseEvent, id: string) => {
+  const handlePointerDown = useCallback((e: React.PointerEvent, id: string) => {
     if (!isEnabled) return;
     e.preventDefault();
     e.stopPropagation();
+    // Capture pointer for touch devices
+    (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
     setDraggingId(id);
     setSelectedId(id);
   }, [isEnabled]);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
     if (!draggingId || !containerRef.current) return;
     
     const rect = containerRef.current.getBoundingClientRect();
@@ -85,7 +87,8 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
     onPositionChange?.(draggingId, left, top);
   }, [draggingId, onPositionChange]);
 
-  const handleMouseUp = useCallback(() => {
+  const handlePointerUp = useCallback((e: React.PointerEvent) => {
+    (e.target as HTMLElement).releasePointerCapture?.(e.pointerId);
     setDraggingId(null);
   }, []);
 
@@ -153,10 +156,10 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 z-[9999]"
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
+      className="absolute inset-0 z-[9999] touch-none"
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerLeave={handlePointerUp}
       onClick={() => setSelectedId(null)}
     >
       {/* Control Panel */}
@@ -299,7 +302,7 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
               transformOrigin: 'bottom center',
               zIndex: isDragging || isSelected ? 10001 : 10000,
             }}
-            onMouseDown={(e) => handleMouseDown(e, item.id)}
+            onPointerDown={(e) => handlePointerDown(e, item.id)}
             onClick={(e) => { e.stopPropagation(); setSelectedId(item.id); }}
           >
             <div className={`relative border-2 ${borderColor} rounded-lg p-1 bg-black/30`}>
