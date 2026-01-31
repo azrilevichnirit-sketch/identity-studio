@@ -223,36 +223,32 @@ export function VisualPlayScreen({
     : (isWorkshopLocked ? (getBackgroundByName('studio_in_workshop_bg') || displayBg) : displayBg);
 
   // Get target anchor for currently selected tool
-  // For mission 1: Tool A targets BACK floor (near walls), Tool B targets CENTER floor
+  // Uses anchor_ref from quest data to look up coordinates in anchor map
   const getTargetAnchor = useCallback((variant: 'a' | 'b') => {
     const option = variant === 'a' ? optionA : optionB;
     const targetBgKey = option.next_bg_override || currentBgKey;
 
-    // Mission 01: separate drop zones for Tool A (back near walls) and Tool B (center floor)
-    if (mission.mission_id === 'studio_01') {
-      if (variant === 'a') {
-        // Tool A: drop zone at BACK of room, very close to walls (using fixed value)
-        return { x: 50, y: BACK_FLOOR_Y, scale: 1, z_layer: 'mid' as const };
-      } else {
-        // Tool B: drop zone at CENTER of floor
-        return { x: 50, y: CENTER_FLOOR_Y, scale: 1, z_layer: 'mid' as const };
-      }
+    // Use anchor_ref from quest data (e.g. m01_tool_a, m01_tool_b)
+    const anchorRef = option.anchor_ref as AnchorRef;
+    const anchorPos = getAnchorPosition(targetBgKey, anchorRef);
+    
+    if (anchorPos) {
+      return anchorPos;
     }
 
+    // Fallback for missions without defined anchors
     // Mission 03: Tool A (workbench) -> center of floor, Tool B (sound desk) -> back floor near wall
     if (mission.mission_id === 'studio_03') {
       if (variant === 'a') {
-        // Tool A (workbench): drop zone at CENTER of floor
         return { x: 50, y: 82, scale: 1, z_layer: 'mid' as const };
       } else {
-        // Tool B (sound desk): drop zone at BACK floor, near left wall (like against the wall)
         return { x: 18, y: 68, scale: 1, z_layer: 'mid' as const };
       }
     }
 
-    const anchorRef = option.anchor_ref as AnchorRef;
-    return getAnchorPosition(targetBgKey, anchorRef);
-  }, [optionA, optionB, currentBgKey, mission.mission_id, BACK_FLOOR_Y, CENTER_FLOOR_Y]);
+    // Default fallback
+    return { x: 50, y: 70, scale: 1, z_layer: 'mid' as const };
+  }, [optionA, optionB, currentBgKey, mission.mission_id]);
 
   // Flash cue when mission changes (helps player notice the transition)
   const [showMissionFlash, setShowMissionFlash] = useState(false);
