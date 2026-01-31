@@ -756,11 +756,11 @@ export function VisualPlayScreen({
   const workshopWaitingStaffPos = useMemo(() => {
     return {
       male: {
-        left: '70%', // Right side (swapped)
+        left: '60%', // Right side, closer to center
         top: '50%', // Very close to back wall
       },
       female: {
-        left: '30%', // Left side (swapped)
+        left: '40%', // Left side, closer to center
         top: '50%', // Very close to back wall
       },
     };
