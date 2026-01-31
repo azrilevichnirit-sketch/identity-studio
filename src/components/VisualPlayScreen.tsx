@@ -674,13 +674,12 @@ export function VisualPlayScreen({
         facingRight: false, // Face left toward tool
       };
     } else {
-      // Tool B hangs on wall (~70% from left)
-      // Male staff stands facing it from ~55%
+      // Tool B hangs on LEFT wall (~25% from left)
+      // Male staff stands to the RIGHT of the tool, facing left toward it
       return {
-        left: '55%',
-        // Requested: align to the wall line (~52% from top)
-        top: '52%',
-        facingRight: true, // Face right toward wall-mounted tool
+        left: '38%',
+        bottom: '6%',
+        facingRight: false, // Face left toward wall-mounted tool
       };
     }
   }, [mission02ToolSelected]);
@@ -852,10 +851,10 @@ export function VisualPlayScreen({
       return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 1.6, absoluteY: DUPLICATE_BUCKETS_Y, absoluteX: 30 }];
     }
     
-    // Mission 02 Tool B: hangs on the wall (~70% from left, higher up)
+    // Mission 02 Tool B: hangs on the LEFT wall (~25% from left, higher up)
     if (prop.missionId === 'studio_02' && prop.key === 'b') {
       const wallY = 52; // On the wall, higher than floor
-      return [{ anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.4, absoluteY: wallY, absoluteX: 70, wallMount: true }];
+      return [{ anchor: 'wall_left', offsetX: 0, offsetY: 0, customScale: 1.4, absoluteY: wallY, absoluteX: 25, wallMount: true }];
     }
 
     // Default: single placement at floor
