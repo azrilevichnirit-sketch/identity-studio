@@ -1397,6 +1397,63 @@ export function VisualPlayScreen({
     return npcs;
   }, [isWorkshopLocked, shouldShowWorkshopStaffAtTable, workshopTableStaffPos, workshopWaitingStaffPos, showFemaleStaff, showMaleStaff, femaleStaffPos, maleStaffPos]);
 
+  // Tools/Props positions for the editor
+  const editorTools = useMemo(() => {
+    const tools = [];
+    
+    // Add placed props with their calculated positions
+    for (const prop of placedProps) {
+      const toolImage = getToolImage(prop.assetName);
+      if (!toolImage) continue;
+      
+      // Simple position lookup based on mission/key
+      let x = 50, y = 70;
+      
+      if (prop.missionId === 'studio_01') {
+        if (prop.key === 'a') { x = 50; y = 71; }
+        else { x = 50; y = 80; }
+      } else if (prop.missionId === 'studio_02') {
+        if (prop.key === 'a') { x = 32; y = 68; }
+        else { x = 70; y = 52; }
+      } else if (prop.missionId === 'studio_03') {
+        if (prop.key === 'a') { x = 60; y = 70; }
+        else { x = 18; y = 68; }
+      } else {
+        // Default position for other missions
+        const anchor = getTargetAnchor(prop.key);
+        x = anchor?.x ?? 50;
+        y = anchor?.y ?? 70;
+      }
+      
+      tools.push({
+        id: `tool-${prop.missionId}-${prop.key}`,
+        label: `${prop.missionId.replace('studio_', 'M')} ${prop.key.toUpperCase()}`,
+        left: x,
+        top: y,
+        height: 'clamp(80px, 15vh, 150px)',
+        imageSrc: toolImage,
+      });
+    }
+    
+    // Add local placement if exists
+    if (localPlacement) {
+      const toolImage = getToolImage(localPlacement.assetName);
+      if (toolImage) {
+        const anchor = getTargetAnchor(localPlacement.key);
+        tools.push({
+          id: `local-${localPlacement.missionId}-${localPlacement.key}`,
+          label: `LOCAL: ${localPlacement.missionId.replace('studio_', 'M')} ${localPlacement.key.toUpperCase()}`,
+          left: anchor?.x ?? 50,
+          top: anchor?.y ?? 70,
+          height: 'clamp(80px, 15vh, 150px)',
+          imageSrc: toolImage,
+        });
+      }
+    }
+    
+    return tools;
+  }, [placedProps, localPlacement, getTargetAnchor]);
+
   return (
     <>
       <MissionLayout
@@ -1426,11 +1483,12 @@ export function VisualPlayScreen({
         cols={5}
       />
       
-      {/* NPC Visual Editor */}
+      {/* NPC + Tools Visual Editor */}
       {npcEditMode && (
         <DraggableNpcEditor
           isEnabled={npcEditMode}
           npcs={editorNpcs}
+          tools={editorTools}
         />
       )}
     </>
