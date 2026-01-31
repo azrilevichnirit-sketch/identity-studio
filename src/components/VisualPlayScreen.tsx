@@ -97,11 +97,16 @@ export function VisualPlayScreen({
   }, [mission.mission_id]);
 
   // Get the *actual* previous mission pick (Object.values order is not reliable)
-  // Product rule: from mission 02 onwards, walls are ALWAYS white (regardless of mission 01 choice)
+  // Product rule: Mission 02 uses white walls. Mission 03+ uses workshop background.
   const previousBgOverride = useMemo(() => {
-    // From mission 02 onwards, always use white walls
-    if (mission.phase === 'main' && mission.sequence >= 2) {
+    // Mission 02 only: always use white walls
+    if (mission.phase === 'main' && mission.sequence === 2) {
       return PAINTED_WALLS_BG_KEY;
+    }
+    
+    // Mission 03+: use the workshop background (or let the mission's bg_override take over)
+    if (mission.phase === 'main' && mission.sequence >= 3) {
+      return 'studio_in_workshop_bg';
     }
 
     return undefined;
@@ -140,10 +145,10 @@ export function VisualPlayScreen({
   
   // Mobile panning support
   const isMobile = useIsMobile();
-  // Product rule: from mission 02 onwards, background must be the white-walls variant.
-  // We also use this key for panoramic selection so mobile never pulls the cracked variant.
-  const isWhiteWallsLocked = mission.phase === 'main' && mission.sequence >= 2;
-  const bgKeyForPanorama = isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY : currentBgKey;
+  // Product rule: Mission 02 uses white walls, Mission 03+ uses workshop.
+  const isWhiteWallsLocked = mission.phase === 'main' && mission.sequence === 2;
+  const isWorkshopLocked = mission.phase === 'main' && mission.sequence >= 3;
+  const bgKeyForPanorama = isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY : (isWorkshopLocked ? 'studio_in_workshop_bg' : currentBgKey);
   const panoramicBg = useMemo(() => getPanoramicBackground(bgKeyForPanorama), [bgKeyForPanorama]);
   const { backgroundPosition, updatePanFromDrag, resetPan } = usePanningBackground({
     enabled: isMobile && !!panoramicBg,
@@ -153,10 +158,14 @@ export function VisualPlayScreen({
 
   // Get the target background for a tool option
   const getTargetBgForOption = useCallback((option: MissionOption) => {
-    // Product rule: from mission 02 onwards, walls are ALWAYS white.
-    // So we don't allow tool hover/drag to preview a different background.
-    if (mission.phase === 'main' && mission.sequence >= 2) {
+    // Product rule: Mission 02 locked to white walls, Mission 03+ locked to workshop
+    if (mission.phase === 'main' && mission.sequence === 2) {
       const lockedKey = PAINTED_WALLS_BG_KEY;
+      const lockedImage = getBackgroundByName(lockedKey) || currentBg;
+      return { key: lockedKey, image: lockedImage };
+    }
+    if (mission.phase === 'main' && mission.sequence >= 3) {
+      const lockedKey = 'studio_in_workshop_bg';
       const lockedImage = getBackgroundByName(lockedKey) || currentBg;
       return { key: lockedKey, image: lockedImage };
     }
@@ -195,9 +204,11 @@ export function VisualPlayScreen({
   const displayBg = localBgOverride?.image || dragPreviewBg?.image || currentBg;
   const displayBgKey = localBgOverride?.key || dragPreviewBg?.key || currentBgKey;
 
-  // Final guardrail: from mission 02 onwards, force white walls regardless of any transient state.
-  const lockedBgKey = isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY : displayBgKey;
-  const lockedBg = isWhiteWallsLocked ? (getBackgroundByName(PAINTED_WALLS_BG_KEY) || displayBg) : displayBg;
+  // Final guardrail: Mission 02 = white walls, Mission 03+ = workshop
+  const lockedBgKey = isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY : (isWorkshopLocked ? 'studio_in_workshop_bg' : displayBgKey);
+  const lockedBg = isWhiteWallsLocked 
+    ? (getBackgroundByName(PAINTED_WALLS_BG_KEY) || displayBg) 
+    : (isWorkshopLocked ? (getBackgroundByName('studio_in_workshop_bg') || displayBg) : displayBg);
 
   // Get target anchor for currently selected tool
   // For mission 1: Tool A targets BACK floor (near walls), Tool B targets CENTER floor
@@ -328,7 +339,8 @@ export function VisualPlayScreen({
     // Mission 01 paint: only advance after the player clearly sees the “painted walls” beat.
     const isMission02 = mission.mission_id === 'studio_02';
     // Mission 01 Tool B: 2800ms - enough time for lock (1100ms) + staff entry + viewing
-    const advanceDelay = isMission01Paint ? 3200 : (isMission01ToolB ? 2800 : (isMission02 ? 2600 : 2500));
+    // Mission 02: 3500ms - tool locks, then male staff enters, then wait 1 second before advancing
+    const advanceDelay = isMission01Paint ? 3200 : (isMission01ToolB ? 2800 : (isMission02 ? 3500 : 2500));
     const advanceId = window.setTimeout(() => {
       // For Mission 01 Tool B: DON'T clear localPlacement before onSelect
       // This prevents the tool from disappearing before it's added to placedProps
@@ -696,14 +708,14 @@ export function VisualPlayScreen({
         </div>
       )}
       
-      {/* Male staff - Mission 02 */}
+      {/* Male staff - Mission 02 - BEHIND the tool (lower z-index) */}
       {showMaleStaff && (
         <div
           className="absolute pointer-events-none animate-npc-enter"
           style={{
             left: maleStaffPos.left,
             bottom: maleStaffPos.bottom,
-            zIndex: 18,
+            zIndex: 8, // Behind tools (tools are ~15-20)
             transform: 'translateX(-50%)',
             transformOrigin: 'bottom center',
           }}

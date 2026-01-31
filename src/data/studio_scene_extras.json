@@ -118,5 +118,35 @@
     "note": "on the main sciling",
     "despawn_mode": "keep",
     "despawn_value": "end"
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "order": 9,
+    "mission_id": "studio_03",
+    "trigger_when": "before",
+    "trigger_tool_ids": "studio_03_a;studio_03_b",
+    "spawn_asset_key": "studio_01_male_staff_walk",
+    "spawn_count": 1,
+    "placement_mode": "floor_near_wall",
+    "anchor_ref": "floor_right_npc",
+    "note": "male staff standing on the right waiting",
+    "despawn_mode": "keep",
+    "despawn_value": "end"
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "order": 10,
+    "mission_id": "studio_03",
+    "trigger_when": "before",
+    "trigger_tool_ids": "studio_03_a;studio_03_b",
+    "spawn_asset_key": "studio_01_female_staff_walk",
+    "spawn_count": 1,
+    "placement_mode": "floor_near_wall",
+    "anchor_ref": "floor_right_npc_2",
+    "note": "female staff standing on the right waiting",
+    "despawn_mode": "keep",
+    "despawn_value": "end"
   }
 ]
