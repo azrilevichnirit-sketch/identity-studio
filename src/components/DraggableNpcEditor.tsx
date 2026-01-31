@@ -335,7 +335,7 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
       onClick={() => setSelectedId(null)}
     >
       {/* Control Panel */}
-      <div className="absolute top-4 left-4 bg-black/90 text-white p-3 rounded-lg text-xs font-mono max-w-sm z-[10000] max-h-[85vh] overflow-y-auto">
+      <div className="absolute top-2 left-2 bg-black/90 text-white p-2 rounded-lg text-[10px] font-mono max-w-[200px] z-[10000] max-h-[60vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <span className="font-bold text-yellow-400">🎯 Position Editor</span>

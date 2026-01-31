@@ -1415,6 +1415,7 @@ export function VisualPlayScreen({
   }, [isWorkshopLocked, shouldShowWorkshopStaffAtTable, workshopTableStaffPos, workshopWaitingStaffPos, showFemaleStaff, showMaleStaff, femaleStaffPos, maleStaffPos]);
 
   // Tools/Props positions for the editor
+  // ONLY show tools for the CURRENT mission - not previous missions
   const editorTools = useMemo(() => {
     const tools = [];
     
@@ -1445,40 +1446,6 @@ export function VisualPlayScreen({
       });
     }
     
-    // Add placed props with their calculated positions
-    for (const prop of placedProps) {
-      const toolImage = getToolImage(prop.assetName);
-      if (!toolImage) continue;
-      
-      // Simple position lookup based on mission/key
-      let x = 50, y = 70;
-      
-      if (prop.missionId === 'studio_01') {
-        if (prop.key === 'a') { x = 50; y = 71; }
-        else { x = 50; y = 80; }
-      } else if (prop.missionId === 'studio_02') {
-        if (prop.key === 'a') { x = 32; y = 68; }
-        else { x = 70; y = 52; }
-      } else if (prop.missionId === 'studio_03') {
-        if (prop.key === 'a') { x = 60; y = 70; }
-        else { x = 18; y = 68; }
-      } else {
-        // Default position for other missions
-        const anchor = getTargetAnchor(prop.key);
-        x = anchor?.x ?? 50;
-        y = anchor?.y ?? 70;
-      }
-      
-      tools.push({
-        id: `tool-${prop.missionId}-${prop.key}`,
-        label: `${prop.missionId.replace('studio_', 'M')} ${prop.key.toUpperCase()} (placed)`,
-        left: x,
-        top: y,
-        height: 'clamp(80px, 15vh, 150px)',
-        imageSrc: toolImage,
-      });
-    }
-    
     // Add local placement if exists
     if (localPlacement) {
       const toolImage = getToolImage(localPlacement.assetName);
@@ -1496,7 +1463,7 @@ export function VisualPlayScreen({
     }
     
     return tools;
-  }, [placedProps, localPlacement, getTargetAnchor, mission.mission_id, optionA.asset, optionB.asset]);
+  }, [localPlacement, getTargetAnchor, mission.mission_id, optionA.asset, optionB.asset]);
 
   // Speech bubble for the editor
   const editorBubble = useMemo(() => {
