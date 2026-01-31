@@ -512,7 +512,10 @@ export function VisualPlayScreen({
       isPersisted?: boolean;
     }> = [];
     
-    // Add persisted tools from previous missions (e.g., Mission 01 Tool B persists to Mission 02)
+    // Get the current mission sequence number
+    const currentSeq = mission.sequence;
+    
+    // Add persisted tools from previous missions based on persist flag
     placedProps.forEach((prop) => {
       // Mission 01 Tool B persists into Mission 02
       if (prop.missionId === 'studio_01' && prop.key === 'b' && mission.mission_id === 'studio_02') {
@@ -523,6 +526,22 @@ export function VisualPlayScreen({
           hollandCode: prop.hollandCode,
           isPersisted: true,
         });
+      }
+      
+      // Mission 03+ tools persist if they have persist: 'keep'
+      // Show tools from previous missions that have persist='keep'
+      if (prop.persist === 'keep') {
+        const propSeq = parseInt(prop.missionId.replace('studio_', ''), 10);
+        // Show persisted tools in later missions (not in the same mission where they were placed)
+        if (propSeq >= 3 && propSeq < currentSeq) {
+          placements.push({
+            missionId: prop.missionId,
+            key: prop.key,
+            assetName: prop.assetName || `${prop.missionId}_${prop.key}`,
+            hollandCode: prop.hollandCode,
+            isPersisted: true,
+          });
+        }
       }
     });
     
@@ -537,7 +556,7 @@ export function VisualPlayScreen({
     }
     
     return placements;
-  }, [localPlacement, placedProps, mission.mission_id]);
+  }, [localPlacement, placedProps, mission.mission_id, mission.sequence]);
 
   const targetPosition = useMemo(() => {
     if (activeToolVariant) {
