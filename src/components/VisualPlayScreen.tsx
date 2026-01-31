@@ -695,17 +695,17 @@ export function VisualPlayScreen({
     }
   }, [mission02ToolSelected]);
 
-  // Mission 03+: two staff members waiting near the back wall (68% Y line)
-  // Standing on the floor near the wall, same size as the player avatar
+  // Mission 03+: two staff members waiting near the windows (52% Y line)
+  // Larger size, positioned closer to the windows in the back
   const workshopWaitingStaffPos = useMemo(() => {
     return {
       male: {
-        left: '35%',
-        top: '68%',
+        left: '30%',
+        top: '52%',
       },
       female: {
-        left: '45%',
-        top: '68%',
+        left: '42%',
+        top: '52%',
       },
     };
   }, []);
@@ -781,7 +781,7 @@ export function VisualPlayScreen({
               alt="דמות צוות מחכה"
               className="w-auto object-contain animate-subtle-idle"
               style={{
-                height: 'clamp(180px, 28vh, 280px)',
+                height: 'clamp(220px, 36vh, 360px)',
                 filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
                 transform: 'scaleX(-1)',
               }}
@@ -803,7 +803,7 @@ export function VisualPlayScreen({
               alt="דמות צוות מחכה"
               className="w-auto object-contain animate-subtle-idle"
               style={{
-                height: 'clamp(180px, 28vh, 280px)',
+                height: 'clamp(220px, 36vh, 360px)',
                 filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
                 transform: 'scaleX(-1)',
               }}
