@@ -2,10 +2,10 @@
 
 import type { AvatarGender, Mission } from '@/types/identity';
 
-// Background imports - ONLY using the new stylized background
-// All old backgrounds removed per product requirements
+// Background imports
 import galleryMainStylized from '@/assets/backgrounds/gallery_main_stylized_v3.webp';
 import galleryMainStylizedWhite from '@/assets/backgrounds/gallery_main_stylized_white_v1.webp';
+import studioWorkshopBg from '@/assets/backgrounds/studio_in_workshop_bg.webp';
 
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
@@ -133,16 +133,18 @@ const toolAssets: Record<string, string> = {
 // NOTE: Default background is the (current) stylized room.
 // Mission 01 special: choosing tool A "paints" walls white for Mission 02+.
 const backgroundAssets: Record<string, string> = {
-  // Default room ("before paint")
+  // Default room ("before paint" - cracked walls)
   studio_front_bg: galleryMainStylized,
   studio_in_entrance_view_bg: galleryMainStylized,
   studio_in_gallery_bg: galleryMainStylized,
   studio_in_storage_bg: galleryMainStylized,
-  studio_in_workshop_bg: galleryMainStylized,
   studio_entry_inside_bg: galleryMainStylized,
 
-  // "After paint" (white walls)
+  // "After paint" (white walls) - Mission 02
   studio_in_gallery_wall_bg: galleryMainStylizedWhite,
+
+  // Workshop (Mission 03+)
+  studio_in_workshop_bg: studioWorkshopBg,
 
   // Named keys
   gallery_main_stylized: galleryMainStylized,
@@ -154,6 +156,7 @@ const panoramicBackgrounds: Record<string, string> = {
   studio_in_gallery_bg: galleryMainStylized,
   studio_entry_inside_bg: galleryMainStylized,
   studio_in_gallery_wall_bg: galleryMainStylizedWhite,
+  studio_in_workshop_bg: studioWorkshopBg,
 };
 
 export function getPanoramicBackground(bgKey: string): string | null {

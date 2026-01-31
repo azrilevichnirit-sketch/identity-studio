@@ -352,6 +352,22 @@
     "z_layer": "mid"
   },
   {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "floor_right_npc",
+    "x_pct": 0.82,
+    "y_pct": 0.72,
+    "scale": 1.0,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "floor_right_npc_2",
+    "x_pct": 0.90,
+    "y_pct": 0.72,
+    "scale": 1.0,
+    "z_layer": "mid"
+  },
+  {
     "background_asset_key": "studio_in_gallery_wall_bg",
     "anchor_ref": "wall_back",
     "x_pct": 0.5,
