@@ -23,6 +23,8 @@ export type AnchorRef =
   | 'wall_left' 
   | 'wall_right' 
   | 'floor' 
+  | 'floor_left'
+  | 'floor_left_npc'
   | 'center' 
   | 'ceiling'
   | 'avatar_hand'

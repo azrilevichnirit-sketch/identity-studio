@@ -41,6 +41,22 @@
   },
   {
     "background_asset_key": "studio_entry_inside_bg",
+    "anchor_ref": "floor_left",
+    "x_pct": 0.32,
+    "y_pct": 0.68,
+    "scale": 0.9,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_entry_inside_bg",
+    "anchor_ref": "floor_left_npc",
+    "x_pct": 0.38,
+    "y_pct": 0.72,
+    "scale": 0.85,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_entry_inside_bg",
     "anchor_ref": "ceiling",
     "x_pct": 0.5,
     "y_pct": 0.14,
