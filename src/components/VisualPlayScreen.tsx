@@ -577,7 +577,7 @@ export function VisualPlayScreen({
   const [maleStaffEnterReady, setMaleStaffEnterReady] = useState(false);
   const [hadM02Lock, setHadM02Lock] = useState(false);
   
-  // Mission 03: track if Tool A (workbench) was selected - staff moves to table sides
+  // Mission 03: track if Tool A (workbench) was selected - used only to keep workshop positioning stable
   const [mission03ToolASelected, setMission03ToolASelected] = useState(false);
 
   // Mission 03: derive if Tool A is already placed (more reliable than only lock pulse)
@@ -652,16 +652,17 @@ export function VisualPlayScreen({
     }
   }, [lockPulseKey]);
 
-  // Keep Mission 03 Tool A state in sync with undo/back navigation
+  // Keep Mission 03 Tool A state stable across mission transitions (e.g., to mission 4)
+  // Reset only when leaving the workshop flow (undo/back to missions < 3).
   useEffect(() => {
     if (!isWorkshopLocked) {
       setMission03ToolASelected(false);
       return;
     }
-    if (!mission03ToolAPlaced && lockPulseKey !== 'studio_03-a') {
-      setMission03ToolASelected(false);
+    if (mission03ToolAPlaced) {
+      setMission03ToolASelected(true);
     }
-  }, [isWorkshopLocked, mission03ToolAPlaced, lockPulseKey]);
+  }, [isWorkshopLocked, mission03ToolAPlaced]);
 
   // Trigger male staff entry AFTER Mission 02 lock pulse finishes.
   // (Important: don't schedule off the "lockPulseKey is active" state, because cleanup will cancel it.)
@@ -680,7 +681,11 @@ export function VisualPlayScreen({
   const showFemaleStaff = staffEnterReady && !isWorkshopLocked;
   const showMaleStaff = maleStaffEnterReady && mission02ToolSelected !== null && !isWorkshopLocked;
 
-  const shouldShowWorkshopStaffAtTable = isWorkshopLocked && (mission03ToolASelected || mission03ToolAPlaced);
+  const shouldShowWorkshopStaffAtTable =
+    isWorkshopLocked &&
+    (mission03ToolASelected ||
+      mission03ToolAPlaced ||
+      (localPlacement?.missionId === 'studio_03' && localPlacement.key === 'a'));
   
   const sceneExtras: never[] = []; // Keep the original array empty for now
 
@@ -1031,8 +1036,9 @@ export function VisualPlayScreen({
 
     // Mission 03 Tool A (workbench): large center table grounded on floor
     if (prop.missionId === 'studio_03' && prop.key === 'a') {
-      // Slightly smaller than before to avoid the “falling” illusion when rotated.
-      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 3.0, absoluteY: 82, absoluteX: 50 }];
+      // Align to grid: centered on the boundary between squares 18-19 (x=60), row 4 (y~70)
+      // Keep a consistent placement point so the tool doesn't feel like it shifts between missions.
+      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 3.0, absoluteY: 70, absoluteX: 60 }];
     }
     
     // Mission 03 Tool B (sound desk): on floor (71% Y), large like A
@@ -1116,11 +1122,9 @@ export function VisualPlayScreen({
                  style={{
                    filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
                    // Only rotate Mission 01 Tool B
-                   transform: isMission01ToolB
-                     ? 'rotate(-15deg) scaleX(-1)'
-                     : (prop.missionId === 'studio_03' && prop.key === 'a'
-                         ? 'rotate(5deg)' // Slight rotation to align with room perspective
-                         : undefined),
+                    transform: isMission01ToolB
+                      ? 'rotate(-15deg) scaleX(-1)'
+                      : undefined,
                  }}
               />
             </div>
