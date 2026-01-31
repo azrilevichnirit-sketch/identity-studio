@@ -16,6 +16,7 @@ import { AnchorDebugOverlay } from './AnchorDebugOverlay';
 import { GridDebugOverlay } from './GridDebugOverlay';
 import femaleStaffWalk from '@/assets/avatars/studio_01_female_staff_walk.webp';
 import maleStaffWalk from '@/assets/avatars/studio_01_male_staff_walk.webp';
+import { DraggableNpcEditor } from './DraggableNpcEditor';
 // import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter'; // Disabled
 
 const DRAG_HINT_STORAGE_KEY = 'ie_hasDraggedOnce';
@@ -30,6 +31,7 @@ interface VisualPlayScreenProps {
   placedProps: PickRecord[];
   onSelect: (missionId: string, key: 'a' | 'b', hollandCode: HollandCode, option?: MissionOption) => void;
   onUndo: () => void;
+  npcEditMode?: boolean;
 }
 
 export function VisualPlayScreen({
@@ -42,6 +44,7 @@ export function VisualPlayScreen({
   placedProps,
   onSelect,
   onUndo,
+  npcEditMode = false,
 }: VisualPlayScreenProps) {
   const [showUndoDialog, setShowUndoDialog] = useState(false);
   const [draggingTool, setDraggingTool] = useState<'a' | 'b' | null>(null);
@@ -1338,6 +1341,62 @@ export function VisualPlayScreen({
     { name: 'floor (front)', y: 87, color: '#9b59b6' },
   ], [BACK_FLOOR_Y, DUPLICATE_BUCKETS_Y, CENTER_FLOOR_Y]);
 
+  // NPC positions for the editor
+  const editorNpcs = useMemo(() => {
+    const npcs = [];
+    
+    // Workshop staff positions
+    if (isWorkshopLocked) {
+      const malePos = shouldShowWorkshopStaffAtTable 
+        ? workshopTableStaffPos.male 
+        : workshopWaitingStaffPos.male;
+      const femalePos = shouldShowWorkshopStaffAtTable 
+        ? workshopTableStaffPos.female 
+        : workshopWaitingStaffPos.female;
+      
+      npcs.push({
+        id: 'workshop-male',
+        label: 'Male Staff (Workshop)',
+        left: parseFloat(malePos.left),
+        top: parseFloat(malePos.top),
+        height: shouldShowWorkshopStaffAtTable ? 'clamp(180px, 28vh, 280px)' : 'clamp(220px, 34vh, 340px)',
+        imageSrc: maleStaffWalk,
+      });
+      npcs.push({
+        id: 'workshop-female',
+        label: 'Female Staff (Workshop)',
+        left: parseFloat(femalePos.left),
+        top: parseFloat(femalePos.top),
+        height: shouldShowWorkshopStaffAtTable ? 'clamp(180px, 28vh, 280px)' : 'clamp(220px, 34vh, 340px)',
+        imageSrc: femaleStaffWalk,
+      });
+    }
+    
+    // Mission 1-2 staff
+    if (showFemaleStaff) {
+      npcs.push({
+        id: 'mission-female',
+        label: 'Female Staff (M01)',
+        left: parseFloat(femaleStaffPos.left || '70'),
+        top: 100 - parseFloat(femaleStaffPos.bottom?.replace('%', '') || '10'),
+        height: 'clamp(280px, 48vh, 460px)',
+        imageSrc: femaleStaffWalk,
+      });
+    }
+    if (showMaleStaff) {
+      npcs.push({
+        id: 'mission-male',
+        label: 'Male Staff (M02)',
+        left: parseFloat(maleStaffPos.left?.replace('%', '') || '30'),
+        top: maleStaffPos.top ? parseFloat(maleStaffPos.top.replace('%', '')) : (100 - parseFloat(maleStaffPos.bottom?.replace('%', '') || '10')),
+        height: 'clamp(260px, 44vh, 420px)',
+        imageSrc: maleStaffWalk,
+      });
+    }
+    
+    return npcs;
+  }, [isWorkshopLocked, shouldShowWorkshopStaffAtTable, workshopTableStaffPos, workshopWaitingStaffPos, showFemaleStaff, showMaleStaff, femaleStaffPos, maleStaffPos]);
+
   return (
     <>
       <MissionLayout
@@ -1366,6 +1425,14 @@ export function VisualPlayScreen({
         rows={5}
         cols={5}
       />
+      
+      {/* NPC Visual Editor */}
+      {npcEditMode && (
+        <DraggableNpcEditor
+          isEnabled={npcEditMode}
+          npcs={editorNpcs}
+        />
+      )}
     </>
   );
 }
