@@ -578,24 +578,34 @@ export function VisualPlayScreen({
   // Mission 03: track if Tool A (workbench) was selected - staff moves to table sides
   const [mission03ToolASelected, setMission03ToolASelected] = useState(false);
   
-  // Reset staff visibility when mission changes (except when going to mission 02 with Tool B)
+  // Reset staff visibility when mission changes (except when going to mission 02+ with Tool B)
   useEffect(() => {
-    // Only show female staff if we're in mission 02 AND Tool B was chosen in mission 01
+    // Only show female staff if we're in mission 02+ AND Tool B was chosen in mission 01
     const hasMission01ToolB = placedProps.some(p => p.missionId === 'studio_01' && p.key === 'b');
-    if (mission.mission_id === 'studio_02' && hasMission01ToolB) {
+    if ((mission.mission_id === 'studio_02' || mission.sequence >= 2) && hasMission01ToolB) {
       setStaffEnterReady(true);
     } else if (mission.mission_id === 'studio_01') {
       // Reset when back in mission 1 (fresh start or undo)
       setStaffEnterReady(false);
     }
     
-    // Reset male staff when mission changes
-    if (mission.mission_id !== 'studio_02') {
+    // Keep male staff visible in Mission 03+ if he was shown in Mission 02
+    const hasMission02Tool = placedProps.some(p => p.missionId === 'studio_02');
+    if (mission.sequence >= 3 && hasMission02Tool) {
+      setMaleStaffEnterReady(true);
+      // Determine which tool was selected in Mission 02
+      const m02Pick = placedProps.find(p => p.missionId === 'studio_02');
+      if (m02Pick) {
+        setMission02ToolSelected(m02Pick.key);
+      }
+    } else if (mission.mission_id === 'studio_02') {
+      // In Mission 02, don't reset - let the normal flow handle it
+    } else if (mission.mission_id === 'studio_01') {
       setMission02ToolSelected(null);
       setMaleStaffEnterReady(false);
       setHadM02Lock(false);
     }
-  }, [mission.mission_id, placedProps]);
+  }, [mission.mission_id, mission.sequence, placedProps]);
   
   // Track if we've seen the lock pulse for M01 Tool B (to know when it ends)
   const [hadM01ToolBLock, setHadM01ToolBLock] = useState(false);
