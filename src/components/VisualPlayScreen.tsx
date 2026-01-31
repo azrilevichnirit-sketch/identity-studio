@@ -527,6 +527,7 @@ export function VisualPlayScreen({
   // Mission 02: track which tool was selected for male staff placement
   const [mission02ToolSelected, setMission02ToolSelected] = useState<'a' | 'b' | null>(null);
   const [maleStaffEnterReady, setMaleStaffEnterReady] = useState(false);
+  const [hadM02Lock, setHadM02Lock] = useState(false);
   
   // Reset staff visibility when mission changes (except when going to mission 02 with Tool B)
   useEffect(() => {
@@ -543,6 +544,7 @@ export function VisualPlayScreen({
     if (mission.mission_id !== 'studio_02') {
       setMission02ToolSelected(null);
       setMaleStaffEnterReady(false);
+      setHadM02Lock(false);
     }
   }, [mission.mission_id, placedProps]);
   
@@ -572,15 +574,25 @@ export function VisualPlayScreen({
     }
   }, [mission.mission_id]);
   
-  // Trigger male staff entry after Mission 02 tool lock pulse finishes
+  // Track Mission 02 lock pulse start
   useEffect(() => {
     if (lockPulseKey === 'studio_02-a' || lockPulseKey === 'studio_02-b') {
-      const variant = lockPulseKey === 'studio_02-a' ? 'a' : 'b';
-      setMission02ToolSelected(variant);
-      const id = window.setTimeout(() => setMaleStaffEnterReady(true), 650);
-      return () => window.clearTimeout(id);
+      setHadM02Lock(true);
+      setMission02ToolSelected(lockPulseKey === 'studio_02-a' ? 'a' : 'b');
     }
   }, [lockPulseKey]);
+
+  // Trigger male staff entry AFTER Mission 02 lock pulse finishes.
+  // (Important: don't schedule off the "lockPulseKey is active" state, because cleanup will cancel it.)
+  useEffect(() => {
+    if (!hadM02Lock) return;
+    if (mission.mission_id !== 'studio_02') return;
+    if (lockPulseKey !== null) return;
+    if (!localPlacement || localPlacement.missionId !== 'studio_02') return;
+
+    const id = window.setTimeout(() => setMaleStaffEnterReady(true), 120);
+    return () => window.clearTimeout(id);
+  }, [hadM02Lock, lockPulseKey, localPlacement, mission.mission_id]);
   
   const showFemaleStaff = staffEnterReady;
   const showMaleStaff = maleStaffEnterReady && mission02ToolSelected !== null;
