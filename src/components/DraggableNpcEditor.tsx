@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
+import { RotateCw, ZoomIn, ZoomOut, FlipHorizontal } from 'lucide-react';
 
 interface DraggableItem {
   id: string;
@@ -8,6 +9,14 @@ interface DraggableItem {
   height: string;
   imageSrc: string;
   type: 'npc' | 'tool';
+}
+
+interface TransformState {
+  left: number;
+  top: number;
+  scale: number;
+  rotation: number;
+  flipX: boolean;
 }
 
 interface DraggableNpcEditorProps {
@@ -23,8 +32,9 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
   tools = [],
   onPositionChange,
 }) => {
-  const [positions, setPositions] = useState<Record<string, { left: number; top: number }>>({});
+  const [transforms, setTransforms] = useState<Record<string, TransformState>>({});
   const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [showNpcs, setShowNpcs] = useState(true);
   const [showTools, setShowTools] = useState(true);
@@ -35,14 +45,29 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
     ...tools.map(t => ({ ...t, type: 'tool' as const })),
   ];
 
-  const getPosition = (id: string, original: { left: number; top: number }) => {
-    return positions[id] || original;
+  const getTransform = (id: string, original: { left: number; top: number }): TransformState => {
+    return transforms[id] || { 
+      left: original.left, 
+      top: original.top, 
+      scale: 1, 
+      rotation: 0,
+      flipX: false,
+    };
+  };
+
+  const updateTransform = (id: string, updates: Partial<TransformState>) => {
+    setTransforms(prev => ({
+      ...prev,
+      [id]: { ...getTransform(id, { left: 50, top: 50 }), ...prev[id], ...updates }
+    }));
   };
 
   const handleMouseDown = useCallback((e: React.MouseEvent, id: string) => {
     if (!isEnabled) return;
     e.preventDefault();
+    e.stopPropagation();
     setDraggingId(id);
+    setSelectedId(id);
   }, [isEnabled]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
@@ -52,13 +77,10 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
     const left = ((e.clientX - rect.left) / rect.width) * 100;
     const top = ((e.clientY - rect.top) / rect.height) * 100;
     
-    setPositions(prev => ({
-      ...prev,
-      [draggingId]: {
-        left: Math.max(0, Math.min(100, left)),
-        top: Math.max(0, Math.min(100, top)),
-      }
-    }));
+    updateTransform(draggingId, {
+      left: Math.max(0, Math.min(100, left)),
+      top: Math.max(0, Math.min(100, top)),
+    });
     
     onPositionChange?.(draggingId, left, top);
   }, [draggingId, onPositionChange]);
@@ -67,33 +89,55 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
     setDraggingId(null);
   }, []);
 
-  const copyPosition = (item: DraggableItem) => {
-    const pos = getPosition(item.id, { left: item.left, top: item.top });
+  const handleScale = (id: string, delta: number) => {
+    const current = transforms[id]?.scale || 1;
+    const newScale = Math.max(0.1, Math.min(5, current + delta));
+    updateTransform(id, { scale: newScale });
+  };
+
+  const handleRotate = (id: string, delta: number) => {
+    const current = transforms[id]?.rotation || 0;
+    updateTransform(id, { rotation: (current + delta) % 360 });
+  };
+
+  const handleFlip = (id: string) => {
+    const current = transforms[id]?.flipX || false;
+    updateTransform(id, { flipX: !current });
+  };
+
+  const copyTransform = (item: DraggableItem) => {
+    const t = getTransform(item.id, { left: item.left, top: item.top });
     const json = JSON.stringify({ 
       id: item.id, 
       type: item.type,
-      left: `${pos.left.toFixed(1)}%`, 
-      top: `${pos.top.toFixed(1)}%` 
+      left: `${t.left.toFixed(1)}%`, 
+      top: `${t.top.toFixed(1)}%`,
+      scale: t.scale.toFixed(2),
+      rotation: `${t.rotation}deg`,
+      flipX: t.flipX,
     }, null, 2);
     navigator.clipboard.writeText(json);
     setCopiedId(item.id);
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  const copyAllPositions = () => {
-    const allPositions = allItems
+  const copyAllTransforms = () => {
+    const allTransforms = allItems
       .filter(item => (item.type === 'npc' && showNpcs) || (item.type === 'tool' && showTools))
       .map(item => {
-        const pos = getPosition(item.id, { left: item.left, top: item.top });
+        const t = getTransform(item.id, { left: item.left, top: item.top });
         return { 
           id: item.id, 
           type: item.type,
           label: item.label, 
-          left: `${pos.left.toFixed(1)}%`, 
-          top: `${pos.top.toFixed(1)}%` 
+          left: `${t.left.toFixed(1)}%`, 
+          top: `${t.top.toFixed(1)}%`,
+          scale: t.scale.toFixed(2),
+          rotation: `${t.rotation}deg`,
+          flipX: t.flipX,
         };
       });
-    navigator.clipboard.writeText(JSON.stringify(allPositions, null, 2));
+    navigator.clipboard.writeText(JSON.stringify(allTransforms, null, 2));
     setCopiedId('all');
     setTimeout(() => setCopiedId(null), 2000);
   };
@@ -104,6 +148,8 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
     (item.type === 'npc' && showNpcs) || (item.type === 'tool' && showTools)
   );
 
+  const selectedItem = visibleItems.find(i => i.id === selectedId);
+
   return (
     <div
       ref={containerRef}
@@ -111,13 +157,14 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
+      onClick={() => setSelectedId(null)}
     >
-      {/* Position display panel */}
-      <div className="absolute top-4 left-4 bg-black/90 text-white p-3 rounded-lg text-xs font-mono max-w-xs z-[10000] max-h-[80vh] overflow-y-auto">
+      {/* Control Panel */}
+      <div className="absolute top-4 left-4 bg-black/90 text-white p-3 rounded-lg text-xs font-mono max-w-sm z-[10000] max-h-[85vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-2">
           <span className="font-bold text-yellow-400">🎯 Position Editor</span>
           <button
-            onClick={copyAllPositions}
+            onClick={copyAllTransforms}
             className="px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded text-[10px]"
           >
             {copiedId === 'all' ? '✓ Copied!' : 'Copy All'}
@@ -140,18 +187,89 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
           </button>
         </div>
         
-        <div className="text-gray-400 text-[10px] mb-2">גררי אלמנט למקום הרצוי</div>
+        <div className="text-gray-400 text-[10px] mb-2">לחצי על אלמנט לעריכה מתקדמת</div>
         
-        {visibleItems.map(item => {
-          const pos = getPosition(item.id, { left: item.left, top: item.top });
-          const typeColor = item.type === 'npc' ? 'text-green-400' : 'text-purple-400';
-          return (
-            <div key={item.id} className="flex items-center justify-between py-1 border-t border-gray-700">
-              <span className={typeColor}>{item.label}</span>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px]">X:{pos.left.toFixed(1)}% Y:{pos.top.toFixed(1)}%</span>
+        {/* Selected item controls */}
+        {selectedItem && (
+          <div className="bg-yellow-900/50 border border-yellow-500 rounded p-2 mb-2">
+            <div className="font-bold text-yellow-300 mb-2">{selectedItem.label}</div>
+            
+            {/* Transform controls */}
+            <div className="grid grid-cols-2 gap-2">
+              {/* Scale */}
+              <div className="flex items-center gap-1">
+                <span className="text-[10px] text-gray-400">Scale:</span>
                 <button
-                  onClick={() => copyPosition(item)}
+                  onClick={() => handleScale(selectedItem.id, -0.1)}
+                  className="p-1 bg-gray-700 hover:bg-gray-600 rounded"
+                >
+                  <ZoomOut className="w-3 h-3" />
+                </button>
+                <span className="text-[10px] w-8 text-center">
+                  {(transforms[selectedItem.id]?.scale || 1).toFixed(1)}
+                </span>
+                <button
+                  onClick={() => handleScale(selectedItem.id, 0.1)}
+                  className="p-1 bg-gray-700 hover:bg-gray-600 rounded"
+                >
+                  <ZoomIn className="w-3 h-3" />
+                </button>
+              </div>
+              
+              {/* Rotation */}
+              <div className="flex items-center gap-1">
+                <span className="text-[10px] text-gray-400">Rotate:</span>
+                <button
+                  onClick={() => handleRotate(selectedItem.id, -15)}
+                  className="p-1 bg-gray-700 hover:bg-gray-600 rounded"
+                >
+                  <RotateCw className="w-3 h-3 -scale-x-100" />
+                </button>
+                <span className="text-[10px] w-8 text-center">
+                  {transforms[selectedItem.id]?.rotation || 0}°
+                </span>
+                <button
+                  onClick={() => handleRotate(selectedItem.id, 15)}
+                  className="p-1 bg-gray-700 hover:bg-gray-600 rounded"
+                >
+                  <RotateCw className="w-3 h-3" />
+                </button>
+              </div>
+              
+              {/* Flip */}
+              <div className="flex items-center gap-1 col-span-2">
+                <button
+                  onClick={() => handleFlip(selectedItem.id)}
+                  className={`flex items-center gap-1 px-2 py-1 rounded text-[10px] ${
+                    transforms[selectedItem.id]?.flipX ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'
+                  }`}
+                >
+                  <FlipHorizontal className="w-3 h-3" />
+                  <span>Flip X {transforms[selectedItem.id]?.flipX ? '✓' : ''}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* Items list */}
+        {visibleItems.map(item => {
+          const t = getTransform(item.id, { left: item.left, top: item.top });
+          const typeColor = item.type === 'npc' ? 'text-green-400' : 'text-purple-400';
+          const isSelected = selectedId === item.id;
+          return (
+            <div 
+              key={item.id} 
+              className={`flex items-center justify-between py-1 border-t border-gray-700 cursor-pointer hover:bg-gray-800/50 ${isSelected ? 'bg-yellow-900/30' : ''}`}
+              onClick={(e) => { e.stopPropagation(); setSelectedId(item.id); }}
+            >
+              <span className={typeColor}>{item.label}</span>
+              <div className="flex items-center gap-1">
+                <span className="text-[9px] text-gray-500">
+                  {t.left.toFixed(0)}%,{t.top.toFixed(0)}% s:{t.scale.toFixed(1)} r:{t.rotation}°
+                </span>
+                <button
+                  onClick={(e) => { e.stopPropagation(); copyTransform(item); }}
                   className="px-1 py-0.5 bg-gray-700 hover:bg-gray-600 rounded text-[10px]"
                 >
                   {copiedId === item.id ? '✓' : '📋'}
@@ -164,43 +282,48 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
 
       {/* Draggable items */}
       {visibleItems.map(item => {
-        const pos = getPosition(item.id, { left: item.left, top: item.top });
+        const t = getTransform(item.id, { left: item.left, top: item.top });
         const isDragging = draggingId === item.id;
+        const isSelected = selectedId === item.id;
         const borderColor = item.type === 'npc' ? 'border-green-500' : 'border-purple-500';
         const bgColor = item.type === 'npc' ? 'bg-green-500' : 'bg-purple-500';
         
         return (
           <div
             key={item.id}
-            className={`absolute cursor-grab active:cursor-grabbing ${isDragging ? 'ring-2 ring-yellow-400' : ''}`}
+            className={`absolute cursor-grab active:cursor-grabbing ${isDragging ? 'ring-2 ring-yellow-400' : ''} ${isSelected ? 'ring-2 ring-white' : ''}`}
             style={{
-              left: `${pos.left}%`,
-              top: `${pos.top}%`,
-              transform: 'translate(-50%, -100%)',
-              zIndex: isDragging ? 10001 : 10000,
+              left: `${t.left}%`,
+              top: `${t.top}%`,
+              transform: `translate(-50%, -100%) scale(${t.scale}) rotate(${t.rotation}deg) ${t.flipX ? 'scaleX(-1)' : ''}`,
+              transformOrigin: 'bottom center',
+              zIndex: isDragging || isSelected ? 10001 : 10000,
             }}
             onMouseDown={(e) => handleMouseDown(e, item.id)}
+            onClick={(e) => { e.stopPropagation(); setSelectedId(item.id); }}
           >
             <div className={`relative border-2 ${borderColor} rounded-lg p-1 bg-black/30`}>
               <img
                 src={item.imageSrc}
                 alt={item.label}
                 style={{ height: item.height, maxHeight: '150px' }}
-                className={`pointer-events-none ${isDragging ? 'opacity-80 scale-105' : ''}`}
+                className={`pointer-events-none ${isDragging ? 'opacity-80' : ''}`}
                 draggable={false}
               />
             </div>
             {/* Label */}
             <div 
               className={`absolute -top-6 left-1/2 -translate-x-1/2 ${bgColor} text-white px-2 py-0.5 rounded text-[10px] whitespace-nowrap`}
+              style={{ transform: `translateX(-50%) rotate(${-t.rotation}deg) ${t.flipX ? 'scaleX(-1)' : ''}` }}
             >
               {item.type === 'npc' ? '👤' : '🔧'} {item.label}
             </div>
             {/* Position indicator */}
             <div 
-              className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-yellow-500 text-black px-1 py-0.5 rounded text-[9px] font-mono whitespace-nowrap"
+              className="absolute -bottom-4 left-1/2 bg-yellow-500 text-black px-1 py-0.5 rounded text-[9px] font-mono whitespace-nowrap"
+              style={{ transform: `translateX(-50%) rotate(${-t.rotation}deg) ${t.flipX ? 'scaleX(-1)' : ''}` }}
             >
-              {pos.left.toFixed(0)}%, {pos.top.toFixed(0)}%
+              {t.left.toFixed(0)}%, {t.top.toFixed(0)}% | s:{t.scale.toFixed(1)}
             </div>
           </div>
         );
