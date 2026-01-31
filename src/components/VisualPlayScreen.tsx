@@ -17,10 +17,6 @@ import femaleStaffWalk from '@/assets/avatars/studio_01_female_staff_walk.webp';
 import maleStaffWalk from '@/assets/avatars/studio_01_male_staff_walk.webp';
 // import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter'; // Disabled
 
-// Workshop floor props (crates for Mission 03+)
-import studioCrate01 from '@/assets/extras/studio_crate_01.webp';
-import studioCrate02 from '@/assets/extras/studio_crate_02.webp';
-
 const DRAG_HINT_STORAGE_KEY = 'ie_hasDraggedOnce';
 
 interface VisualPlayScreenProps {
@@ -688,57 +684,24 @@ export function VisualPlayScreen({
     }
   }, [mission02ToolSelected]);
 
-  // Show workshop floor props (crates) starting Mission 03
-  const showWorkshopProps = isWorkshopLocked;
+  // Mission 03+: two staff members waiting on the side of the workshop
+  const workshopWaitingStaffPos = useMemo(() => {
+    const npc1 = getAnchorPosition('studio_in_workshop_bg', 'floor_right_npc');
+    const npc2 = getAnchorPosition('studio_in_workshop_bg', 'floor_right_npc_2');
+    return {
+      male: {
+        left: `${(npc1?.x ?? 82)}%`,
+        top: `${(npc1?.y ?? 72)}%`,
+      },
+      female: {
+        left: `${(npc2?.x ?? 90)}%`,
+        top: `${(npc2?.y ?? 72)}%`,
+      },
+    };
+  }, []);
 
   const sceneExtrasElement = (
     <>
-      {/* Workshop floor props - crates/boxes for Mission 03+ */}
-      {showWorkshopProps && (
-        <>
-          {/* Crate 1 - left side of floor */}
-          <div
-            className="absolute pointer-events-none animate-fade-in"
-            style={{
-              left: '18%',
-              bottom: '12%',
-              zIndex: 6,
-              transform: 'translateX(-50%)',
-            }}
-          >
-            <img
-              src={studioCrate01}
-              alt=""
-              className="object-contain"
-              style={{
-                height: 'clamp(60px, 10vh, 100px)',
-                filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.35))',
-              }}
-            />
-          </div>
-          {/* Crate 2 - right side of floor */}
-          <div
-            className="absolute pointer-events-none animate-fade-in"
-            style={{
-              left: '85%',
-              bottom: '8%',
-              zIndex: 6,
-              transform: 'translateX(-50%)',
-            }}
-          >
-            <img
-              src={studioCrate02}
-              alt=""
-              className="object-contain"
-              style={{
-                height: 'clamp(50px, 8vh, 80px)',
-                filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.35))',
-              }}
-            />
-          </div>
-        </>
-      )}
-
       {/* Female staff - Mission 01 Tool B */}
       {showFemaleStaff && (
         <div
@@ -788,6 +751,55 @@ export function VisualPlayScreen({
             }}
           />
         </div>
+      )}
+
+      {/* Mission 03+: Both staff members waiting on the right side */}
+      {isWorkshopLocked && (
+        <>
+          <div
+            className="absolute pointer-events-none animate-fade-in"
+            style={{
+              left: workshopWaitingStaffPos.male.left,
+              top: workshopWaitingStaffPos.male.top,
+              zIndex: 10,
+              transform: 'translate(-50%, -100%)',
+              transformOrigin: 'bottom center',
+            }}
+          >
+            <img
+              src={maleStaffWalk}
+              alt="דמות צוות מחכה"
+              className="w-auto object-contain animate-subtle-idle"
+              style={{
+                height: 'clamp(220px, 38vh, 360px)',
+                filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
+                transform: 'scaleX(-1)',
+              }}
+            />
+          </div>
+
+          <div
+            className="absolute pointer-events-none animate-fade-in"
+            style={{
+              left: workshopWaitingStaffPos.female.left,
+              top: workshopWaitingStaffPos.female.top,
+              zIndex: 10,
+              transform: 'translate(-50%, -100%)',
+              transformOrigin: 'bottom center',
+            }}
+          >
+            <img
+              src={femaleStaffWalk}
+              alt="דמות צוות מחכה"
+              className="w-auto object-contain animate-subtle-idle"
+              style={{
+                height: 'clamp(230px, 40vh, 380px)',
+                filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
+                transform: 'scaleX(-1)',
+              }}
+            />
+          </div>
+        </>
       )}
     </>
   );

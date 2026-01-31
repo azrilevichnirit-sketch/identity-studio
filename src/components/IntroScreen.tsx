@@ -1,6 +1,6 @@
 import type { AvatarGender } from "@/types/identity";
 import { getAvatarImage } from "@/lib/assetUtils";
-import galleryMainBg from "@/assets/backgrounds/gallery_main_stylized_v3.webp";
+import galleryMainBg from "@/assets/backgrounds/gallery_main_stylized_white_v1.webp";
 import { SpeechBubble } from "./SpeechBubble";
 import { ArrowLeft } from "lucide-react";
 import { GameStage } from "./GameStage";

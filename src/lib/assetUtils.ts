@@ -7,7 +7,7 @@ import type { AvatarGender, Mission } from '@/types/identity';
 // 2. Mission 02: white walls (after paint)
 // 3. Mission 03+: workshop with windows to park
 import galleryMainStylizedWhite from '@/assets/backgrounds/gallery_main_stylized_white_v1.webp';
-import studioWorkshopBg from '@/assets/backgrounds/studio_in_workshop_v2.webp';
+import studioWorkshopBg from '@/assets/backgrounds/studio_in_workshop_v3.webp';
 
 // Mission 01 uses the white walls too (no more cracked walls)
 const galleryMainStylized = galleryMainStylizedWhite;
