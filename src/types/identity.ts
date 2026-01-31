@@ -33,6 +33,8 @@ export type AnchorRef =
   | 'table_center'
   | 'm01_tool_a'
   | 'm01_tool_b'
+  | 'm02_tool_a'
+  | 'm02_tool_b'
   | 'm03_tool_a'
   | 'm03_tool_b';
 
