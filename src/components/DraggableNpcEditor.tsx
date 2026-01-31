@@ -526,20 +526,80 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
         
         {showTools && tools.length > 0 && (
           <div className="mb-2">
-            <div className="text-purple-400 text-[10px] font-bold mb-1 border-b border-purple-600 pb-1">🔧 Tools</div>
-            {visibleItems.filter(i => i.type === 'tool').map(item => {
+            <div className="text-purple-400 text-[10px] font-bold mb-1 border-b border-purple-600 pb-1">🔧 Tools (לחצי על כלי לעריכה)</div>
+            {/* Separate Tool A and Tool B */}
+            {visibleItems.filter(i => i.type === 'tool' && i.id.includes('-a')).length > 0 && (
+              <div className="mb-1">
+                <div className="text-[9px] text-purple-300 mb-0.5">🅰️ Tool A:</div>
+                {visibleItems.filter(i => i.type === 'tool' && i.id.includes('-a')).map(item => {
+                  const t = getTransform(item.id, { left: item.left, top: item.top });
+                  const isSelected = selectedId === item.id;
+                  return (
+                    <div 
+                      key={item.id} 
+                      className={`flex items-center justify-between py-1 px-1 cursor-pointer hover:bg-purple-900/30 rounded ${isSelected ? 'bg-yellow-900/50 ring-1 ring-yellow-400' : ''}`}
+                      onClick={(e) => { e.stopPropagation(); setSelectedId(item.id); }}
+                    >
+                      <span className={`text-purple-400 text-[10px] ${isSelected ? 'text-yellow-300 font-bold' : ''}`}>{item.label}</span>
+                      <div className="flex items-center gap-1">
+                        <span className="text-[9px] text-gray-500">
+                          {t.left.toFixed(0)}%,{t.top.toFixed(0)}% s:{t.scale.toFixed(1)}
+                        </span>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); copyTransform(item); }}
+                          className="px-1 py-0.5 bg-gray-700 hover:bg-gray-600 rounded text-[10px]"
+                        >
+                          {copiedId === item.id ? '✓' : '📋'}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            {visibleItems.filter(i => i.type === 'tool' && i.id.includes('-b')).length > 0 && (
+              <div className="mb-1">
+                <div className="text-[9px] text-purple-300 mb-0.5">🅱️ Tool B:</div>
+                {visibleItems.filter(i => i.type === 'tool' && i.id.includes('-b')).map(item => {
+                  const t = getTransform(item.id, { left: item.left, top: item.top });
+                  const isSelected = selectedId === item.id;
+                  return (
+                    <div 
+                      key={item.id} 
+                      className={`flex items-center justify-between py-1 px-1 cursor-pointer hover:bg-purple-900/30 rounded ${isSelected ? 'bg-yellow-900/50 ring-1 ring-yellow-400' : ''}`}
+                      onClick={(e) => { e.stopPropagation(); setSelectedId(item.id); }}
+                    >
+                      <span className={`text-purple-400 text-[10px] ${isSelected ? 'text-yellow-300 font-bold' : ''}`}>{item.label}</span>
+                      <div className="flex items-center gap-1">
+                        <span className="text-[9px] text-gray-500">
+                          {t.left.toFixed(0)}%,{t.top.toFixed(0)}% s:{t.scale.toFixed(1)}
+                        </span>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); copyTransform(item); }}
+                          className="px-1 py-0.5 bg-gray-700 hover:bg-gray-600 rounded text-[10px]"
+                        >
+                          {copiedId === item.id ? '✓' : '📋'}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            {/* Other tools (placed props without -a/-b suffix) */}
+            {visibleItems.filter(i => i.type === 'tool' && !i.id.includes('-a') && !i.id.includes('-b')).map(item => {
               const t = getTransform(item.id, { left: item.left, top: item.top });
               const isSelected = selectedId === item.id;
               return (
                 <div 
                   key={item.id} 
-                  className={`flex items-center justify-between py-1 cursor-pointer hover:bg-gray-800/50 ${isSelected ? 'bg-yellow-900/30' : ''}`}
+                  className={`flex items-center justify-between py-1 px-1 cursor-pointer hover:bg-purple-900/30 rounded ${isSelected ? 'bg-yellow-900/50 ring-1 ring-yellow-400' : ''}`}
                   onClick={(e) => { e.stopPropagation(); setSelectedId(item.id); }}
                 >
-                  <span className="text-purple-400">{item.label}</span>
+                  <span className={`text-purple-400 text-[10px] ${isSelected ? 'text-yellow-300 font-bold' : ''}`}>{item.label}</span>
                   <div className="flex items-center gap-1">
                     <span className="text-[9px] text-gray-500">
-                      {t.left.toFixed(0)}%,{t.top.toFixed(0)}% s:{t.scale.toFixed(1)} r:{t.rotation}°
+                      {t.left.toFixed(0)}%,{t.top.toFixed(0)}% s:{t.scale.toFixed(1)}
                     </span>
                     <button
                       onClick={(e) => { e.stopPropagation(); copyTransform(item); }}
