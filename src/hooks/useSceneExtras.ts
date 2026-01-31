@@ -12,6 +12,7 @@ import maleVisitor2 from '@/assets/avatars/studio_02_male_visitor_walk.webp';
 
 // Map abstract asset keys to actual NPC images
 const extraAssetMap: Record<string, string> = {
+  // Abstract keys (legacy)
   studio_extra_asset_01: femaleStaff,
   studio_extra_asset_02: maleStaff,
   studio_extra_asset_03: femaleVisitor1,
@@ -19,6 +20,13 @@ const extraAssetMap: Record<string, string> = {
   studio_extra_asset_05: femaleVisitor2,
   studio_extra_asset_06: maleVisitor2,
   studio_extra_asset_07: maleStaff, // Fallback for additional keys
+  // Direct asset name keys
+  studio_01_female_staff_walk: femaleStaff,
+  studio_01_male_staff_walk: maleStaff,
+  studio_01_female_visitor_walk: femaleVisitor1,
+  studio_01_male_visitor_walk: maleVisitor1,
+  studio_02_female_visitor_walk: femaleVisitor2,
+  studio_02_male_visitor_walk: maleVisitor2,
 };
 
 export interface SpawnedExtra {
@@ -84,13 +92,17 @@ export function useSceneExtras(
         // Generate spawned extras with slight position variations
         const count = Math.min(rule.spawn_count, 3); // Cap at 3 for performance
         for (let i = 0; i < count; i++) {
+          // Use fixed scale for NPC characters (realistic size)
+          const isNpcCharacter = rule.spawn_asset_key.includes('staff') || rule.spawn_asset_key.includes('visitor');
+          const baseScale = isNpcCharacter ? 1.0 : (0.6 + Math.random() * 0.2);
+          
           extras.push({
             id: `${rule.mission_id}-${rule.order}-${i}`,
             image,
             anchorRef: rule.anchor_ref as AnchorRef,
             offsetX: getSpreadOffset(i, count),
             offsetY: 0,
-            scale: 0.6 + Math.random() * 0.2,
+            scale: baseScale,
             zLayer: getZLayerForPlacement(rule.placement_mode),
           });
         }
