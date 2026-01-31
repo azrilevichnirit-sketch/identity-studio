@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useGameState } from '@/hooks/useGameState';
 import { GameStage } from '@/components/GameStage';
 import { DimensionSelect } from '@/components/DimensionSelect';
@@ -12,6 +12,8 @@ import { DebugPanel } from '@/components/DebugPanel';
 import type { Dimension, HollandCode, MissionOption } from '@/types/identity';
 
 const Index = () => {
+  const [npcEditMode, setNpcEditMode] = useState(false);
+  
   const {
     state,
     countsFinal,
@@ -117,6 +119,7 @@ const Index = () => {
             placedProps={placedProps}
             onSelect={handleSelect}
             onUndo={undo}
+            npcEditMode={npcEditMode}
           />
         )}
 
@@ -131,6 +134,7 @@ const Index = () => {
             placedProps={placedProps}
             onSelect={handleSelect}
             onUndo={undo}
+            npcEditMode={npcEditMode}
           />
         )}
 
@@ -152,6 +156,7 @@ const Index = () => {
         countsFinal={countsFinal}
         leaders={leaders}
         historyLength={historyLength}
+        onNpcEditModeChange={setNpcEditMode}
       />
     </>
   );
