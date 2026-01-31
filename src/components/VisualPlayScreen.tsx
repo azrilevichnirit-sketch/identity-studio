@@ -956,9 +956,9 @@ export function VisualPlayScreen({
       return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.2, absoluteY: 82, absoluteX: 50 }];
     }
     
-    // Mission 03 Tool B (sound desk): at back floor near left wall, smaller due to perspective
+    // Mission 03 Tool B (sound desk): back floor near wall, large like A
     if (prop.missionId === 'studio_03' && prop.key === 'b') {
-      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 1.4, absoluteY: 68, absoluteX: 18 }];
+      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.2, absoluteY: 68, absoluteX: 18 }];
     }
 
     // Default: single placement at floor with realistic size
@@ -1036,8 +1036,12 @@ export function VisualPlayScreen({
                 className={`${isMission01Buckets ? 'w-28 h-28 md:w-36 md:h-36' : (isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32')} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
                 style={{
                   filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
-                  // Rotate Tool B counterclockwise so it faces the staff member
-                  transform: isMission01ToolB ? 'rotate(-15deg) scaleX(-1)' : undefined,
+                  // Rotate tools for perspective alignment
+                  transform: isMission01ToolB 
+                    ? 'rotate(-15deg) scaleX(-1)' 
+                    : (prop.missionId === 'studio_03' && prop.key === 'b' 
+                        ? 'rotate(-12deg)' 
+                        : undefined),
                 }}
               />
             </div>
