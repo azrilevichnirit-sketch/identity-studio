@@ -768,16 +768,18 @@ export function VisualPlayScreen({
     };
   }, []);
 
-  // After Mission 03 Tool A (workbench): staff moves forward to table sides
+  // After Mission 03 Tool A (workbench): staff on table sides
+  // Tool A spans squares 18-19 (40%-80% X, row 4 = 60%-80% Y)
+  // Staff positioned at grid line edges: left=40%, right=80%, Y=70%
   const workshopTableStaffPos = useMemo(() => {
     return {
       male: {
-        left: '70%',
-        top: '72%',
+        left: '80%', // Right edge of square 19
+        top: '70%',  // Center of row 4
       },
       female: {
-        left: '30%',
-        top: '72%',
+        left: '40%', // Left edge of square 18
+        top: '70%',  // Center of row 4
       },
     };
   }, []);
