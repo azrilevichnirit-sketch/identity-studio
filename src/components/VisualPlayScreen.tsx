@@ -607,8 +607,11 @@ export function VisualPlayScreen({
       if (m02Pick) {
         setMission02ToolSelected(m02Pick.key);
       }
-    } else if (mission.mission_id === 'studio_02') {
-      // In Mission 02, don't reset - let the normal flow handle it
+    } else if (mission.mission_id === 'studio_02' && !hasMission02Tool) {
+      // UNDO case: returned to Mission 02 but pick was removed - reset NPC states
+      setMission02ToolSelected(null);
+      setMaleStaffEnterReady(false);
+      setHadM02Lock(false);
     } else if (mission.mission_id === 'studio_01') {
       setMission02ToolSelected(null);
       setMaleStaffEnterReady(false);
