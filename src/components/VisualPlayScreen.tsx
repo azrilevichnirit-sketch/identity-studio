@@ -757,11 +757,11 @@ export function VisualPlayScreen({
     return {
       male: {
         left: '55%', // Right side, even closer to center
-        top: '50%', // Very close to back wall
+        top: '42%', // Further back, very close to wall
       },
       female: {
         left: '45%', // Left side, even closer to center
-        top: '50%', // Very close to back wall
+        top: '42%', // Further back, very close to wall
       },
     };
   }, []);
