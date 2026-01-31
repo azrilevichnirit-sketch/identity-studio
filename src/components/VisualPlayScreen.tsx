@@ -17,6 +17,10 @@ import femaleStaffWalk from '@/assets/avatars/studio_01_female_staff_walk.webp';
 import maleStaffWalk from '@/assets/avatars/studio_01_male_staff_walk.webp';
 // import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter'; // Disabled
 
+// Workshop floor props (crates for Mission 03+)
+import studioCrate01 from '@/assets/extras/studio_crate_01.webp';
+import studioCrate02 from '@/assets/extras/studio_crate_02.webp';
+
 const DRAG_HINT_STORAGE_KEY = 'ie_hasDraggedOnce';
 
 interface VisualPlayScreenProps {
@@ -684,8 +688,57 @@ export function VisualPlayScreen({
     }
   }, [mission02ToolSelected]);
 
+  // Show workshop floor props (crates) starting Mission 03
+  const showWorkshopProps = isWorkshopLocked;
+
   const sceneExtrasElement = (
     <>
+      {/* Workshop floor props - crates/boxes for Mission 03+ */}
+      {showWorkshopProps && (
+        <>
+          {/* Crate 1 - left side of floor */}
+          <div
+            className="absolute pointer-events-none animate-fade-in"
+            style={{
+              left: '18%',
+              bottom: '12%',
+              zIndex: 6,
+              transform: 'translateX(-50%)',
+            }}
+          >
+            <img
+              src={studioCrate01}
+              alt=""
+              className="object-contain"
+              style={{
+                height: 'clamp(60px, 10vh, 100px)',
+                filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.35))',
+              }}
+            />
+          </div>
+          {/* Crate 2 - right side of floor */}
+          <div
+            className="absolute pointer-events-none animate-fade-in"
+            style={{
+              left: '85%',
+              bottom: '8%',
+              zIndex: 6,
+              transform: 'translateX(-50%)',
+            }}
+          >
+            <img
+              src={studioCrate02}
+              alt=""
+              className="object-contain"
+              style={{
+                height: 'clamp(50px, 8vh, 80px)',
+                filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.35))',
+              }}
+            />
+          </div>
+        </>
+      )}
+
       {/* Female staff - Mission 01 Tool B */}
       {showFemaleStaff && (
         <div
