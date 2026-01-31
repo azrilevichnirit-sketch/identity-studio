@@ -170,13 +170,19 @@ export function VisualPlayScreen({
       return null;
     }
 
+    // If we already have painted walls (from mission 01 tool A), 
+    // don't preview any background change - keep the white walls
+    if (hasPaintedWalls) {
+      return null;
+    }
+
     const option = activeToolVariant === 'a' ? optionA : optionB;
     const target = getTargetBgForOption(option);
     if (target.key !== currentBgKey) {
       return target;
     }
     return null;
-  }, [activeToolVariant, optionA, optionB, getTargetBgForOption, currentBgKey]);
+  }, [activeToolVariant, optionA, optionB, getTargetBgForOption, currentBgKey, hasPaintedWalls, mission.mission_id]);
 
   // Priority: local "painted" beat > drag preview > current
   const displayBg = localBgOverride?.image || dragPreviewBg?.image || currentBg;
