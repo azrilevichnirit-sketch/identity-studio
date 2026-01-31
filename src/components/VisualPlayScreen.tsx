@@ -956,7 +956,7 @@ export function VisualPlayScreen({
     // Mission 03 Tool A (workbench): large center table grounded on floor
     if (prop.missionId === 'studio_03' && prop.key === 'a') {
       // Slightly smaller than before to avoid the “falling” illusion when rotated.
-      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 3.5, absoluteY: 88, absoluteX: 50 }];
+      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.5, absoluteY: 82, absoluteX: 50 }];
     }
     
     // Mission 03 Tool B (sound desk): on floor (71% Y), large like A
@@ -1039,19 +1039,10 @@ export function VisualPlayScreen({
                 className={`${isMission01Buckets ? 'w-28 h-28 md:w-36 md:h-36' : (isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32')} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
                  style={{
                    filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
-                   // Rotate tools for perspective alignment
+                   // Only rotate Mission 01 Tool B
                    transform: isMission01ToolB
                      ? 'rotate(-15deg) scaleX(-1)'
-                     : (prop.missionId === 'studio_03' && prop.key === 'a'
-                         ? 'perspective(900px) rotateX(10deg) rotateZ(10deg)'
-                         : (prop.missionId === 'studio_03' && prop.key === 'b'
-                             ? 'rotate(-12deg)'
-                             : undefined)),
-                   // Anchor the workbench to the floor so it doesn't look like it's tipping over.
-                   transformOrigin:
-                     prop.missionId === 'studio_03' && prop.key === 'a'
-                       ? '50% 100%'
-                       : undefined,
+                     : undefined,
                  }}
               />
             </div>
