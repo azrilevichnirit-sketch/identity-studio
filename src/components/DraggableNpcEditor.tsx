@@ -39,6 +39,10 @@ interface DraggableNpcEditorProps {
   avatar?: Omit<DraggableItem, 'type'>;
   bubble?: BubbleItem;
   onPositionChange?: (id: string, left: number, top: number) => void;
+  /** Callback to save current adjustments and advance to next mission */
+  onSaveAndNext?: () => void;
+  /** Current mission label for display */
+  missionLabel?: string;
 }
 
 export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
@@ -48,6 +52,8 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
   avatar,
   bubble,
   onPositionChange,
+  onSaveAndNext,
+  missionLabel,
 }) => {
   const [transforms, setTransforms] = useState<Record<string, TransformState>>({});
   const [draggingId, setDraggingId] = useState<string | null>(null);
@@ -312,7 +318,14 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
       {/* Control Panel */}
       <div className="absolute top-4 left-4 bg-black/90 text-white p-3 rounded-lg text-xs font-mono max-w-sm z-[10000] max-h-[85vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-2">
-          <span className="font-bold text-yellow-400">🎯 Position Editor</span>
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-yellow-400">🎯 Position Editor</span>
+            {missionLabel && (
+              <span className="text-[10px] text-cyan-300 bg-cyan-900/50 px-2 py-0.5 rounded">
+                {missionLabel}
+              </span>
+            )}
+          </div>
           <div className="flex gap-1">
             <button
               onClick={resetAllTransforms}
@@ -330,6 +343,18 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
             </button>
           </div>
         </div>
+        
+        {/* Save & Next Mission button */}
+        {onSaveAndNext && (
+          <div className="mb-2">
+            <button
+              onClick={onSaveAndNext}
+              className="w-full px-3 py-2 bg-green-600 hover:bg-green-500 rounded text-sm font-bold flex items-center justify-center gap-2"
+            >
+              💾 שמור ועבור למשימה הבאה ➡️
+            </button>
+          </div>
+        )}
         
         {/* Toggle filters - separated */}
         <div className="flex flex-wrap gap-2 mb-2">

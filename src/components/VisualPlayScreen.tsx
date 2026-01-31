@@ -32,6 +32,8 @@ interface VisualPlayScreenProps {
   onSelect: (missionId: string, key: 'a' | 'b', hollandCode: HollandCode, option?: MissionOption) => void;
   onUndo: () => void;
   npcEditMode?: boolean;
+  /** Called when editor "Save & Next" is clicked - selects Tool A and advances */
+  onEditorNextMission?: () => void;
 }
 
 export function VisualPlayScreen({
@@ -45,6 +47,7 @@ export function VisualPlayScreen({
   onSelect,
   onUndo,
   npcEditMode = false,
+  onEditorNextMission,
 }: VisualPlayScreenProps) {
   const [showUndoDialog, setShowUndoDialog] = useState(false);
   const [draggingTool, setDraggingTool] = useState<'a' | 'b' | null>(null);
@@ -1545,6 +1548,8 @@ export function VisualPlayScreen({
           tools={editorTools}
           avatar={editorAvatar}
           bubble={editorBubble}
+          onSaveAndNext={onEditorNextMission}
+          missionLabel={`Mission ${currentIndex + 1}/${totalMissions}: ${mission.mission_id}`}
         />
       )}
     </>
