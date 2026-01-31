@@ -350,5 +350,21 @@
     "y_pct": 0.75,
     "scale": 1.0,
     "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_in_gallery_wall_bg",
+    "anchor_ref": "floor_left",
+    "x_pct": 0.32,
+    "y_pct": 0.68,
+    "scale": 0.9,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_in_gallery_wall_bg",
+    "anchor_ref": "floor_left_npc",
+    "x_pct": 0.38,
+    "y_pct": 0.72,
+    "scale": 1.0,
+    "z_layer": "mid"
   }
 ]
