@@ -956,9 +956,9 @@ export function VisualPlayScreen({
       return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.2, absoluteY: 82, absoluteX: 50 }];
     }
     
-    // Mission 03 Tool B (sound desk): back floor near wall, large like A
+    // Mission 03 Tool B (sound desk): on floor (71% Y), large like A
     if (prop.missionId === 'studio_03' && prop.key === 'b') {
-      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.2, absoluteY: 68, absoluteX: 18 }];
+      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.2, absoluteY: 71, absoluteX: 18 }];
     }
 
     // Default: single placement at floor with realistic size
