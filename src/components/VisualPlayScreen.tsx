@@ -640,8 +640,9 @@ export function VisualPlayScreen({
     return () => window.clearTimeout(id);
   }, [hadM02Lock, lockPulseKey, localPlacement, mission.mission_id]);
   
-  const showFemaleStaff = staffEnterReady;
-  const showMaleStaff = maleStaffEnterReady && mission02ToolSelected !== null;
+  // Hide individual Mission 01/02 staff when we're in Mission 03+ (workshop shows both staff differently)
+  const showFemaleStaff = staffEnterReady && !isWorkshopLocked;
+  const showMaleStaff = maleStaffEnterReady && mission02ToolSelected !== null && !isWorkshopLocked;
   
   const sceneExtras: never[] = []; // Keep the original array empty for now
 
