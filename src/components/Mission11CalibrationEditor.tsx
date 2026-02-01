@@ -5,9 +5,9 @@ import { getToolImage } from '@/lib/assetUtils';
 import type { AnchorRef, Mission } from '@/types/identity';
 
 // Import backgrounds for calibration
+// Tool A = Exterior park, Tool B = Main gallery (finished studio)
 import studioExteriorBg from '@/assets/backgrounds/studio_exterior_park_stylized_v3.webp';
-import studioGalleryBg from '@/assets/backgrounds/studio_in_gallery_bg.webp';
-
+import galleryMainStylized from '@/assets/backgrounds/gallery_main_stylized.webp';
 interface Mission11CalibrationEditorProps {
   mission: Mission;
   onBackgroundChange?: (bgUrl: string, bgKey: string) => void;
@@ -25,9 +25,9 @@ export function Mission11CalibrationEditor({ mission, onBackgroundChange }: Miss
   const [isOpen, setIsOpen] = useState(true);
   const [selectedTool, setSelectedTool] = useState<'a' | 'b'>('a');
   
-  // Tool A = Exterior (studio_exterior_bg), Tool B = Gallery (studio_in_gallery_bg)
+  // Tool A = Exterior park, Tool B = Main gallery (finished studio)
   const bgKeyA = 'studio_exterior_bg';
-  const bgKeyB = 'studio_in_gallery_bg';
+  const bgKeyB = 'gallery_main_stylized';
   
   const [positions, setPositions] = useState<{ a: ToolPosition; b: ToolPosition }>(() => {
     const getInitialPos = (key: 'a' | 'b'): ToolPosition => {
@@ -54,7 +54,7 @@ export function Mission11CalibrationEditor({ mission, onBackgroundChange }: Miss
     if (selectedTool === 'a') {
       onBackgroundChange?.(studioExteriorBg, bgKeyA);
     } else {
-      onBackgroundChange?.(studioGalleryBg, bgKeyB);
+      onBackgroundChange?.(galleryMainStylized, bgKeyB);
     }
   }, [selectedTool, onBackgroundChange]);
 
