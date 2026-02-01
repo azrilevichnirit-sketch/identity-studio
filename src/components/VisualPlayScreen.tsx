@@ -1674,13 +1674,36 @@ export function VisualPlayScreen({
       });
     }
     
-    // Mission 02: Male staff (appears after any tool selection in M02)
-    // Always show in editor when in M02 for calibration
+    // Mission 02: Male staff - TWO separate positions for Tool A and Tool B
+    // In editor mode, show BOTH variants for calibration
     const isMission02 = mission.mission_id === 'studio_02';
-    if (isMission02 || showMaleStaff) {
+    if (isMission02) {
+      // Tool A variant position
+      const anchorPosA = getAnchorPosition(lockedBgKey, 'm02_npc_male_a' as AnchorRef);
+      npcs.push({
+        id: 'mission-male-tool-a',
+        label: 'Male Staff (M02 Tool A)',
+        left: anchorPosA?.x ?? 38,
+        top: anchorPosA?.y ?? 75,
+        height: 'clamp(260px, 44vh, 420px)',
+        imageSrc: maleStaffWalk,
+      });
+      
+      // Tool B variant position
+      const anchorPosB = getAnchorPosition(lockedBgKey, 'm02_npc_male_b' as AnchorRef);
+      npcs.push({
+        id: 'mission-male-tool-b',
+        label: 'Male Staff (M02 Tool B)',
+        left: anchorPosB?.x ?? 38,
+        top: anchorPosB?.y ?? 75,
+        height: 'clamp(260px, 44vh, 420px)',
+        imageSrc: maleStaffWalk,
+      });
+    } else if (showMaleStaff) {
+      // For other missions where male staff is visible (M03+), show single position
       npcs.push({
         id: 'mission-male',
-        label: 'Male Staff (M02)',
+        label: 'Male Staff',
         left: parseFloat(maleStaffPos.left?.replace('%', '') || '30'),
         top: maleStaffPos.top ? parseFloat(maleStaffPos.top.replace('%', '')) : (100 - parseFloat(maleStaffPos.bottom?.replace('%', '') || '10')),
         height: 'clamp(260px, 44vh, 420px)',
