@@ -972,18 +972,18 @@ export function VisualPlayScreen({
       return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: 75, absoluteX: 65 }];
     }
 
-    // Mission 06 Tool A (wall decor): duplicates 6 times side by side on wall
+    // Mission 06 Tool A (wall decor): duplicates 6 times on the back wall only
     if (prop.missionId === 'studio_06' && prop.key === 'a') {
-      const wallY = 58.9; // Calibrated Y position on wall
-      const spacing = 10; // Spacing between items
-      const startX = 22; // Start from left side
+      const wallY = 54; // Calibrated Y position on wall
+      const spacing = 6.5; // Tighter spacing to fit on wall
+      const startX = 35; // Start more centered on the wall
       return [
-        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.4, absoluteY: wallY, absoluteX: startX },
-        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.4, absoluteY: wallY, absoluteX: startX + spacing },
-        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.4, absoluteY: wallY, absoluteX: startX + spacing * 2 },
-        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.4, absoluteY: wallY, absoluteX: startX + spacing * 3 },
-        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.4, absoluteY: wallY, absoluteX: startX + spacing * 4 },
-        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.4, absoluteY: wallY, absoluteX: startX + spacing * 5 },
+        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: wallY, absoluteX: startX },
+        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: wallY, absoluteX: startX + spacing },
+        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: wallY, absoluteX: startX + spacing * 2 },
+        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: wallY, absoluteX: startX + spacing * 3 },
+        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: wallY, absoluteX: startX + spacing * 4 },
+        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: wallY, absoluteX: startX + spacing * 5 },
       ];
     }
 
