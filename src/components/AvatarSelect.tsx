@@ -32,15 +32,35 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
           paddingRight: 'max(env(safe-area-inset-right, 16px), 16px)',
         }}
       >
-        <div className="flex flex-col items-center gap-6 md:gap-10 animate-fade-in w-full max-w-2xl">
-          {/* Title */}
-          <div className="text-center px-4">
-            <h1 className="text-2xl md:text-4xl font-bold text-white mb-2 drop-shadow-lg">נקודת הזינוק שלך</h1>
-            <p className="text-base md:text-xl text-white/90 drop-shadow-md">עכשיו רק תבחרו מי ילווה אתכם במסע</p>
+        <div className="flex flex-col items-center gap-4 md:gap-6 animate-fade-in w-full max-w-2xl">
+          {/* Title with strong contrast */}
+          <div 
+            className="text-center px-6 py-4 rounded-2xl"
+            style={{
+              background: 'rgba(0,0,0,0.5)',
+              backdropFilter: 'blur(8px)',
+            }}
+          >
+            <h1 
+              className="text-2xl md:text-4xl font-bold text-white mb-2"
+              style={{
+                textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 4px 16px rgba(0,0,0,0.5)',
+              }}
+            >
+              נקודת הזינוק שלך
+            </h1>
+            <p 
+              className="text-base md:text-xl text-white"
+              style={{
+                textShadow: '0 2px 6px rgba(0,0,0,0.7)',
+              }}
+            >
+              עכשיו רק תבחרו מי ילווה אתכם במסע
+            </p>
           </div>
           
-          {/* Avatar selection - no boxes, just the avatars */}
-          <div className="flex flex-row gap-8 md:gap-16 w-full items-end justify-center">
+          {/* Avatar selection - no boxes, just the avatars - positioned lower */}
+          <div className="flex flex-row gap-8 md:gap-16 w-full items-end justify-center mt-4 md:mt-8">
             <button
               onClick={() => onSelect('female')}
               className="group relative transition-all duration-300 hover:scale-110 active:scale-95"
@@ -49,7 +69,7 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
                 <img 
                   src={femaleAvatar} 
                   alt="Female avatar" 
-                  className="h-40 md:h-56 w-auto object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105"
+                  className="h-52 md:h-72 w-auto object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105"
                   style={{
                     filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.4))',
                   }}
@@ -76,7 +96,7 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
                 <img 
                   src={maleAvatar} 
                   alt="Male avatar" 
-                  className="h-40 md:h-56 w-auto object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105"
+                  className="h-52 md:h-72 w-auto object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105"
                   style={{
                     filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.4))',
                   }}
