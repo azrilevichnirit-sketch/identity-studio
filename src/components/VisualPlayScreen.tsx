@@ -525,9 +525,9 @@ export function VisualPlayScreen({
     timeoutsRef.current = [];
 
     // Step 1: Immediately show the tool on the floor (local state, before global update)
-    // Mission 10 bugfix: snap LOCAL placement immediately to the calibrated anchor
+    // Snap LOCAL placement immediately to the calibrated anchor for all missions
     // (otherwise the user sees it "stick" where they released, until the next mission renders the persisted version)
-    const shouldSnapLocalToAnchorNow = mission.mission_id === 'studio_10';
+    const shouldSnapLocalToAnchorNow = true;
     const snapped = shouldSnapLocalToAnchorNow ? getTargetAnchor(variant) : null;
     setLocalPlacement({
       missionId: mission.mission_id,
