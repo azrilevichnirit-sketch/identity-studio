@@ -674,17 +674,17 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m08_tool_a",
-    "x_pct": 0.521,
-    "y_pct": 0.833,
-    "scale": 1.8,
+    "x_pct": 0.716,
+    "y_pct": 0.846,
+    "scale": 2,
     "z_layer": "front"
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m08_tool_b",
-    "x_pct": 0.871,
-    "y_pct": 0.513,
-    "scale": 1.6,
+    "x_pct": 0.874,
+    "y_pct": 0.547,
+    "scale": 2.2,
     "z_layer": "front"
   },
   {
