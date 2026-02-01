@@ -12,7 +12,7 @@ import galleryMainStylized from '@/assets/backgrounds/gallery_main_stylized_v3.w
 import galleryMainStylizedWhite from '@/assets/backgrounds/gallery_main_stylized_white_v1.webp';
 import studioWorkshopBg from '@/assets/backgrounds/studio_in_workshop_v3.webp';
 import studioExteriorBg from '@/assets/backgrounds/studio_exterior_park_stylized_v3.webp';
-import studioEntranceViewBg from '@/assets/backgrounds/studio_doorway_park_view_v7.webp';
+import studioEntranceViewBg from '@/assets/backgrounds/studio_doorway_park_view_v2.webp';
 
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
