@@ -90,6 +90,22 @@
   },
   {
     "background_asset_key": "studio_entry_inside_bg",
+    "anchor_ref": "m02_tool_a",
+    "x_pct": 0.318,
+    "y_pct": 0.714,
+    "scale": 1.2,
+    "z_layer": "front"
+  },
+  {
+    "background_asset_key": "studio_entry_inside_bg",
+    "anchor_ref": "m02_tool_b",
+    "x_pct": 0.241,
+    "y_pct": 0.777,
+    "scale": 1.0,
+    "z_layer": "front"
+  },
+  {
+    "background_asset_key": "studio_entry_inside_bg",
     "anchor_ref": "m03_tool_a",
     "x_pct": 0.31,
     "y_pct": 1.0,
