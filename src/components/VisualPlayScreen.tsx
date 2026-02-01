@@ -938,38 +938,76 @@ export function VisualPlayScreen({
       return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.2, absoluteY: 71, absoluteX: 18 }];
     }
 
-    // Mission 04 Tool A (industrial lights): duplicates to 5 items in a row on the ceiling
+    // Mission 04 Tool A: single placement using anchor map coordinates
     if (prop.missionId === 'studio_04' && prop.key === 'a') {
-      const ceilingY = 18; // High up on ceiling
-      const spacing = 14; // Spacing between lights
-      const startX = 22; // Start from left
-      return [
-        { anchor: 'ceiling', offsetX: 0, offsetY: 0, customScale: 1.6, absoluteY: ceilingY, absoluteX: startX },
-        { anchor: 'ceiling', offsetX: 0, offsetY: 0, customScale: 1.6, absoluteY: ceilingY, absoluteX: startX + spacing },
-        { anchor: 'ceiling', offsetX: 0, offsetY: 0, customScale: 1.6, absoluteY: ceilingY, absoluteX: startX + spacing * 2 },
-        { anchor: 'ceiling', offsetX: 0, offsetY: 0, customScale: 1.6, absoluteY: ceilingY, absoluteX: startX + spacing * 3 },
-        { anchor: 'ceiling', offsetX: 0, offsetY: 0, customScale: 1.6, absoluteY: ceilingY, absoluteX: startX + spacing * 4 },
-      ];
+      const anchorPos = getAnchorPosition(lockedBgKey, 'm04_tool_a');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm04_tool_a' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX
+        }];
+      }
+      // Fallback
+      return [{ anchor: 'ceiling', offsetX: 0, offsetY: 0, customScale: 1.6, absoluteY: 18, absoluteX: 50 }];
     }
 
-    // Mission 04 Tool B (sculptural lights): duplicates to 3 items in room corners
+    // Mission 04 Tool B: single placement using anchor map coordinates
     if (prop.missionId === 'studio_04' && prop.key === 'b') {
-      const floorY = 78; // On the floor near walls
-      return [
-        { anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 1.8, absoluteY: floorY, absoluteX: 18 },  // Left corner
-        { anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 1.8, absoluteY: floorY, absoluteX: 50 },  // Center back
-        { anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 1.8, absoluteY: floorY, absoluteX: 82 },  // Right corner
-      ];
+      const anchorPos = getAnchorPosition(lockedBgKey, 'm04_tool_b');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm04_tool_b' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX
+        }];
+      }
+      // Fallback
+      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 1.4, absoluteY: 70, absoluteX: 58 }];
     }
 
-    // Mission 05 Tool A (exterior decor): single placement outside
+    // Mission 05 Tool A: single placement using anchor map coordinates
     if (prop.missionId === 'studio_05' && prop.key === 'a') {
-      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: 75, absoluteX: 35 }];
+      const anchorPos = getAnchorPosition(lockedBgKey, 'm05_tool_a');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm05_tool_a' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX
+        }];
+      }
+      // Fallback
+      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: 32, absoluteX: 35 }];
     }
 
-    // Mission 05 Tool B (exterior element): single placement outside
+    // Mission 05 Tool B: single placement using anchor map coordinates
     if (prop.missionId === 'studio_05' && prop.key === 'b') {
-      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: 75, absoluteX: 65 }];
+      const anchorPos = getAnchorPosition(lockedBgKey, 'm05_tool_b');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm05_tool_b' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX
+        }];
+      }
+      // Fallback
+      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 1.7, absoluteY: 76, absoluteX: 48 }];
     }
 
     // Mission 06 Tool A: single placement using anchor map coordinates
@@ -1018,9 +1056,8 @@ export function VisualPlayScreen({
         
         // USE FIXED PLACEMENT FOR PERSISTED TOOLS
         // This ensures tools stay exactly where they were placed, not recalculated
-        // EXCEPTION: Missions with duplication patterns (M04, M06) should use getDuplicateAnchors
-        const hasDuplicationPattern = 
-          (prop.missionId === 'studio_04');
+        // No more duplication patterns - all missions use single placement from anchor map
+        const hasDuplicationPattern = false;
         
         if (isPersisted && prop.fixedPlacement && !hasDuplicationPattern) {
           const fixed = prop.fixedPlacement;
