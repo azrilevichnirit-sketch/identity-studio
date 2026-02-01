@@ -15,8 +15,6 @@ import { BackgroundCrossfade } from './BackgroundCrossfade';
 import { AnchorDebugOverlay } from './AnchorDebugOverlay';
 import { GridDebugOverlay } from './GridDebugOverlay';
 import { ZLayerDebugOverlay, type ZLayerItem, LAYER_ZINDEX } from './ZLayerDebugOverlay';
-import femaleStaffWalk from '@/assets/avatars/studio_01_female_staff_walk.webp';
-import maleStaffWalk from '@/assets/avatars/studio_01_male_staff_walk.webp';
 import { ToolCalibrationEditor } from './ToolCalibrationEditor';
 // import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter'; // Disabled
 
@@ -702,129 +700,9 @@ export function VisualPlayScreen({
     return null;
   }, [activeToolVariant, getTargetAnchor]);
 
-  // Scene extras (NPCs)
-  // Mission 01 Tool B: staff should enter shortly AFTER placement (not after a secondary lock animation).
-  const [staffEnterReady, setStaffEnterReady] = useState(false);
-  
-  // Mission 02: track which tool was selected for male staff placement
-  const [mission02ToolSelected, setMission02ToolSelected] = useState<'a' | 'b' | null>(null);
-  const [maleStaffEnterReady, setMaleStaffEnterReady] = useState(false);
-  const [hadM02Lock, setHadM02Lock] = useState(false);
-  
-  // Mission 03: track if Tool A (workbench) was selected - used only to keep workshop positioning stable
-  const [mission03ToolASelected, setMission03ToolASelected] = useState(false);
-
-  // Mission 03: derive if Tool A is already placed (more reliable than only lock pulse)
-  const mission03ToolAPlaced = useMemo(() => {
-    return placedProps.some((p) => p.missionId === 'studio_03' && p.key === 'a');
-  }, [placedProps]);
-  
-  // Reset staff visibility when mission changes (except when going to mission 02+ with Tool B)
-  useEffect(() => {
-    // Only show female staff if we're in mission 02+ AND Tool B was chosen in mission 01
-    const hasMission01ToolB = placedProps.some(p => p.missionId === 'studio_01' && p.key === 'b');
-    if ((mission.mission_id === 'studio_02' || mission.sequence >= 2) && hasMission01ToolB) {
-      setStaffEnterReady(true);
-    } else if (mission.mission_id === 'studio_01') {
-      // Reset when back in mission 1 (fresh start or undo)
-      setStaffEnterReady(false);
-    }
-    
-    // Keep male staff visible in Mission 03+ if he was shown in Mission 02
-    const hasMission02Tool = placedProps.some(p => p.missionId === 'studio_02');
-    if (mission.sequence >= 3 && hasMission02Tool) {
-      setMaleStaffEnterReady(true);
-      // Determine which tool was selected in Mission 02
-      const m02Pick = placedProps.find(p => p.missionId === 'studio_02');
-      if (m02Pick) {
-        setMission02ToolSelected(m02Pick.key);
-      }
-    } else if (mission.mission_id === 'studio_02' && !hasMission02Tool) {
-      // UNDO case: returned to Mission 02 but pick was removed - reset NPC states
-      setMission02ToolSelected(null);
-      setMaleStaffEnterReady(false);
-      setHadM02Lock(false);
-    } else if (mission.mission_id === 'studio_01') {
-      setMission02ToolSelected(null);
-      setMaleStaffEnterReady(false);
-      setHadM02Lock(false);
-    }
-  }, [mission.mission_id, mission.sequence, placedProps]);
-  
-  // Track if we've seen the lock pulse for M01 Tool B (to know when it ends)
-  const [hadM01ToolBLock, setHadM01ToolBLock] = useState(false);
-  
-  // When lock pulse starts for M01 Tool B, track it
-  useEffect(() => {
-    if (lockPulseKey === 'studio_01-b') {
-      setHadM01ToolBLock(true);
-    }
-  }, [lockPulseKey]);
-  
-  // Trigger female staff entry AFTER lock pulse finishes
-  useEffect(() => {
-    // When lock pulse ends for Mission 01 Tool B (hadM01ToolBLock true but lockPulseKey null)
-    if (hadM01ToolBLock && !lockPulseKey && localPlacement?.missionId === 'studio_01' && localPlacement.key === 'b') {
-      const id = window.setTimeout(() => setStaffEnterReady(true), 100);
-      return () => window.clearTimeout(id);
-    }
-  }, [hadM01ToolBLock, lockPulseKey, localPlacement]);
-  
-  // Reset hadM01ToolBLock when mission changes
-  useEffect(() => {
-    if (mission.mission_id !== 'studio_01') {
-      setHadM01ToolBLock(false);
-    }
-  }, [mission.mission_id]);
-  
-  // Track Mission 02 lock pulse start
-  useEffect(() => {
-    if (lockPulseKey === 'studio_02-a' || lockPulseKey === 'studio_02-b') {
-      setHadM02Lock(true);
-      setMission02ToolSelected(lockPulseKey === 'studio_02-a' ? 'a' : 'b');
-    }
-    // Track Mission 03 Tool A selection
-    if (lockPulseKey === 'studio_03-a') {
-      setMission03ToolASelected(true);
-    }
-  }, [lockPulseKey]);
-
-  // Keep Mission 03 Tool A state stable across mission transitions (e.g., to mission 4)
-  // Reset only when leaving the workshop flow (undo/back to missions < 3).
-  useEffect(() => {
-    if (!isWorkshopLocked) {
-      setMission03ToolASelected(false);
-      return;
-    }
-    if (mission03ToolAPlaced) {
-      setMission03ToolASelected(true);
-    }
-  }, [isWorkshopLocked, mission03ToolAPlaced]);
-
-  // Trigger male staff entry AFTER Mission 02 lock pulse finishes.
-  // (Important: don't schedule off the "lockPulseKey is active" state, because cleanup will cancel it.)
-  useEffect(() => {
-    if (!hadM02Lock) return;
-    if (mission.mission_id !== 'studio_02') return;
-    if (lockPulseKey !== null) return;
-    if (!localPlacement || localPlacement.missionId !== 'studio_02') return;
-
-    const id = window.setTimeout(() => setMaleStaffEnterReady(true), 120);
-    return () => window.clearTimeout(id);
-  }, [hadM02Lock, lockPulseKey, localPlacement, mission.mission_id]);
-  
-  // In Mission 03: show staff in original positions until Tool A is selected
-  // After Tool A: staff moves to table sides (handled in workshop section)
-  const showFemaleStaff = staffEnterReady && !isWorkshopLocked;
-  const showMaleStaff = maleStaffEnterReady && mission02ToolSelected !== null && !isWorkshopLocked;
-
-  const shouldShowWorkshopStaffAtTable =
-    isWorkshopLocked &&
-    (mission03ToolASelected ||
-      mission03ToolAPlaced ||
-      (localPlacement?.missionId === 'studio_03' && localPlacement.key === 'a'));
-  
-  const sceneExtras: never[] = []; // Keep the original array empty for now
+  // ========== NPC LOGIC REMOVED ==========
+  // NPCs will be re-added after all tools are calibrated
+  // Placeholder for future implementation
 
   // ========== RENDER ELEMENTS ==========
   // These are passed to the layout wrapper
@@ -861,222 +739,9 @@ export function VisualPlayScreen({
     </>
   );
 
-  // Scene extras - Female staff NPC appears after Mission 01 Tool B placement.
-  // Position her relative to Tool B (so she's close and clearly looking at it).
-  const femaleStaffPos = useMemo(() => {
-    const floor = getAnchorPosition(lockedBgKey, 'floor');
-    const toolBX = (floor?.x ?? 50) + 8; // matches getDuplicateAnchors() offsetX for M01 Tool B
-    const staffX = Math.max(8, Math.min(92, toolBX - 10));
-    return {
-      left: `${staffX}%`,
-      bottom: '6%',
-    };
-  }, [lockedBgKey]);
-
-  // Male staff position for Mission 02
-  // Uses anchor map positions based on which tool was selected
-  const maleStaffPos = useMemo((): { left: string; bottom?: string; top?: string; facingRight: boolean; scale?: number } => {
-    // Get position from anchor map based on selected tool
-    const anchorRef = mission02ToolSelected === 'a' ? 'm02_npc_male_a' : 'm02_npc_male_b';
-    const anchorPos = getAnchorPosition(lockedBgKey, anchorRef as AnchorRef);
-    
-    if (anchorPos) {
-      return {
-        left: `${anchorPos.x}%`,
-        top: `${anchorPos.y}%`,
-        facingRight: mission02ToolSelected === 'b', // Face right when Tool B (wall-mounted on left)
-        scale: anchorPos.scale,
-      };
-    }
-    
-    // Fallback positions
-    if (mission02ToolSelected === 'a') {
-      // Tool A: staff stands near the tool
-      return {
-        left: '38%',
-        bottom: '6%',
-        facingRight: false,
-      };
-    } else {
-      // Tool B: staff stands facing the wall-mounted tool
-      return {
-        left: '38%',
-        bottom: '6%',
-        facingRight: false,
-      };
-    }
-  }, [mission02ToolSelected, lockedBgKey, getAnchorPosition]);
-
-  // Mission 03+: two staff members facing each other - use anchor map positions
-  const workshopWaitingStaffPos = useMemo(() => {
-    // Read from anchor map for workshop background
-    const maleAnchor = getAnchorPosition('studio_in_workshop_bg', 'm03_npc_male' as AnchorRef);
-    const femaleAnchor = getAnchorPosition('studio_in_workshop_bg', 'm03_npc_female' as AnchorRef);
-    
-    return {
-      male: {
-        left: maleAnchor ? `${maleAnchor.x}%` : '54.3%',
-        top: maleAnchor ? `${maleAnchor.y}%` : '72.9%',
-        scale: maleAnchor?.scale || 1.0,
-        zIndex: zIndexForAnchorLayer(maleAnchor?.z_layer),
-      },
-      female: {
-        left: femaleAnchor ? `${femaleAnchor.x}%` : '44%',
-        top: femaleAnchor ? `${femaleAnchor.y}%` : '73.7%',
-        scale: femaleAnchor?.scale || 1.0,
-        zIndex: zIndexForAnchorLayer(femaleAnchor?.z_layer),
-      },
-    };
-  }, []);
-
-  // After Mission 03 Tool A (workbench): staff move closer to the table
-  // Offset slightly from waiting positions toward center
-  const workshopTableStaffPos = useMemo(() => {
-    const waiting = workshopWaitingStaffPos;
-    return {
-      male: {
-        left: waiting.male.left,
-        top: `${parseFloat(waiting.male.top) - 5}%`, // Move 5% up (closer to table)
-        scale: (waiting.male.scale || 1) * 0.9, // Slightly smaller at table
-        zIndex: waiting.male.zIndex,
-      },
-      female: {
-        left: waiting.female.left,
-        top: `${parseFloat(waiting.female.top) - 5}%`, // Move 5% up
-        scale: (waiting.female.scale || 1) * 0.9,
-        zIndex: waiting.female.zIndex,
-      },
-    };
-  }, [workshopWaitingStaffPos]);
-
-  const sceneExtrasElement = (
-    <>
-      {/* Female staff - Mission 01 Tool B */}
-      {showFemaleStaff && (
-        <div
-          className="absolute pointer-events-none animate-npc-enter"
-          style={{
-            left: femaleStaffPos.left,
-            bottom: femaleStaffPos.bottom,
-            zIndex: 18,
-            transform: 'translateX(-50%)',
-            transformOrigin: 'bottom center',
-          }}
-        >
-          <img
-            src={femaleStaffWalk}
-            alt="Staff member"
-            className="w-auto object-contain animate-subtle-idle"
-            style={{
-              height: 'clamp(280px, 48vh, 460px)',
-              filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
-              transform: 'scaleX(-1)', // Face right toward the tool
-            }}
-          />
-        </div>
-      )}
-      
-      {/* Male staff - Mission 02 - BEHIND the tool (lower z-index) */}
-      {showMaleStaff && (
-        <div
-          className="absolute pointer-events-none animate-npc-enter"
-          style={{
-            left: maleStaffPos.left,
-            bottom: maleStaffPos.bottom,
-            top: maleStaffPos.top,
-            zIndex: 8, // Behind tools (tools are ~15-20)
-            transform: maleStaffPos.top 
-              ? `translate(-50%, -100%) scale(${maleStaffPos.scale || 1})` 
-              : 'translateX(-50%)',
-            transformOrigin: 'bottom center',
-          }}
-        >
-          <img
-            src={maleStaffWalk}
-            alt="Staff member"
-            className="w-auto object-contain animate-subtle-idle"
-            style={{
-              height: 'clamp(260px, 44vh, 420px)',
-              filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
-              transform: maleStaffPos.facingRight ? 'scaleX(1)' : 'scaleX(-1)',
-            }}
-          />
-        </div>
-      )}
-
-      {/* Mission 03+: Staff in workshop - visible whenever in workshop */}
-      {isWorkshopLocked && (
-        <>
-          {/* Male staff - always visible in workshop */}
-          <div
-            key="workshop-male-staff"
-            className="absolute pointer-events-none animate-npc-enter"
-            style={{
-              left: shouldShowWorkshopStaffAtTable 
-                ? workshopTableStaffPos.male.left 
-                : workshopWaitingStaffPos.male.left,
-              top: shouldShowWorkshopStaffAtTable 
-                ? workshopTableStaffPos.male.top 
-                : workshopWaitingStaffPos.male.top,
-               zIndex: shouldShowWorkshopStaffAtTable
-                 ? workshopTableStaffPos.male.zIndex
-                 : workshopWaitingStaffPos.male.zIndex,
-              transform: 'translate(-50%, -100%)',
-              transformOrigin: 'bottom center',
-              transition: 'left 0.6s ease-out, top 0.6s ease-out',
-            }}
-          >
-            <img
-              src={maleStaffWalk}
-              alt="דמות צוות מחכה"
-              className="w-auto object-contain animate-subtle-idle"
-              style={{
-                height: shouldShowWorkshopStaffAtTable 
-                  ? 'clamp(180px, 28vh, 280px)' 
-                  : 'clamp(220px, 34vh, 340px)',
-                filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
-                transform: 'scaleX(-1)',
-                transition: 'height 0.6s ease-out',
-              }}
-            />
-          </div>
-
-          {/* Female staff - always visible in workshop */}
-          <div
-            key="workshop-female-staff"
-            className="absolute pointer-events-none animate-npc-enter"
-            style={{
-              left: shouldShowWorkshopStaffAtTable 
-                ? workshopTableStaffPos.female.left 
-                : workshopWaitingStaffPos.female.left,
-              top: shouldShowWorkshopStaffAtTable 
-                ? workshopTableStaffPos.female.top 
-                : workshopWaitingStaffPos.female.top,
-               zIndex: shouldShowWorkshopStaffAtTable
-                 ? workshopTableStaffPos.female.zIndex
-                 : workshopWaitingStaffPos.female.zIndex,
-              transform: 'translate(-50%, -100%)',
-              transformOrigin: 'bottom center',
-              transition: 'left 0.6s ease-out, top 0.6s ease-out',
-            }}
-          >
-            <img
-              src={femaleStaffWalk}
-              alt="דמות צוות מחכה"
-              className="w-auto object-contain animate-subtle-idle"
-              style={{
-                height: shouldShowWorkshopStaffAtTable 
-                  ? 'clamp(180px, 28vh, 280px)' 
-                  : 'clamp(220px, 34vh, 340px)',
-                filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
-                transition: 'height 0.6s ease-out',
-              }}
-            />
-          </div>
-        </>
-      )}
-    </>
-  );
+  // ========== NPC RENDERING REMOVED ==========
+  // NPCs will be re-added after all tools are calibrated
+  const sceneExtrasElement = null;
 
   const targetZoneElement = activeToolVariant && targetPosition ? (
     <div 
@@ -1673,91 +1338,9 @@ export function VisualPlayScreen({
     };
   }, [avatarGender]);
 
-  // NPC positions for the editor (staff only)
-  // In edit mode, show ALL NPCs for calibration (not just visible ones based on game state)
-  const editorNpcs = useMemo(() => {
-    const npcs = [];
-    
-    // Mission 01-02: Female staff (appears after Tool B selection in M01)
-    // Always show in editor for calibration
-    const isMission01or02 = mission.mission_id === 'studio_01' || mission.mission_id === 'studio_02';
-    if (isMission01or02 || showFemaleStaff) {
-      npcs.push({
-        id: 'mission-female',
-        label: 'Female Staff (M01 Tool B)',
-        left: parseFloat(femaleStaffPos.left || '70'),
-        top: 100 - parseFloat(femaleStaffPos.bottom?.replace('%', '') || '10'),
-        height: 'clamp(280px, 48vh, 460px)',
-        imageSrc: femaleStaffWalk,
-      });
-    }
-    
-    // Mission 02: Male staff - TWO separate positions for Tool A and Tool B
-    // In editor mode, show BOTH variants for calibration
-    const isMission02 = mission.mission_id === 'studio_02';
-    if (isMission02) {
-      // Tool A variant position
-      const anchorPosA = getAnchorPosition(lockedBgKey, 'm02_npc_male_a' as AnchorRef);
-      npcs.push({
-        id: 'mission-male-tool-a',
-        label: 'Male Staff (M02 Tool A)',
-        left: anchorPosA?.x ?? 38,
-        top: anchorPosA?.y ?? 75,
-        height: 'clamp(260px, 44vh, 420px)',
-        imageSrc: maleStaffWalk,
-      });
-      
-      // Tool B variant position
-      const anchorPosB = getAnchorPosition(lockedBgKey, 'm02_npc_male_b' as AnchorRef);
-      npcs.push({
-        id: 'mission-male-tool-b',
-        label: 'Male Staff (M02 Tool B)',
-        left: anchorPosB?.x ?? 38,
-        top: anchorPosB?.y ?? 75,
-        height: 'clamp(260px, 44vh, 420px)',
-        imageSrc: maleStaffWalk,
-      });
-    } else if (showMaleStaff) {
-      // For other missions where male staff is visible (M03+), show single position
-      npcs.push({
-        id: 'mission-male',
-        label: 'Male Staff',
-        left: parseFloat(maleStaffPos.left?.replace('%', '') || '30'),
-        top: maleStaffPos.top ? parseFloat(maleStaffPos.top.replace('%', '')) : (100 - parseFloat(maleStaffPos.bottom?.replace('%', '') || '10')),
-        height: 'clamp(260px, 44vh, 420px)',
-        imageSrc: maleStaffWalk,
-      });
-    }
-    
-    // Workshop staff positions (Mission 03+)
-    if (isWorkshopLocked) {
-      const malePos = shouldShowWorkshopStaffAtTable 
-        ? workshopTableStaffPos.male 
-        : workshopWaitingStaffPos.male;
-      const femalePos = shouldShowWorkshopStaffAtTable 
-        ? workshopTableStaffPos.female 
-        : workshopWaitingStaffPos.female;
-      
-      npcs.push({
-        id: 'workshop-male',
-        label: 'Male Staff (Workshop)',
-        left: parseFloat(malePos.left),
-        top: parseFloat(malePos.top),
-        height: shouldShowWorkshopStaffAtTable ? 'clamp(180px, 28vh, 280px)' : 'clamp(220px, 34vh, 340px)',
-        imageSrc: maleStaffWalk,
-      });
-      npcs.push({
-        id: 'workshop-female',
-        label: 'Female Staff (Workshop)',
-        left: parseFloat(femalePos.left),
-        top: parseFloat(femalePos.top),
-        height: shouldShowWorkshopStaffAtTable ? 'clamp(180px, 28vh, 280px)' : 'clamp(220px, 34vh, 340px)',
-        imageSrc: femaleStaffWalk,
-      });
-    }
-    
-    return npcs;
-  }, [mission.mission_id, isWorkshopLocked, shouldShowWorkshopStaffAtTable, workshopTableStaffPos, workshopWaitingStaffPos, showFemaleStaff, showMaleStaff, femaleStaffPos, maleStaffPos]);
+  // ========== NPC EDITOR REMOVED ==========
+  // NPCs will be re-added after all tools are calibrated
+  const editorNpcs: never[] = [];
 
   // Tools/Props positions for the editor
   // ONLY show tools for the CURRENT mission - not previous missions
@@ -1823,67 +1406,12 @@ export function VisualPlayScreen({
     };
   }, [taskText]);
 
-  // Z-Layer debug items - collect all NPCs and Tools with their z-layer info
+  // Z-Layer debug items - simplified without NPCs
   const zLayerItems = useMemo((): ZLayerItem[] => {
     const items: ZLayerItem[] = [];
     
-    // Add workshop staff if visible
-    if (isWorkshopLocked) {
-      const malePos = shouldShowWorkshopStaffAtTable 
-        ? workshopTableStaffPos.male 
-        : workshopWaitingStaffPos.male;
-      const femalePos = shouldShowWorkshopStaffAtTable 
-        ? workshopTableStaffPos.female 
-        : workshopWaitingStaffPos.female;
-      
-      items.push({
-        id: 'workshop-male',
-        type: 'npc',
-        label: 'Male Staff',
-        zLayer: 'mid',
-        zIndex: malePos.zIndex,
-        x: parseFloat(malePos.left),
-        y: parseFloat(malePos.top),
-      });
-      items.push({
-        id: 'workshop-female',
-        type: 'npc',
-        label: 'Female Staff',
-        zLayer: 'mid',
-        zIndex: femalePos.zIndex,
-        x: parseFloat(femalePos.left),
-        y: parseFloat(femalePos.top),
-      });
-    }
-    
-    // Add female staff (M01 Tool B)
-    if (showFemaleStaff && !isWorkshopLocked) {
-      items.push({
-        id: 'female-staff-m01',
-        type: 'npc',
-        label: 'Female Staff (M01)',
-        zLayer: 'mid',
-        zIndex: LAYER_ZINDEX.mid,
-        x: parseFloat(femaleStaffPos.left),
-        y: 100 - parseFloat(femaleStaffPos.bottom || '6'),
-      });
-    }
-    
-    // Add male staff (M02)
-    if (showMaleStaff && !isWorkshopLocked) {
-      items.push({
-        id: 'male-staff-m02',
-        type: 'npc',
-        label: 'Male Staff (M02)',
-        zLayer: 'mid',
-        zIndex: LAYER_ZINDEX.mid,
-        x: parseFloat(maleStaffPos.left?.replace('%', '') || '30'),
-        y: maleStaffPos.top ? parseFloat(maleStaffPos.top.replace('%', '')) : (100 - parseFloat(maleStaffPos.bottom?.replace('%', '') || '10')),
-      });
-    }
-    
     // Add placed tools with their z-layer info
-    displayedPlacement.forEach((prop, idx) => {
+    displayedPlacement.forEach((prop) => {
       const anchorRef = `m${prop.missionId.replace('studio_', '').padStart(2, '0')}_tool_${prop.key}` as AnchorRef;
       const anchorPos = getAnchorPosition(lockedBgKey, anchorRef);
       const zLayer = anchorPos?.z_layer || 'mid';
@@ -1911,8 +1439,7 @@ export function VisualPlayScreen({
     });
     
     return items;
-  }, [isWorkshopLocked, shouldShowWorkshopStaffAtTable, workshopTableStaffPos, workshopWaitingStaffPos, 
-      showFemaleStaff, showMaleStaff, femaleStaffPos, maleStaffPos, displayedPlacement, lockedBgKey, isMobile]);
+  }, [displayedPlacement, lockedBgKey, isMobile]);
 
   return (
     <>
