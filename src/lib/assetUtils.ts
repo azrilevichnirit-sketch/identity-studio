@@ -2,15 +2,17 @@
 
 import type { AvatarGender, Mission } from '@/types/identity';
 
-// Background imports - 4 backgrounds used:
+// Background imports - 5 backgrounds used:
 // 1. Mission 01 only: stylized room (before paint) - gallery_main_stylized_v3
 // 2. Mission 02: white walls (after paint) - gallery_main_stylized_white_v1
 // 3. Mission 03, 04, 06+: workshop with windows to park - studio_in_workshop_v3
-// 4. Mission 05, 07, 11: exterior park view - studio_exterior_park_stylized_v2
+// 4. Mission 05, 11: exterior park view - studio_exterior_park_stylized_v2
+// 5. Mission 07: gallery looking outside - studio_in_entrance_view_bg
 import galleryMainStylized from '@/assets/backgrounds/gallery_main_stylized_v3.webp';
 import galleryMainStylizedWhite from '@/assets/backgrounds/gallery_main_stylized_white_v1.webp';
 import studioWorkshopBg from '@/assets/backgrounds/studio_in_workshop_v3.webp';
 import studioExteriorBg from '@/assets/backgrounds/studio_exterior_park_stylized_v3.webp';
+import studioEntranceViewBg from '@/assets/backgrounds/studio_in_entrance_view_bg.webp';
 
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
@@ -134,26 +136,29 @@ const toolAssets: Record<string, string> = {
   studio_tie_15_b: studioTie15b,
 };
 
-// Background asset lookup - 4 backgrounds used:
+// Background asset lookup - 5 backgrounds used:
 // 1. Mission 01: stylized room (before paint) - galleryMainStylized
 // 2. Mission 02: white walls (after paint) - galleryMainStylizedWhite  
 // 3. Mission 03, 04, 06+: workshop with windows - studioWorkshopBg
-// 4. Mission 05, 07, 11: exterior park - studioExteriorBg
+// 4. Mission 05, 11: exterior park - studioExteriorBg
+// 5. Mission 07: gallery looking outside - studioEntranceViewBg
 const backgroundAssets: Record<string, string> = {
   // Mission 01 starting bg -> stylized (before paint)
   studio_front_bg: galleryMainStylized,
-  studio_in_entrance_view_bg: galleryMainStylized,
   studio_in_gallery_bg: galleryMainStylized,
   studio_in_storage_bg: galleryMainStylized,
   studio_entry_inside_bg: galleryMainStylized,
   
   // Mission 02 locked to white walls (after paint)
   studio_in_gallery_wall_bg: galleryMainStylizedWhite,
+  
+  // Mission 07: gallery looking outside
+  studio_in_entrance_view_bg: studioEntranceViewBg,
 
   // Workshop (Mission 03, 04, 06+)
   studio_in_workshop_bg: studioWorkshopBg,
   
-  // Exterior (Mission 05, 07, 11)
+  // Exterior (Mission 05, 11)
   studio_exterior_bg: studioExteriorBg,
   studio_exterior_park_bg: studioExteriorBg,
 
@@ -168,6 +173,7 @@ const panoramicBackgrounds: Record<string, string> = {
   studio_in_gallery_bg: galleryMainStylized,
   studio_entry_inside_bg: galleryMainStylized,
   studio_in_gallery_wall_bg: galleryMainStylizedWhite,
+  studio_in_entrance_view_bg: studioEntranceViewBg,
   studio_in_workshop_bg: studioWorkshopBg,
   studio_exterior_bg: studioExteriorBg,
   studio_exterior_park_bg: studioExteriorBg,
