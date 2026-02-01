@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef, useCallback, useEffect } from 'react';
+import { useMemo, useState, useRef, useCallback, useEffect, forwardRef } from 'react';
 import type { Mission, HollandCode, AvatarGender, PickRecord, MissionOption, AnchorRef } from '@/types/identity';
 import { getToolImage, getBackgroundForMission, getAvatarImage, getBackgroundKey, getBackgroundByName, getPanoramicBackground, preloadBackground } from '@/lib/assetUtils';
 import { getAnchorPosition } from '@/lib/jsonDataLoader';
@@ -9,9 +9,10 @@ import { ProgressTank } from './ProgressTank';
 import { DragHint } from './DragHint';
 import { useSceneExtras } from '@/hooks/useSceneExtras';
 import { MissionLayout } from './layouts/MissionLayout';
-import { usePanningBackground } from '@/hooks/usePanningBackground';
+import type { PanningApi } from './PannableBackground';
+import { PannableBackground } from './PannableBackground';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { BackgroundCrossfade } from './BackgroundCrossfade';
+// BackgroundCrossfade is used inside PannableBackground
 import { EdgePanIndicators } from './EdgePanIndicators';
 import { AnchorDebugOverlay } from './AnchorDebugOverlay';
 import { GridDebugOverlay } from './GridDebugOverlay';
@@ -381,10 +382,7 @@ export function VisualPlayScreen({
     return anchorPos?.x ?? 50;
   }, [isMobile, isPanoramic, optionA.anchor_ref, lockedBgKey]);
 
-  const { backgroundPosition, updatePanFromDrag, resetPan, panToPosition } = usePanningBackground({
-    enabled: isMobile && isPanoramic,
-    initialTargetX: initialPanTargetX,
-  });
+  const panApiRef = useRef<PanningApi | null>(null);
 
   // Get target anchor for currently selected tool
   // Uses anchor_ref from quest data to look up coordinates in anchor map
@@ -672,7 +670,7 @@ export function VisualPlayScreen({
     if (stageRef.current && isMobile && isPanoramic) {
       const rect = stageRef.current.getBoundingClientRect();
       const normalizedX = (e.clientX - rect.left) / rect.width;
-      updatePanFromDrag(normalizedX);
+      panApiRef.current?.updatePanFromDrag(normalizedX);
       
       // Calculate edge proximity for visual indicators (matches panning edge zone)
       const EDGE_ZONE = 0.18; // 18% from each edge - matches usePanningBackground
@@ -691,7 +689,7 @@ export function VisualPlayScreen({
         setEdgeProximity({ edge: null, intensity: 0 });
       }
     }
-  }, [draggingTool, isMobile, isPanoramic, updatePanFromDrag]);
+  }, [draggingTool, isMobile, isPanoramic]);
 
   const handlePointerUp = useCallback((e: React.PointerEvent) => {
     if (!draggingTool || !stageRef.current) {
@@ -753,9 +751,9 @@ export function VisualPlayScreen({
     dragStartPosRef.current = null;
     
     // Reset pan and edge indicators when drag ends
-    resetPan();
+    panApiRef.current?.resetPan();
     setEdgeProximity({ edge: null, intensity: 0 });
-  }, [draggingTool, completePlacement, getTargetAnchor, resetPan, mission.mission_id]);
+  }, [draggingTool, completePlacement, getTargetAnchor, mission.mission_id]);
 
   // Handle tap on drop zone in carry mode
   const handleDropZoneTap = useCallback(() => {
@@ -904,22 +902,17 @@ export function VisualPlayScreen({
   // ========== RENDER ELEMENTS ==========
   // These are passed to the layout wrapper
 
-  // Use panoramic background on mobile if available
-  const effectiveBg = lockedBg;
-  const effectiveBgPosition = isMobile && isPanoramic ? backgroundPosition : 'center';
-  // For panoramic backgrounds, use 'auto 100%' to show full height and allow horizontal pan
-  const effectiveBgSize = isMobile && isPanoramic ? 'auto 100%' : 'cover';
-
   const backgroundElement = (
-    <BackgroundCrossfade
-      src={effectiveBg}
+    <PannableBackground
+      src={lockedBg}
       className="layout-bg"
-      backgroundSize={effectiveBgSize}
-      backgroundPosition={effectiveBgPosition}
-      backgroundRepeat="no-repeat"
       filter="saturate(1.18) contrast(1.08)"
       durationMs={1500}
       zIndex={0}
+      enabled={isMobile && isPanoramic}
+      isPanoramic={isMobile && isPanoramic}
+      initialTargetX={initialPanTargetX}
+      panApiRef={panApiRef}
     />
   );
 
@@ -2051,7 +2044,7 @@ interface DraggableToolTileProps {
   isMobile: boolean;
 }
 
-function DraggableToolTile({ 
+const DraggableToolTile = forwardRef<HTMLDivElement, DraggableToolTileProps>(function DraggableToolTile({ 
   image, 
   onPointerDown, 
   onPointerMove, 
@@ -2064,9 +2057,12 @@ function DraggableToolTile({
   isInfoActive,
   tooltipText,
   isMobile,
-}: DraggableToolTileProps) {
+}: DraggableToolTileProps, ref) {
   return (
-    <div className={`relative ${isDragging ? 'opacity-40' : ''} ${isCarryMode ? 'carry-mode-active' : ''}`}>
+    <div
+      ref={ref}
+      className={`relative ${isDragging ? 'opacity-40' : ''} ${isCarryMode ? 'carry-mode-active' : ''}`}
+    >
       {/* Tool tile - transparent PNG, no white card */}
       <div
         onPointerDown={onPointerDown}
@@ -2116,4 +2112,4 @@ function DraggableToolTile({
       </div>
     </div>
   );
-}
+});
