@@ -5,7 +5,7 @@ import { getToolImage } from '@/lib/assetUtils';
 import type { AnchorRef, Mission } from '@/types/identity';
 
 // Import backgrounds for calibration
-import studioFrontBg from '@/assets/backgrounds/studio_front_bg.webp';
+import studioExteriorBg from '@/assets/backgrounds/studio_exterior_park_stylized_v3.webp';
 import studioGalleryBg from '@/assets/backgrounds/studio_in_gallery_bg.webp';
 
 interface Mission11CalibrationEditorProps {
@@ -25,8 +25,8 @@ export function Mission11CalibrationEditor({ mission, onBackgroundChange }: Miss
   const [isOpen, setIsOpen] = useState(true);
   const [selectedTool, setSelectedTool] = useState<'a' | 'b'>('a');
   
-  // Tool A = Exterior (studio_front_bg), Tool B = Gallery (studio_in_gallery_bg)
-  const bgKeyA = 'studio_front_bg';
+  // Tool A = Exterior (studio_exterior_bg), Tool B = Gallery (studio_in_gallery_bg)
+  const bgKeyA = 'studio_exterior_bg';
   const bgKeyB = 'studio_in_gallery_bg';
   
   const [positions, setPositions] = useState<{ a: ToolPosition; b: ToolPosition }>(() => {
@@ -52,7 +52,7 @@ export function Mission11CalibrationEditor({ mission, onBackgroundChange }: Miss
   // Update background when selected tool changes
   useEffect(() => {
     if (selectedTool === 'a') {
-      onBackgroundChange?.(studioFrontBg, bgKeyA);
+      onBackgroundChange?.(studioExteriorBg, bgKeyA);
     } else {
       onBackgroundChange?.(studioGalleryBg, bgKeyB);
     }
