@@ -268,7 +268,7 @@
     "quest_id": "studio_09",
     "order": 9,
     "view": "in",
-    "bg_override": "studio_entry_inside_bg",
+    "bg_override": "gallery_main_stylized",
     "zone_id": null,
     "task_heb": "סיוט בסטודיו. הגג התחיל לנזול ישר על העבודות הכי יקרות שלנו. מה עושים?",
     "option_a_code": "c",
