@@ -545,5 +545,38 @@
     "y_pct": 0.70,
     "scale": 1.0,
     "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_exterior_bg",
+    "anchor_ref": "m05_tool_a",
+    "x_pct": 0.356,
+    "y_pct": 0.408,
+    "scale": 1.5,
+    "z_layer": "mid",
+    "rotation": 15
+  },
+  {
+    "background_asset_key": "studio_exterior_bg",
+    "anchor_ref": "m05_tool_b",
+    "x_pct": 0.483,
+    "y_pct": 0.823,
+    "scale": 1.5,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_exterior_bg",
+    "anchor_ref": "m05_npc_entrance",
+    "x_pct": 0.279,
+    "y_pct": 0.745,
+    "scale": 0.8,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_exterior_bg",
+    "anchor_ref": "m05_npc_entrance_2",
+    "x_pct": 0.353,
+    "y_pct": 0.745,
+    "scale": 0.8,
+    "z_layer": "mid"
   }
 ]
