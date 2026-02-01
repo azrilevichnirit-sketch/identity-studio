@@ -367,19 +367,22 @@ export function VisualPlayScreen({
   // Calculate and return the fixed placement for a tool (for persisted tools)
   const calculateFixedPlacement = useCallback((missionId: string, key: 'a' | 'b'): { x: number; y: number; scale: number; flipX?: boolean; wallMount?: boolean; bgKey?: string } | undefined => {
     // Special handling for Mission 01 Tool A (3 buckets) - don't persist these
-    
-    // Special handling for Mission 01 Tool A (3 buckets) - don't persist these
     if (missionId === 'studio_01' && key === 'a') return undefined;
+    
+    // Get the option to check for next_bg_override
+    const option = key === 'a' ? optionA : optionB;
+    
+    // IMPORTANT: For persisted tools, calculate placement relative to the TARGET background
+    // (next_bg_override) if one exists, otherwise use current background.
+    // This prevents tools from "jumping" when the background changes after placement.
+    const targetBgKey = option?.next_bg_override || lockedBgKey;
     
     // Get anchor info from the placement logic
     const anchorRef = key === 'a' 
       ? `m${missionId.replace('studio_', '').padStart(2, '0')}_tool_a`
       : `m${missionId.replace('studio_', '').padStart(2, '0')}_tool_b`;
     
-    // IMPORTANT: Fixed placement must be computed from the *current* background where
-    // the user actually drops the tool (not from any drag-preview / next-bg override).
-    // Otherwise persisted tools can “jump” in the following mission.
-    const anchorPos = getAnchorPosition(lockedBgKey, anchorRef as AnchorRef);
+    const anchorPos = getAnchorPosition(targetBgKey, anchorRef as AnchorRef);
     if (anchorPos) {
       return {
         x: anchorPos.x,
@@ -387,11 +390,11 @@ export function VisualPlayScreen({
         scale: anchorPos.scale,
         flipX: anchorPos.flipX,
         wallMount: missionId === 'studio_02' && key === 'b', // Tool B of mission 2 is wall-mounted
-        bgKey: lockedBgKey, // Store the background key where the tool was placed
+        bgKey: targetBgKey, // Store the TARGET background key for zone matching
       };
     }
     return undefined;
-  }, [lockedBgKey]);
+  }, [lockedBgKey, optionA, optionB]);
 
   // Complete a tool selection (used by both drag and carry mode)
   const completePlacement = useCallback((variant: 'a' | 'b') => {
