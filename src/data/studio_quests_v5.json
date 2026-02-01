@@ -222,7 +222,7 @@
     "option_b_tooltip_heb": "חלון ראווה ותצוגת מכירות",
     "option_b_view": "in",
     "next_view_b": "in",
-    "next_bg_override_b": "studio_in_gallery_bg",
+    "next_bg_override_b": "gallery_main_stylized",
     "placement_mode_b": "wall_full",
     "anchor_ref_b": "m07_tool_b",
     "offset_y_b": 0,
