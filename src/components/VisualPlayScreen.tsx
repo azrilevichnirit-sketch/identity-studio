@@ -837,34 +837,43 @@ export function VisualPlayScreen({
     }
   }, [mission02ToolSelected, lockedBgKey, getAnchorPosition]);
 
-  // Mission 03+: two staff members facing each other near the back wall
+  // Mission 03+: two staff members facing each other - use anchor map positions
   const workshopWaitingStaffPos = useMemo(() => {
+    // Read from anchor map for workshop background
+    const maleAnchor = getAnchorPosition('studio_in_workshop_bg', 'm03_npc_male' as AnchorRef);
+    const femaleAnchor = getAnchorPosition('studio_in_workshop_bg', 'm03_npc_female' as AnchorRef);
+    
     return {
       male: {
-        left: '55%', // Right side, even closer to center
-        top: '42%', // Further back, very close to wall
+        left: maleAnchor ? `${maleAnchor.x}%` : '54.3%',
+        top: maleAnchor ? `${maleAnchor.y}%` : '72.9%',
+        scale: maleAnchor?.scale || 1.0,
       },
       female: {
-        left: '45%', // Left side, even closer to center
-        top: '42%', // Further back, very close to wall
+        left: femaleAnchor ? `${femaleAnchor.x}%` : '44%',
+        top: femaleAnchor ? `${femaleAnchor.y}%` : '73.7%',
+        scale: femaleAnchor?.scale || 1.0,
       },
     };
   }, []);
 
-  // After Mission 03 Tool A (workbench): staff on table sides
-  // Both staff stand together in square 18 at 52% Y
+  // After Mission 03 Tool A (workbench): staff move closer to the table
+  // Offset slightly from waiting positions toward center
   const workshopTableStaffPos = useMemo(() => {
+    const waiting = workshopWaitingStaffPos;
     return {
       male: {
-        left: '55%', // Right side of square 18
-        top: '52%',
+        left: waiting.male.left,
+        top: `${parseFloat(waiting.male.top) - 5}%`, // Move 5% up (closer to table)
+        scale: (waiting.male.scale || 1) * 0.9, // Slightly smaller at table
       },
       female: {
-        left: '45%', // Left side of square 18
-        top: '52%',
+        left: waiting.female.left,
+        top: `${parseFloat(waiting.female.top) - 5}%`, // Move 5% up
+        scale: (waiting.female.scale || 1) * 0.9,
       },
     };
-  }, []);
+  }, [workshopWaitingStaffPos]);
 
   const sceneExtrasElement = (
     <>
