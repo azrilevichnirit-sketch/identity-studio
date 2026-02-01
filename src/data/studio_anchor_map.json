@@ -813,19 +813,19 @@
     "flipX": true
   },
   {
-    "background_asset_key": "studio_front_bg",
+    "background_asset_key": "studio_exterior_bg",
     "anchor_ref": "m11_tool_a",
-    "x_pct": 0.5,
-    "y_pct": 0.75,
-    "scale": 2.0,
+    "x_pct": 0.672,
+    "y_pct": 0.667,
+    "scale": 3.8,
     "z_layer": "front"
   },
   {
-    "background_asset_key": "studio_in_gallery_bg",
+    "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m11_tool_b",
-    "x_pct": 0.5,
-    "y_pct": 0.75,
-    "scale": 1.8,
+    "x_pct": 0.42,
+    "y_pct": 0.591,
+    "scale": 1,
     "z_layer": "front"
   },
   {
