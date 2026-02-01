@@ -296,15 +296,13 @@ export function VisualPlayScreen({
       const lockedImage = getBackgroundByName(lockedKey) || currentBg;
       return { key: lockedKey, image: lockedImage };
     }
-    // Mission 07: Use calibration_bg from option for room transitions
+    // Mission 07: Tool-specific destination rooms
+    // Tool A -> Storage, Tool B -> Gallery (MUST be gallery_main_stylized.webp)
     // This MUST come BEFORE the workshop lock check
     if (mission.mission_id === 'studio_07') {
-      // Check for calibration_bg or next_bg_override
-      const targetBgKey = (option as any).calibration_bg || option.next_bg_override;
-      if (targetBgKey) {
-        const targetBgImage = getBackgroundByName(targetBgKey) || currentBg;
-        return { key: targetBgKey, image: targetBgImage };
-      }
+      const targetBgKey = option.key === 'a' ? 'studio_in_storage_bg' : 'gallery_main_stylized';
+      const targetBgImage = getBackgroundByName(targetBgKey) || currentBg;
+      return { key: targetBgKey, image: targetBgImage };
     }
     // Workshop missions (M03+, except M07, exterior, M09, M12)
     if (mission.phase === 'main' && (mission.mission_id === 'studio_03' || mission.sequence >= 3) && mission.mission_id !== 'studio_07' && !isGalleryMission) {
@@ -396,18 +394,16 @@ export function VisualPlayScreen({
     const preferredAnchorRef = (`m${missionNum}_tool_${variant}`) as AnchorRef;
     const fallbackAnchorRef = option.anchor_ref as AnchorRef;
     
-    // SPECIAL CASE: Mission 07 - use calibration_bg for each tool
+    // SPECIAL CASE: Mission 07 - tool-specific destination rooms
     // Tool A -> studio_in_storage_bg, Tool B -> gallery_main_stylized
     if (mission.mission_id === 'studio_07') {
-      const calibrationBg = (option as any).calibration_bg || option.next_bg_override;
-      if (calibrationBg) {
-        let anchorPos = getAnchorPosition(calibrationBg, preferredAnchorRef);
-        if (!anchorPos) {
-          anchorPos = getAnchorPosition(calibrationBg, fallbackAnchorRef);
-        }
-        if (anchorPos) {
-          return anchorPos;
-        }
+      const targetBgKey = variant === 'a' ? 'studio_in_storage_bg' : 'gallery_main_stylized';
+      let anchorPos = getAnchorPosition(targetBgKey, preferredAnchorRef);
+      if (!anchorPos) {
+        anchorPos = getAnchorPosition(targetBgKey, fallbackAnchorRef);
+      }
+      if (anchorPos) {
+        return anchorPos;
       }
     }
     
