@@ -17,6 +17,7 @@ import { GridDebugOverlay } from './GridDebugOverlay';
 import { ZLayerDebugOverlay, type ZLayerItem, LAYER_ZINDEX } from './ZLayerDebugOverlay';
 import { ToolCalibrationEditor } from './ToolCalibrationEditor';
 import { Mission7CalibrationEditor } from './Mission7CalibrationEditor';
+import { Mission11CalibrationEditor } from './Mission11CalibrationEditor';
 import { WaterLeakEffect } from './WaterLeakEffect';
 // import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter'; // Disabled
 
@@ -798,13 +799,15 @@ export function VisualPlayScreen({
     // their background keys both resolve to "gallery" zone
     const currentZone = getZoneForMission(currentSeq);
 
-    // Product/UI rule: Missions 07, 08, and 09 are "clean scene" resets.
+    // Product/UI rule: Missions 07, 08, 09, 11, and 12 are "clean scene" resets.
     // M7: Player chooses storage vs gallery - different room entirely
     // M8: New "workers' room" - fresh workshop without previous tools
     // M9: Gallery scene - fresh start, no persisted tools
+    // M11: Exterior/Gallery choice - fresh scene, no M10 tools
+    // M12: Final mission - fresh gallery scene
     // Do NOT render persisted tools from previous missions here.
     // (This only affects visibility; it does not modify game state.)
-    const hidePersistedToolsForThisMission = mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12';
+    const hidePersistedToolsForThisMission = mission.mission_id === 'studio_09' || mission.mission_id === 'studio_11' || mission.mission_id === 'studio_12';
     
     // Add persisted tools from previous missions based on persist flag AND zone
     if (!hidePersistedToolsForThisMission) {
@@ -1981,7 +1984,13 @@ export function VisualPlayScreen({
           onBackgroundChange={handleM7BackgroundChange}
         />
       )}
-      {toolEditMode && mission.mission_id !== 'studio_07' && (
+      {toolEditMode && mission.mission_id === 'studio_11' && (
+        <Mission11CalibrationEditor
+          mission={mission}
+          onBackgroundChange={handleM7BackgroundChange}
+        />
+      )}
+      {toolEditMode && mission.mission_id !== 'studio_07' && mission.mission_id !== 'studio_11' && (
         <ToolCalibrationEditor
           mission={mission}
           currentBgKey={lockedBgKey}
