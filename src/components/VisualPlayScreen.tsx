@@ -14,6 +14,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { BackgroundCrossfade } from './BackgroundCrossfade';
 import { AnchorDebugOverlay } from './AnchorDebugOverlay';
 import { GridDebugOverlay } from './GridDebugOverlay';
+import { ZLayerDebugOverlay, type ZLayerItem, LAYER_ZINDEX } from './ZLayerDebugOverlay';
 import femaleStaffWalk from '@/assets/avatars/studio_01_female_staff_walk.webp';
 import maleStaffWalk from '@/assets/avatars/studio_01_male_staff_walk.webp';
 import { DraggableNpcEditor } from './DraggableNpcEditor';
@@ -77,6 +78,7 @@ export function VisualPlayScreen({
   const [showToolSwapCue, setShowToolSwapCue] = useState(false);
   const [showDebugOverlay, setShowDebugOverlay] = useState(false);
   const [showGridOverlay, setShowGridOverlay] = useState(false);
+  const [showZLayerOverlay, setShowZLayerOverlay] = useState(false);
   
   // Local placement state - shows tool BEFORE it's added to global placedProps
   const [localPlacement, setLocalPlacement] = useState<{
@@ -1825,6 +1827,97 @@ export function VisualPlayScreen({
     };
   }, [taskText]);
 
+  // Z-Layer debug items - collect all NPCs and Tools with their z-layer info
+  const zLayerItems = useMemo((): ZLayerItem[] => {
+    const items: ZLayerItem[] = [];
+    
+    // Add workshop staff if visible
+    if (isWorkshopLocked) {
+      const malePos = shouldShowWorkshopStaffAtTable 
+        ? workshopTableStaffPos.male 
+        : workshopWaitingStaffPos.male;
+      const femalePos = shouldShowWorkshopStaffAtTable 
+        ? workshopTableStaffPos.female 
+        : workshopWaitingStaffPos.female;
+      
+      items.push({
+        id: 'workshop-male',
+        type: 'npc',
+        label: 'Male Staff',
+        zLayer: 'mid',
+        zIndex: malePos.zIndex,
+        x: parseFloat(malePos.left),
+        y: parseFloat(malePos.top),
+      });
+      items.push({
+        id: 'workshop-female',
+        type: 'npc',
+        label: 'Female Staff',
+        zLayer: 'mid',
+        zIndex: femalePos.zIndex,
+        x: parseFloat(femalePos.left),
+        y: parseFloat(femalePos.top),
+      });
+    }
+    
+    // Add female staff (M01 Tool B)
+    if (showFemaleStaff && !isWorkshopLocked) {
+      items.push({
+        id: 'female-staff-m01',
+        type: 'npc',
+        label: 'Female Staff (M01)',
+        zLayer: 'mid',
+        zIndex: LAYER_ZINDEX.mid,
+        x: parseFloat(femaleStaffPos.left),
+        y: 100 - parseFloat(femaleStaffPos.bottom || '6'),
+      });
+    }
+    
+    // Add male staff (M02)
+    if (showMaleStaff && !isWorkshopLocked) {
+      items.push({
+        id: 'male-staff-m02',
+        type: 'npc',
+        label: 'Male Staff (M02)',
+        zLayer: 'mid',
+        zIndex: LAYER_ZINDEX.mid,
+        x: parseFloat(maleStaffPos.left?.replace('%', '') || '30'),
+        y: maleStaffPos.top ? parseFloat(maleStaffPos.top.replace('%', '')) : (100 - parseFloat(maleStaffPos.bottom?.replace('%', '') || '10')),
+      });
+    }
+    
+    // Add placed tools with their z-layer info
+    displayedPlacement.forEach((prop, idx) => {
+      const anchorRef = `m${prop.missionId.replace('studio_', '').padStart(2, '0')}_tool_${prop.key}` as AnchorRef;
+      const anchorPos = getAnchorPosition(lockedBgKey, anchorRef);
+      const zLayer = anchorPos?.z_layer || 'mid';
+      
+      items.push({
+        id: `tool-${prop.missionId}-${prop.key}`,
+        type: 'tool',
+        label: `${prop.missionId.replace('studio_', 'M')} ${prop.key.toUpperCase()}`,
+        zLayer: zLayer as 'back' | 'mid' | 'front',
+        zIndex: zIndexForAnchorLayer(zLayer),
+        x: anchorPos?.x ?? 50,
+        y: anchorPos?.y ?? 70,
+      });
+    });
+    
+    // Add avatar
+    items.push({
+      id: 'avatar',
+      type: 'avatar',
+      label: 'Avatar',
+      zLayer: 'front',
+      zIndex: 20,
+      x: isMobile ? 75 : 85,
+      y: isMobile ? 75 : 80,
+    });
+    
+    return items;
+  }, [isWorkshopLocked, shouldShowWorkshopStaffAtTable, workshopTableStaffPos, workshopWaitingStaffPos, 
+      showFemaleStaff, showMaleStaff, femaleStaffPos, maleStaffPos, displayedPlacement, lockedBgKey, isMobile]);
+
   return (
     <>
       <MissionLayout
@@ -1852,6 +1945,11 @@ export function VisualPlayScreen({
         onToggle={() => setShowGridOverlay(!showGridOverlay)}
         rows={5}
         cols={5}
+      />
+      <ZLayerDebugOverlay
+        items={zLayerItems}
+        isVisible={showZLayerOverlay}
+        onToggle={() => setShowZLayerOverlay(!showZLayerOverlay)}
       />
       
       {/* NPC + Tools + Avatar + Bubble Visual Editor */}
