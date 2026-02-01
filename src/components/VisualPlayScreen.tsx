@@ -17,6 +17,7 @@ import { GridDebugOverlay } from './GridDebugOverlay';
 import { ZLayerDebugOverlay, type ZLayerItem, LAYER_ZINDEX } from './ZLayerDebugOverlay';
 import { ToolCalibrationEditor } from './ToolCalibrationEditor';
 import { Mission7CalibrationEditor } from './Mission7CalibrationEditor';
+import { WaterLeakEffect } from './WaterLeakEffect';
 // import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter'; // Disabled
 
 const DRAG_HINT_STORAGE_KEY = 'ie_hasDraggedOnce';
@@ -1646,6 +1647,9 @@ export function VisualPlayScreen({
         isCarryMode={!!carryModeTool}
         onCancelCarry={handleCancelCarry}
       />
+      
+      {/* Water leak effect for Mission 9 */}
+      {mission.mission_id === 'studio_09' && <WaterLeakEffect />}
       <AnchorDebugOverlay
         anchors={debugAnchors}
         isVisible={showDebugOverlay}
