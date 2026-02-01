@@ -45,9 +45,10 @@ export function EdgePanIndicators({ activeEdge, intensity }: EdgePanIndicatorsPr
           className="edge-pan-chevrons"
           style={{ opacity: boostedIntensity }}
         >
-          <ChevronLeft className="edge-pan-chevron animate-pulse-left" strokeWidth={3} />
-          <ChevronLeft className="edge-pan-chevron animate-pulse-left" strokeWidth={3} style={{ animationDelay: '100ms' }} />
-          <ChevronLeft className="edge-pan-chevron animate-pulse-left" strokeWidth={3} style={{ animationDelay: '200ms' }} />
+          {/* Arrows point toward the edge (direction user is dragging) */}
+          <ChevronRight className="edge-pan-chevron animate-pulse-right" strokeWidth={3} />
+          <ChevronRight className="edge-pan-chevron animate-pulse-right" strokeWidth={3} style={{ animationDelay: '100ms' }} />
+          <ChevronRight className="edge-pan-chevron animate-pulse-right" strokeWidth={3} style={{ animationDelay: '200ms' }} />
         </div>
       </div>
 
@@ -69,9 +70,10 @@ export function EdgePanIndicators({ activeEdge, intensity }: EdgePanIndicatorsPr
           className="edge-pan-chevrons"
           style={{ opacity: boostedIntensity }}
         >
-          <ChevronRight className="edge-pan-chevron animate-pulse-right" strokeWidth={3} />
-          <ChevronRight className="edge-pan-chevron animate-pulse-right" strokeWidth={3} style={{ animationDelay: '100ms' }} />
-          <ChevronRight className="edge-pan-chevron animate-pulse-right" strokeWidth={3} style={{ animationDelay: '200ms' }} />
+          {/* Arrows point toward the edge (direction user is dragging) */}
+          <ChevronLeft className="edge-pan-chevron animate-pulse-left" strokeWidth={3} />
+          <ChevronLeft className="edge-pan-chevron animate-pulse-left" strokeWidth={3} style={{ animationDelay: '100ms' }} />
+          <ChevronLeft className="edge-pan-chevron animate-pulse-left" strokeWidth={3} style={{ animationDelay: '200ms' }} />
         </div>
       </div>
     </>
