@@ -1202,6 +1202,30 @@ export function VisualPlayScreen({
       return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.2, absoluteY: 71, absoluteX: 18 }];
     }
 
+    // Mission 04 Tool A (industrial lights): duplicates to 5 items in a row on the ceiling
+    if (prop.missionId === 'studio_04' && prop.key === 'a') {
+      const ceilingY = 18; // High up on ceiling
+      const spacing = 14; // Spacing between lights
+      const startX = 22; // Start from left
+      return [
+        { anchor: 'ceiling', offsetX: 0, offsetY: 0, customScale: 1.6, absoluteY: ceilingY, absoluteX: startX },
+        { anchor: 'ceiling', offsetX: 0, offsetY: 0, customScale: 1.6, absoluteY: ceilingY, absoluteX: startX + spacing },
+        { anchor: 'ceiling', offsetX: 0, offsetY: 0, customScale: 1.6, absoluteY: ceilingY, absoluteX: startX + spacing * 2 },
+        { anchor: 'ceiling', offsetX: 0, offsetY: 0, customScale: 1.6, absoluteY: ceilingY, absoluteX: startX + spacing * 3 },
+        { anchor: 'ceiling', offsetX: 0, offsetY: 0, customScale: 1.6, absoluteY: ceilingY, absoluteX: startX + spacing * 4 },
+      ];
+    }
+
+    // Mission 04 Tool B (sculptural lights): duplicates to 3 items in room corners
+    if (prop.missionId === 'studio_04' && prop.key === 'b') {
+      const floorY = 78; // On the floor near walls
+      return [
+        { anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 1.8, absoluteY: floorY, absoluteX: 18 },  // Left corner
+        { anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 1.8, absoluteY: floorY, absoluteX: 50 },  // Center back
+        { anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 1.8, absoluteY: floorY, absoluteX: 82 },  // Right corner
+      ];
+    }
+
     // Default: single placement at floor with realistic size
     return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 1.8 }];
   };
