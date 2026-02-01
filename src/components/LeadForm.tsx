@@ -12,6 +12,7 @@ export function LeadForm({ onSubmit }: LeadFormProps) {
     fullName: '',
     email: '',
     phone: '',
+    wantsUpdates: true,
   });
   const [errors, setErrors] = useState<Partial<LeadFormData>>({});
 
@@ -136,6 +137,16 @@ export function LeadForm({ onSubmit }: LeadFormProps) {
             >
               הצג תוצאות
             </button>
+            
+            <label className="flex items-center gap-3 mt-4 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.wantsUpdates}
+                onChange={(e) => setFormData({ ...formData, wantsUpdates: e.target.checked })}
+                className="w-5 h-5 rounded border-2 border-gray-300 text-primary focus:ring-primary cursor-pointer"
+              />
+              <span className="text-sm" style={{ color: '#555' }}>אני רוצה לקבל מידע ועדכונים</span>
+            </label>
           </form>
         </div>
       </div>
