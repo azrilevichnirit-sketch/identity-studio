@@ -169,7 +169,7 @@
     "quest_id": "studio_06",
     "order": 6,
     "view": "in",
-    "bg_override": "studio_in_gallery_bg",
+    "bg_override": "studio_in_workshop_bg",
     "zone_id": null,
     "task_heb": "התקרה פה ממש גבוהה ויש הד מטורף שקשה לי להתרכז. איך מטפלים בזה?",
     "option_a_code": "a",
