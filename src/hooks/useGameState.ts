@@ -71,6 +71,8 @@ export function useGameState() {
         offsetY: option?.offset_y,
         scale: option?.scale,
         persist: option?.persist,
+        // Include fixed placement for persisted tools
+        fixedPlacement: option?.fixedPlacement,
       };
       const newFirst = { ...prev.firstPicksByMissionId };
       const newFinal = { ...prev.finalPicksByMissionId };
