@@ -2,37 +2,13 @@ import { useMemo } from 'react';
 import type { PickRecord, AnchorRef } from '@/types/identity';
 import sceneExtrasData from '@/data/studio_scene_extras.json';
 
-// NPC avatar assets available in the project
-import femaleStaff from '@/assets/avatars/studio_01_female_staff_walk.webp';
-import femaleVisitor1 from '@/assets/avatars/studio_01_female_visitor_walk.webp';
-import maleStaff from '@/assets/avatars/studio_01_male_staff_walk.webp';
-import maleVisitor1 from '@/assets/avatars/studio_01_male_visitor_walk.webp';
-import femaleVisitor2 from '@/assets/avatars/studio_02_female_visitor_walk.webp';
-import maleVisitor2 from '@/assets/avatars/studio_02_male_visitor_walk.webp';
-
-// Floor artworks for gallery clutter (Mission 7)
+// Floor artworks for gallery clutter (Mission 7) - ONLY floor artworks, NO NPCs
 import floorArtworks01 from '@/assets/extras/studio_floor_artworks_01.webp';
 import floorArtworks02 from '@/assets/extras/studio_floor_artworks_02.webp';
 import floorArtworks03 from '@/assets/extras/studio_floor_artworks_03.webp';
 
-// Map abstract asset keys to actual images
+// Map asset keys to actual images - ONLY floor artworks
 const extraAssetMap: Record<string, string> = {
-  // Abstract keys (legacy)
-  studio_extra_asset_01: femaleStaff,
-  studio_extra_asset_02: maleStaff,
-  studio_extra_asset_03: femaleVisitor1,
-  studio_extra_asset_04: maleVisitor1,
-  studio_extra_asset_05: femaleVisitor2,
-  studio_extra_asset_06: maleVisitor2,
-  studio_extra_asset_07: maleStaff, // Fallback for additional keys
-  // Direct asset name keys
-  studio_01_female_staff_walk: femaleStaff,
-  studio_01_male_staff_walk: maleStaff,
-  studio_01_female_visitor_walk: femaleVisitor1,
-  studio_01_male_visitor_walk: maleVisitor1,
-  studio_02_female_visitor_walk: femaleVisitor2,
-  studio_02_male_visitor_walk: maleVisitor2,
-  // Floor artworks for gallery clutter
   studio_floor_artworks_01: floorArtworks01,
   studio_floor_artworks_02: floorArtworks02,
   studio_floor_artworks_03: floorArtworks03,
