@@ -4,7 +4,7 @@ import { Disclaimer } from './Disclaimer';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { ArrowLeft } from 'lucide-react';
 import studioPreviewBg from '@/assets/backgrounds/gallery_main_stylized.webp';
-import kinneretLogo from '@/assets/logo_kinneret.jpeg';
+import kinneretLogo from '@/assets/logo_kinneret.png';
 
 interface DimensionSelectProps {
   onSelect: (dimension: Dimension) => void;
