@@ -108,17 +108,17 @@
   {
     "background_asset_key": "gallery_main_stylized_white_v1",
     "anchor_ref": "m02_tool_a",
-    "x_pct": 0.301,
-    "y_pct": 0.767,
-    "scale": 1.2,
+    "x_pct": 0.348,
+    "y_pct": 0.694,
+    "scale": 1.4,
     "z_layer": "front"
   },
   {
     "background_asset_key": "gallery_main_stylized_white_v1",
     "anchor_ref": "m02_tool_b",
-    "x_pct": 0.117,
-    "y_pct": 0.677,
-    "scale": 2,
+    "x_pct": 0.213,
+    "y_pct": 0.547,
+    "scale": 2.5,
     "z_layer": "front"
   },
   {
