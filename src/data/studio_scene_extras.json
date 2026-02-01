@@ -148,5 +148,35 @@
     "note": "female staff standing on the right waiting",
     "despawn_mode": "keep",
     "despawn_value": "end"
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "order": 11,
+    "mission_id": "studio_05",
+    "trigger_when": "after",
+    "trigger_tool_ids": "studio_05_a;studio_05_b",
+    "spawn_asset_key": "studio_01_male_visitor_walk",
+    "spawn_count": 1,
+    "placement_mode": "anchor",
+    "anchor_ref": "m05_npc_entrance",
+    "note": "male visitor entering studio from outside",
+    "despawn_mode": "keep",
+    "despawn_value": "end"
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "order": 12,
+    "mission_id": "studio_05",
+    "trigger_when": "after",
+    "trigger_tool_ids": "studio_05_a;studio_05_b",
+    "spawn_asset_key": "studio_02_female_visitor_walk",
+    "spawn_count": 1,
+    "placement_mode": "anchor",
+    "anchor_ref": "m05_npc_entrance_2",
+    "note": "female visitor entering studio from outside",
+    "despawn_mode": "keep",
+    "despawn_value": "end"
   }
 ]
