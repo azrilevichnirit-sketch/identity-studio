@@ -146,9 +146,15 @@ export function VisualPlayScreen({
       return 'studio_entry_inside_bg';
     }
     
-    // Exterior missions (view: "out") - Mission 05, 11
-    if (mission.phase === 'main' && mission.view === 'out') {
+    // Exterior missions (view: "out") - Mission 05 ONLY
+    // Mission 11 continues in workshop despite having view: "out" in data
+    if (mission.phase === 'main' && mission.view === 'out' && mission.mission_id !== 'studio_11') {
       return 'studio_exterior_bg';
+    }
+    
+    // Mission 11: Continue in workshop (same as M10)
+    if (mission.phase === 'main' && mission.mission_id === 'studio_11') {
+      return 'studio_in_workshop_bg';
     }
     
     // Mission 07: Use workshop background ONLY when not in calibration mode
@@ -667,11 +673,11 @@ export function VisualPlayScreen({
   const getZoneForMission = (missionSeq: number): 'gallery' | 'workshop' | 'exterior' => {
     // Zones per product spec (used ONLY for persisted tool visibility)
     // Gallery: Missions 1-2 and 7
-    // Workshop: Missions 3,4,6
-    // Exterior: Missions 5 and 11
+    // Workshop: Missions 3,4,6,8,10,11,12
+    // Exterior: Mission 5 only
     if (missionSeq <= 2) return 'gallery';
     if (missionSeq === 7) return 'gallery';
-    if (missionSeq === 5 || missionSeq === 11) return 'exterior';
+    if (missionSeq === 5) return 'exterior';
     return 'workshop';
   };
 
@@ -704,7 +710,7 @@ export function VisualPlayScreen({
     // M9: Gallery scene - fresh start, no persisted tools
     // Do NOT render persisted tools from previous missions here.
     // (This only affects visibility; it does not modify game state.)
-    const hidePersistedToolsForThisMission = mission.mission_id === 'studio_07' || mission.mission_id === 'studio_08' || mission.mission_id === 'studio_09' || mission.mission_id === 'studio_10';
+    const hidePersistedToolsForThisMission = mission.mission_id === 'studio_07' || mission.mission_id === 'studio_08' || mission.mission_id === 'studio_09';
     
     // Add persisted tools from previous missions based on persist flag AND zone
     if (!hidePersistedToolsForThisMission) {
