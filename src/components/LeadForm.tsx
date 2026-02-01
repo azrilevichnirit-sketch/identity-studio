@@ -135,7 +135,7 @@ export function LeadForm({ onSubmit }: LeadFormProps) {
               className="w-full py-4 rounded-xl bg-primary text-primary-foreground font-semibold text-base md:text-lg hover:bg-primary/90 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] mt-4 md:mt-6"
               style={{ minHeight: '52px' }}
             >
-              הצג תוצאות
+              קחו אותי לפרופיל שלי &gt;&gt;
             </button>
             
             <label className="flex items-center gap-3 mt-4 cursor-pointer">
