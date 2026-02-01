@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useGameState } from '@/hooks/useGameState';
+import { useTelemetry } from '@/hooks/useTelemetry';
 import { GameStage } from '@/components/GameStage';
 import { DimensionSelect } from '@/components/DimensionSelect';
 import { ComingSoon } from '@/components/ComingSoon';
@@ -9,10 +10,12 @@ import { VisualPlayScreen } from '@/components/VisualPlayScreen';
 import { LeadForm } from '@/components/LeadForm';
 import { SummaryScreen } from '@/components/SummaryScreen';
 import { DebugPanel } from '@/components/DebugPanel';
-import type { Dimension, HollandCode, MissionOption } from '@/types/identity';
+import type { Dimension, HollandCode, MissionOption, LeadFormData } from '@/types/identity';
 
 const Index = () => {
   const [toolEditMode, setToolEditMode] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const pendingLeadFormRef = useRef<LeadFormData | null>(null);
   
   const {
     state,
@@ -32,6 +35,30 @@ const Index = () => {
     setLeadForm,
     jumpToMission,
   } = useGameState();
+
+  const {
+    trackRunStarted,
+    trackAvatarSelected,
+    trackMissionShown,
+    trackMissionPicked,
+    trackUndo,
+    sendPayload,
+  } = useTelemetry();
+
+  // Track run start on mount
+  useEffect(() => {
+    trackRunStarted();
+  }, [trackRunStarted]);
+
+  // Track mission shown when currentMission changes
+  const lastTrackedMissionRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (currentMission && currentMission.mission_id !== lastTrackedMissionRef.current) {
+      lastTrackedMissionRef.current = currentMission.mission_id;
+      const isTie = state.phase === 'tie';
+      trackMissionShown(currentMission.mission_id, isTie);
+    }
+  }, [currentMission, state.phase, trackMissionShown]);
 
   // Handle phase transitions after main missions complete
   useEffect(() => {
@@ -68,6 +95,7 @@ const Index = () => {
 
   const handleAvatarSelect = (gender: 'female' | 'male') => {
     setAvatarGender(gender);
+    trackAvatarSelected();
     setPhase('intro');
   };
 
@@ -75,14 +103,49 @@ const Index = () => {
     setPhase('main');
   };
 
-  const handleLeadSubmit = (data: { fullName: string; email: string; phone: string; wantsUpdates: boolean }) => {
+  const handleLeadSubmit = async (data: LeadFormData) => {
+    setIsSubmitting(true);
+    pendingLeadFormRef.current = data;
+    
+    // Build tie state
+    const tieState = {
+      triggered: state.tieMissionUsed !== null,
+      missionId: state.tieMissionUsed?.mission_id || null,
+      choiceMade: state.tieChoiceMade,
+      locked: state.tieChoiceMade,
+    };
+
+    // Send telemetry payload
+    await sendPayload(
+      state.avatarGender,
+      state.firstPicksByMissionId,
+      state.finalPicksByMissionId,
+      state.undoEvents,
+      tieState,
+      countsFinal,
+      leaders,
+      data,
+    );
+
+    // Continue to summary regardless of webhook result
     setLeadForm(data);
+    setIsSubmitting(false);
     setPhase('summary');
   };
 
-  // Wrapper for selectOption that includes the option data
+  // Wrapper for selectOption that includes telemetry
   const handleSelect = (missionId: string, key: 'a' | 'b', hollandCode: HollandCode, option?: MissionOption) => {
+    const isTie = state.phase === 'tie';
+    trackMissionPicked(missionId, key, isTie);
     selectOption(missionId, key, hollandCode, option);
+  };
+
+  // Wrapper for undo that includes telemetry
+  const handleUndo = () => {
+    if (currentMission) {
+      trackUndo(currentMission.mission_id);
+    }
+    undo();
   };
 
   // Convert finalPicksByMissionId to array for placed props display
@@ -119,7 +182,7 @@ const Index = () => {
             avatarGender={state.avatarGender}
             placedProps={placedProps}
             onSelect={handleSelect}
-            onUndo={undo}
+            onUndo={handleUndo}
             toolEditMode={toolEditMode}
             onEditorNextMission={() => {
               const optionA = currentMission.options.find(o => o.key === 'a');
@@ -140,7 +203,7 @@ const Index = () => {
             avatarGender={state.avatarGender}
             placedProps={placedProps}
             onSelect={handleSelect}
-            onUndo={undo}
+            onUndo={handleUndo}
             toolEditMode={toolEditMode}
             onEditorNextMission={() => {
               const optionA = currentMission.options.find(o => o.key === 'a');
@@ -152,7 +215,7 @@ const Index = () => {
         )}
 
         {state.phase === 'lead' && (
-          <LeadForm onSubmit={handleLeadSubmit} />
+          <LeadForm onSubmit={handleLeadSubmit} isSubmitting={isSubmitting} />
         )}
 
         {state.phase === 'summary' && (
