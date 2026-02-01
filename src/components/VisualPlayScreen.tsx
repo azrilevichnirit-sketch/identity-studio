@@ -311,9 +311,8 @@ export function VisualPlayScreen({
   };
 
   // Calculate and return the fixed placement for a tool (for persisted tools)
-  const calculateFixedPlacement = useCallback((missionId: string, key: 'a' | 'b'): { x: number; y: number; scale: number; flipX?: boolean; wallMount?: boolean } | undefined => {
-    // Create a temporary prop object to use getDuplicateAnchors
-    const tempProp = { missionId, key, assetName: '', hollandCode: 'r' as HollandCode };
+  const calculateFixedPlacement = useCallback((missionId: string, key: 'a' | 'b'): { x: number; y: number; scale: number; flipX?: boolean; wallMount?: boolean; bgKey?: string } | undefined => {
+    // Special handling for Mission 01 Tool A (3 buckets) - don't persist these
     
     // Special handling for Mission 01 Tool A (3 buckets) - don't persist these
     if (missionId === 'studio_01' && key === 'a') return undefined;
@@ -326,7 +325,7 @@ export function VisualPlayScreen({
     // IMPORTANT: Fixed placement must be computed from the *current* background where
     // the user actually drops the tool (not from any drag-preview / next-bg override).
     // Otherwise persisted tools can “jump” in the following mission.
-    const anchorPos = getAnchorPosition(currentBgKey, anchorRef as AnchorRef);
+    const anchorPos = getAnchorPosition(lockedBgKey, anchorRef as AnchorRef);
     if (anchorPos) {
       return {
         x: anchorPos.x,
@@ -334,10 +333,11 @@ export function VisualPlayScreen({
         scale: anchorPos.scale,
         flipX: anchorPos.flipX,
         wallMount: missionId === 'studio_02' && key === 'b', // Tool B of mission 2 is wall-mounted
+        bgKey: lockedBgKey, // Store the background key where the tool was placed
       };
     }
     return undefined;
-  }, [currentBgKey, getAnchorPosition]);
+  }, [lockedBgKey]);
 
   // Complete a tool selection (used by both drag and carry mode)
   const completePlacement = useCallback((variant: 'a' | 'b') => {
@@ -589,6 +589,7 @@ export function VisualPlayScreen({
         scale: number;
         flipX?: boolean;
         wallMount?: boolean;
+        bgKey?: string;
       };
     }> = [];
     
@@ -596,22 +597,29 @@ export function VisualPlayScreen({
     const currentSeq = mission.sequence;
     
     // Add persisted tools from previous missions based on persist flag
+    // Only show tools that were placed on the CURRENT background
     placedProps.forEach((prop) => {
       const propSeq = parseInt(prop.missionId.replace('studio_', ''), 10);
       
       // Skip if this is the current mission (tool still being placed)
       if (propSeq >= currentSeq) return;
       
-      // Tools with persist: 'keep' should always show in subsequent missions
-      if (prop.persist === 'keep') {
-        placements.push({
-          missionId: prop.missionId,
-          key: prop.key,
-          assetName: prop.assetName || `${prop.missionId}_${prop.key}`,
-          hollandCode: prop.hollandCode,
-          isPersisted: true,
-          fixedPlacement: prop.fixedPlacement,
-        });
+      // Tools with persist: 'keep' should show only when current background matches
+      if (prop.persist === 'keep' && prop.fixedPlacement) {
+        // Check if tool's background matches current background
+        const toolBgKey = prop.fixedPlacement.bgKey;
+        
+        // Only show if background matches, or if no bgKey was stored (legacy)
+        if (!toolBgKey || toolBgKey === lockedBgKey) {
+          placements.push({
+            missionId: prop.missionId,
+            key: prop.key,
+            assetName: prop.assetName || `${prop.missionId}_${prop.key}`,
+            hollandCode: prop.hollandCode,
+            isPersisted: true,
+            fixedPlacement: prop.fixedPlacement,
+          });
+        }
       }
     });
     
@@ -626,7 +634,7 @@ export function VisualPlayScreen({
     }
     
     return placements;
-  }, [localPlacement, placedProps, mission.mission_id, mission.sequence]);
+  }, [localPlacement, placedProps, mission.mission_id, mission.sequence, lockedBgKey]);
 
   const targetPosition = useMemo(() => {
     if (activeToolVariant) {
