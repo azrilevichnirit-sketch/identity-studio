@@ -364,62 +364,31 @@ export function VisualPlayScreen({
     setShowUndoDialog(false);
   };
 
-  // Calculate and return the fixed placement for a tool (for persisted tools)
-  const calculateFixedPlacement = useCallback((missionId: string, key: 'a' | 'b'): { x: number; y: number; scale: number; flipX?: boolean; wallMount?: boolean; bgKey?: string } | undefined => {
-    // Special handling for Mission 01 Tool A (3 buckets) - don't persist these
-    if (missionId === 'studio_01' && key === 'a') return undefined;
-    
-    // Get the option to check for next_bg_override
-    const option = key === 'a' ? optionA : optionB;
-
-    // Prefer the option's explicit anchor_ref (from quest data) when available.
-    // Fallback to the derived ref for safety.
-    const derivedAnchorRef = (key === 'a'
-      ? `m${missionId.replace('studio_', '').padStart(2, '0')}_tool_a`
-      : `m${missionId.replace('studio_', '').padStart(2, '0')}_tool_b`) as AnchorRef;
-    const anchorRef = (option?.anchor_ref as AnchorRef) || derivedAnchorRef;
-
-    // IMPORTANT: Persisted tools must not "jump" across missions.
-    // Strategy:
-    // 1) If a next_bg_override exists AND it has this anchor, use it (for genuine bg swaps).
-    // 2) Otherwise, use the lockedBgKey (the actual scene the user placed on).
-    // This fixes cases like Mission 01 Tool B where next_bg_override points to a bg that
-    // doesn't contain the tool anchor, causing fixedPlacement to be undefined.
-    const nextBgKey = option?.next_bg_override;
-    const anchorPosFromNext = nextBgKey ? getAnchorPosition(nextBgKey, anchorRef) : null;
-    const targetBgKey = anchorPosFromNext ? nextBgKey! : lockedBgKey;
-
-    const anchorPos = anchorPosFromNext || getAnchorPosition(targetBgKey, anchorRef);
+  // Simple tool placement lookup from anchor map (single source of truth)
+  // REMOVED: Complex calculateFixedPlacement that tried to predict next_bg_override
+  const getToolPlacementFromAnchorMap = useCallback((missionId: string, key: 'a' | 'b', bgKey: string) => {
+    const anchorRef = `m${missionId.replace('studio_', '').padStart(2, '0')}_tool_${key}` as AnchorRef;
+    const anchorPos = getAnchorPosition(bgKey, anchorRef);
     if (anchorPos) {
       return {
         x: anchorPos.x,
         y: anchorPos.y,
         scale: anchorPos.scale,
         flipX: anchorPos.flipX,
-        wallMount: missionId === 'studio_02' && key === 'b', // Tool B of mission 2 is wall-mounted
-        bgKey: targetBgKey, // Store the TARGET background key for zone matching
+        z_layer: anchorPos.z_layer,
       };
     }
-    return undefined;
-  }, [lockedBgKey, optionA, optionB]);
+    return null;
+  }, []);
 
   // Complete a tool selection (used by both drag and carry mode)
+  // SIMPLIFIED: No longer calculates or saves fixedPlacement - anchor map is single source of truth
   const completePlacement = useCallback((variant: 'a' | 'b') => {
     const option = variant === 'a' ? optionA : optionB;
     if (!hasDraggedOnce) {
       setHasDraggedOnce(true);
       localStorage.setItem(DRAG_HINT_STORAGE_KEY, 'true');
     }
-    
-    // Calculate fixed placement for persisted tools
-    const fixedPlacement = option.persist === 'keep' 
-      ? calculateFixedPlacement(mission.mission_id, variant)
-      : undefined;
-    
-    // Store the fixed placement on the option so it gets saved to placedProps
-    const optionWithPlacement = fixedPlacement 
-      ? { ...option, fixedPlacement }
-      : option;
     
     // Clear any previous staged transitions
     timeoutsRef.current.forEach((id) => window.clearTimeout(id));
@@ -486,7 +455,7 @@ export function VisualPlayScreen({
     // Step 3: Wait for animation to complete, then transition to next mission
     // Animation is 800ms per item + 300ms stagger × 3 items = ~1700ms total
     // We wait 2500ms to ensure users see the full blink effect + painted walls
-    // Mission 01 paint: only advance after the player clearly sees the “painted walls” beat.
+    // Mission 01 paint: only advance after the player clearly sees the "painted walls" beat.
     const isMission02 = mission.mission_id === 'studio_02';
     // Mission 01 Tool B: 2800ms - enough time for lock (1100ms) + staff entry + viewing
     // Mission 02: 3500ms - tool locks, then male staff enters, then wait 1 second before advancing
@@ -499,7 +468,8 @@ export function VisualPlayScreen({
       }
       setJustPlaced(null);
       setLockPulseKey(null);
-      onSelect(mission.mission_id, variant, option.holland_code as HollandCode, optionWithPlacement);
+      // SIMPLIFIED: Just pass the option without fixedPlacement - anchor map is source of truth
+      onSelect(mission.mission_id, variant, option.holland_code as HollandCode, option);
       // Clear localPlacement AFTER onSelect has added it to placedProps (next tick)
       if (isMission01ToolB) {
         window.setTimeout(() => setLocalPlacement(null), 100);
@@ -508,7 +478,7 @@ export function VisualPlayScreen({
     timeoutsRef.current.push(advanceId);
     
     setCarryModeTool(null);
-  }, [mission.mission_id, mission.phase, mission.sequence, optionA, optionB, onSelect, hasDraggedOnce, getTargetBgForOption, PAINTED_WALLS_BG_KEY, currentBg, calculateFixedPlacement]);
+  }, [mission.mission_id, mission.phase, mission.sequence, optionA, optionB, onSelect, hasDraggedOnce, getTargetBgForOption, PAINTED_WALLS_BG_KEY, currentBg]);
 
   // Pointer Events for unified mouse/touch handling
   const handlePointerDown = useCallback((variant: 'a' | 'b', e: React.PointerEvent) => {
@@ -638,36 +608,10 @@ export function VisualPlayScreen({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [carryModeTool]);
 
-  // Helper to determine if two backgrounds are in the same "zone"
-  // Tools placed in one background should appear in related backgrounds
-  const isSameZone = useCallback((bgKey1: string | undefined, bgKey2: string): boolean => {
-    if (!bgKey1) return true; // Legacy tools without bgKey always show
-    if (bgKey1 === bgKey2) return true;
-    
-    // Define zones - backgrounds that share the same "room"
-    // Gallery zone includes Mission 01 (stylized) and Mission 02 (white walls)
-    const galleryZone = [
-      'studio_entry_inside_bg', 
-      'studio_in_gallery_wall_bg', 
-      'studio_in_gallery_bg', 
-      'studio_in_gallery_alt_bg',
-      'gallery_main_stylized',           // Mission 01 stylized (key name)
-      'gallery_main_stylized_white',     // Mission 02 white walls (key name)
-    ];
-    const workshopZone = ['studio_in_workshop_bg'];
-    const exteriorZone = ['studio_front_bg', 'studio_exterior_bg', 'studio_exterior_park_bg'];
-    
-    const getZone = (bg: string): string => {
-      if (galleryZone.includes(bg)) return 'gallery';
-      if (workshopZone.includes(bg)) return 'workshop';
-      if (exteriorZone.includes(bg)) return 'exterior';
-      return bg; // Unknown backgrounds are their own zone
-    };
-    
-    return getZone(bgKey1) === getZone(bgKey2);
-  }, []);
+  // REMOVED: isSameZone - no longer needed, anchor map is single source of truth
 
   // Show the current local placement AND persisted tools from previous missions
+  // SIMPLIFIED: Read placement directly from anchor map (single source of truth)
   const displayedPlacement = useMemo(() => {
     const placements: Array<{
       missionId: string;
@@ -675,14 +619,13 @@ export function VisualPlayScreen({
       assetName: string;
       hollandCode: HollandCode;
       isPersisted?: boolean;
-      // Fixed placement for persisted tools
+      // Placement from anchor map
       fixedPlacement?: {
         x: number;
         y: number;
         scale: number;
         flipX?: boolean;
-        wallMount?: boolean;
-        bgKey?: string;
+        z_layer?: string;
       };
     }> = [];
     
@@ -690,26 +633,33 @@ export function VisualPlayScreen({
     const currentSeq = mission.sequence;
     
     // Add persisted tools from previous missions based on persist flag
-    // Only show tools that were placed in the SAME ZONE as current background
+    // SIMPLIFIED: Look up placement from anchor map for CURRENT background
     placedProps.forEach((prop) => {
       const propSeq = parseInt(prop.missionId.replace('studio_', ''), 10);
       
       // Skip if this is the current mission (tool still being placed)
       if (propSeq >= currentSeq) return;
       
-      // Tools with persist: 'keep' should show when in same zone
-      if (prop.persist === 'keep' && prop.fixedPlacement) {
-        const toolBgKey = prop.fixedPlacement.bgKey;
+      // Tools with persist: 'keep' - look up from anchor map
+      if (prop.persist === 'keep') {
+        const anchorRef = `m${prop.missionId.replace('studio_', '').padStart(2, '0')}_tool_${prop.key}` as AnchorRef;
+        const placement = getAnchorPosition(lockedBgKey, anchorRef);
         
-        // Only show if background is in the same zone
-        if (isSameZone(toolBgKey, lockedBgKey)) {
+        // Only show if anchor exists in current background
+        if (placement) {
           placements.push({
             missionId: prop.missionId,
             key: prop.key,
             assetName: prop.assetName || `${prop.missionId}_${prop.key}`,
             hollandCode: prop.hollandCode,
             isPersisted: true,
-            fixedPlacement: prop.fixedPlacement,
+            fixedPlacement: {
+              x: placement.x,
+              y: placement.y,
+              scale: placement.scale,
+              flipX: placement.flipX,
+              z_layer: placement.z_layer,
+            },
           });
         }
       }
@@ -726,7 +676,7 @@ export function VisualPlayScreen({
     }
     
     return placements;
-  }, [localPlacement, placedProps, mission.mission_id, mission.sequence, lockedBgKey, isSameZone]);
+  }, [localPlacement, placedProps, mission.sequence, lockedBgKey]);
 
   const targetPosition = useMemo(() => {
     if (activeToolVariant) {
@@ -1390,9 +1340,9 @@ export function VisualPlayScreen({
         
         if (isPersisted && prop.fixedPlacement && !hasDuplicationPattern) {
           const fixed = prop.fixedPlacement;
-          const transformStyle = fixed.wallMount
-            ? `translate(-50%, -50%) scale(${fixed.scale})`
-            : `translate(-50%, -100%) scale(${fixed.scale})`;
+          // SIMPLIFIED: Use z_layer from anchor map for proper z-indexing
+          const zIndex = zIndexForAnchorLayer(fixed.z_layer);
+          const transformStyle = `translate(-50%, -100%) scale(${fixed.scale})`;
           
           return [(
             <div
@@ -1402,7 +1352,7 @@ export function VisualPlayScreen({
                 left: `${fixed.x}%`,
                 top: `${fixed.y}%`,
                 transform: transformStyle,
-                zIndex: 15,
+                zIndex,
               }}
             >
               <img 
