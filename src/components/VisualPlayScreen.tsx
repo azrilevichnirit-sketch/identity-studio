@@ -738,7 +738,8 @@ export function VisualPlayScreen({
   const effectiveBg = isMobile && panoramicBg ? panoramicBg : lockedBg;
   const effectiveBgPosition = isMobile && panoramicBg ? backgroundPosition : 'center';
   // For panoramic backgrounds, use 'auto 100%' to show full height and allow horizontal pan
-  const effectiveBgSize = isMobile && panoramicBg ? 'auto 100%' : 'cover';
+  // For desktop, use 'contain' to show the full background without cropping
+  const effectiveBgSize = isMobile && panoramicBg ? 'auto 100%' : 'contain';
 
   const backgroundElement = (
     <BackgroundCrossfade
