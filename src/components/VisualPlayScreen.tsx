@@ -247,9 +247,10 @@ export function VisualPlayScreen({
   const dragPreviewBg = useMemo(() => {
     if (!activeToolVariant) return null;
 
-    // Mission 01 (paint): don't preview the post-paint background while dragging.
-    // The player should drag/place on the current scene, then see the walls turn white.
-    if (mission.mission_id === 'studio_01' && activeToolVariant === 'a') {
+    // Mission 01: NEVER preview a different background during drag.
+    // The player should drag/place on the current scene, then see the walls turn white (tool A)
+    // or the scene transition (tool B). This prevents jarring background jumps while dragging.
+    if (mission.mission_id === 'studio_01') {
       return null;
     }
 
