@@ -1,71 +1,118 @@
 
-# תוכנית לתיקון קפיצת כלי B וחלקות פאן (משימה 5)
 
-## בעיות שזוהו
+# תוכנית איפוס וניקוי: כלים בלבד (שלב 1)
 
-### בעיה 1: כלי B קופץ ממשימה 1 למשימה 2
-**הסיבה השורשית:** כשכלי B מונח במשימה 1, הקואורדינטות שלו נשמרות ב-`fixedPlacement` לפי הרקע הנוכחי (`galleryMainStylized`). כאשר המשחק עובר למשימה 2, הרקע מתחלף לקירות הלבנים (`studio_in_gallery_wall_bg`), אבל הקואורדינטות נשארות מחושבות לפי הרקע הישן - מה שגורם לכלי "לקפוץ" למיקום שנראה שונה.
+## מה המצב הנוכחי?
 
-**מה קורה בקוד:**
-- ב-`calculateFixedPlacement` (שורה 350-376), הקואורדינטות מחושבות לפי `lockedBgKey`
-- במשימה 1, `lockedBgKey` הוא הרקע הראשוני (לא הקירות הלבנים)
-- כאשר עוברים למשימה 2, הרקע משתנה אבל הקואורדינטות כבר "קפואות"
+המערכת מורכבת מדי עם 3 מנגנונים שמתנגשים:
 
-### בעיה 2: פאן קופץ במשימה 5
-**הסיבה השורשית:** מערכת הפנורמה (`usePanningBackground`) לא מתאפסת בצורה חלקה כשעוברים לרקע חיצוני (פארק). המעבר בין רקעים עם יחסי גובה/רוחב שונים גורם לקפיצה.
+1. **`calculateFixedPlacement`** (שורות 368-404) - מנסה לחזות קואורדינטות לרקע הבא
+2. **`displayedPlacement`** (שורות 671-729) - קוראת מ-`fixedPlacement` השמור ב-`placedProps`
+3. **`isSameZone`** (שורות 643-668) - מחליטה אם להציג כלי לפי "אזור"
+
+הבעיה: כשהכלי נשמר, הוא שומר קואורדינטות לפי רקע אחד, אבל מוצג ברקע אחר - וקופץ.
 
 ---
 
-## פתרון מוצע
+## פתרון: מקור אמת יחיד + עדכון ידני
 
-### תיקון 1: שמירת קואורדינטות לפי הרקע הבא (לא הנוכחי)
-**לוגיקה:** כלי עם `persist: 'keep'` צריך לשמור את הקואורדינטות שלו לפי הרקע *שבו הוא יוצג* (הרקע הבא), לא לפי הרקע שבו הוא הונח.
+### עיקרון חדש
 
-**שינויים:**
-1. ב-`calculateFixedPlacement`, לבדוק אם יש `next_bg_override` ולחשב לפיו
-2. או: לחשב קואורדינטות נורמליזציות (0-1) שיתרגמו דינמית לכל רקע
-
-### תיקון 2: איפוס חלק של הפאן במעברי רקע
-**לוגיקה:** כשהרקע משתנה (במיוחד בין פנים לחוץ), לאפס את ה-pan לערך ברירת מחדל בהדרגה (animation) במקום קפיצה חדה.
-
-**שינויים:**
-1. ב-`usePanningBackground`, להוסיף transition ל-`backgroundPosition` כשמשתנה ה-`bgKey`
-2. או: CSS transition על ה-`backgroundPosition` בזמן החלפת רקע
+1. **ה-anchor map הוא מקור האמת היחיד** - כל כלי מקבל מיקום רק משם
+2. **אין חיזוי של `next_bg_override`** - המיקום נקבע לפי הרקע הנוכחי
+3. **`persist: 'keep'` = את אומרת לי מה להשאיר** - במקום שהמערכת תחליט, את תגידי לי בכל משימה מה נשאר
 
 ---
 
-## פרטים טכניים
+## שינויים בקוד
 
-### שינוי 1: `src/components/VisualPlayScreen.tsx`
-```text
-calculateFixedPlacement (שורות 348-376):
-- שינוי: בדיקה אם זו משימה 1 ויש next_bg_override
-- אם כן: לחשב את הקואורדינטות לפי הרקע הבא (galleryMainStylizedWhite)
-- כך הכלי יונח במקום שמתאים לרקע שבו הוא יוצג
+### 1. הסרת `calculateFixedPlacement` המורכב
+
+**קובץ:** `src/components/VisualPlayScreen.tsx`
+
+פונקציה חדשה פשוטה במקום הישנה:
+
+```typescript
+// לפני: לוגיקה מורכבת עם next_bg_override
+// אחרי: פשוט קורא מה-anchor map לפי הרקע הנוכחי
+const getToolPlacement = (missionId: string, key: 'a' | 'b') => {
+  const anchorRef = `m${missionId.replace('studio_', '').padStart(2, '0')}_tool_${key}`;
+  const anchorPos = getAnchorPosition(currentBgKey, anchorRef);
+  return anchorPos || null;
+};
 ```
 
-### שינוי 2: `src/hooks/usePanningBackground.ts`
-```text
-- הוספת effect שמזהה שינוי ב-bgKey
-- כשמשתנה, להחיל transition חלק (0.5s ease) לאיפוס הפאן
-- או: CSS transition על background-position
+### 2. הסרת שמירה ל-`fixedPlacement`
+
+**קובץ:** `src/components/VisualPlayScreen.tsx`
+
+ב-`completePlacement` (שורה 415-422):
+- הסרת `calculateFixedPlacement` 
+- הסרת `optionWithPlacement`
+- פשוט קריאה ל-`onSelect` בלי fixedPlacement
+
+### 3. שינוי `displayedPlacement`
+
+**קובץ:** `src/components/VisualPlayScreen.tsx`
+
+במקום לקרוא מ-`prop.fixedPlacement`, לקרוא מה-anchor map לפי הרקע הנוכחי:
+
+```typescript
+placedProps.forEach((prop) => {
+  if (prop.persist === 'keep') {
+    const anchorRef = `m${prop.missionId.replace('studio_', '').padStart(2, '0')}_tool_${prop.key}`;
+    const placement = getAnchorPosition(currentBgKey, anchorRef);
+    if (placement) {
+      placements.push({...prop, fixedPlacement: placement});
+    }
+  }
+});
 ```
 
-### שינוי 3: `src/components/BackgroundCrossfade.tsx` (אם קיים)
+### 4. Debug נפרד לכלים (שלב 2)
+
+**קובץ:** `src/components/DraggableNpcEditor.tsx`
+
+בהמשך נפריד את ה-debug לשני מצבים:
+- **Tool Mode** - רק כלים
+- **NPC Mode** - רק דמויות
+
+כרגע נשאיר את ה-editor כמו שהוא, רק נוודא שהכלים עובדים.
+
+---
+
+## התהליך המעודכן
+
 ```text
-- לוודא שה-crossfade בין רקעים מסתיר את קפיצת הפאן
+את גוררת כלי במשימה 1
+    ↓
+כלי ננעל במיקום לפי anchor map של currentBgKey
+    ↓
+עוברים למשימה 2
+    ↓
+אם persist='keep':
+    → המערכת מחפשת אנקר ב-anchor map של הרקע החדש
+    → אם יש - הכלי מוצג במיקום החדש
+    → אם אין - הכלי לא מוצג (ואת יכולה לומר לי להוסיף אנקר)
 ```
 
 ---
 
-## סדר עדיפויות
-1. **תיקון קפיצת כלי B** - הכי דחוף כי משפיע על חוויית המשחק הבסיסית
-2. **תיקון פאן משימה 5** - משני אבל חשוב לחוויה חלקה
-3. **שכבות דמויות** - את תנסי שוב עם התיקון הקודם
+## סיכום השינויים
+
+| קובץ | מה מוסר | מה נשאר |
+|------|---------|---------|
+| `VisualPlayScreen.tsx` | `calculateFixedPlacement`, לוגיקת `next_bg_override`, שמירת `fixedPlacement` | קריאה ישירה מ-anchor map |
+| `studio_anchor_map.json` | כפילויות ואי-עקביות | אנקרים ברורים לכל רקע |
+| `DraggableNpcEditor.tsx` | (ללא שינוי כרגע) | ישאר כמו שהוא |
 
 ---
 
-## הערה על חיסכון בקרדיטים
-אם תאשרי את התוכנית, אעשה את שני התיקונים ביחד בהודעה אחת - כך נחסוך קרדיטים במקום לעשות אותם בנפרד.
+## הצעד הבא
 
-גם כדאי לדעת: **Plan Mode הזה לא צורך קרדיטים** - רק ההודעות שמשנות קוד צורכות. אז אם משהו לא ברור, עדיף לשאול כאן לפני שמאשרים.
+אחרי האישור:
+1. אני אנקה את הקוד
+2. את תבדקי משימה 1 → משימה 2
+3. אם הכלי קופץ - את תגידי לי ואני אוסיף את האנקר החסר ל-anchor map
+4. אחרי שכלים עובדים - נעבור לדמויות
+
