@@ -64,6 +64,8 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [showNpcs, setShowNpcs] = useState(true);
+  const [showNpcToolA, setShowNpcToolA] = useState(true);
+  const [showNpcToolB, setShowNpcToolB] = useState(true);
   const [showTools, setShowTools] = useState(true);
   const [showToolA, setShowToolA] = useState(true);
   const [showToolB, setShowToolB] = useState(true);
@@ -290,7 +292,13 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
   if (!isEnabled) return null;
 
   const visibleItems = allItems.filter(item => {
-    if (item.type === 'npc') return showNpcs;
+    if (item.type === 'npc') {
+      if (!showNpcs) return false;
+      // Filter NPCs by Tool A / Tool B variant
+      if (item.id.includes('-tool-a') || item.id.includes('_tool_a')) return showNpcToolA;
+      if (item.id.includes('-tool-b') || item.id.includes('_tool_b')) return showNpcToolB;
+      return true; // Other NPCs without -tool-a/-tool-b
+    }
     if (item.type === 'avatar') return showAvatar;
     if (item.type === 'bubble') return showBubble;
     if (item.type === 'tool') {
@@ -402,6 +410,28 @@ export const DraggableNpcEditor: React.FC<DraggableNpcEditorProps> = ({
             🔧 Tools {showTools ? '✓' : '○'}
           </button>
         </div>
+        
+        {/* NPC Tool A / Tool B variant toggles */}
+        {showNpcs && (
+          <div className="flex gap-2 mb-2">
+            <button
+              onClick={() => setShowNpcToolA(!showNpcToolA)}
+              className={`flex-1 px-2 py-1.5 rounded text-xs font-medium transition-colors ${
+                showNpcToolA ? 'bg-green-700 text-white' : 'bg-gray-700 text-gray-400'
+              }`}
+            >
+              👤🅰️ NPC A {showNpcToolA ? '✓' : '○'}
+            </button>
+            <button
+              onClick={() => setShowNpcToolB(!showNpcToolB)}
+              className={`flex-1 px-2 py-1.5 rounded text-xs font-medium transition-colors ${
+                showNpcToolB ? 'bg-green-700 text-white' : 'bg-gray-700 text-gray-400'
+              }`}
+            >
+              👤🅱️ NPC B {showNpcToolB ? '✓' : '○'}
+            </button>
+          </div>
+        )}
         
         {/* Tool A / Tool B toggles */}
         {showTools && (
