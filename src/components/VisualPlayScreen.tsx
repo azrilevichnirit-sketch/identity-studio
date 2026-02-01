@@ -269,14 +269,20 @@ export function VisualPlayScreen({
       const lockedImage = getBackgroundByName(lockedKey) || currentBg;
       return { key: lockedKey, image: lockedImage };
     }
-    // Exterior missions
-    if (mission.phase === 'main' && mission.view === 'out') {
+    // Exterior missions (except M11 which stays in workshop)
+    if (mission.phase === 'main' && mission.view === 'out' && mission.mission_id !== 'studio_11') {
       const lockedKey = 'studio_exterior_bg';
       const lockedImage = getBackgroundByName(lockedKey) || currentBg;
       return { key: lockedKey, image: lockedImage };
     }
-    // Workshop missions (M03+, M07, except exterior)
-    if (mission.phase === 'main' && (mission.mission_id === 'studio_03' || mission.mission_id === 'studio_07' || mission.sequence >= 3)) {
+    // Mission 07: Use calibration_bg from option for room transitions
+    if (mission.mission_id === 'studio_07' && (option as any).calibration_bg) {
+      const calibrationBgKey = (option as any).calibration_bg;
+      const calibrationBgImage = getBackgroundByName(calibrationBgKey) || currentBg;
+      return { key: calibrationBgKey, image: calibrationBgImage };
+    }
+    // Workshop missions (M03+, M07, except exterior, M09, M12)
+    if (mission.phase === 'main' && (mission.mission_id === 'studio_03' || mission.mission_id === 'studio_07' || mission.sequence >= 3) && !isGalleryMission) {
       const lockedKey = 'studio_in_workshop_bg';
       const lockedImage = getBackgroundByName(lockedKey) || currentBg;
       return { key: lockedKey, image: lockedImage };
@@ -285,7 +291,7 @@ export function VisualPlayScreen({
     const targetBgKey = option.next_bg_override || currentBgKey;
     const targetBgImage = getBackgroundByName(targetBgKey) || currentBg;
     return { key: targetBgKey, image: targetBgImage };
-  }, [currentBgKey, currentBg, mission.phase, mission.sequence, mission.mission_id, mission.view, mission.bg_override, PAINTED_WALLS_BG_KEY]);
+  }, [currentBgKey, currentBg, mission.phase, mission.sequence, mission.mission_id, mission.view, mission.bg_override, PAINTED_WALLS_BG_KEY, isGalleryMission]);
 
   // Determine which background to show during drag/carry
   const activeToolVariant = draggingTool || carryModeTool;
@@ -296,6 +302,16 @@ export function VisualPlayScreen({
     // The player should drag/place on the current scene, then see the walls turn white (tool A)
     // or the scene transition (tool B). This prevents jarring background jumps while dragging.
     if (mission.mission_id === 'studio_01') {
+      return null;
+    }
+
+    // Mission 07: SHOW background preview during drag (room transition!)
+    if (mission.mission_id === 'studio_07') {
+      const option = activeToolVariant === 'a' ? optionA : optionB;
+      const target = getTargetBgForOption(option);
+      if (target.key !== currentBgKey) {
+        return target;
+      }
       return null;
     }
 
@@ -672,16 +688,16 @@ export function VisualPlayScreen({
   
   const getZoneForMission = (missionSeq: number): 'gallery' | 'workshop' | 'exterior' | 'workshop2' => {
     // Zones per product spec (used ONLY for persisted tool visibility)
-    // Gallery: Missions 1-2, 7, and 9 (gallery scenes - clean resets)
-    // Workshop: Missions 3, 4, 6 (original workshop)
+    // Gallery: Missions 1-2 (gallery scenes)
+    // Workshop: Missions 3, 4, 6, 7 (original workshop - M7 CONTINUES workshop!)
     // Exterior: Mission 5 only
-    // Workshop2: Missions 8, 10, 11, 12 (duplicated workshop - separate persistence)
+    // Workshop2: Missions 8, 10, 11 (duplicated workshop - separate persistence)
+    // M9 and M12 are clean gallery resets - no persisted tools
     if (missionSeq <= 2) return 'gallery';
-    if (missionSeq === 7) return 'gallery';
-    if (missionSeq === 9) return 'gallery'; // M9 is gallery scene - separate from workshop2
     if (missionSeq === 5) return 'exterior';
+    if (missionSeq === 9 || missionSeq === 12) return 'gallery'; // Clean reset
     if (missionSeq >= 8) return 'workshop2';
-    return 'workshop';
+    return 'workshop'; // M3, 4, 6, 7
   };
 
   const displayedPlacement = useMemo(() => {
@@ -713,7 +729,7 @@ export function VisualPlayScreen({
     // M9: Gallery scene - fresh start, no persisted tools
     // Do NOT render persisted tools from previous missions here.
     // (This only affects visibility; it does not modify game state.)
-    const hidePersistedToolsForThisMission = mission.mission_id === 'studio_07' || mission.mission_id === 'studio_09';
+    const hidePersistedToolsForThisMission = mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12';
     
     // Add persisted tools from previous missions based on persist flag AND zone
     if (!hidePersistedToolsForThisMission) {
