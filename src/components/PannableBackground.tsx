@@ -1,0 +1,73 @@
+import { useEffect } from 'react';
+import { BackgroundCrossfade } from './BackgroundCrossfade';
+import { usePanningBackground } from '@/hooks/usePanningBackground';
+
+export type PanningApi = {
+  updatePanFromDrag: (normalizedX: number) => void;
+  resetPan: () => void;
+  panToPosition: (targetXPercent: number) => void;
+};
+
+type PannableBackgroundProps = {
+  src: string;
+  className?: string;
+  filter?: string;
+  durationMs?: number;
+  zIndex?: number;
+
+  /** Whether panning behavior should be active */
+  enabled: boolean;
+  /** Whether this background is panoramic (controls size + position strategy) */
+  isPanoramic: boolean;
+  /** Auto-pan target on mount (0-100, percentage from left) */
+  initialTargetX?: number;
+
+  /** Provides imperative access to pan controls without re-rendering parent */
+  panApiRef?: React.MutableRefObject<PanningApi | null>;
+};
+
+/**
+ * Keeps panning re-renders LOCAL to the background only.
+ * This prevents the entire VisualPlayScreen from re-rendering at 60fps while panning,
+ * which can cause jank on mobile.
+ */
+export function PannableBackground({
+  src,
+  className,
+  filter,
+  durationMs,
+  zIndex,
+  enabled,
+  isPanoramic,
+  initialTargetX,
+  panApiRef,
+}: PannableBackgroundProps) {
+  const { backgroundPosition, updatePanFromDrag, resetPan, panToPosition } = usePanningBackground({
+    enabled,
+    initialTargetX,
+  });
+
+  useEffect(() => {
+    if (!panApiRef) return;
+    panApiRef.current = { updatePanFromDrag, resetPan, panToPosition };
+    return () => {
+      if (panApiRef.current) panApiRef.current = null;
+    };
+  }, [panApiRef, updatePanFromDrag, resetPan, panToPosition]);
+
+  const effectiveBgPosition = isPanoramic ? backgroundPosition : 'center';
+  const effectiveBgSize = isPanoramic ? 'auto 100%' : 'cover';
+
+  return (
+    <BackgroundCrossfade
+      src={src}
+      className={className}
+      backgroundSize={effectiveBgSize}
+      backgroundPosition={effectiveBgPosition}
+      backgroundRepeat="no-repeat"
+      filter={filter}
+      durationMs={durationMs}
+      zIndex={zIndex}
+    />
+  );
+}
