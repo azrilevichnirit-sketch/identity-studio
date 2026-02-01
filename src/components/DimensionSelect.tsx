@@ -50,7 +50,7 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
           <img 
             src={kinneretLogo} 
             alt="האקדמית כנרת" 
-            className="h-16 md:h-20 w-auto"
+            className="h-20 md:h-28 w-auto"
           />
         </div>
         
