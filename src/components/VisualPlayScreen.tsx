@@ -1684,6 +1684,7 @@ export function VisualPlayScreen({
           mission={mission}
           currentBgKey={lockedBgKey}
           onNextMission={onEditorNextMission}
+          sceneExtras={sceneExtras}
         />
       )}
     </>

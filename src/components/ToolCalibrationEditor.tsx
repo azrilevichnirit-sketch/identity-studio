@@ -1,13 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
-import { Move, Copy, ChevronDown, ChevronUp, SkipForward } from 'lucide-react';
+import { Move, Copy, ChevronDown, ChevronUp, SkipForward, Box } from 'lucide-react';
 import { getAnchorPosition } from '@/lib/jsonDataLoader';
 import { getToolImage } from '@/lib/assetUtils';
 import type { AnchorRef, Mission } from '@/types/identity';
+import type { SpawnedExtra } from '@/hooks/useSceneExtras';
 
 interface ToolCalibrationEditorProps {
   mission: Mission;
   currentBgKey: string;
   onNextMission?: () => void;
+  sceneExtras?: SpawnedExtra[];
+  onExtraPositionChange?: (extraId: string, x: number, y: number, scale: number) => void;
 }
 
 interface ToolPosition {
@@ -17,9 +20,10 @@ interface ToolPosition {
   flipX: boolean;
 }
 
-export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission }: ToolCalibrationEditorProps) {
+export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sceneExtras = [], onExtraPositionChange }: ToolCalibrationEditorProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [selectedTool, setSelectedTool] = useState<'a' | 'b' | null>(null);
+  const [selectedExtra, setSelectedExtra] = useState<string | null>(null);
   
   // Single position per tool - same for drag target AND final placement
   const [positions, setPositions] = useState<{ a: ToolPosition; b: ToolPosition }>(() => {
@@ -34,6 +38,20 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission }: 
       };
     };
     return { a: getInitialPos('a'), b: getInitialPos('b') };
+  });
+
+  // Extra positions state
+  const [extraPositions, setExtraPositions] = useState<Record<string, ToolPosition>>(() => {
+    const initial: Record<string, ToolPosition> = {};
+    for (const extra of sceneExtras) {
+      initial[extra.id] = {
+        x: 50 + extra.offsetX,
+        y: 75 + extra.offsetY,
+        scale: extra.scale,
+        flipX: false,
+      };
+    }
+    return initial;
   });
   
   const isDragging = useRef(false);
@@ -54,7 +72,22 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission }: 
     };
     setPositions({ a: getInitialPos('a'), b: getInitialPos('b') });
     setSelectedTool(null);
+    setSelectedExtra(null);
   }, [mission.mission_id, currentBgKey]);
+
+  // Update extra positions when sceneExtras change
+  useEffect(() => {
+    const initial: Record<string, ToolPosition> = {};
+    for (const extra of sceneExtras) {
+      initial[extra.id] = extraPositions[extra.id] ?? {
+        x: 50 + extra.offsetX,
+        y: 75 + extra.offsetY,
+        scale: extra.scale,
+        flipX: false,
+      };
+    }
+    setExtraPositions(initial);
+  }, [sceneExtras]);
 
   const optionA = mission.options.find(o => o.key === 'a');
   const optionB = mission.options.find(o => o.key === 'b');
@@ -65,14 +98,27 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission }: 
     e.preventDefault();
     e.stopPropagation();
     setSelectedTool(tool);
+    setSelectedExtra(null);
     isDragging.current = true;
     dragStartPos.current = { x: e.clientX, y: e.clientY };
     dragStartToolPos.current = { x: positions[tool].x, y: positions[tool].y };
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
   };
 
+  const handleExtraPointerDown = (extraId: string, e: React.PointerEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedExtra(extraId);
+    setSelectedTool(null);
+    isDragging.current = true;
+    dragStartPos.current = { x: e.clientX, y: e.clientY };
+    const pos = extraPositions[extraId];
+    dragStartToolPos.current = { x: pos?.x ?? 50, y: pos?.y ?? 75 };
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
   const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isDragging.current || !selectedTool || !dragStartPos.current || !dragStartToolPos.current) return;
+    if (!isDragging.current || !dragStartPos.current || !dragStartToolPos.current) return;
     
     const startX = dragStartPos.current.x;
     const startY = dragStartPos.current.y;
@@ -87,15 +133,29 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission }: 
     const dxPct = (dx / vw) * 100;
     const dyPct = (dy / vh) * 100;
     
-    const tool = selectedTool;
-    setPositions(prev => ({
-      ...prev,
-      [tool]: {
-        ...prev[tool],
-        x: Math.max(0, Math.min(100, toolStartX + dxPct)),
-        y: Math.max(0, Math.min(100, toolStartY + dyPct)),
-      },
-    }));
+    if (selectedTool) {
+      const tool = selectedTool;
+      setPositions(prev => ({
+        ...prev,
+        [tool]: {
+          ...prev[tool],
+          x: Math.max(0, Math.min(100, toolStartX + dxPct)),
+          y: Math.max(0, Math.min(100, toolStartY + dyPct)),
+        },
+      }));
+    } else if (selectedExtra) {
+      const newX = Math.max(0, Math.min(100, toolStartX + dxPct));
+      const newY = Math.max(0, Math.min(100, toolStartY + dyPct));
+      setExtraPositions(prev => ({
+        ...prev,
+        [selectedExtra]: {
+          ...prev[selectedExtra],
+          x: newX,
+          y: newY,
+        },
+      }));
+      onExtraPositionChange?.(selectedExtra, newX, newY, extraPositions[selectedExtra]?.scale ?? 1);
+    }
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
@@ -113,6 +173,20 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission }: 
         scale: Math.max(0.1, Math.round((prev[tool].scale + delta) * 10) / 10),
       },
     }));
+  };
+
+  const adjustExtraScale = (extraId: string, delta: number) => {
+    setExtraPositions(prev => {
+      const newScale = Math.max(0.1, Math.round((prev[extraId]?.scale ?? 1 + delta) * 10) / 10);
+      onExtraPositionChange?.(extraId, prev[extraId]?.x ?? 50, prev[extraId]?.y ?? 75, newScale);
+      return {
+        ...prev,
+        [extraId]: {
+          ...prev[extraId],
+          scale: newScale,
+        },
+      };
+    });
   };
 
   const toggleFlip = (tool: 'a' | 'b') => {
@@ -150,6 +224,20 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission }: 
     
     navigator.clipboard.writeText(JSON.stringify(entries, null, 2));
     alert('Copied to clipboard!');
+  };
+
+  const copyExtraToClipboard = () => {
+    if (!selectedExtra) return;
+    const pos = extraPositions[selectedExtra];
+    const entry = {
+      anchor_ref: `m${mission.mission_id.replace('studio_', '')}_desk`,
+      x_pct: Math.round((pos?.x ?? 50) * 10) / 1000,
+      y_pct: Math.round((pos?.y ?? 75) * 10) / 1000,
+      scale: pos?.scale ?? 1,
+      z_layer: "mid",
+    };
+    navigator.clipboard.writeText(JSON.stringify(entry, null, 2));
+    alert('Extra JSON copied!');
   };
 
   return (
@@ -224,8 +312,42 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission }: 
         </div>
       </div>
 
+      {/* Scene Extras (props like desks) */}
+      {sceneExtras.map(extra => {
+        const pos = extraPositions[extra.id];
+        if (!pos) return null;
+        return (
+          <div
+            key={extra.id}
+            className={`absolute cursor-move touch-none ${selectedExtra === extra.id ? 'z-[115]' : 'z-[95]'}`}
+            style={{
+              left: `${pos.x}%`,
+              top: `${pos.y}%`,
+              transform: 'translate(-50%, -100%)',
+            }}
+            onPointerDown={(e) => handleExtraPointerDown(extra.id, e)}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+          >
+            {/* Extra image */}
+            <img 
+              src={extra.image} 
+              alt="Scene Extra" 
+              className="w-32 h-32 object-contain pointer-events-none"
+              style={{
+                transform: `scale(${pos.scale})`,
+                filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.5))',
+              }}
+            />
+            <div className={`absolute -top-6 left-1/2 -translate-x-1/2 text-white text-xs font-bold px-2 py-0.5 rounded whitespace-nowrap ${selectedExtra === extra.id ? 'bg-orange-500' : 'bg-orange-500/60'}`}>
+              🪑 {pos.x.toFixed(1)}%, {pos.y.toFixed(1)}%
+            </div>
+          </div>
+        );
+      })}
+
       {/* Control panel */}
-      <div className="fixed top-4 left-4 z-[200] bg-card border border-border rounded-lg shadow-xl text-xs max-w-[200px]">
+      <div className="fixed top-4 left-4 z-[200] bg-card border border-border rounded-lg shadow-xl text-xs max-w-[220px] max-h-[80vh] overflow-y-auto">
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="w-full flex items-center justify-between px-3 py-2 font-medium text-foreground hover:bg-accent"
@@ -279,6 +401,48 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission }: 
                 FlipX: {positions.b.flipX ? 'ON' : 'OFF'}
               </button>
             </div>
+
+            {/* Scene Extras controls */}
+            {sceneExtras.length > 0 && (
+              <div className="space-y-1 p-2 bg-orange-500/10 rounded border border-orange-500/30">
+                <div className="font-medium text-orange-400 flex items-center gap-1">
+                  <Box className="w-3 h-3" />
+                  Scene Props
+                </div>
+                {sceneExtras.map(extra => {
+                  const pos = extraPositions[extra.id];
+                  const isSelected = selectedExtra === extra.id;
+                  return (
+                    <div 
+                      key={extra.id} 
+                      className={`p-1.5 rounded cursor-pointer transition-colors ${isSelected ? 'bg-orange-500/30 border border-orange-400' : 'hover:bg-orange-500/20'}`}
+                      onClick={() => setSelectedExtra(extra.id)}
+                    >
+                      <div className="text-[10px] text-orange-300 truncate">🪑 {extra.id}</div>
+                      {isSelected && pos && (
+                        <div className="mt-1 space-y-1">
+                          <div className="text-[10px] text-muted-foreground">
+                            X: {pos.x.toFixed(1)}% | Y: {pos.y.toFixed(1)}%
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-muted-foreground text-[10px]">Scale:</span>
+                            <button onClick={() => adjustExtraScale(extra.id, -0.1)} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">-</button>
+                            <span className="text-[10px]">{pos.scale.toFixed(1)}</span>
+                            <button onClick={() => adjustExtraScale(extra.id, 0.1)} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">+</button>
+                          </div>
+                          <button
+                            onClick={copyExtraToClipboard}
+                            className="w-full px-2 py-1 bg-orange-600 text-white rounded text-[10px] hover:bg-orange-500"
+                          >
+                            Copy Extra JSON
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
             
             {/* Actions */}
             <div className="flex gap-2 pt-2 border-t border-border">
