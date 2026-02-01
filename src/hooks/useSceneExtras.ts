@@ -10,7 +10,12 @@ import maleVisitor1 from '@/assets/avatars/studio_01_male_visitor_walk.webp';
 import femaleVisitor2 from '@/assets/avatars/studio_02_female_visitor_walk.webp';
 import maleVisitor2 from '@/assets/avatars/studio_02_male_visitor_walk.webp';
 
-// Map abstract asset keys to actual NPC images
+// Floor artworks for gallery clutter (Mission 7)
+import floorArtworks01 from '@/assets/extras/studio_floor_artworks_01.webp';
+import floorArtworks02 from '@/assets/extras/studio_floor_artworks_02.webp';
+import floorArtworks03 from '@/assets/extras/studio_floor_artworks_03.webp';
+
+// Map abstract asset keys to actual images
 const extraAssetMap: Record<string, string> = {
   // Abstract keys (legacy)
   studio_extra_asset_01: femaleStaff,
@@ -27,6 +32,10 @@ const extraAssetMap: Record<string, string> = {
   studio_01_male_visitor_walk: maleVisitor1,
   studio_02_female_visitor_walk: femaleVisitor2,
   studio_02_male_visitor_walk: maleVisitor2,
+  // Floor artworks for gallery clutter
+  studio_floor_artworks_01: floorArtworks01,
+  studio_floor_artworks_02: floorArtworks02,
+  studio_floor_artworks_03: floorArtworks03,
 };
 
 export interface SpawnedExtra {

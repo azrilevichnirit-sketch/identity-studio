@@ -178,5 +178,50 @@
     "note": "female visitor entering studio from outside",
     "despawn_mode": "keep",
     "despawn_value": "end"
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "order": 13,
+    "mission_id": "studio_07",
+    "trigger_when": "before",
+    "trigger_tool_ids": "studio_07_a;studio_07_b",
+    "spawn_asset_key": "studio_floor_artworks_01",
+    "spawn_count": 1,
+    "placement_mode": "floor",
+    "anchor_ref": "m07_floor_art_left",
+    "note": "stacked artworks on floor - left side clutter",
+    "despawn_mode": "keep",
+    "despawn_value": "end"
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "order": 14,
+    "mission_id": "studio_07",
+    "trigger_when": "before",
+    "trigger_tool_ids": "studio_07_a;studio_07_b",
+    "spawn_asset_key": "studio_floor_artworks_02",
+    "spawn_count": 1,
+    "placement_mode": "floor",
+    "anchor_ref": "m07_floor_art_center",
+    "note": "abstract paintings on floor - center clutter",
+    "despawn_mode": "keep",
+    "despawn_value": "end"
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "order": 15,
+    "mission_id": "studio_07",
+    "trigger_when": "before",
+    "trigger_tool_ids": "studio_07_a;studio_07_b",
+    "spawn_asset_key": "studio_floor_artworks_03",
+    "spawn_count": 1,
+    "placement_mode": "floor",
+    "anchor_ref": "m07_floor_art_right",
+    "note": "art chaos on floor - right side clutter",
+    "despawn_mode": "keep",
+    "despawn_value": "end"
   }
 ]
