@@ -379,18 +379,20 @@ export function VisualPlayScreen({
   const isCalibrationBgOverrideMode = isM7CalibrationMode || isM11CalibrationMode;
 
   // Final guardrail: Mission 02 = white walls OR cracked walls (based on M01 choice), exterior = park, M03+ = workshop
-  // BUT: M7 calibration mode FULLY overrides all locks - uses m7CalibrationBg directly
-  // ALSO: M7 during drag/carry uses dragPreviewBg to show the destination room
+  // BUT: M7/M11 calibration mode FULLY overrides all locks - uses m7CalibrationBg directly
+  // ALSO: M7/M11 during drag/carry uses dragPreviewBg to show the destination room
   const isM7DragActive = mission.mission_id === 'studio_07' && activeToolVariant && dragPreviewBg;
+  const isM11DragActive = mission.mission_id === 'studio_11' && activeToolVariant && dragPreviewBg;
+  const isBgSwitchingDragActive = isM7DragActive || isM11DragActive;
   const lockedBgKey = isCalibrationBgOverrideMode && m7CalibrationBg ? m7CalibrationBg.key
-    : isM7DragActive ? dragPreviewBg.key // M7 drag overrides workshop lock
+    : isBgSwitchingDragActive ? dragPreviewBg.key // M7/M11 drag overrides workshop lock
     : isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY 
     : isCrackedWallsLocked ? 'studio_entry_inside_bg'
     : isExteriorLocked ? 'studio_exterior_bg'
     : isWorkshopLocked && !isCalibrationBgOverrideMode ? 'studio_in_workshop_bg' 
     : displayBgKey;
   const lockedBg = isCalibrationBgOverrideMode && m7CalibrationBg ? m7CalibrationBg.image
-    : isM7DragActive ? dragPreviewBg.image // M7 drag overrides workshop lock
+    : isBgSwitchingDragActive ? dragPreviewBg.image // M7/M11 drag overrides workshop lock
     : isWhiteWallsLocked 
     ? (getBackgroundByName(PAINTED_WALLS_BG_KEY) || displayBg) 
     : isCrackedWallsLocked
