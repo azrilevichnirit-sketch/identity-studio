@@ -30,6 +30,7 @@ const Index = () => {
     undo,
     checkAndSetTiePhase,
     setLeadForm,
+    jumpToMission,
   } = useGameState();
 
   // Handle phase transitions after main missions complete
@@ -169,6 +170,8 @@ const Index = () => {
         leaders={leaders}
         historyLength={historyLength}
         onToolEditModeChange={setToolEditMode}
+        onJumpToMission={jumpToMission}
+        totalMissions={mainMissions.length}
       />
     </>
   );
