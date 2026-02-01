@@ -12,6 +12,7 @@ import { DebugPanel } from '@/components/DebugPanel';
 import type { Dimension, HollandCode, MissionOption } from '@/types/identity';
 
 const Index = () => {
+  const [toolEditMode, setToolEditMode] = useState(false);
   
   const {
     state,
@@ -118,6 +119,13 @@ const Index = () => {
             placedProps={placedProps}
             onSelect={handleSelect}
             onUndo={undo}
+            toolEditMode={toolEditMode}
+            onEditorNextMission={() => {
+              const optionA = currentMission.options.find(o => o.key === 'a');
+              if (optionA) {
+                handleSelect(currentMission.mission_id, 'a', optionA.holland_code, optionA);
+              }
+            }}
           />
         )}
 
@@ -132,6 +140,13 @@ const Index = () => {
             placedProps={placedProps}
             onSelect={handleSelect}
             onUndo={undo}
+            toolEditMode={toolEditMode}
+            onEditorNextMission={() => {
+              const optionA = currentMission.options.find(o => o.key === 'a');
+              if (optionA) {
+                handleSelect(currentMission.mission_id, 'a', optionA.holland_code, optionA);
+              }
+            }}
           />
         )}
 
@@ -153,6 +168,7 @@ const Index = () => {
         countsFinal={countsFinal}
         leaders={leaders}
         historyLength={historyLength}
+        onToolEditModeChange={setToolEditMode}
       />
     </>
   );
