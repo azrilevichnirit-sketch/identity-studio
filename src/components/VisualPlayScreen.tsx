@@ -1345,9 +1345,12 @@ export function VisualPlayScreen({
       ];
     }
 
-    // Mission 06 Tool B (large item): grows large behind avatar (calibrated position)
+    // Mission 06 Tool B (lounge sofas): 2 sofas in corner arrangement along the wall
     if (prop.missionId === 'studio_06' && prop.key === 'b') {
-      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 3.5, absoluteY: 79.5, absoluteX: 81.2 }];
+      return [
+        { anchor: 'floor', offsetX: -8, offsetY: 0, customScale: 2.8, absoluteY: 82, absoluteX: 15 },
+        { anchor: 'floor', offsetX: 8, offsetY: 0, customScale: 2.8, absoluteY: 82, absoluteX: 28, flipX: true },
+      ];
     }
 
     // Default: single placement at floor with realistic size
