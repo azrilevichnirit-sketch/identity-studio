@@ -78,7 +78,17 @@ export function useSceneExtras(
     // Get list of picked tool IDs
     const pickedToolIds = placedProps.map(p => p.assetName).filter(Boolean);
     
+    // PRODUCT RULE: Mission 7 is a "clean slate" scene.
+    // Only show extras that are SPECIFICALLY defined for studio_07.
+    // Do NOT carry over persisted extras from earlier missions.
+    const isMission07 = currentMissionId === 'studio_07';
+    
     for (const rule of rules) {
+      // Mission 7 filter: only show M07-specific extras
+      if (isMission07 && rule.mission_id !== 'studio_07') {
+        continue;
+      }
+      
       // Check if this extra should spawn
       const shouldSpawn = checkShouldSpawn(
         rule,
@@ -98,18 +108,22 @@ export function useSceneExtras(
         const image = extraAssetMap[rule.spawn_asset_key];
         if (!image) continue;
         
-        // Generate spawned extras with slight position variations
-        const count = Math.min(rule.spawn_count, 3); // Cap at 3 for performance
+        // For Mission 7 floor artworks: single instance per anchor, no spreading
+        const isM07FloorArt = rule.mission_id === 'studio_07' && rule.placement_mode === 'floor';
+        const count = isM07FloorArt ? 1 : Math.min(rule.spawn_count, 3);
+        
         for (let i = 0; i < count; i++) {
           // Use fixed scale for NPC characters (realistic size)
+          // For floor artworks, use a larger base scale
           const isNpcCharacter = rule.spawn_asset_key.includes('staff') || rule.spawn_asset_key.includes('visitor');
-          const baseScale = isNpcCharacter ? 1.0 : (0.6 + Math.random() * 0.2);
+          const isFloorArtwork = rule.spawn_asset_key.includes('floor_artworks');
+          const baseScale = isNpcCharacter ? 1.0 : isFloorArtwork ? 1.2 : (0.6 + Math.random() * 0.2);
           
           extras.push({
             id: `${rule.mission_id}-${rule.order}-${i}`,
             image,
             anchorRef: rule.anchor_ref as AnchorRef,
-            offsetX: getSpreadOffset(i, count),
+            offsetX: isM07FloorArt ? 0 : getSpreadOffset(i, count),
             offsetY: 0,
             scale: baseScale,
             zLayer: getZLayerForPlacement(rule.placement_mode),
