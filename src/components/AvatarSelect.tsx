@@ -47,7 +47,7 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
                 textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 4px 16px rgba(0,0,0,0.5)',
               }}
             >
-              נקודת הזינוק שלך
+              נועה או ליאו?
             </h1>
             <p 
               className="text-base md:text-xl text-white"
@@ -55,7 +55,7 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
                 textShadow: '0 2px 6px rgba(0,0,0,0.7)',
               }}
             >
-              עכשיו רק תבחרו מי ילווה אתכם במסע
+              בוחרים ומתחילים
             </p>
           </div>
           
