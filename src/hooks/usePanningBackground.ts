@@ -59,24 +59,25 @@ export function usePanningBackground(
   const hasInitializedRef = useRef(false);
 
   // Calculate target offset based on pointer position
-  // Uses easeOutQuad curve for more natural acceleration near edges
+  // When user drags to RIGHT edge, we want to SHOW the right side of the image
+  // This means shifting the background to have a LOWER percentage (moving content left)
+  // When user drags to LEFT edge, we want to SHOW the left side of the image
+  // This means shifting the background to have a HIGHER percentage (moving content right)
   const calculateTargetOffset = useCallback((normalizedX: number): number => {
     if (!enabled) return 0;
     
-    // Left edge zone (0 to edgeZone) -> pan right (show left side of image)
+    // Left edge zone (0 to edgeZone) -> show left side of panorama (positive offset)
     if (normalizedX < edgeZone) {
       const t = 1 - (normalizedX / edgeZone); // 1 at edge, 0 at zone boundary
-      // Apply easeOutQuad: starts slow, accelerates toward edge
       const intensity = t * t;
-      return panRange * 100 * intensity;
+      return panRange * 100 * intensity; // Positive = show left side
     }
     
-    // Right edge zone (1-edgeZone to 1) -> pan left (show right side of image)
+    // Right edge zone (1-edgeZone to 1) -> show right side of panorama (negative offset)
     if (normalizedX > 1 - edgeZone) {
       const t = (normalizedX - (1 - edgeZone)) / edgeZone; // 0 at zone boundary, 1 at edge
-      // Apply easeOutQuad: starts slow, accelerates toward edge
       const intensity = t * t;
-      return -panRange * 100 * intensity;
+      return -panRange * 100 * intensity; // Negative = show right side
     }
     
     // Center zone -> gradually return to center
