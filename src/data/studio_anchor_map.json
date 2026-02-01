@@ -76,15 +76,15 @@
     "anchor_ref": "m01_tool_a",
     "x_pct": 0.412,
     "y_pct": 0.803,
-    "scale": 1.5,
+    "scale": 1.0,
     "z_layer": "front"
   },
   {
     "background_asset_key": "studio_entry_inside_bg",
     "anchor_ref": "m01_tool_b",
-    "x_pct": 0.501,
-    "y_pct": 0.916,
-    "scale": 2.0,
+    "x_pct": 0.502,
+    "y_pct": 0.943,
+    "scale": 1.8,
     "z_layer": "front",
     "flipX": true
   },
