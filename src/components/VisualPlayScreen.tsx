@@ -251,12 +251,18 @@ export function VisualPlayScreen({
     // Use anchor_ref from quest data (e.g. m01_tool_a, m01_tool_b)
     const anchorRef = option.anchor_ref as AnchorRef;
     
-    // Try current background first (where the tool will be placed)
-    let anchorPos = getAnchorPosition(currentBgKey, anchorRef);
+    // CRITICAL: For missions with locked backgrounds (M02 = white walls, M03+ = workshop),
+    // we must look up coordinates in the LOCKED background, not current
+    const lookupBgKey = isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY 
+      : isWorkshopLocked ? 'studio_in_workshop_bg' 
+      : currentBgKey;
+    
+    // Try locked/current background first
+    let anchorPos = getAnchorPosition(lookupBgKey, anchorRef);
     
     // If not found, try the next background (fallback)
     if (!anchorPos) {
-      const nextBgKey = option.next_bg_override || currentBgKey;
+      const nextBgKey = option.next_bg_override || lookupBgKey;
       anchorPos = getAnchorPosition(nextBgKey, anchorRef);
     }
     
@@ -264,19 +270,9 @@ export function VisualPlayScreen({
       return anchorPos;
     }
 
-    // Fallback for missions without defined anchors
-    // Mission 03: Tool A (workbench) -> center of floor, Tool B (sound desk) -> back floor near wall
-    if (mission.mission_id === 'studio_03') {
-      if (variant === 'a') {
-        return { x: 50, y: 82, scale: 1, z_layer: 'mid' as const };
-      } else {
-        return { x: 18, y: 68, scale: 1, z_layer: 'mid' as const };
-      }
-    }
-
     // Default fallback
     return { x: 50, y: 70, scale: 1, z_layer: 'mid' as const };
-  }, [optionA, optionB, currentBgKey, mission.mission_id]);
+  }, [optionA, optionB, currentBgKey, isWhiteWallsLocked, isWorkshopLocked, PAINTED_WALLS_BG_KEY]);
 
   // Flash cue when mission changes (helps player notice the transition)
   const [showMissionFlash, setShowMissionFlash] = useState(false);
@@ -961,75 +957,71 @@ export function VisualPlayScreen({
         </div>
       )}
 
-      {/* Mission 03+: Staff in workshop - single render with dynamic position */}
+      {/* Mission 03+: Staff in workshop - visible whenever in workshop */}
       {isWorkshopLocked && (
         <>
-          {/* Male staff */}
-          {maleStaffEnterReady && mission02ToolSelected !== null && (
-            <div
-              key="workshop-male-staff"
-              className="absolute pointer-events-none"
+          {/* Male staff - always visible in workshop */}
+          <div
+            key="workshop-male-staff"
+            className="absolute pointer-events-none animate-npc-enter"
+            style={{
+              left: shouldShowWorkshopStaffAtTable 
+                ? workshopTableStaffPos.male.left 
+                : workshopWaitingStaffPos.male.left,
+              top: shouldShowWorkshopStaffAtTable 
+                ? workshopTableStaffPos.male.top 
+                : workshopWaitingStaffPos.male.top,
+              zIndex: 10,
+              transform: 'translate(-50%, -100%)',
+              transformOrigin: 'bottom center',
+              transition: 'left 0.6s ease-out, top 0.6s ease-out',
+            }}
+          >
+            <img
+              src={maleStaffWalk}
+              alt="דמות צוות מחכה"
+              className="w-auto object-contain animate-subtle-idle"
               style={{
-                left: shouldShowWorkshopStaffAtTable 
-                  ? workshopTableStaffPos.male.left 
-                  : workshopWaitingStaffPos.male.left,
-                top: shouldShowWorkshopStaffAtTable 
-                  ? workshopTableStaffPos.male.top 
-                  : workshopWaitingStaffPos.male.top,
-                zIndex: 10,
-                transform: 'translate(-50%, -100%)',
-                transformOrigin: 'bottom center',
-                transition: 'left 0.6s ease-out, top 0.6s ease-out',
+                height: shouldShowWorkshopStaffAtTable 
+                  ? 'clamp(180px, 28vh, 280px)' 
+                  : 'clamp(220px, 34vh, 340px)',
+                filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
+                transform: 'scaleX(-1)',
+                transition: 'height 0.6s ease-out',
               }}
-            >
-              <img
-                src={maleStaffWalk}
-                alt="דמות צוות מחכה"
-                className="w-auto object-contain animate-subtle-idle"
-                style={{
-                  height: shouldShowWorkshopStaffAtTable 
-                    ? 'clamp(180px, 28vh, 280px)' 
-                    : 'clamp(220px, 34vh, 340px)',
-                  filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
-                  transform: 'scaleX(-1)',
-                  transition: 'height 0.6s ease-out',
-                }}
-              />
-            </div>
-          )}
+            />
+          </div>
 
-          {/* Female staff */}
-          {staffEnterReady && (
-            <div
-              key="workshop-female-staff"
-              className="absolute pointer-events-none"
+          {/* Female staff - always visible in workshop */}
+          <div
+            key="workshop-female-staff"
+            className="absolute pointer-events-none animate-npc-enter"
+            style={{
+              left: shouldShowWorkshopStaffAtTable 
+                ? workshopTableStaffPos.female.left 
+                : workshopWaitingStaffPos.female.left,
+              top: shouldShowWorkshopStaffAtTable 
+                ? workshopTableStaffPos.female.top 
+                : workshopWaitingStaffPos.female.top,
+              zIndex: 10,
+              transform: 'translate(-50%, -100%)',
+              transformOrigin: 'bottom center',
+              transition: 'left 0.6s ease-out, top 0.6s ease-out',
+            }}
+          >
+            <img
+              src={femaleStaffWalk}
+              alt="דמות צוות מחכה"
+              className="w-auto object-contain animate-subtle-idle"
               style={{
-                left: shouldShowWorkshopStaffAtTable 
-                  ? workshopTableStaffPos.female.left 
-                  : workshopWaitingStaffPos.female.left,
-                top: shouldShowWorkshopStaffAtTable 
-                  ? workshopTableStaffPos.female.top 
-                  : workshopWaitingStaffPos.female.top,
-                zIndex: 10,
-                transform: 'translate(-50%, -100%)',
-                transformOrigin: 'bottom center',
-                transition: 'left 0.6s ease-out, top 0.6s ease-out',
+                height: shouldShowWorkshopStaffAtTable 
+                  ? 'clamp(180px, 28vh, 280px)' 
+                  : 'clamp(220px, 34vh, 340px)',
+                filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
+                transition: 'height 0.6s ease-out',
               }}
-            >
-              <img
-                src={femaleStaffWalk}
-                alt="דמות צוות מחכה"
-                className="w-auto object-contain animate-subtle-idle"
-                style={{
-                  height: shouldShowWorkshopStaffAtTable 
-                    ? 'clamp(180px, 28vh, 280px)' 
-                    : 'clamp(220px, 34vh, 340px)',
-                  filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.45))',
-                  transition: 'height 0.6s ease-out',
-                }}
-              />
-            </div>
-          )}
+            />
+          </div>
         </>
       )}
     </>
