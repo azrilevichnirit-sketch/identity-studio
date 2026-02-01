@@ -81,6 +81,46 @@ function getDeviceType(): 'mobile' | 'tablet' | 'desktop' {
   return 'desktop';
 }
 
+const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/vop2b94lihlqx1uez8pjs1bjgxnthj25';
+const MAX_RETRIES = 3;
+const BASE_DELAY_MS = 1000;
+
+// Retry with exponential backoff
+async function fetchWithRetry(
+  url: string,
+  options: RequestInit,
+  maxRetries: number = MAX_RETRIES,
+): Promise<Response> {
+  let lastError: Error | null = null;
+  
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const response = await fetch(url, options);
+      
+      // If successful or client error (4xx), don't retry
+      if (response.ok || (response.status >= 400 && response.status < 500)) {
+        return response;
+      }
+      
+      // Server error (5xx) - retry
+      console.warn(`[Telemetry] Attempt ${attempt + 1} failed with status ${response.status}, retrying...`);
+      lastError = new Error(`HTTP ${response.status}`);
+    } catch (error) {
+      // Network error - retry
+      console.warn(`[Telemetry] Attempt ${attempt + 1} failed:`, error);
+      lastError = error as Error;
+    }
+    
+    // Wait before next retry (exponential backoff: 1s, 2s, 4s)
+    if (attempt < maxRetries - 1) {
+      const delay = BASE_DELAY_MS * Math.pow(2, attempt);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+  
+  throw lastError || new Error('Max retries exceeded');
+}
+
 export function useTelemetry() {
   // Stable refs for tracking data
   const runIdRef = useRef<string>(generateUUID());
@@ -177,10 +217,8 @@ export function useTelemetry() {
       events: [...eventsRef.current],
     };
 
-    const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/vop2b94lihlqx1uez8pjs1bjgxnthj25';
-
     try {
-      const response = await fetch(MAKE_WEBHOOK_URL, {
+      const response = await fetchWithRetry(MAKE_WEBHOOK_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -191,7 +229,7 @@ export function useTelemetry() {
       console.log('[Telemetry] Gameplay payload sent, status:', response.status);
       return response.ok;
     } catch (error) {
-      console.error('[Telemetry] Failed to send gameplay payload:', error);
+      console.error('[Telemetry] Failed to send gameplay payload after retries:', error);
       return false;
     }
   }, []);
@@ -218,10 +256,8 @@ export function useTelemetry() {
       events: [...eventsRef.current],
     };
 
-    const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/vop2b94lihlqx1uez8pjs1bjgxnthj25';
-
     try {
-      const response = await fetch(MAKE_WEBHOOK_URL, {
+      const response = await fetchWithRetry(MAKE_WEBHOOK_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -232,7 +268,7 @@ export function useTelemetry() {
       console.log('[Telemetry] Completion payload sent, status:', response.status);
       return response.ok;
     } catch (error) {
-      console.error('[Telemetry] Failed to send completion payload:', error);
+      console.error('[Telemetry] Failed to send completion payload after retries:', error);
       return false;
     }
   }, [logEvent]);
