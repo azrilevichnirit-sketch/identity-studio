@@ -244,12 +244,13 @@ export function VisualPlayScreen({
     mission.phase === 'main' && (mission.mission_id === 'studio_02' || mission.sequence === 2) && !hasPaintedWalls;
   const isExteriorLocked =
     mission.phase === 'main' && mission.view === 'out' && mission.mission_id !== 'studio_11';
-  // Mission 07: Workshop (not gallery) - same zone as Mission 06
+  // Mission 07: NOT workshop locked - each tool has its own background!
   // Mission 09 & 12: Gallery (uses bg_override) - NOT workshop locked
   const isGalleryMission = (mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12') && mission.bg_override;
   const isWorkshopLocked =
     mission.phase === 'main' && 
-    ((mission.mission_id === 'studio_03' || mission.mission_id === 'studio_07' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission);
+    mission.mission_id !== 'studio_07' && // M07 has per-tool backgrounds
+    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission);
   const bgKeyForPanorama = isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY 
     : isCrackedWallsLocked ? 'studio_entry_inside_bg'
     : isExteriorLocked ? 'studio_exterior_bg'

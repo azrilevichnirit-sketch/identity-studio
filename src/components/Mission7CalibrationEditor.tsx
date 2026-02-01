@@ -6,7 +6,7 @@ import type { AnchorRef, Mission } from '@/types/identity';
 
 // Import backgrounds for calibration
 import studioStorageBg from '@/assets/backgrounds/studio_in_storage_v2.webp';
-import galleryStylizedBg from '@/assets/backgrounds/gallery_main_stylized.webp';
+import studioGalleryBg from '@/assets/backgrounds/studio_in_gallery_bg.webp';
 
 interface Mission7CalibrationEditorProps {
   mission: Mission;
@@ -25,9 +25,9 @@ export function Mission7CalibrationEditor({ mission, onBackgroundChange }: Missi
   const [isOpen, setIsOpen] = useState(true);
   const [selectedTool, setSelectedTool] = useState<'a' | 'b'>('b');
   
-  // Tool A = Storage, Tool B = Gallery (stylized with cracked walls)
+  // Tool A = Storage, Tool B = Gallery (studio_in_gallery_bg per quest data)
   const bgKeyA = 'studio_in_storage_bg';
-  const bgKeyB = 'gallery_main_stylized';
+  const bgKeyB = 'studio_in_gallery_bg';
   
   const [positions, setPositions] = useState<{ a: ToolPosition; b: ToolPosition }>(() => {
     const getInitialPos = (key: 'a' | 'b'): ToolPosition => {
@@ -54,7 +54,7 @@ export function Mission7CalibrationEditor({ mission, onBackgroundChange }: Missi
     if (selectedTool === 'a') {
       onBackgroundChange?.(studioStorageBg, bgKeyA);
     } else {
-      onBackgroundChange?.(galleryStylizedBg, bgKeyB);
+      onBackgroundChange?.(studioGalleryBg, bgKeyB);
     }
   }, [selectedTool, onBackgroundChange]);
 
