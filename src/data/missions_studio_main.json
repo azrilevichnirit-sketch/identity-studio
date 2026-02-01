@@ -67,14 +67,16 @@
         "holland_code": "s",
         "asset": "studio_03_a",
         "tooltip_heb": "שולחן יצירה קבוצתי",
-        "view": "in"
+        "view": "in",
+        "persist": "keep"
       },
       {
         "key": "b",
         "holland_code": "r",
         "asset": "studio_03_b",
         "tooltip_heb": "עמדת סאונד עם אוזניות",
-        "view": "in"
+        "view": "in",
+        "persist": "keep"
       }
     ]
   },
@@ -141,14 +143,16 @@
         "holland_code": "a",
         "asset": "studio_06_a",
         "tooltip_heb": "פאנלים אקוסטיים גיאומטריים",
-        "view": "in"
+        "view": "in",
+        "persist": "keep"
       },
       {
         "key": "b",
         "holland_code": "s",
         "asset": "studio_06_b",
         "tooltip_heb": "פינת לאונג' וספות",
-        "view": "in"
+        "view": "in",
+        "persist": "keep"
       }
     ]
   },

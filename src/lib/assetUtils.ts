@@ -13,6 +13,7 @@ import galleryMainStylizedWhite from '@/assets/backgrounds/gallery_main_stylized
 import studioWorkshopBg from '@/assets/backgrounds/studio_in_workshop_v3.webp';
 import studioExteriorBg from '@/assets/backgrounds/studio_exterior_park_stylized_v3.webp';
 import studioEntranceViewBg from '@/assets/backgrounds/studio_entrance_view_stylized_v7.webp';
+import studioStorageBg from '@/assets/backgrounds/studio_in_storage_v2.webp';
 
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
@@ -146,7 +147,8 @@ const backgroundAssets: Record<string, string> = {
   // Mission 01 starting bg -> stylized (before paint)
   studio_front_bg: galleryMainStylized,
   studio_in_gallery_bg: galleryMainStylized,
-  studio_in_storage_bg: galleryMainStylized,
+  // Storage room (Mission 07 Tool A destination)
+  studio_in_storage_bg: studioStorageBg,
   studio_entry_inside_bg: galleryMainStylized,
   
   // Mission 02 locked to white walls (after paint)
@@ -175,6 +177,7 @@ const panoramicBackgrounds: Record<string, string> = {
   studio_in_gallery_wall_bg: galleryMainStylizedWhite,
   studio_in_entrance_view_bg: studioEntranceViewBg,
   studio_in_workshop_bg: studioWorkshopBg,
+  studio_in_storage_bg: studioStorageBg,
   studio_exterior_bg: studioExteriorBg,
   studio_exterior_park_bg: studioExteriorBg,
 };
