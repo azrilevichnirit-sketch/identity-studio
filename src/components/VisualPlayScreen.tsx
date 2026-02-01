@@ -646,8 +646,13 @@ export function VisualPlayScreen({
   };
   
   const getZoneForMission = (missionSeq: number): 'gallery' | 'workshop' | 'exterior' => {
+    // Zones per product spec (used ONLY for persisted tool visibility)
+    // Gallery: Missions 1-2 and 7
+    // Workshop: Missions 3,4,6
+    // Exterior: Missions 5 and 11
     if (missionSeq <= 2) return 'gallery';
-    if (missionSeq === 5 || missionSeq === 7 || missionSeq === 11) return 'exterior';
+    if (missionSeq === 7) return 'gallery';
+    if (missionSeq === 5 || missionSeq === 11) return 'exterior';
     return 'workshop';
   };
 
