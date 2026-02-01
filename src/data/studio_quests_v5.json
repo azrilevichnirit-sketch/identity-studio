@@ -202,7 +202,7 @@
     "quest_id": "studio_07",
     "order": 7,
     "view": "in",
-    "bg_override": "studio_in_gallery_wall_bg",
+    "bg_override": "studio_in_entrance_view_bg",
     "zone_id": null,
     "task_heb": "אוקיי, הסטודיו מפוצץ בעבודות גמורות וזה מתחיל להיערם בכל פינה. מה עושים?",
     "option_a_code": "c",
