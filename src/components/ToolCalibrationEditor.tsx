@@ -231,8 +231,8 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
     const pos = extraPositions[selectedExtra];
     const entry = {
       anchor_ref: `m${mission.mission_id.replace('studio_', '')}_desk`,
-      x_pct: Math.round((pos?.x ?? 50) * 10) / 1000,
-      y_pct: Math.round((pos?.y ?? 75) * 10) / 1000,
+      x_pct: Math.round((pos?.x ?? 50) * 10) / 10 / 100,
+      y_pct: Math.round((pos?.y ?? 75) * 10) / 10 / 100,
       scale: pos?.scale ?? 1,
       z_layer: "mid",
     };
