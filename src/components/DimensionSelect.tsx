@@ -4,6 +4,7 @@ import { Disclaimer } from './Disclaimer';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { ArrowLeft } from 'lucide-react';
 import studioPreviewBg from '@/assets/backgrounds/gallery_main_stylized.webp';
+import kinneretLogo from '@/assets/logo_kinneret.png';
 
 interface DimensionSelectProps {
   onSelect: (dimension: Dimension) => void;
@@ -38,6 +39,20 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
           background: '#FFFFFF',
         }}
       >
+        {/* Logo top-right */}
+        <div 
+          className="absolute z-20"
+          style={{
+            top: 'max(env(safe-area-inset-top, 16px), 20px)',
+            right: 'max(env(safe-area-inset-right, 16px), 20px)',
+          }}
+        >
+          <img 
+            src={kinneretLogo} 
+            alt="האקדמית כנרת" 
+            className="h-12 md:h-16 w-auto"
+          />
+        </div>
         
         {/* Content - desktop centered, mobile with safe-area */}
         <div 
