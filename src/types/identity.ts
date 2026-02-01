@@ -4,7 +4,7 @@ export type AvatarGender = 'female' | 'male' | null;
 
 export type Dimension = 'studio' | 'farm' | 'surprise' | null;
 
-export type Phase = 'dimension' | 'avatar' | 'intro' | 'main' | 'tie' | 'lead' | 'summary' | 'coming-soon';
+export type Phase = 'dimension' | 'avatar' | 'intro' | 'main' | 'tie' | 'lead' | 'processing' | 'summary' | 'coming-soon';
 
 // Placement modes for tool rendering
 export type PlacementMode = 
@@ -155,6 +155,16 @@ export interface LeadFormData {
   email: string;
   phone: string;
   wantsUpdates: boolean;
+}
+
+// Analysis response from Make webhook
+export interface AnalysisResponse {
+  summary?: string;
+  recommendations?: string[];
+  traits?: string[];
+  personalityType?: string;
+  // Allow any additional fields Make might return
+  [key: string]: unknown;
 }
 
 export interface CountsFinal {

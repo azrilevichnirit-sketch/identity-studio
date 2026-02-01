@@ -8,13 +8,15 @@ import { AvatarSelect } from '@/components/AvatarSelect';
 import { IntroScreen } from '@/components/IntroScreen';
 import { VisualPlayScreen } from '@/components/VisualPlayScreen';
 import { LeadForm } from '@/components/LeadForm';
+import { ProcessingScreen } from '@/components/ProcessingScreen';
 import { SummaryScreen } from '@/components/SummaryScreen';
 import { DebugPanel } from '@/components/DebugPanel';
-import type { Dimension, HollandCode, MissionOption, LeadFormData } from '@/types/identity';
+import type { Dimension, HollandCode, MissionOption, LeadFormData, AnalysisResponse } from '@/types/identity';
 
 const Index = () => {
   const [toolEditMode, setToolEditMode] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [analysisData, setAnalysisData] = useState<AnalysisResponse | null>(null);
   const pendingLeadFormRef = useRef<LeadFormData | null>(null);
   
   const {
@@ -138,13 +140,34 @@ const Index = () => {
   const handleLeadSubmit = async (data: LeadFormData) => {
     setIsSubmitting(true);
     pendingLeadFormRef.current = data;
-
-    // Send completion payload (with lead form data)
-    await sendCompletionPayload(data);
-
-    // Continue to summary regardless of webhook result
     setLeadForm(data);
+    
+    // Move to processing screen immediately
+    setPhase('processing');
     setIsSubmitting(false);
+
+    // Prepare tie state for the payload
+    const tieState = {
+      triggered: state.tieMissionUsed !== null,
+      missionId: state.tieMissionUsed?.mission_id || null,
+      choiceMade: state.tieChoiceMade,
+      locked: state.tieChoiceMade,
+    };
+
+    // Send completion payload and wait for analysis response
+    const result = await sendCompletionPayload(
+      data,
+      state.avatarGender,
+      countsFinal,
+      leaders,
+      state.firstPicksByMissionId,
+      state.finalPicksByMissionId,
+      state.undoEvents,
+      tieState,
+    );
+
+    // Store analysis data and move to summary
+    setAnalysisData(result.analysis);
     setPhase('summary');
   };
 
@@ -233,11 +256,16 @@ const Index = () => {
           <LeadForm onSubmit={handleLeadSubmit} isSubmitting={isSubmitting} />
         )}
 
+        {state.phase === 'processing' && (
+          <ProcessingScreen />
+        )}
+
         {state.phase === 'summary' && (
           <SummaryScreen
             state={state}
             countsFinal={countsFinal}
             leaders={leaders}
+            analysis={analysisData}
           />
         )}
       </GameStage>

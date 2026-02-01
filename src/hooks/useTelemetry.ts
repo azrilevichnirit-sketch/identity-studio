@@ -1,5 +1,5 @@
 import { useRef, useCallback } from 'react';
-import type { HollandCode, CountsFinal, LeadFormData, PickRecord, UndoEvent } from '@/types/identity';
+import type { HollandCode, CountsFinal, LeadFormData, PickRecord, UndoEvent, AnalysisResponse } from '@/types/identity';
 
 // Event types for the events[] log
 export type TelemetryEventType = 
@@ -235,23 +235,56 @@ export function useTelemetry() {
   }, []);
 
   // Send completion payload (AFTER lead form submission)
+  // Now returns the analysis data from Make webhook response
   const sendCompletionPayload = useCallback(async (
     leadForm: LeadFormData,
-  ): Promise<boolean> => {
+    avatarGender: 'female' | 'male' | null,
+    countsFinal: CountsFinal,
+    leaders: HollandCode[],
+    firstPicksByMissionId: Record<string, PickRecord>,
+    finalPicksByMissionId: Record<string, PickRecord>,
+    undoEvents: UndoEvent[],
+    tieState: TieState,
+  ): Promise<{ success: boolean; analysis: AnalysisResponse | null }> => {
     const gameEndedAt = Date.now();
     
     // Log final events
     logEvent('LEAD_SUBMITTED');
     logEvent('RUN_ENDED');
 
-    const payload: CompletionPayload = {
+    // Send full payload including all game data for analysis
+    const payload = {
       runId: runIdRef.current,
       stage: 'completion',
+      dimension: 'studio',
+      avatarGender,
+      gameStartedAt: gameStartedAtRef.current,
       gameEndedAt,
+      missionShownAtById: { ...missionShownAtByIdRef.current },
+      missionAnsweredAtById: { ...missionAnsweredAtByIdRef.current },
+      firstPicksByMissionId,
+      finalPicksByMissionId,
+      undoEvents: undoEvents.map(e => ({
+        missionId: e.missionId,
+        prevTrait: e.prevTrait,
+        newTrait: e.newTrait,
+        timestampMs: e.timestamp,
+      })),
+      tie: tieState,
+      countsFinal,
+      leaders,
       leadForm: {
         fullName: leadForm.fullName,
         email: leadForm.email,
         phone: leadForm.phone,
+        wantsUpdates: leadForm.wantsUpdates,
+      },
+      clientContext: {
+        timezoneOffsetMinutes: new Date().getTimezoneOffset(),
+        locale: navigator.language || 'he-IL',
+        screenW: window.innerWidth,
+        screenH: window.innerHeight,
+        deviceType: getDeviceType(),
       },
       events: [...eventsRef.current],
     };
@@ -266,10 +299,23 @@ export function useTelemetry() {
       });
       
       console.log('[Telemetry] Completion payload sent, status:', response.status);
-      return response.ok;
+      
+      if (response.ok) {
+        try {
+          const analysisData = await response.json() as AnalysisResponse;
+          console.log('[Telemetry] Received analysis:', analysisData);
+          return { success: true, analysis: analysisData };
+        } catch {
+          // Response was OK but no JSON body - that's fine
+          console.log('[Telemetry] No JSON response from Make');
+          return { success: true, analysis: null };
+        }
+      }
+      
+      return { success: false, analysis: null };
     } catch (error) {
       console.error('[Telemetry] Failed to send completion payload after retries:', error);
-      return false;
+      return { success: false, analysis: null };
     }
   }, [logEvent]);
 
