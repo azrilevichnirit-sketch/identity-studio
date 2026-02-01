@@ -1701,17 +1701,10 @@ export function VisualPlayScreen({
 
   const speechBubbleElement = (
     <div className="relative">
-      {/* Subtle flash on mission change - only on the bubble */}
-      {showMissionFlash && (
-        <div 
-          className="absolute inset-0 rounded-2xl pointer-events-none animate-mission-flash"
-          style={{
-            background: 'radial-gradient(ellipse at center, hsl(var(--primary) / 0.22) 0%, transparent 80%)',
-            zIndex: 5,
-          }}
-        />
-      )}
-      <SpeechBubble tailDirection="right">
+      <SpeechBubble 
+        tailDirection="right"
+        missionKey={mission.mission_id}
+      >
         <p 
           className="font-medium text-sm md:text-base"
           style={{ 
