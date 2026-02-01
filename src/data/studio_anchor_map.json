@@ -591,8 +591,8 @@
   {
     "background_asset_key": "studio_exterior_bg",
     "anchor_ref": "m05_tool_b",
-    "x_pct": 0.483,
-    "y_pct": 0.775,
+    "x_pct": 0.481,
+    "y_pct": 0.764,
     "scale": 1.7,
     "z_layer": "front"
   },
