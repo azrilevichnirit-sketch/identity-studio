@@ -81,6 +81,14 @@
   transition: box-shadow 0.3s ease;
 }
 
+/* Desktop only: subtle border frame */
+@media (min-width: 1024px) {
+  .speech-bubble-frame {
+    border: 2px solid rgba(200, 180, 140, 0.4);
+    box-shadow: inset 0 0 0 1px rgba(255, 250, 240, 0.5);
+  }
+}
+
 .speech-bubble-frame.new-mission {
   animation: bubble-new-mission-glow 0.8s ease-out forwards;
 }
