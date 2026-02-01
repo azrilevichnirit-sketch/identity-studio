@@ -35,12 +35,14 @@ export interface ClientContext {
   deviceType: 'mobile' | 'tablet' | 'desktop';
 }
 
-export interface RunPayload {
+// Payload sent BEFORE lead form (gameplay data only)
+export interface GameplayPayload {
   runId: string;
+  stage: 'gameplay';
   dimension: 'studio';
   avatarGender: 'female' | 'male' | null;
   gameStartedAt: number;
-  gameEndedAt: number;
+  gameplayEndedAt: number;
   missionShownAtById: Record<string, number>;
   missionAnsweredAtById: Record<string, number>;
   firstPicksByMissionId: Record<string, PickRecord>;
@@ -49,8 +51,16 @@ export interface RunPayload {
   tie: TieState;
   countsFinal: CountsFinal;
   leaders: HollandCode[];
-  leadForm: { fullName: string; email: string; phone: string };
   clientContext: ClientContext;
+  events: TelemetryEvent[];
+}
+
+// Payload sent AFTER lead form submission (completion + lead data)
+export interface CompletionPayload {
+  runId: string;
+  stage: 'completion';
+  gameEndedAt: number;
+  leadForm: { fullName: string; email: string; phone: string };
   events: TelemetryEvent[];
 }
 
@@ -123,8 +133,8 @@ export function useTelemetry() {
     logEvent('UNDO', missionId);
   }, [logEvent]);
 
-  // Build and send final payload
-  const sendPayload = useCallback(async (
+  // Send gameplay payload (BEFORE lead form)
+  const sendGameplayPayload = useCallback(async (
     avatarGender: 'female' | 'male' | null,
     firstPicksByMissionId: Record<string, PickRecord>,
     finalPicksByMissionId: Record<string, PickRecord>,
@@ -132,13 +142,8 @@ export function useTelemetry() {
     tieState: TieState,
     countsFinal: CountsFinal,
     leaders: HollandCode[],
-    leadForm: LeadFormData,
   ): Promise<boolean> => {
-    const gameEndedAt = Date.now();
-    
-    // Log final events
-    logEvent('LEAD_SUBMITTED');
-    logEvent('RUN_ENDED');
+    const gameplayEndedAt = Date.now();
 
     const clientContext: ClientContext = {
       timezoneOffsetMinutes: new Date().getTimezoneOffset(),
@@ -148,12 +153,13 @@ export function useTelemetry() {
       deviceType: getDeviceType(),
     };
 
-    const payload: RunPayload = {
+    const payload: GameplayPayload = {
       runId: runIdRef.current,
+      stage: 'gameplay',
       dimension: 'studio',
       avatarGender,
       gameStartedAt: gameStartedAtRef.current,
-      gameEndedAt,
+      gameplayEndedAt,
       missionShownAtById: { ...missionShownAtByIdRef.current },
       missionAnsweredAtById: { ...missionAnsweredAtByIdRef.current },
       firstPicksByMissionId,
@@ -167,11 +173,6 @@ export function useTelemetry() {
       tie: tieState,
       countsFinal,
       leaders,
-      leadForm: {
-        fullName: leadForm.fullName,
-        email: leadForm.email,
-        phone: leadForm.phone,
-      },
       clientContext,
       events: [...eventsRef.current],
     };
@@ -187,10 +188,51 @@ export function useTelemetry() {
         body: JSON.stringify(payload),
       });
       
-      console.log('[Telemetry] Payload sent, status:', response.status);
+      console.log('[Telemetry] Gameplay payload sent, status:', response.status);
       return response.ok;
     } catch (error) {
-      console.error('[Telemetry] Failed to send payload:', error);
+      console.error('[Telemetry] Failed to send gameplay payload:', error);
+      return false;
+    }
+  }, []);
+
+  // Send completion payload (AFTER lead form submission)
+  const sendCompletionPayload = useCallback(async (
+    leadForm: LeadFormData,
+  ): Promise<boolean> => {
+    const gameEndedAt = Date.now();
+    
+    // Log final events
+    logEvent('LEAD_SUBMITTED');
+    logEvent('RUN_ENDED');
+
+    const payload: CompletionPayload = {
+      runId: runIdRef.current,
+      stage: 'completion',
+      gameEndedAt,
+      leadForm: {
+        fullName: leadForm.fullName,
+        email: leadForm.email,
+        phone: leadForm.phone,
+      },
+      events: [...eventsRef.current],
+    };
+
+    const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/vop2b94lihlqx1uez8pjs1bjgxnthj25';
+
+    try {
+      const response = await fetch(MAKE_WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      
+      console.log('[Telemetry] Completion payload sent, status:', response.status);
+      return response.ok;
+    } catch (error) {
+      console.error('[Telemetry] Failed to send completion payload:', error);
       return false;
     }
   }, [logEvent]);
@@ -201,6 +243,7 @@ export function useTelemetry() {
     trackMissionShown,
     trackMissionPicked,
     trackUndo,
-    sendPayload,
+    sendGameplayPayload,
+    sendCompletionPayload,
   };
 }
