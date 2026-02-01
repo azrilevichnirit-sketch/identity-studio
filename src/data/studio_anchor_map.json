@@ -743,7 +743,7 @@
     "z_layer": "front"
   },
   {
-    "background_asset_key": "studio_entry_inside_bg",
+    "background_asset_key": "studio_in_gallery_wall_bg",
     "anchor_ref": "m07_tool_a",
     "x_pct": 0.3,
     "y_pct": 0.75,
@@ -751,7 +751,7 @@
     "z_layer": "front"
   },
   {
-    "background_asset_key": "studio_entry_inside_bg",
+    "background_asset_key": "studio_in_gallery_wall_bg",
     "anchor_ref": "m07_tool_b",
     "x_pct": 0.7,
     "y_pct": 0.75,
@@ -759,7 +759,7 @@
     "z_layer": "front"
   },
   {
-    "background_asset_key": "studio_entry_inside_bg",
+    "background_asset_key": "studio_in_gallery_wall_bg",
     "anchor_ref": "m07_floor_art_left",
     "x_pct": 0.15,
     "y_pct": 0.82,
@@ -767,7 +767,7 @@
     "z_layer": "front"
   },
   {
-    "background_asset_key": "studio_entry_inside_bg",
+    "background_asset_key": "studio_in_gallery_wall_bg",
     "anchor_ref": "m07_floor_art_center",
     "x_pct": 0.5,
     "y_pct": 0.78,
@@ -775,7 +775,7 @@
     "z_layer": "front"
   },
   {
-    "background_asset_key": "studio_entry_inside_bg",
+    "background_asset_key": "studio_in_gallery_wall_bg",
     "anchor_ref": "m07_floor_art_right",
     "x_pct": 0.85,
     "y_pct": 0.8,
