@@ -614,15 +614,15 @@
     "anchor_ref": "m06_tool_a",
     "x_pct": 0.919,
     "y_pct": 0.542,
-    "scale": 1.0,
-    "z_layer": "back"
+    "scale": 1.2,
+    "z_layer": "front"
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m06_tool_b",
-    "x_pct": 0.207,
-    "y_pct": 0.914,
-    "scale": 1.8,
+    "x_pct": 0.781,
+    "y_pct": 0.73,
+    "scale": 2.6,
     "z_layer": "front"
   },
   {
