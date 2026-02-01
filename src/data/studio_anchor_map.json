@@ -756,16 +756,16 @@
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m09_tool_a",
-    "x_pct": 0.5,
-    "y_pct": 0.75,
+    "x_pct": 0.518,
+    "y_pct": 0.788,
     "scale": 1.8,
     "z_layer": "front"
   },
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m09_tool_b",
-    "x_pct": 0.5,
-    "y_pct": 0.75,
+    "x_pct": 0.404,
+    "y_pct": 0.813,
     "scale": 1.8,
     "z_layer": "front"
   },
