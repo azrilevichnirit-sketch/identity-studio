@@ -4,7 +4,7 @@ import { Disclaimer } from './Disclaimer';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { ArrowLeft } from 'lucide-react';
 import studioPreviewBg from '@/assets/backgrounds/gallery_main_stylized.webp';
-import kinneretLogo from '@/assets/logo_kinneret.png';
+import kinneretLogo from '@/assets/logo_kinneret.jpeg';
 
 interface DimensionSelectProps {
   onSelect: (dimension: Dimension) => void;
@@ -50,7 +50,7 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
           <img 
             src={kinneretLogo} 
             alt="האקדמית כנרת" 
-            className="h-12 md:h-16 w-auto"
+            className="h-16 md:h-20 w-auto"
           />
         </div>
         
