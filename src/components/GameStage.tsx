@@ -44,10 +44,13 @@ export function GameStage({
         />
       )}
       
+      {/* Depth overlay - vignette and atmospheric shadows for 3D stage feel */}
+      <div className="scene-depth-overlay" />
+      
       {/* Content container with safe-area padding (mobile only via CSS) */}
       <div 
         className="relative w-full h-full overflow-hidden game-stage-content"
-        style={{ zIndex: 1 }}
+        style={{ zIndex: 2 }}
       >
         {children}
       </div>
