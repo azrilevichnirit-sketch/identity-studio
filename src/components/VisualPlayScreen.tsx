@@ -669,7 +669,10 @@ export function VisualPlayScreen({
     
     // Get the current mission sequence number and zone
     const currentSeq = mission.sequence;
-    const currentZone = getZoneForBackground(lockedBgKey);
+    // CRITICAL: Calculate zone by mission sequence, NOT background key
+    // This prevents tools from Mission 1 leaking into Mission 7 just because
+    // their background keys both resolve to "gallery" zone
+    const currentZone = getZoneForMission(currentSeq);
     
     // Add persisted tools from previous missions based on persist flag AND zone
     placedProps.forEach((prop) => {
