@@ -69,7 +69,7 @@ export function LeadForm({ onSubmit }: LeadFormProps) {
           }}
         >
           <h1 className="text-xl md:text-2xl font-bold mb-2 text-center" style={{ color: '#1a1a1a' }}>
-            המשימה הושלמה. המידע נאסף.
+            המשימה הושלמה והמידע נאסף
           </h1>
           <p className="text-sm md:text-base mb-5 md:mb-6 text-center" style={{ color: '#555' }}>
             לאן לשלוח את התוצאות שלך?
