@@ -612,6 +612,20 @@ export function VisualPlayScreen({
 
   // Show the current local placement AND persisted tools from previous missions
   // SIMPLIFIED: Read placement directly from anchor map (single source of truth)
+  // Zone-based visibility for tools
+  // Tools only persist within the same logical zone
+  const getZoneForBackground = (bgKey: string): 'gallery' | 'workshop' | 'exterior' => {
+    if (bgKey.includes('exterior') || bgKey.includes('park')) return 'exterior';
+    if (bgKey.includes('workshop')) return 'workshop';
+    return 'gallery'; // gallery, storage, entry are all "gallery" zone
+  };
+  
+  const getZoneForMission = (missionSeq: number): 'gallery' | 'workshop' | 'exterior' => {
+    if (missionSeq <= 2) return 'gallery';
+    if (missionSeq === 5 || missionSeq === 7 || missionSeq === 11) return 'exterior';
+    return 'workshop';
+  };
+
   const displayedPlacement = useMemo(() => {
     const placements: Array<{
       missionId: string;
@@ -619,7 +633,6 @@ export function VisualPlayScreen({
       assetName: string;
       hollandCode: HollandCode;
       isPersisted?: boolean;
-      // Placement from anchor map
       fixedPlacement?: {
         x: number;
         y: number;
@@ -629,16 +642,20 @@ export function VisualPlayScreen({
       };
     }> = [];
     
-    // Get the current mission sequence number
+    // Get the current mission sequence number and zone
     const currentSeq = mission.sequence;
+    const currentZone = getZoneForBackground(lockedBgKey);
     
-    // Add persisted tools from previous missions based on persist flag
-    // SIMPLIFIED: Look up placement from anchor map for CURRENT background
+    // Add persisted tools from previous missions based on persist flag AND zone
     placedProps.forEach((prop) => {
       const propSeq = parseInt(prop.missionId.replace('studio_', ''), 10);
       
       // Skip if this is the current mission (tool still being placed)
       if (propSeq >= currentSeq) return;
+      
+      // Check zone compatibility - tools only persist in the same zone
+      const toolZone = getZoneForMission(propSeq);
+      if (toolZone !== currentZone) return; // Different zone = don't show
       
       // Tools with persist: 'keep' - look up from anchor map
       if (prop.persist === 'keep') {
