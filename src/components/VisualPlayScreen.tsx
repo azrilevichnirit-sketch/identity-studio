@@ -86,6 +86,8 @@ export function VisualPlayScreen({
   // Edge proximity for mobile pan indicators
   const [edgeProximity, setEdgeProximity] = useState<{ edge: 'left' | 'right' | null; intensity: number }>({ edge: null, intensity: 0 });
   
+  // Track pan offset for placed props positioning (mobile panoramic only)
+  const [panOffsetX, setPanOffsetX] = useState(0);
   // Track background transitions - hide persisted tools during crossfade
   const [isBackgroundTransitioning, setIsBackgroundTransitioning] = useState(false);
   const previousBgKeyRef = useRef<string | null>(null);
@@ -397,7 +399,20 @@ export function VisualPlayScreen({
 
   const panApiRef = useRef<PanningApi | null>(null);
 
-  // Get target anchor for currently selected tool
+  // Sync pan offset when initial target changes (mission transition)
+  useEffect(() => {
+    if (isMobile && isPanoramic && initialPanTargetX !== undefined) {
+      // Initial pan is set by usePanningBackground, sync our state
+      // Give a small delay for the hook to initialize
+      const timer = setTimeout(() => {
+        if (panApiRef.current) {
+          setPanOffsetX(panApiRef.current.getOffsetX());
+        }
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [isMobile, isPanoramic, initialPanTargetX]);
+
   // Uses anchor_ref from quest data to look up coordinates in anchor map
   // IMPORTANT: Look up anchor in the CURRENT background (where placement happens),
   // not in next_bg_override (which is the background AFTER placement)
@@ -693,6 +708,11 @@ export function VisualPlayScreen({
       const normalizedX = (e.clientX - rect.left) / rect.width;
       panApiRef.current?.updatePanFromDrag(normalizedX);
       
+      // Update pan offset for placed props positioning
+      if (panApiRef.current) {
+        setPanOffsetX(panApiRef.current.getOffsetX());
+      }
+      
       // Calculate edge proximity for visual indicators (matches panning edge zone)
       const EDGE_ZONE = 0.18; // 18% from each edge - matches usePanningBackground
       if (normalizedX < EDGE_ZONE) {
@@ -773,6 +793,7 @@ export function VisualPlayScreen({
     
     // Reset pan and edge indicators when drag ends
     panApiRef.current?.resetPan();
+    setPanOffsetX(0);
     setEdgeProximity({ edge: null, intensity: 0 });
   }, [draggingTool, completePlacement, getTargetAnchor, mission.mission_id]);
 
@@ -1997,6 +2018,8 @@ export function VisualPlayScreen({
         }
         isCarryMode={!!carryModeTool}
         onCancelCarry={handleCancelCarry}
+        panOffsetX={panOffsetX}
+        isPanoramic={isPanoramic}
       />
       
       {/* Water leak effect for Mission 9 */}

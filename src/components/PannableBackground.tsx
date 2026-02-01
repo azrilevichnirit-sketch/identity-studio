@@ -6,6 +6,8 @@ export type PanningApi = {
   updatePanFromDrag: (normalizedX: number) => void;
   resetPan: () => void;
   panToPosition: (targetXPercent: number) => void;
+  /** Current pan offset in percentage points (0 = centered, positive = showing left, negative = showing right) */
+  getOffsetX: () => number;
 };
 
 type PannableBackgroundProps = {
@@ -42,18 +44,23 @@ export function PannableBackground({
   initialTargetX,
   panApiRef,
 }: PannableBackgroundProps) {
-  const { backgroundPosition, updatePanFromDrag, resetPan, panToPosition } = usePanningBackground({
+  const { backgroundPosition, offsetX, updatePanFromDrag, resetPan, panToPosition } = usePanningBackground({
     enabled,
     initialTargetX,
   });
 
   useEffect(() => {
     if (!panApiRef) return;
-    panApiRef.current = { updatePanFromDrag, resetPan, panToPosition };
+    panApiRef.current = { 
+      updatePanFromDrag, 
+      resetPan, 
+      panToPosition,
+      getOffsetX: () => offsetX,
+    };
     return () => {
       if (panApiRef.current) panApiRef.current = null;
     };
-  }, [panApiRef, updatePanFromDrag, resetPan, panToPosition]);
+  }, [panApiRef, updatePanFromDrag, resetPan, panToPosition, offsetX]);
 
   const effectiveBgPosition = isPanoramic ? backgroundPosition : 'center';
   const effectiveBgSize = isPanoramic ? 'auto 100%' : 'cover';
