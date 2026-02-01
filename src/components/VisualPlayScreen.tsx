@@ -1421,12 +1421,10 @@ export function VisualPlayScreen({
                 src={toolImg}
                 alt=""
                 className={`${isMission01Buckets ? 'w-28 h-28 md:w-36 md:h-36' : (isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32')} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
-                 style={{
+                   style={{
                    filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
-                   // Apply rotation for Mission 01 Tool B, and flipX from anchor map
-                    transform: isMission01ToolB
-                      ? 'rotate(-15deg) scaleX(-1)'
-                      : (anchorInfo.flipX ? 'scaleX(-1)' : undefined),
+                   // Only apply flipX from anchor map - no rotation
+                   transform: anchorInfo.flipX ? 'scaleX(-1)' : undefined,
                  }}
               />
             </div>
