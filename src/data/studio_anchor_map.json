@@ -74,17 +74,17 @@
   {
     "background_asset_key": "studio_entry_inside_bg",
     "anchor_ref": "m01_tool_a",
-    "x_pct": 0.412,
-    "y_pct": 0.803,
-    "scale": 1.0,
+    "x_pct": 0.401,
+    "y_pct": 0.686,
+    "scale": 1.8,
     "z_layer": "front"
   },
   {
     "background_asset_key": "studio_entry_inside_bg",
     "anchor_ref": "m01_tool_b",
-    "x_pct": 0.521,
-    "y_pct": 0.886,
-    "scale": 1.4,
+    "x_pct": 0.529,
+    "y_pct": 0.808,
+    "scale": 2,
     "z_layer": "front",
     "flipX": true
   },
