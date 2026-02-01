@@ -1028,12 +1028,58 @@ export function VisualPlayScreen({
       return [{ anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: 45, absoluteX: 15 }];
     }
 
-    // Mission 06 Tool B (lounge sofas): 2 sofas in corner arrangement along the wall
+    // Mission 06 Tool B: single placement using anchor map coordinates
     if (prop.missionId === 'studio_06' && prop.key === 'b') {
-      return [
-        { anchor: 'floor', offsetX: -8, offsetY: 0, customScale: 2.8, absoluteY: 82, absoluteX: 15 },
-        { anchor: 'floor', offsetX: 8, offsetY: 0, customScale: 2.8, absoluteY: 82, absoluteX: 28, flipX: true },
-      ];
+      const anchorPos = getAnchorPosition(lockedBgKey, 'm06_tool_b');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm06_tool_b' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX
+        }];
+      }
+      // Fallback
+      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.6, absoluteY: 78, absoluteX: 77 }];
+    }
+
+    // Mission 07 Tool A: placed in Storage room
+    if (prop.missionId === 'studio_07' && prop.key === 'a') {
+      const anchorPos = getAnchorPosition('studio_in_storage_bg', 'm07_tool_a');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm07_tool_a' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX
+        }];
+      }
+      // Fallback
+      return [{ anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: 46, absoluteX: 50 }];
+    }
+
+    // Mission 07 Tool B: placed in Gallery room
+    if (prop.missionId === 'studio_07' && prop.key === 'b') {
+      const anchorPos = getAnchorPosition('studio_in_gallery_bg', 'm07_tool_b');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm07_tool_b' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX
+        }];
+      }
+      // Fallback
+      return [{ anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: 40, absoluteX: 50 }];
     }
 
     // Default: single placement at floor with realistic size
