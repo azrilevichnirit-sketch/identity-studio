@@ -939,17 +939,17 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m10_tool_a",
-    "x_pct": 0.35,
-    "y_pct": 0.8,
-    "scale": 1.5,
+    "x_pct": 0.905,
+    "y_pct": 0.877,
+    "scale": 1.8,
     "z_layer": "front"
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m10_tool_b",
-    "x_pct": 0.65,
-    "y_pct": 0.8,
-    "scale": 1.5,
+    "x_pct": 0.183,
+    "y_pct": 0.702,
+    "scale": 1.8,
     "z_layer": "front"
   }
 ]
