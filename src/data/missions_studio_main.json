@@ -158,6 +158,7 @@
     "mission_id": "studio_07",
     "sequence": 7,
     "view": "in",
+    "bg_override": "studio_in_workshop_bg",
     "task_heb": "אוקיי, הסטודיו מפוצץ בעבודות גמורות וזה מתחיל להיערם בכל פינה. מה עושים?",
     "options": [
       {
@@ -166,14 +167,15 @@
         "asset": "studio_07_a",
         "tooltip_heb": "חדר ארכיון ואחסון",
         "view": "in",
-        "next_bg_override": "studio_in_storage_bg"
+        "calibration_bg": "studio_in_storage_bg"
       },
       {
         "key": "b",
         "holland_code": "e",
         "asset": "studio_07_b",
         "tooltip_heb": "חלון ראווה ותצוגת מכירות",
-        "view": "in"
+        "view": "in",
+        "calibration_bg": "studio_in_workshop_bg"
       }
     ]
   },

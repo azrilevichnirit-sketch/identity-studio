@@ -650,17 +650,17 @@
     "background_asset_key": "studio_in_storage_bg",
     "anchor_ref": "m07_tool_a",
     "x_pct": 0.5,
-    "y_pct": 0.46,
-    "scale": 2.0,
-    "z_layer": "back"
+    "y_pct": 0.75,
+    "scale": 1.8,
+    "z_layer": "front"
   },
   {
-    "background_asset_key": "studio_in_gallery_bg",
+    "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m07_tool_b",
     "x_pct": 0.5,
-    "y_pct": 0.4,
-    "scale": 2.0,
-    "z_layer": "back"
+    "y_pct": 0.75,
+    "scale": 1.8,
+    "z_layer": "front"
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
