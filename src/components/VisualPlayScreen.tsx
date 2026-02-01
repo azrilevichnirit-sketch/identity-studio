@@ -213,9 +213,11 @@ export function VisualPlayScreen({
   const isExteriorLocked =
     mission.phase === 'main' && mission.view === 'out';
   // Mission 07: Workshop (not gallery) - same zone as Mission 06
+  // Mission 09: Gallery (uses bg_override) - NOT workshop locked
+  const isGalleryMission = mission.mission_id === 'studio_09' && mission.bg_override;
   const isWorkshopLocked =
     mission.phase === 'main' && 
-    ((mission.mission_id === 'studio_03' || mission.mission_id === 'studio_07' || mission.sequence >= 3) && !isExteriorLocked);
+    ((mission.mission_id === 'studio_03' || mission.mission_id === 'studio_07' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission);
   const bgKeyForPanorama = isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY 
     : isCrackedWallsLocked ? 'studio_entry_inside_bg'
     : isExteriorLocked ? 'studio_exterior_bg'
