@@ -21,6 +21,20 @@ import { DraggableNpcEditor } from './DraggableNpcEditor';
 
 const DRAG_HINT_STORAGE_KEY = 'ie_hasDraggedOnce';
 
+function zIndexForAnchorLayer(layer?: string): number {
+  // Keep aligned with GameStage layering guide.
+  // back: 0-5, mid: 6-10, front: 11-15
+  switch (layer) {
+    case 'back':
+      return 6;
+    case 'front':
+      return 14;
+    case 'mid':
+    default:
+      return 10;
+  }
+}
+
 interface VisualPlayScreenProps {
   mission: Mission;
   currentIndex: number;
@@ -909,11 +923,13 @@ export function VisualPlayScreen({
         left: maleAnchor ? `${maleAnchor.x}%` : '54.3%',
         top: maleAnchor ? `${maleAnchor.y}%` : '72.9%',
         scale: maleAnchor?.scale || 1.0,
+        zIndex: zIndexForAnchorLayer(maleAnchor?.z_layer),
       },
       female: {
         left: femaleAnchor ? `${femaleAnchor.x}%` : '44%',
         top: femaleAnchor ? `${femaleAnchor.y}%` : '73.7%',
         scale: femaleAnchor?.scale || 1.0,
+        zIndex: zIndexForAnchorLayer(femaleAnchor?.z_layer),
       },
     };
   }, []);
@@ -927,11 +943,13 @@ export function VisualPlayScreen({
         left: waiting.male.left,
         top: `${parseFloat(waiting.male.top) - 5}%`, // Move 5% up (closer to table)
         scale: (waiting.male.scale || 1) * 0.9, // Slightly smaller at table
+        zIndex: waiting.male.zIndex,
       },
       female: {
         left: waiting.female.left,
         top: `${parseFloat(waiting.female.top) - 5}%`, // Move 5% up
         scale: (waiting.female.scale || 1) * 0.9,
+        zIndex: waiting.female.zIndex,
       },
     };
   }, [workshopWaitingStaffPos]);
@@ -1005,7 +1023,9 @@ export function VisualPlayScreen({
               top: shouldShowWorkshopStaffAtTable 
                 ? workshopTableStaffPos.male.top 
                 : workshopWaitingStaffPos.male.top,
-              zIndex: 10,
+               zIndex: shouldShowWorkshopStaffAtTable
+                 ? workshopTableStaffPos.male.zIndex
+                 : workshopWaitingStaffPos.male.zIndex,
               transform: 'translate(-50%, -100%)',
               transformOrigin: 'bottom center',
               transition: 'left 0.6s ease-out, top 0.6s ease-out',
@@ -1037,7 +1057,9 @@ export function VisualPlayScreen({
               top: shouldShowWorkshopStaffAtTable 
                 ? workshopTableStaffPos.female.top 
                 : workshopWaitingStaffPos.female.top,
-              zIndex: 10,
+               zIndex: shouldShowWorkshopStaffAtTable
+                 ? workshopTableStaffPos.female.zIndex
+                 : workshopWaitingStaffPos.female.zIndex,
               transform: 'translate(-50%, -100%)',
               transformOrigin: 'bottom center',
               transition: 'left 0.6s ease-out, top 0.6s ease-out',

@@ -512,7 +512,7 @@
     "x_pct": 0.543,
     "y_pct": 0.729,
     "scale": 1.0,
-    "z_layer": "mid"
+    "z_layer": "back"
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
@@ -520,7 +520,7 @@
     "x_pct": 0.44,
     "y_pct": 0.737,
     "scale": 1.0,
-    "z_layer": "mid"
+    "z_layer": "back"
   },
   {
     "background_asset_key": "studio_in_gallery_wall_bg",
