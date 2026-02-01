@@ -75,7 +75,7 @@ const Index = () => {
     setPhase('main');
   };
 
-  const handleLeadSubmit = (data: { fullName: string; email: string; phone: string }) => {
+  const handleLeadSubmit = (data: { fullName: string; email: string; phone: string; wantsUpdates: boolean }) => {
     setLeadForm(data);
     setPhase('summary');
   };

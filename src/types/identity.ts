@@ -154,6 +154,7 @@ export interface LeadFormData {
   fullName: string;
   email: string;
   phone: string;
+  wantsUpdates: boolean;
 }
 
 export interface CountsFinal {
