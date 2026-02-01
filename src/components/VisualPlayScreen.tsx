@@ -150,7 +150,8 @@ export function VisualPlayScreen({
       return 'studio_exterior_bg';
     }
     
-    // Mission 07: Use workshop background (same as Mission 06)
+    // Mission 07: Use workshop background ONLY when not in calibration mode
+    // (Calibration mode handles its own background switching)
     if (mission.phase === 'main' && mission.mission_id === 'studio_07') {
       return 'studio_in_workshop_bg';
     }
@@ -298,24 +299,25 @@ export function VisualPlayScreen({
   const displayBgKey = m7CalibrationBg?.key || localBgOverride?.key || dragPreviewBg?.key || currentBgKey;
 
   // In M7 calibration mode, bypass the normal background locking
-  const isM7CalibrationMode = toolEditMode && mission.mission_id === 'studio_07' && m7CalibrationBg;
+  // Mission 7 calibration mode is active when toolEditMode is enabled for studio_07
+  const isM7CalibrationMode = toolEditMode && mission.mission_id === 'studio_07';
 
   // Final guardrail: Mission 02 = white walls OR cracked walls (based on M01 choice), exterior = park, M03+ = workshop
-  // BUT: M7 calibration mode overrides the workshop lock
-  const lockedBgKey = isM7CalibrationMode ? m7CalibrationBg!.key
+  // BUT: M7 calibration mode FULLY overrides all locks - uses m7CalibrationBg directly
+  const lockedBgKey = isM7CalibrationMode && m7CalibrationBg ? m7CalibrationBg.key
     : isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY 
     : isCrackedWallsLocked ? 'studio_entry_inside_bg'
     : isExteriorLocked ? 'studio_exterior_bg'
-    : isWorkshopLocked ? 'studio_in_workshop_bg' 
+    : isWorkshopLocked && !isM7CalibrationMode ? 'studio_in_workshop_bg' 
     : displayBgKey;
-  const lockedBg = isM7CalibrationMode ? m7CalibrationBg!.image
+  const lockedBg = isM7CalibrationMode && m7CalibrationBg ? m7CalibrationBg.image
     : isWhiteWallsLocked 
     ? (getBackgroundByName(PAINTED_WALLS_BG_KEY) || displayBg) 
     : isCrackedWallsLocked
     ? (getBackgroundByName('studio_entry_inside_bg') || displayBg)
     : isExteriorLocked 
     ? (getBackgroundByName('studio_exterior_bg') || displayBg)
-    : (isWorkshopLocked ? (getBackgroundByName('studio_in_workshop_bg') || displayBg) : displayBg);
+    : (isWorkshopLocked && !isM7CalibrationMode ? (getBackgroundByName('studio_in_workshop_bg') || displayBg) : displayBg);
 
   // Get target anchor for currently selected tool
   // Uses anchor_ref from quest data to look up coordinates in anchor map
