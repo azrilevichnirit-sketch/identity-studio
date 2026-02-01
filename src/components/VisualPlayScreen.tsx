@@ -670,14 +670,16 @@ export function VisualPlayScreen({
     return 'gallery'; // gallery, storage, entry are all "gallery" zone
   };
   
-  const getZoneForMission = (missionSeq: number): 'gallery' | 'workshop' | 'exterior' => {
+  const getZoneForMission = (missionSeq: number): 'gallery' | 'workshop' | 'exterior' | 'workshop2' => {
     // Zones per product spec (used ONLY for persisted tool visibility)
     // Gallery: Missions 1-2 and 7
-    // Workshop: Missions 3,4,6,8,10,11,12
+    // Workshop: Missions 3, 4, 6 (original workshop)
     // Exterior: Mission 5 only
+    // Workshop2: Missions 8, 10, 11, 12 (duplicated workshop - separate persistence)
     if (missionSeq <= 2) return 'gallery';
     if (missionSeq === 7) return 'gallery';
     if (missionSeq === 5) return 'exterior';
+    if (missionSeq >= 8) return 'workshop2';
     return 'workshop';
   };
 
@@ -710,7 +712,7 @@ export function VisualPlayScreen({
     // M9: Gallery scene - fresh start, no persisted tools
     // Do NOT render persisted tools from previous missions here.
     // (This only affects visibility; it does not modify game state.)
-    const hidePersistedToolsForThisMission = mission.mission_id === 'studio_07' || mission.mission_id === 'studio_08' || mission.mission_id === 'studio_09';
+    const hidePersistedToolsForThisMission = mission.mission_id === 'studio_07' || mission.mission_id === 'studio_09';
     
     // Add persisted tools from previous missions based on persist flag AND zone
     if (!hidePersistedToolsForThisMission) {
