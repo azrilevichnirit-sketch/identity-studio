@@ -25,7 +25,8 @@
         "view": "in",
         "next_bg_override": "studio_entry_inside_bg",
         "anchor_ref": "floor",
-        "placement_mode": "floor_near_wall"
+        "placement_mode": "floor_near_wall",
+        "persist": "keep"
       }
     ]
   },
