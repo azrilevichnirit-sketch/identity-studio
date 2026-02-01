@@ -2,16 +2,16 @@ import { useMemo } from 'react';
 import type { PickRecord, AnchorRef } from '@/types/identity';
 import sceneExtrasData from '@/data/studio_scene_extras.json';
 
-// Floor artworks for gallery clutter (Mission 7) - ONLY floor artworks, NO NPCs
-import floorArtworks01 from '@/assets/extras/studio_floor_artworks_01.webp';
-import floorArtworks02 from '@/assets/extras/studio_floor_artworks_02.webp';
-import floorArtworks03 from '@/assets/extras/studio_floor_artworks_03.webp';
+// Leaning canvases for Mission 7 - artworks leaning against walls
+import leaningCanvases01 from '@/assets/extras/studio_leaning_canvases_01.webp';
+import leaningCanvases02 from '@/assets/extras/studio_leaning_canvases_02.webp';
+import leaningCanvases03 from '@/assets/extras/studio_leaning_canvases_03.webp';
 
-// Map asset keys to actual images - ONLY floor artworks
+// Map asset keys to actual images - leaning canvases only
 const extraAssetMap: Record<string, string> = {
-  studio_floor_artworks_01: floorArtworks01,
-  studio_floor_artworks_02: floorArtworks02,
-  studio_floor_artworks_03: floorArtworks03,
+  studio_leaning_canvases_01: leaningCanvases01,
+  studio_leaning_canvases_02: leaningCanvases02,
+  studio_leaning_canvases_03: leaningCanvases03,
 };
 
 export interface SpawnedExtra {
