@@ -42,7 +42,8 @@ const Index = () => {
     trackMissionShown,
     trackMissionPicked,
     trackUndo,
-    sendPayload,
+    sendGameplayPayload,
+    sendCompletionPayload,
   } = useTelemetry();
 
   // Track run start on mount
@@ -66,18 +67,49 @@ const Index = () => {
       // Check for two-way tie
       const hasTie = checkAndSetTiePhase();
       if (!hasTie) {
-        // No tie, go to lead form
+        // No tie, send gameplay payload then go to lead form
+        const tieState = {
+          triggered: state.tieMissionUsed !== null,
+          missionId: state.tieMissionUsed?.mission_id || null,
+          choiceMade: state.tieChoiceMade,
+          locked: state.tieChoiceMade,
+        };
+        sendGameplayPayload(
+          state.avatarGender,
+          state.firstPicksByMissionId,
+          state.finalPicksByMissionId,
+          state.undoEvents,
+          tieState,
+          countsFinal,
+          leaders,
+        );
         setPhase('lead');
       }
     }
-  }, [state.phase, isMainComplete, checkAndSetTiePhase, setPhase]);
+  }, [state.phase, isMainComplete, checkAndSetTiePhase, setPhase, sendGameplayPayload, state.avatarGender, state.firstPicksByMissionId, state.finalPicksByMissionId, state.undoEvents, state.tieMissionUsed, state.tieChoiceMade, countsFinal, leaders]);
 
   // Handle tie choice completion
   useEffect(() => {
     if (state.phase === 'tie' && state.tieChoiceMade) {
+      // Send gameplay payload after tie is resolved
+      const tieState = {
+        triggered: state.tieMissionUsed !== null,
+        missionId: state.tieMissionUsed?.mission_id || null,
+        choiceMade: state.tieChoiceMade,
+        locked: state.tieChoiceMade,
+      };
+      sendGameplayPayload(
+        state.avatarGender,
+        state.firstPicksByMissionId,
+        state.finalPicksByMissionId,
+        state.undoEvents,
+        tieState,
+        countsFinal,
+        leaders,
+      );
       setPhase('lead');
     }
-  }, [state.phase, state.tieChoiceMade, setPhase]);
+  }, [state.phase, state.tieChoiceMade, setPhase, sendGameplayPayload, state.avatarGender, state.firstPicksByMissionId, state.finalPicksByMissionId, state.undoEvents, state.tieMissionUsed, countsFinal, leaders]);
 
   const handleDimensionSelect = (dimension: Dimension) => {
     setDimension(dimension);
@@ -106,26 +138,9 @@ const Index = () => {
   const handleLeadSubmit = async (data: LeadFormData) => {
     setIsSubmitting(true);
     pendingLeadFormRef.current = data;
-    
-    // Build tie state
-    const tieState = {
-      triggered: state.tieMissionUsed !== null,
-      missionId: state.tieMissionUsed?.mission_id || null,
-      choiceMade: state.tieChoiceMade,
-      locked: state.tieChoiceMade,
-    };
 
-    // Send telemetry payload
-    await sendPayload(
-      state.avatarGender,
-      state.firstPicksByMissionId,
-      state.finalPicksByMissionId,
-      state.undoEvents,
-      tieState,
-      countsFinal,
-      leaders,
-      data,
-    );
+    // Send completion payload (with lead form data)
+    await sendCompletionPayload(data);
 
     // Continue to summary regardless of webhook result
     setLeadForm(data);
