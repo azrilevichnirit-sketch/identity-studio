@@ -302,8 +302,11 @@ export function VisualPlayScreen({
   const getTargetAnchor = useCallback((variant: 'a' | 'b') => {
     const option = variant === 'a' ? optionA : optionB;
     
-    // Use anchor_ref from quest data (e.g. m01_tool_a, m01_tool_b)
-    const anchorRef = option.anchor_ref as AnchorRef;
+    // Prefer mission-specific tool anchors (mXX_tool_a/b) so drag target == final placement.
+    // Some quest rows still use generic anchors (e.g. wall_left/ceiling), which should not drive calibrated drop zones.
+    const missionNum = String(mission.mission_id).replace('studio_', '').padStart(2, '0');
+    const preferredAnchorRef = (`m${missionNum}_tool_${variant}`) as AnchorRef;
+    const fallbackAnchorRef = option.anchor_ref as AnchorRef;
     
     // CRITICAL: For missions with locked backgrounds (M02 = white/cracked walls, exterior, M03+ = workshop),
     // we must look up coordinates in the LOCKED background, not current
@@ -313,19 +316,19 @@ export function VisualPlayScreen({
       : isWorkshopLocked ? 'studio_in_workshop_bg' 
       : currentBgKey;
     
-    // DEBUG: Log anchor lookup
-    console.log('[getTargetAnchor]', { variant, anchorRef, lookupBgKey, missionId: mission.mission_id });
-    
     // Try locked/current background first
-    let anchorPos = getAnchorPosition(lookupBgKey, anchorRef);
-    
-    console.log('[getTargetAnchor] result from', lookupBgKey, ':', anchorPos);
+    let anchorPos = getAnchorPosition(lookupBgKey, preferredAnchorRef);
+    if (!anchorPos) {
+      anchorPos = getAnchorPosition(lookupBgKey, fallbackAnchorRef);
+    }
     
     // If not found, try the next background (fallback)
     if (!anchorPos) {
       const nextBgKey = option.next_bg_override || lookupBgKey;
-      anchorPos = getAnchorPosition(nextBgKey, anchorRef);
-      console.log('[getTargetAnchor] fallback to', nextBgKey, ':', anchorPos);
+      anchorPos = getAnchorPosition(nextBgKey, preferredAnchorRef);
+      if (!anchorPos) {
+        anchorPos = getAnchorPosition(nextBgKey, fallbackAnchorRef);
+      }
     }
     
     if (anchorPos) {
