@@ -2,13 +2,23 @@ import { useMemo } from 'react';
 import type { PickRecord, AnchorRef } from '@/types/identity';
 import sceneExtrasData from '@/data/studio_scene_extras.json';
 
+// Wall gallery art for Mission 7 - matching Mission 5 exterior style
+import wallGallery01 from '@/assets/extras/studio_wall_gallery_01.webp';
+import wallGallery02 from '@/assets/extras/studio_wall_gallery_02.webp';
+import wallGallery03 from '@/assets/extras/studio_wall_gallery_03.webp';
+
 // Leaning canvases for Mission 7 - artworks leaning against walls
 import leaningCanvases01 from '@/assets/extras/studio_leaning_canvases_01.webp';
 import leaningCanvases02 from '@/assets/extras/studio_leaning_canvases_02.webp';
 import leaningCanvases03 from '@/assets/extras/studio_leaning_canvases_03.webp';
 
-// Map asset keys to actual images - leaning canvases only
+// Map asset keys to actual images
 const extraAssetMap: Record<string, string> = {
+  // Wall gallery art
+  studio_wall_gallery_01: wallGallery01,
+  studio_wall_gallery_02: wallGallery02,
+  studio_wall_gallery_03: wallGallery03,
+  // Leaning canvases
   studio_leaning_canvases_01: leaningCanvases01,
   studio_leaning_canvases_02: leaningCanvases02,
   studio_leaning_canvases_03: leaningCanvases03,
