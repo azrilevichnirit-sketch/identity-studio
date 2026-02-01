@@ -2,13 +2,15 @@
 
 import type { AvatarGender, Mission } from '@/types/identity';
 
-// Background imports - ONLY these 3 backgrounds are used:
+// Background imports - 4 backgrounds used:
 // 1. Mission 01 only: stylized room (before paint) - gallery_main_stylized_v3
 // 2. Mission 02: white walls (after paint) - gallery_main_stylized_white_v1
-// 3. Mission 03+: workshop with windows to park - studio_in_workshop_v3
+// 3. Mission 03, 04, 06+: workshop with windows to park - studio_in_workshop_v3
+// 4. Mission 05, 07, 11: exterior park view - studio_exterior_park_stylized_v2
 import galleryMainStylized from '@/assets/backgrounds/gallery_main_stylized_v3.webp';
 import galleryMainStylizedWhite from '@/assets/backgrounds/gallery_main_stylized_white_v1.webp';
 import studioWorkshopBg from '@/assets/backgrounds/studio_in_workshop_v3.webp';
+import studioExteriorBg from '@/assets/backgrounds/studio_exterior_park_stylized_v2.webp';
 
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
@@ -132,10 +134,11 @@ const toolAssets: Record<string, string> = {
   studio_tie_15_b: studioTie15b,
 };
 
-// Background asset lookup - 3 backgrounds used:
+// Background asset lookup - 4 backgrounds used:
 // 1. Mission 01: stylized room (before paint) - galleryMainStylized
 // 2. Mission 02: white walls (after paint) - galleryMainStylizedWhite  
-// 3. Mission 03+: workshop with windows - studioWorkshopBg
+// 3. Mission 03, 04, 06+: workshop with windows - studioWorkshopBg
+// 4. Mission 05, 07, 11: exterior park - studioExteriorBg
 const backgroundAssets: Record<string, string> = {
   // Mission 01 starting bg -> stylized (before paint)
   studio_front_bg: galleryMainStylized,
@@ -147,12 +150,17 @@ const backgroundAssets: Record<string, string> = {
   // Mission 02 locked to white walls (after paint)
   studio_in_gallery_wall_bg: galleryMainStylizedWhite,
 
-  // Workshop (Mission 03+)
+  // Workshop (Mission 03, 04, 06+)
   studio_in_workshop_bg: studioWorkshopBg,
+  
+  // Exterior (Mission 05, 07, 11)
+  studio_exterior_bg: studioExteriorBg,
+  studio_exterior_park_bg: studioExteriorBg,
 
   // Named keys
   gallery_main_stylized: galleryMainStylized,
   gallery_main_stylized_white: galleryMainStylizedWhite,
+  studio_exterior: studioExteriorBg,
 };
 
 // Wide panoramic backgrounds for mobile panning (key -> asset)
@@ -161,17 +169,19 @@ const panoramicBackgrounds: Record<string, string> = {
   studio_entry_inside_bg: galleryMainStylized,
   studio_in_gallery_wall_bg: galleryMainStylizedWhite,
   studio_in_workshop_bg: studioWorkshopBg,
+  studio_exterior_bg: studioExteriorBg,
+  studio_exterior_park_bg: studioExteriorBg,
 };
 
 export function getPanoramicBackground(bgKey: string): string | null {
   return panoramicBackgrounds[bgKey] || null;
 }
 
-// Fallback background mapping - Mission 01 uses stylized
+// Fallback background mapping - Mission 01 uses stylized, exterior for "out" view
 const backgroundFallback: Record<string, string> = {
   'studio_in': galleryMainStylized,
   'studio_front': galleryMainStylized,
-  'studio_out': galleryMainStylized,
+  'studio_out': studioExteriorBg,
 };
 
 export function getToolImage(assetName: string): string | null {
