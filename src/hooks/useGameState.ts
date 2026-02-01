@@ -2,18 +2,40 @@ import { useState, useCallback, useMemo } from 'react';
 import type { GameState, Phase, AvatarGender, Dimension, HollandCode, PickRecord, UndoEvent, Mission, LeadFormData, CountsFinal, MissionOption } from '@/types/identity';
 import { getStudioQuests, getStudioTie } from '@/lib/jsonDataLoader';
 
-const initialState: GameState = {
-  phase: 'dimension',
-  dimension: null,
-  avatarGender: null,
-  mainIndex: 0,
-  firstPicksByMissionId: {},
-  finalPicksByMissionId: {},
-  undoEvents: [],
-  tieMissionUsed: null,
-  tieChoiceMade: false,
-  leadForm: null,
+// Check for ?mission=N URL parameter for dev/debug jumping
+const getInitialMissionIndex = (): number => {
+  if (typeof window !== 'undefined') {
+    const params = new URLSearchParams(window.location.search);
+    const missionParam = params.get('mission');
+    if (missionParam) {
+      const missionNum = parseInt(missionParam, 10);
+      if (!isNaN(missionNum) && missionNum >= 1 && missionNum <= 12) {
+        return missionNum - 1; // Convert to 0-indexed
+      }
+    }
+  }
+  return 0;
 };
+
+const getInitialState = (): GameState => {
+  const missionIndex = getInitialMissionIndex();
+  const skipToMain = missionIndex > 0;
+  
+  return {
+    phase: skipToMain ? 'main' : 'dimension',
+    dimension: skipToMain ? 'studio' : null,
+    avatarGender: skipToMain ? 'female' : null,
+    mainIndex: missionIndex,
+    firstPicksByMissionId: {},
+    finalPicksByMissionId: {},
+    undoEvents: [],
+    tieMissionUsed: null,
+    tieChoiceMade: false,
+    leadForm: null,
+  };
+};
+
+const initialState: GameState = getInitialState();
 
 export function useGameState() {
   const [state, setState] = useState<GameState>(initialState);
