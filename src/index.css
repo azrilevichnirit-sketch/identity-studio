@@ -747,6 +747,22 @@
   z-index: 0;
 }
 
+/* Stage depth overlay - adds vignette and atmospheric depth */
+.scene-depth-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  /* Dark vignette around edges for depth */
+  background: 
+    radial-gradient(ellipse 120% 100% at 50% 100%, transparent 40%, rgba(0, 0, 0, 0.25) 100%),
+    radial-gradient(ellipse 100% 80% at 50% 0%, transparent 50%, rgba(0, 0, 0, 0.18) 100%),
+    radial-gradient(ellipse 50% 100% at 0% 50%, rgba(0, 0, 0, 0.15) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 100% at 100% 50%, rgba(0, 0, 0, 0.15) 0%, transparent 70%);
+  /* Subtle inner shadow for "stage" feel */
+  box-shadow: inset 0 0 120px 40px rgba(0, 0, 0, 0.12);
+}
+
 /* ============================================
    DESKTOP LAYOUT (>=1024px) - BASE STYLES
    ============================================ */
@@ -1662,6 +1678,20 @@
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
+  }
+
+  /* Mobile depth overlay */
+  .scene-depth-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: 
+      radial-gradient(ellipse 130% 110% at 50% 100%, transparent 35%, rgba(0, 0, 0, 0.28) 100%),
+      radial-gradient(ellipse 110% 90% at 50% 0%, transparent 45%, rgba(0, 0, 0, 0.2) 100%),
+      radial-gradient(ellipse 60% 100% at 0% 50%, rgba(0, 0, 0, 0.18) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 100% at 100% 50%, rgba(0, 0, 0, 0.18) 0%, transparent 65%);
+    box-shadow: inset 0 0 100px 30px rgba(0, 0, 0, 0.15);
   }
 
   /* bg as img - centered to show depth and walls */
