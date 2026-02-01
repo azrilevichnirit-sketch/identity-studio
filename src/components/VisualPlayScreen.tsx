@@ -816,27 +816,38 @@ export function VisualPlayScreen({
   }, [lockedBgKey]);
 
   // Male staff position for Mission 02
-  // Tool A: stands near the tool (which is before the plant pot, ~30% from left)
-  // Tool B: stands facing the wall-mounted tool (tool on wall ~70%, staff at ~55%)
-  const maleStaffPos = useMemo((): { left: string; bottom?: string; top?: string; facingRight: boolean } => {
-    if (mission02ToolSelected === 'a') {
-      // Tool A is positioned ~30% from left (before plant pot area)
-      // Male staff stands slightly to the right of the tool
+  // Uses anchor map positions based on which tool was selected
+  const maleStaffPos = useMemo((): { left: string; bottom?: string; top?: string; facingRight: boolean; scale?: number } => {
+    // Get position from anchor map based on selected tool
+    const anchorRef = mission02ToolSelected === 'a' ? 'm02_npc_male_a' : 'm02_npc_male_b';
+    const anchorPos = getAnchorPosition(lockedBgKey, anchorRef as AnchorRef);
+    
+    if (anchorPos) {
       return {
-        left: '38%',
-        bottom: '6%',
-        facingRight: false, // Face left toward tool
-      };
-    } else {
-      // Tool B hangs on LEFT wall (~25% from left)
-      // Male staff stands to the RIGHT of the tool, facing left toward it
-      return {
-        left: '38%',
-        bottom: '6%',
-        facingRight: false, // Face left toward wall-mounted tool
+        left: `${anchorPos.x}%`,
+        top: `${anchorPos.y}%`,
+        facingRight: mission02ToolSelected === 'b', // Face right when Tool B (wall-mounted on left)
+        scale: anchorPos.scale,
       };
     }
-  }, [mission02ToolSelected]);
+    
+    // Fallback positions
+    if (mission02ToolSelected === 'a') {
+      // Tool A: staff stands near the tool
+      return {
+        left: '38%',
+        bottom: '6%',
+        facingRight: false,
+      };
+    } else {
+      // Tool B: staff stands facing the wall-mounted tool
+      return {
+        left: '38%',
+        bottom: '6%',
+        facingRight: false,
+      };
+    }
+  }, [mission02ToolSelected, lockedBgKey, getAnchorPosition]);
 
   // Mission 03+: two staff members facing each other near the back wall
   const workshopWaitingStaffPos = useMemo(() => {
@@ -903,7 +914,9 @@ export function VisualPlayScreen({
             bottom: maleStaffPos.bottom,
             top: maleStaffPos.top,
             zIndex: 8, // Behind tools (tools are ~15-20)
-            transform: maleStaffPos.top ? 'translate(-50%, -50%)' : 'translateX(-50%)',
+            transform: maleStaffPos.top 
+              ? `translate(-50%, -100%) scale(${maleStaffPos.scale || 1})` 
+              : 'translateX(-50%)',
             transformOrigin: 'bottom center',
           }}
         >
