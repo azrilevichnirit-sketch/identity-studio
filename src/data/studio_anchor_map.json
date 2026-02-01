@@ -786,6 +786,22 @@
     "z_layer": "front"
   },
   {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m11_tool_a",
+    "x_pct": 0.65,
+    "y_pct": 0.82,
+    "scale": 2.0,
+    "z_layer": "front"
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m11_tool_b",
+    "x_pct": 0.35,
+    "y_pct": 0.78,
+    "scale": 1.8,
+    "z_layer": "front"
+  },
+  {
     "background_asset_key": "studio_front_bg",
     "anchor_ref": "m11_tool_a",
     "x_pct": 0.5,

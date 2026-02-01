@@ -1271,6 +1271,166 @@ export function VisualPlayScreen({
       return [{ anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: 40, absoluteX: 50 }];
     }
 
+    // Mission 08 Tool A: single placement using anchor map coordinates
+    if (prop.missionId === 'studio_08' && prop.key === 'a') {
+      const anchorPos = getAnchorPosition(lockedBgKey, 'm08_tool_a');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm08_tool_a' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX
+        }];
+      }
+    }
+
+    // Mission 08 Tool B: single placement using anchor map coordinates
+    if (prop.missionId === 'studio_08' && prop.key === 'b') {
+      const anchorPos = getAnchorPosition(lockedBgKey, 'm08_tool_b');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm08_tool_b' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX
+        }];
+      }
+    }
+
+    // Mission 09 Tool A: single placement using anchor map coordinates
+    if (prop.missionId === 'studio_09' && prop.key === 'a') {
+      const anchorPos = getAnchorPosition('gallery_main_stylized', 'm09_tool_a');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm09_tool_a' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX
+        }];
+      }
+    }
+
+    // Mission 09 Tool B: single placement using anchor map coordinates
+    if (prop.missionId === 'studio_09' && prop.key === 'b') {
+      const anchorPos = getAnchorPosition('gallery_main_stylized', 'm09_tool_b');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm09_tool_b' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX
+        }];
+      }
+    }
+
+    // Mission 10 Tool A: single placement using anchor map coordinates
+    if (prop.missionId === 'studio_10' && prop.key === 'a') {
+      const anchorPos = getAnchorPosition('studio_in_workshop_bg', 'm10_tool_a');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm10_tool_a' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX
+        }];
+      }
+    }
+
+    // Mission 10 Tool B: single placement using anchor map coordinates
+    if (prop.missionId === 'studio_10' && prop.key === 'b') {
+      const anchorPos = getAnchorPosition('studio_in_workshop_bg', 'm10_tool_b');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm10_tool_b' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX
+        }];
+      }
+    }
+
+    // Mission 11 Tool A: single placement using anchor map coordinates
+    if (prop.missionId === 'studio_11' && prop.key === 'a') {
+      const anchorPos = getAnchorPosition('studio_in_workshop_bg', 'm11_tool_a');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm11_tool_a' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX
+        }];
+      }
+    }
+
+    // Mission 11 Tool B: single placement using anchor map coordinates
+    if (prop.missionId === 'studio_11' && prop.key === 'b') {
+      const anchorPos = getAnchorPosition('studio_in_workshop_bg', 'm11_tool_b');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm11_tool_b' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX
+        }];
+      }
+    }
+
+    // Mission 12 Tool A: single placement using anchor map coordinates
+    if (prop.missionId === 'studio_12' && prop.key === 'a') {
+      const anchorPos = getAnchorPosition('gallery_main_stylized', 'm12_tool_a');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm12_tool_a' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX
+        }];
+      }
+    }
+
+    // Mission 12 Tool B: single placement using anchor map coordinates
+    if (prop.missionId === 'studio_12' && prop.key === 'b') {
+      const anchorPos = getAnchorPosition('gallery_main_stylized', 'm12_tool_b');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm12_tool_b' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX
+        }];
+      }
+    }
+
     // Default: single placement at floor with realistic size
     return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 1.8 }];
   };
