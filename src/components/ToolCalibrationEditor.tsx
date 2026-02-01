@@ -154,21 +154,22 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission }: 
 
   return (
     <>
-      {/* Tool A - shows both drag zone circle AND tool image */}
+      {/* Tool A - anchored at bottom-center like real placement */}
       <div
         className={`absolute cursor-move touch-none ${selectedTool === 'a' ? 'z-[110]' : 'z-[100]'}`}
         style={{
           left: `${positions.a.x}%`,
           top: `${positions.a.y}%`,
-          transform: 'translate(-50%, -50%)',
+          // Same transform as actual game placement: bottom-center anchor
+          transform: 'translate(-50%, -100%)',
         }}
         onPointerDown={(e) => handlePointerDown('a', e)}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
       >
-        {/* Drop zone indicator */}
-        <div className={`absolute inset-0 w-24 h-24 -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2
-          rounded-full border-4 border-dashed transition-all
+        {/* Drop zone indicator - centered on anchor point */}
+        <div className={`absolute w-20 h-20 rounded-full border-4 border-dashed transition-all
+          left-1/2 -translate-x-1/2 top-full -translate-y-1/2
           ${selectedTool === 'a' ? 'border-yellow-400 bg-yellow-400/20' : 'border-yellow-500/40 bg-yellow-500/10'}`}
         />
         {/* Tool image */}
@@ -176,32 +177,34 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission }: 
           <img 
             src={toolAImage} 
             alt="Tool A" 
-            className="w-20 h-20 object-contain pointer-events-none relative"
+            className="w-24 h-24 object-contain pointer-events-none"
             style={{
               transform: `scale(${positions.a.scale}) ${positions.a.flipX ? 'scaleX(-1)' : ''}`,
+              filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.5))',
             }}
           />
         )}
-        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-yellow-500 text-black text-xs font-bold px-2 py-0.5 rounded whitespace-nowrap">
+        <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-yellow-500 text-black text-xs font-bold px-2 py-0.5 rounded whitespace-nowrap">
           A: {positions.a.x.toFixed(1)}%, {positions.a.y.toFixed(1)}%
         </div>
       </div>
       
-      {/* Tool B - shows both drag zone circle AND tool image */}
+      {/* Tool B - anchored at bottom-center like real placement */}
       <div
         className={`absolute cursor-move touch-none ${selectedTool === 'b' ? 'z-[110]' : 'z-[100]'}`}
         style={{
           left: `${positions.b.x}%`,
           top: `${positions.b.y}%`,
-          transform: 'translate(-50%, -50%)',
+          // Same transform as actual game placement: bottom-center anchor
+          transform: 'translate(-50%, -100%)',
         }}
         onPointerDown={(e) => handlePointerDown('b', e)}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
       >
-        {/* Drop zone indicator */}
-        <div className={`absolute inset-0 w-24 h-24 -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2
-          rounded-full border-4 border-dashed transition-all
+        {/* Drop zone indicator - centered on anchor point */}
+        <div className={`absolute w-20 h-20 rounded-full border-4 border-dashed transition-all
+          left-1/2 -translate-x-1/2 top-full -translate-y-1/2
           ${selectedTool === 'b' ? 'border-blue-400 bg-blue-400/20' : 'border-blue-500/40 bg-blue-500/10'}`}
         />
         {/* Tool image */}
@@ -209,13 +212,14 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission }: 
           <img 
             src={toolBImage} 
             alt="Tool B" 
-            className="w-20 h-20 object-contain pointer-events-none relative"
+            className="w-24 h-24 object-contain pointer-events-none"
             style={{
               transform: `scale(${positions.b.scale}) ${positions.b.flipX ? 'scaleX(-1)' : ''}`,
+              filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.5))',
             }}
           />
         )}
-        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded whitespace-nowrap">
+        <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded whitespace-nowrap">
           B: {positions.b.x.toFixed(1)}%, {positions.b.y.toFixed(1)}%
         </div>
       </div>
