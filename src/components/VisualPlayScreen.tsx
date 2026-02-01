@@ -12,6 +12,7 @@ import { MissionLayout } from './layouts/MissionLayout';
 import { usePanningBackground } from '@/hooks/usePanningBackground';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { BackgroundCrossfade } from './BackgroundCrossfade';
+import { EdgePanIndicators } from './EdgePanIndicators';
 import { AnchorDebugOverlay } from './AnchorDebugOverlay';
 import { GridDebugOverlay } from './GridDebugOverlay';
 import { ZLayerDebugOverlay, type ZLayerItem, LAYER_ZINDEX } from './ZLayerDebugOverlay';
@@ -80,6 +81,9 @@ export function VisualPlayScreen({
   const [showDebugOverlay, setShowDebugOverlay] = useState(false);
   const [showGridOverlay, setShowGridOverlay] = useState(false);
   const [showZLayerOverlay, setShowZLayerOverlay] = useState(false);
+  
+  // Edge proximity for mobile pan indicators
+  const [edgeProximity, setEdgeProximity] = useState<{ edge: 'left' | 'right' | null; intensity: number }>({ edge: null, intensity: 0 });
   
   // Track background transitions - hide persisted tools during crossfade
   const [isBackgroundTransitioning, setIsBackgroundTransitioning] = useState(false);
@@ -669,6 +673,21 @@ export function VisualPlayScreen({
       const rect = stageRef.current.getBoundingClientRect();
       const normalizedX = (e.clientX - rect.left) / rect.width;
       updatePanFromDrag(normalizedX);
+      
+      // Calculate edge proximity for visual indicators
+      const EDGE_ZONE = 0.2; // 20% from each edge
+      if (normalizedX < EDGE_ZONE) {
+        // Approaching left edge
+        const intensity = 1 - (normalizedX / EDGE_ZONE);
+        setEdgeProximity({ edge: 'left', intensity });
+      } else if (normalizedX > 1 - EDGE_ZONE) {
+        // Approaching right edge
+        const intensity = (normalizedX - (1 - EDGE_ZONE)) / EDGE_ZONE;
+        setEdgeProximity({ edge: 'right', intensity });
+      } else {
+        // In center zone
+        setEdgeProximity({ edge: null, intensity: 0 });
+      }
     }
   }, [draggingTool, isMobile, isPanoramic, updatePanFromDrag]);
 
@@ -731,8 +750,9 @@ export function VisualPlayScreen({
     isDraggingRef.current = false;
     dragStartPosRef.current = null;
     
-    // Reset pan when drag ends
+    // Reset pan and edge indicators when drag ends
     resetPan();
+    setEdgeProximity({ edge: null, intensity: 0 });
   }, [draggingTool, completePlacement, getTargetAnchor, resetPan, mission.mission_id]);
 
   // Handle tap on drop zone in carry mode
@@ -1958,6 +1978,14 @@ export function VisualPlayScreen({
         speechBubble={speechBubbleElement}
         toolPanel={toolPanelElement}
         draggingGhost={draggingGhostElement}
+        edgePanIndicators={
+          isMobile && isPanoramic && draggingTool ? (
+            <EdgePanIndicators 
+              activeEdge={edgeProximity.edge} 
+              intensity={edgeProximity.intensity} 
+            />
+          ) : null
+        }
         isCarryMode={!!carryModeTool}
         onCancelCarry={handleCancelCarry}
       />
