@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import { RotateCcw } from 'lucide-react';
 
 /**
- * Blocks landscape orientation on mobile devices.
- * Shows a full-screen overlay asking the user to rotate their device to portrait.
+ * Blocks portrait orientation on mobile devices.
+ * Shows a full-screen overlay asking the user to rotate their device to landscape.
+ * The game is designed for landscape mode only on mobile.
  */
 export function LandscapeBlocker() {
-  const [isLandscape, setIsLandscape] = useState(false);
+  const [isPortrait, setIsPortrait] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -15,12 +16,12 @@ export function LandscapeBlocker() {
       const isMobileDevice = 'ontouchstart' in window && window.innerWidth < 1024;
       setIsMobile(isMobileDevice);
 
-      // Check if landscape (width > height) on mobile
+      // Check if portrait (height > width) on mobile - we want landscape only
       if (isMobileDevice) {
-        const isLandscapeMode = window.innerWidth > window.innerHeight;
-        setIsLandscape(isLandscapeMode);
+        const isPortraitMode = window.innerHeight > window.innerWidth;
+        setIsPortrait(isPortraitMode);
       } else {
-        setIsLandscape(false);
+        setIsPortrait(false);
       }
     };
 
@@ -37,7 +38,7 @@ export function LandscapeBlocker() {
     };
   }, []);
 
-  if (!isMobile || !isLandscape) {
+  if (!isMobile || !isPortrait) {
     return null;
   }
 
@@ -48,7 +49,7 @@ export function LandscapeBlocker() {
         background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
       }}
     >
-      {/* Rotating phone icon */}
+      {/* Phone icon rotating from portrait to landscape */}
       <div 
         className="relative"
         style={{
@@ -81,21 +82,21 @@ export function LandscapeBlocker() {
             textShadow: '0 2px 10px rgba(0,0,0,0.3)',
           }}
         >
-          סובבו את המכשיר
+          סובבו את המכשיר לרוחב
         </h2>
         <p className="text-white/70 text-lg">
-          המשחק מותאם למצב פורטרייט
+          המשחק מותאם למצב רוחבי
         </p>
       </div>
 
-      {/* Inline keyframes */}
+      {/* Inline keyframes - phone rotates from portrait (0deg) to landscape (90deg) */}
       <style>{`
         @keyframes rotate-phone {
           0%, 100% {
-            transform: rotate(90deg);
+            transform: rotate(0deg);
           }
           50% {
-            transform: rotate(0deg);
+            transform: rotate(90deg);
           }
         }
         @keyframes pulse-rotate {
