@@ -910,5 +910,22 @@
     "y_pct": 0.77,
     "scale": 0.52,
     "z_layer": "front"
+  },
+  {
+    "background_asset_key": "gallery_main_stylized",
+    "anchor_ref": "m09_tool_a",
+    "x_pct": 0.604,
+    "y_pct": 0.765,
+    "scale": 1.8,
+    "z_layer": "front",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "gallery_main_stylized",
+    "anchor_ref": "m09_tool_b",
+    "x_pct": 0.357,
+    "y_pct": 0.799,
+    "scale": 1.8,
+    "z_layer": "front"
   }
 ]
