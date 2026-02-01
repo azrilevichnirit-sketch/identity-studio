@@ -301,7 +301,7 @@
     "quest_id": "studio_10",
     "order": 10,
     "view": "in",
-    "bg_override": "studio_entry_inside_bg",
+    "bg_override": "studio_in_workshop_bg",
     "zone_id": null,
     "task_heb": "יש המון התעניינות בסטודיו והביקוש לעבודות גדל בטירוף. איך נעמוד בקצב?",
     "option_a_code": "r",
