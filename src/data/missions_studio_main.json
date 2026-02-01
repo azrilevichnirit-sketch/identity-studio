@@ -209,6 +209,7 @@
     "mission_id": "studio_09",
     "sequence": 9,
     "view": "in",
+    "bg_override": "gallery_main_stylized",
     "task_heb": "סיוט בסטודיו. הגג התחיל לנזול ישר על העבודות הכי יקרות שלנו. מה עושים?",
     "options": [
       {

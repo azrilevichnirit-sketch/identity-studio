@@ -688,19 +688,19 @@
     "z_layer": "front"
   },
   {
-    "background_asset_key": "studio_in_storage_bg",
+    "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m09_tool_a",
-    "x_pct": 0.78,
-    "y_pct": 0.72,
-    "scale": 1.5,
+    "x_pct": 0.5,
+    "y_pct": 0.75,
+    "scale": 1.8,
     "z_layer": "front"
   },
   {
-    "background_asset_key": "studio_in_storage_bg",
+    "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m09_tool_b",
-    "x_pct": 0.78,
-    "y_pct": 0.72,
-    "scale": 1.5,
+    "x_pct": 0.5,
+    "y_pct": 0.75,
+    "scale": 1.8,
     "z_layer": "front"
   },
   {

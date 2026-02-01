@@ -156,7 +156,12 @@ export function VisualPlayScreen({
       return 'studio_in_workshop_bg';
     }
     
-    // Mission 03+ (except exterior and gallery): use the workshop background
+    // Mission 09: Use bg_override from mission data (gallery_main_stylized)
+    if (mission.phase === 'main' && mission.mission_id === 'studio_09' && mission.bg_override) {
+      return mission.bg_override;
+    }
+    
+    // Mission 03+ (except exterior, M07, M09): use the workshop background
     if (mission.phase === 'main' && (mission.mission_id === 'studio_03' || mission.sequence >= 3)) {
       return 'studio_in_workshop_bg';
     }
