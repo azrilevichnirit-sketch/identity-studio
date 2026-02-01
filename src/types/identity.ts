@@ -56,6 +56,14 @@ export interface MissionOption {
   offset_y?: number;
   scale?: number;
   persist?: 'keep' | 'temp';
+  // Fixed placement coordinates (added at placement time for persisted tools)
+  fixedPlacement?: {
+    x: number;
+    y: number;
+    scale: number;
+    flipX?: boolean;
+    wallMount?: boolean;
+  };
 }
 
 export interface Mission {
@@ -92,6 +100,15 @@ export interface PickRecord {
   offsetY?: number;
   scale?: number;
   persist?: 'keep' | 'temp';
+  // FIXED placement coordinates - stored when tool is placed, used in subsequent missions
+  // This ensures persisted tools stay in their original position
+  fixedPlacement?: {
+    x: number;      // percentage from left
+    y: number;      // percentage from top
+    scale: number;  // final scale applied
+    flipX?: boolean;
+    wallMount?: boolean;
+  };
 }
 
 export interface GameState {

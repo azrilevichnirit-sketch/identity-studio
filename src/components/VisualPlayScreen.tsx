@@ -291,6 +291,32 @@ export function VisualPlayScreen({
     setShowUndoDialog(false);
   };
 
+  // Calculate and return the fixed placement for a tool (for persisted tools)
+  const calculateFixedPlacement = useCallback((missionId: string, key: 'a' | 'b'): { x: number; y: number; scale: number; flipX?: boolean; wallMount?: boolean } | undefined => {
+    // Create a temporary prop object to use getDuplicateAnchors
+    const tempProp = { missionId, key, assetName: '', hollandCode: 'r' as HollandCode };
+    
+    // Special handling for Mission 01 Tool A (3 buckets) - don't persist these
+    if (missionId === 'studio_01' && key === 'a') return undefined;
+    
+    // Get anchor info from the placement logic
+    const anchorRef = key === 'a' 
+      ? `m${missionId.replace('studio_', '').padStart(2, '0')}_tool_a`
+      : `m${missionId.replace('studio_', '').padStart(2, '0')}_tool_b`;
+    
+    const anchorPos = getAnchorPosition(lockedBgKey, anchorRef as AnchorRef);
+    if (anchorPos) {
+      return {
+        x: anchorPos.x,
+        y: anchorPos.y,
+        scale: anchorPos.scale,
+        flipX: anchorPos.flipX,
+        wallMount: missionId === 'studio_02' && key === 'b', // Tool B of mission 2 is wall-mounted
+      };
+    }
+    return undefined;
+  }, [lockedBgKey, getAnchorPosition]);
+
   // Complete a tool selection (used by both drag and carry mode)
   const completePlacement = useCallback((variant: 'a' | 'b') => {
     const option = variant === 'a' ? optionA : optionB;
@@ -298,6 +324,16 @@ export function VisualPlayScreen({
       setHasDraggedOnce(true);
       localStorage.setItem(DRAG_HINT_STORAGE_KEY, 'true');
     }
+    
+    // Calculate fixed placement for persisted tools
+    const fixedPlacement = option.persist === 'keep' 
+      ? calculateFixedPlacement(mission.mission_id, variant)
+      : undefined;
+    
+    // Store the fixed placement on the option so it gets saved to placedProps
+    const optionWithPlacement = fixedPlacement 
+      ? { ...option, fixedPlacement }
+      : option;
     
     // Clear any previous staged transitions
     timeoutsRef.current.forEach((id) => window.clearTimeout(id));
@@ -377,7 +413,7 @@ export function VisualPlayScreen({
       }
       setJustPlaced(null);
       setLockPulseKey(null);
-      onSelect(mission.mission_id, variant, option.holland_code as HollandCode, option);
+      onSelect(mission.mission_id, variant, option.holland_code as HollandCode, optionWithPlacement);
       // Clear localPlacement AFTER onSelect has added it to placedProps (next tick)
       if (isMission01ToolB) {
         window.setTimeout(() => setLocalPlacement(null), 100);
@@ -386,7 +422,7 @@ export function VisualPlayScreen({
     timeoutsRef.current.push(advanceId);
     
     setCarryModeTool(null);
-  }, [mission.mission_id, optionA, optionB, onSelect, hasDraggedOnce, getTargetBgForOption, PAINTED_WALLS_BG_KEY, currentBg]);
+  }, [mission.mission_id, mission.phase, mission.sequence, optionA, optionB, onSelect, hasDraggedOnce, getTargetBgForOption, PAINTED_WALLS_BG_KEY, currentBg, calculateFixedPlacement]);
 
   // Pointer Events for unified mouse/touch handling
   const handlePointerDown = useCallback((variant: 'a' | 'b', e: React.PointerEvent) => {
@@ -524,6 +560,14 @@ export function VisualPlayScreen({
       assetName: string;
       hollandCode: HollandCode;
       isPersisted?: boolean;
+      // Fixed placement for persisted tools
+      fixedPlacement?: {
+        x: number;
+        y: number;
+        scale: number;
+        flipX?: boolean;
+        wallMount?: boolean;
+      };
     }> = [];
     
     // Get the current mission sequence number
@@ -539,6 +583,7 @@ export function VisualPlayScreen({
           assetName: prop.assetName || 'studio_01_b',
           hollandCode: prop.hollandCode,
           isPersisted: true,
+          fixedPlacement: prop.fixedPlacement,
         });
       }
       
@@ -554,6 +599,7 @@ export function VisualPlayScreen({
             assetName: prop.assetName || `${prop.missionId}_${prop.key}`,
             hollandCode: prop.hollandCode,
             isPersisted: true,
+            fixedPlacement: prop.fixedPlacement,
           });
         }
       }
@@ -1134,9 +1180,46 @@ export function VisualPlayScreen({
         
         if (!toolImg) return null;
         
-        const anchorInfos = getDuplicateAnchors(prop);
+        const isPersisted = 'isPersisted' in prop && prop.isPersisted;
         const isJustPlaced = justPlaced === `${prop.missionId}-${prop.key}`;
         const isMission01Buckets = prop.missionId === 'studio_01' && prop.key === 'a';
+        const isMission01ToolB = prop.missionId === 'studio_01' && prop.key === 'b';
+        const isMission02ToolB = prop.missionId === 'studio_02' && prop.key === 'b';
+        
+        // USE FIXED PLACEMENT FOR PERSISTED TOOLS
+        // This ensures tools stay exactly where they were placed, not recalculated
+        if (isPersisted && prop.fixedPlacement) {
+          const fixed = prop.fixedPlacement;
+          const transformStyle = fixed.wallMount
+            ? `translate(-50%, -50%) scale(${fixed.scale})`
+            : `translate(-50%, -100%) scale(${fixed.scale})`;
+          
+          return [(
+            <div
+              key={`${prop.missionId}-${propIdx}-fixed`}
+              className="absolute pointer-events-none"
+              style={{
+                left: `${fixed.x}%`,
+                top: `${fixed.y}%`,
+                transform: transformStyle,
+                zIndex: 15,
+              }}
+            >
+              <img 
+                src={toolImg}
+                alt=""
+                className={`${isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32'} object-contain`}
+                style={{
+                  filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
+                  transform: fixed.flipX ? 'scaleX(-1)' : undefined,
+                }}
+              />
+            </div>
+          )];
+        }
+        
+        // For non-persisted tools or tools without fixedPlacement, use original logic
+        const anchorInfos = getDuplicateAnchors(prop);
         
         return anchorInfos.map((anchorInfo, idx) => {
           // Mission 01 paint: keep tool coordinates stable even while the background is crossfading.
@@ -1158,10 +1241,6 @@ export function VisualPlayScreen({
           const leftValue = anchorInfo.absoluteX !== undefined
             ? anchorInfo.absoluteX
             : anchorPos.x + anchorInfo.offsetX;
-          
-          const isPersisted = 'isPersisted' in prop && prop.isPersisted;
-          const isMission01ToolB = prop.missionId === 'studio_01' && prop.key === 'b';
-          const isMission02ToolB = prop.missionId === 'studio_02' && prop.key === 'b';
           
           // Wall-mounted tools use center transform, floor tools use bottom-anchored
           const transformStyle = anchorInfo.wallMount
