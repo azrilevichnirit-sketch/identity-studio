@@ -313,13 +313,19 @@ export function VisualPlayScreen({
       : isWorkshopLocked ? 'studio_in_workshop_bg' 
       : currentBgKey;
     
+    // DEBUG: Log anchor lookup
+    console.log('[getTargetAnchor]', { variant, anchorRef, lookupBgKey, missionId: mission.mission_id });
+    
     // Try locked/current background first
     let anchorPos = getAnchorPosition(lookupBgKey, anchorRef);
+    
+    console.log('[getTargetAnchor] result from', lookupBgKey, ':', anchorPos);
     
     // If not found, try the next background (fallback)
     if (!anchorPos) {
       const nextBgKey = option.next_bg_override || lookupBgKey;
       anchorPos = getAnchorPosition(nextBgKey, anchorRef);
+      console.log('[getTargetAnchor] fallback to', nextBgKey, ':', anchorPos);
     }
     
     if (anchorPos) {
@@ -328,7 +334,7 @@ export function VisualPlayScreen({
 
     // Default fallback
     return { x: 50, y: 70, scale: 1, z_layer: 'mid' as const };
-  }, [optionA, optionB, currentBgKey, isWhiteWallsLocked, isCrackedWallsLocked, isExteriorLocked, isWorkshopLocked, PAINTED_WALLS_BG_KEY]);
+  }, [optionA, optionB, currentBgKey, isWhiteWallsLocked, isCrackedWallsLocked, isExteriorLocked, isWorkshopLocked, PAINTED_WALLS_BG_KEY, mission.mission_id]);
 
   // Flash cue when mission changes (helps player notice the transition)
   const [showMissionFlash, setShowMissionFlash] = useState(false);
