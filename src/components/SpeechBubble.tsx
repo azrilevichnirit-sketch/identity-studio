@@ -15,7 +15,7 @@ interface SpeechBubbleProps {
   onIdleTimeout?: () => void;
 }
 
-const IDLE_TIMEOUT_MS = 30000; // 30 seconds
+const IDLE_TIMEOUT_MS = 20000; // 20 seconds
 
 /**
  * Reusable speech bubble component with seamless chat-style tail.
