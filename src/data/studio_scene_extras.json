@@ -223,5 +223,50 @@
     "note": "art chaos on floor - right side clutter",
     "despawn_mode": "keep",
     "despawn_value": "end"
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "order": 16,
+    "mission_id": "studio_07",
+    "trigger_when": "before",
+    "trigger_tool_ids": "studio_07_a;studio_07_b",
+    "spawn_asset_key": "studio_extra_asset_02",
+    "spawn_count": 1,
+    "placement_mode": "wall",
+    "anchor_ref": "m07_wall_art_left",
+    "note": "artwork on left wall - from Mission 5 exterior view",
+    "despawn_mode": "keep",
+    "despawn_value": "end"
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "order": 17,
+    "mission_id": "studio_07",
+    "trigger_when": "before",
+    "trigger_tool_ids": "studio_07_a;studio_07_b",
+    "spawn_asset_key": "studio_extra_asset_03",
+    "spawn_count": 1,
+    "placement_mode": "wall",
+    "anchor_ref": "m07_wall_art_center",
+    "note": "artwork on center wall - from Mission 5 exterior view",
+    "despawn_mode": "keep",
+    "despawn_value": "end"
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "order": 18,
+    "mission_id": "studio_07",
+    "trigger_when": "before",
+    "trigger_tool_ids": "studio_07_a;studio_07_b",
+    "spawn_asset_key": "studio_extra_asset_02",
+    "spawn_count": 1,
+    "placement_mode": "wall",
+    "anchor_ref": "m07_wall_art_right",
+    "note": "artwork on right wall - from Mission 5 exterior view",
+    "despawn_mode": "keep",
+    "despawn_value": "end"
   }
 ]
