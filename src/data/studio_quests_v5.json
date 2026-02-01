@@ -367,7 +367,7 @@
     "quest_id": "studio_12",
     "order": 12,
     "view": "in",
-    "bg_override": "studio_entry_inside_bg",
+    "bg_override": "gallery_main_stylized",
     "zone_id": null,
     "task_heb": "אנחנו השם הכי חם בעיר! מה המהלך הגדול שיעיף את הסטודיו לרמה הבאה?",
     "option_a_code": "i",
