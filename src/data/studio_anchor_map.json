@@ -82,9 +82,9 @@
   {
     "background_asset_key": "studio_entry_inside_bg",
     "anchor_ref": "m01_tool_b",
-    "x_pct": 0.502,
-    "y_pct": 0.943,
-    "scale": 1.8,
+    "x_pct": 0.521,
+    "y_pct": 0.886,
+    "scale": 1.4,
     "z_layer": "front",
     "flipX": true
   },
