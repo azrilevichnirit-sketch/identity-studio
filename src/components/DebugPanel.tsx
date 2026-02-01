@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { X, Bug } from 'lucide-react';
+import { X, Bug, Wrench } from 'lucide-react';
 import type { GameState, CountsFinal, HollandCode } from '@/types/identity';
 
 interface DebugPanelProps {
@@ -8,11 +8,13 @@ interface DebugPanelProps {
   countsFinal: CountsFinal;
   leaders: HollandCode[];
   historyLength: number;
+  onToolEditModeChange?: (enabled: boolean) => void;
 }
 
-export function DebugPanel({ state, countsFinal, leaders, historyLength }: DebugPanelProps) {
+export function DebugPanel({ state, countsFinal, leaders, historyLength, onToolEditModeChange }: DebugPanelProps) {
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(false);
+  const [toolEditMode, setToolEditMode] = useState(false);
 
   // Default collapsed on mobile
   useEffect(() => {
@@ -21,8 +23,27 @@ export function DebugPanel({ state, countsFinal, leaders, historyLength }: Debug
     }
   }, [isMobile]);
 
+  const toggleToolEditMode = () => {
+    const newValue = !toolEditMode;
+    setToolEditMode(newValue);
+    onToolEditModeChange?.(newValue);
+  };
+
   return (
-    <div className="fixed bottom-4 right-4 z-40">
+    <div className="fixed bottom-4 right-4 z-40 flex gap-2">
+      {/* Tool Edit Mode button */}
+      <button
+        onClick={toggleToolEditMode}
+        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors shadow-lg ${
+          toolEditMode 
+            ? 'bg-yellow-500 border-yellow-600 text-black hover:bg-yellow-400' 
+            : 'bg-card border-border text-muted-foreground hover:text-foreground hover:bg-accent'
+        }`}
+      >
+        <Wrench className="w-3.5 h-3.5" />
+        <span>{toolEditMode ? '🔧 כלים' : 'Tool Edit'}</span>
+      </button>
+
       {/* Toggle button */}
       <button
         onClick={() => setIsOpen(!isOpen)}

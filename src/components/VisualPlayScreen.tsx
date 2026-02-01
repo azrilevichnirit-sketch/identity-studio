@@ -17,7 +17,7 @@ import { GridDebugOverlay } from './GridDebugOverlay';
 import { ZLayerDebugOverlay, type ZLayerItem, LAYER_ZINDEX } from './ZLayerDebugOverlay';
 import femaleStaffWalk from '@/assets/avatars/studio_01_female_staff_walk.webp';
 import maleStaffWalk from '@/assets/avatars/studio_01_male_staff_walk.webp';
-import { DraggableNpcEditor } from './DraggableNpcEditor';
+import { ToolCalibrationEditor } from './ToolCalibrationEditor';
 // import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter'; // Disabled
 
 const DRAG_HINT_STORAGE_KEY = 'ie_hasDraggedOnce';
@@ -46,7 +46,7 @@ interface VisualPlayScreenProps {
   placedProps: PickRecord[];
   onSelect: (missionId: string, key: 'a' | 'b', hollandCode: HollandCode, option?: MissionOption) => void;
   onUndo: () => void;
-  npcEditMode?: boolean;
+  toolEditMode?: boolean;
   /** Called when editor "Save & Next" is clicked - selects Tool A and advances */
   onEditorNextMission?: () => void;
 }
@@ -61,7 +61,7 @@ export function VisualPlayScreen({
   placedProps,
   onSelect,
   onUndo,
-  npcEditMode = false,
+  toolEditMode = false,
   onEditorNextMission,
 }: VisualPlayScreenProps) {
   const [showUndoDialog, setShowUndoDialog] = useState(false);
@@ -1931,16 +1931,12 @@ export function VisualPlayScreen({
         onToggle={() => setShowZLayerOverlay(!showZLayerOverlay)}
       />
       
-      {/* NPC + Tools + Avatar + Bubble Visual Editor */}
-      {npcEditMode && (
-        <DraggableNpcEditor
-          isEnabled={npcEditMode}
-          npcs={editorNpcs}
-          tools={editorTools}
-          avatar={editorAvatar}
-          bubble={editorBubble}
-          onSaveAndNext={onEditorNextMission}
-          missionLabel={`Mission ${currentIndex + 1}/${totalMissions}: ${mission.mission_id}`}
+      {/* Tool Calibration Editor */}
+      {toolEditMode && (
+        <ToolCalibrationEditor
+          mission={mission}
+          currentBgKey={lockedBgKey}
+          onNextMission={onEditorNextMission}
         />
       )}
     </>
