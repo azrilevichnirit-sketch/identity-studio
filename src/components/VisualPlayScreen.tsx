@@ -546,7 +546,13 @@ export function VisualPlayScreen({
         : undefined,
     });
 
-    // Let the player *first* see the tool settle, then a subtle lock confirmation.
+    // Mission 07: Lock the background to the target room AFTER placement
+    // This prevents the bg from reverting to workshop when activeToolVariant becomes null
+    const isMission07 = mission.mission_id === 'studio_07';
+    if (isMission07) {
+      const targetBg = getTargetBgForOption(option);
+      setLocalBgOverride(targetBg);
+    }
     setJustPlaced(null);
     setLockPulseKey(null);
     const isMission01Paint = mission.mission_id === 'studio_01' && variant === 'a';
