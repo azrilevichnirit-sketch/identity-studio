@@ -1001,7 +1001,9 @@ export function VisualPlayScreen({
       style={{
         left: `${targetPosition.x}%`,
         top: `${targetPosition.y}%`,
-        transform: 'translate(-50%, -50%)',
+        // Align the drop target to the same anchor point the tool will snap to
+        // (we anchor tool placement by its bottom-center)
+        transform: 'translate(-50%, -100%)',
       }}
       onClick={(e) => {
         e.stopPropagation();
