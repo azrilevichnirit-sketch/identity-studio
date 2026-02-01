@@ -12,7 +12,6 @@ import { DebugPanel } from '@/components/DebugPanel';
 import type { Dimension, HollandCode, MissionOption } from '@/types/identity';
 
 const Index = () => {
-  const [npcEditMode, setNpcEditMode] = useState(false);
   
   const {
     state,
@@ -119,14 +118,6 @@ const Index = () => {
             placedProps={placedProps}
             onSelect={handleSelect}
             onUndo={undo}
-            npcEditMode={npcEditMode}
-            onEditorNextMission={() => {
-              // Auto-select Tool A to advance to next mission in editor mode
-              const optionA = currentMission.options.find(o => o.key === 'a');
-              if (optionA) {
-                handleSelect(currentMission.mission_id, 'a', optionA.holland_code, optionA);
-              }
-            }}
           />
         )}
 
@@ -141,13 +132,6 @@ const Index = () => {
             placedProps={placedProps}
             onSelect={handleSelect}
             onUndo={undo}
-            npcEditMode={npcEditMode}
-            onEditorNextMission={() => {
-              const optionA = currentMission.options.find(o => o.key === 'a');
-              if (optionA) {
-                handleSelect(currentMission.mission_id, 'a', optionA.holland_code, optionA);
-              }
-            }}
           />
         )}
 
@@ -169,7 +153,6 @@ const Index = () => {
         countsFinal={countsFinal}
         leaders={leaders}
         historyLength={historyLength}
-        onNpcEditModeChange={setNpcEditMode}
       />
     </>
   );
