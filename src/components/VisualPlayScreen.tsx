@@ -287,8 +287,8 @@ export function VisualPlayScreen({
       const lockedImage = getBackgroundByName(lockedKey) || currentBg;
       return { key: lockedKey, image: lockedImage };
     }
-    // Exterior missions (except M11 which stays in workshop)
-    if (mission.phase === 'main' && mission.view === 'out' && mission.mission_id !== 'studio_11') {
+    // Exterior missions (except M11 which has tool-specific backgrounds)
+    if (mission.phase === 'main' && mission.view === 'out' && mission.mission_id !== 'studio_11' && mission.mission_id !== 'studio_05') {
       const lockedKey = 'studio_exterior_bg';
       const lockedImage = getBackgroundByName(lockedKey) || currentBg;
       return { key: lockedKey, image: lockedImage };
@@ -298,6 +298,13 @@ export function VisualPlayScreen({
     // This MUST come BEFORE the workshop lock check
     if (mission.mission_id === 'studio_07') {
       const targetBgKey = option.key === 'a' ? 'studio_in_storage_bg' : 'gallery_main_stylized';
+      const targetBgImage = getBackgroundByName(targetBgKey) || currentBg;
+      return { key: targetBgKey, image: targetBgImage };
+    }
+    // Mission 11: Tool-specific destination rooms
+    // Tool A -> Exterior (festival), Tool B -> Gallery (expansion plan)
+    if (mission.mission_id === 'studio_11') {
+      const targetBgKey = option.key === 'a' ? 'studio_exterior_bg' : 'gallery_main_stylized';
       const targetBgImage = getBackgroundByName(targetBgKey) || currentBg;
       return { key: targetBgKey, image: targetBgImage };
     }
@@ -327,6 +334,16 @@ export function VisualPlayScreen({
 
     // Mission 07: SHOW background preview during drag (room transition!)
     if (mission.mission_id === 'studio_07') {
+      const option = activeToolVariant === 'a' ? optionA : optionB;
+      const target = getTargetBgForOption(option);
+      if (target.key !== currentBgKey) {
+        return target;
+      }
+      return null;
+    }
+
+    // Mission 11: SHOW background preview during drag (exterior/gallery transition!)
+    if (mission.mission_id === 'studio_11') {
       const option = activeToolVariant === 'a' ? optionA : optionB;
       const target = getTargetBgForOption(option);
       if (target.key !== currentBgKey) {
