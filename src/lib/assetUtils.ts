@@ -185,8 +185,10 @@ const panoramicBackgrounds: Record<string, string> = {
   gallery_main_stylized_v3: galleryCrackedWalls,
   // Main studio (finished)
   gallery_main_stylized: galleryMainStylized,
-  // White walls
+  // White walls (Mission 02 if Tool A was chosen)
   studio_in_gallery_wall_bg: galleryMainStylizedWhite,
+  gallery_main_stylized_white: galleryMainStylizedWhite,
+  gallery_main_stylized_white_v1: galleryMainStylizedWhite,
   // Other rooms
   studio_in_entrance_view_bg: studioEntranceViewBg,
   studio_in_workshop_bg: studioWorkshopBg,
