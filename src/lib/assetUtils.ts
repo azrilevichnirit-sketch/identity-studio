@@ -160,6 +160,7 @@ const backgroundAssets: Record<string, string> = {
   // Mission 01 Tool A result / Mission 02 (if A chosen): white walls (after paint)
   studio_in_gallery_wall_bg: galleryMainStylizedWhite,
   gallery_main_stylized_white: galleryMainStylizedWhite,
+  gallery_main_stylized_white_v1: galleryMainStylizedWhite,
   
   // Storage room (Mission 07 Tool A destination)
   studio_in_storage_bg: studioStorageBg,
