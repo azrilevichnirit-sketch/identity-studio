@@ -35,6 +35,17 @@ export interface ClientContext {
   deviceType: 'mobile' | 'tablet' | 'desktop';
 }
 
+// Calculate counts from picks
+function calculateCounts(picks: Record<string, PickRecord>): CountsFinal {
+  const counts: CountsFinal = { r: 0, i: 0, a: 0, s: 0, e: 0, c: 0 };
+  Object.values(picks).forEach(pick => {
+    if (pick.hollandCode && counts.hasOwnProperty(pick.hollandCode)) {
+      counts[pick.hollandCode]++;
+    }
+  });
+  return counts;
+}
+
 // Payload sent BEFORE lead form (gameplay data only)
 export interface GameplayPayload {
   runId: string;
@@ -49,7 +60,8 @@ export interface GameplayPayload {
   finalPicksByMissionId: Record<string, PickRecord>;
   undoEvents: Array<{ missionId: string; prevTrait: HollandCode; newTrait: HollandCode; timestampMs: number }>;
   tie: TieState;
-  countsFinal: CountsFinal;
+  countsFirst: CountsFinal;  // Counts from first picks (before any undos)
+  countsFinal: CountsFinal;  // Counts from final picks (after all undos)
   leaders: HollandCode[];
   clientContext: ClientContext;
   events: TelemetryEvent[];
@@ -193,6 +205,8 @@ export function useTelemetry() {
       deviceType: getDeviceType(),
     };
 
+    const countsFirst = calculateCounts(firstPicksByMissionId);
+
     const payload: GameplayPayload = {
       runId: runIdRef.current,
       stage: 'gameplay',
@@ -211,6 +225,7 @@ export function useTelemetry() {
         timestampMs: e.timestamp,
       })),
       tie: tieState,
+      countsFirst,
       countsFinal,
       leaders,
       clientContext,
@@ -252,6 +267,9 @@ export function useTelemetry() {
     logEvent('LEAD_SUBMITTED');
     logEvent('RUN_ENDED');
 
+    // Calculate counts from first picks for comparison
+    const countsFirst = calculateCounts(firstPicksByMissionId);
+
     // Send full payload including all game data for analysis
     const payload = {
       runId: runIdRef.current,
@@ -271,6 +289,7 @@ export function useTelemetry() {
         timestampMs: e.timestamp,
       })),
       tie: tieState,
+      countsFirst,
       countsFinal,
       leaders,
       leadForm: {
