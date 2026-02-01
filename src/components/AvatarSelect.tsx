@@ -1,6 +1,6 @@
 import type { AvatarGender } from '@/types/identity';
 import { getAvatarImage } from '@/lib/assetUtils';
-import studioEntryBg from '@/assets/backgrounds/studio_entry_inside_bg.png';
+import galleryBg from '@/assets/backgrounds/gallery_main_stylized.webp';
 import { GameStage } from './GameStage';
 
 interface AvatarSelectProps {
@@ -12,12 +12,12 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
   const maleAvatar = getAvatarImage('male', 'idle');
 
   return (
-    <GameStage backgroundImage={studioEntryBg} enhanceBackground>
+    <GameStage backgroundImage={galleryBg} enhanceBackground>
       {/* Dark overlay for contrast */}
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.35) 100%)',
+          background: 'linear-gradient(to top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.3) 100%)',
           zIndex: 1,
         }}
       />
@@ -32,73 +32,65 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
           paddingRight: 'max(env(safe-area-inset-right, 16px), 16px)',
         }}
       >
-        <div className="flex flex-col items-center gap-5 md:gap-8 animate-fade-in w-full max-w-2xl">
+        <div className="flex flex-col items-center gap-6 md:gap-10 animate-fade-in w-full max-w-2xl">
           {/* Title */}
           <div className="text-center px-4">
-            <h1 className="text-2xl md:text-4xl font-bold text-white mb-2 drop-shadow-lg">Identity Engine</h1>
-            <p className="text-base md:text-xl text-white/90 drop-shadow-md">בחר/י את הדמות שלך</p>
+            <h1 className="text-2xl md:text-4xl font-bold text-white mb-2 drop-shadow-lg">נקודת הזינוק שלך</h1>
+            <p className="text-base md:text-xl text-white/90 drop-shadow-md">עכשיו רק תבחרו מי ילווה אתכם במסע</p>
           </div>
           
-          {/* Avatar selection cards - stacked on mobile, side-by-side on tablet+ */}
-          <div className="flex flex-col md:flex-row gap-4 md:gap-8 w-full items-center justify-center">
+          {/* Avatar selection - no boxes, just the avatars */}
+          <div className="flex flex-row gap-8 md:gap-16 w-full items-end justify-center">
             <button
               onClick={() => onSelect('female')}
-              className="group relative rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
-              style={{
-                width: 'min(85vw, 320px)',
-                height: 'clamp(110px, 28vw, 160px)',
-                minHeight: '110px',
-                background: 'rgba(255, 252, 245, 0.92)',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-              }}
+              className="group relative transition-all duration-300 hover:scale-110 active:scale-95"
             >
-              <div className="absolute inset-0 flex items-center justify-center p-4 gap-4">
               {femaleAvatar ? (
-                  <img 
-                    src={femaleAvatar} 
-                    alt="Female avatar" 
-                    className="h-full max-h-24 md:max-h-32 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-                  />
-                ) : (
-                  <span className="text-5xl md:text-6xl">👩</span>
-                )}
-              </div>
+                <img 
+                  src={femaleAvatar} 
+                  alt="Female avatar" 
+                  className="h-40 md:h-56 w-auto object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105"
+                  style={{
+                    filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.4))',
+                  }}
+                />
+              ) : (
+                <span className="text-6xl md:text-8xl">👩</span>
+              )}
               
               {/* Hover glow */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+              <div 
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-full"
                 style={{
-                  background: 'radial-gradient(circle at center, hsl(var(--primary) / 0.2) 0%, transparent 70%)',
+                  background: 'radial-gradient(circle at center bottom, hsl(var(--primary) / 0.3) 0%, transparent 70%)',
+                  transform: 'scale(1.5)',
                 }}
               />
             </button>
             
             <button
               onClick={() => onSelect('male')}
-              className="group relative rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
-              style={{
-                width: 'min(85vw, 320px)',
-                height: 'clamp(110px, 28vw, 160px)',
-                minHeight: '110px',
-                background: 'rgba(255, 252, 245, 0.92)',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-              }}
+              className="group relative transition-all duration-300 hover:scale-110 active:scale-95"
             >
-              <div className="absolute inset-0 flex items-center justify-center p-4 gap-4">
               {maleAvatar ? (
-                  <img 
-                    src={maleAvatar} 
-                    alt="Male avatar" 
-                    className="h-full max-h-24 md:max-h-32 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-                  />
-                ) : (
-                  <span className="text-5xl md:text-6xl">👨</span>
-                )}
-              </div>
+                <img 
+                  src={maleAvatar} 
+                  alt="Male avatar" 
+                  className="h-40 md:h-56 w-auto object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105"
+                  style={{
+                    filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.4))',
+                  }}
+                />
+              ) : (
+                <span className="text-6xl md:text-8xl">👨</span>
+              )}
               
               {/* Hover glow */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+              <div 
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-full"
                 style={{
-                  background: 'radial-gradient(circle at center, hsl(var(--primary) / 0.2) 0%, transparent 70%)',
+                  background: 'radial-gradient(circle at center bottom, hsl(var(--primary) / 0.3) 0%, transparent 70%)',
+                  transform: 'scale(1.5)',
                 }}
               />
             </button>
