@@ -275,6 +275,8 @@ export function useTelemetry() {
       leaders,
       leadForm: {
         fullName: leadForm.fullName,
+        firstName: leadForm.fullName.trim().split(/\s+/)[0] || '',
+        lastName: leadForm.fullName.trim().split(/\s+/).slice(1).join(' ') || '',
         email: leadForm.email,
         phone: leadForm.phone,
         wantsUpdates: leadForm.wantsUpdates,
