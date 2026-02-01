@@ -215,6 +215,26 @@ export function useGameState() {
     setState((prev) => ({ ...prev, leadForm: data }));
   }, []);
 
+  const jumpToMission = useCallback((missionIndex: number) => {
+    if (missionIndex < 0 || missionIndex >= mainMissions.length) return;
+    setState((prev) => ({
+      ...prev,
+      phase: 'main',
+      dimension: 'studio',
+      avatarGender: prev.avatarGender || 'female',
+      mainIndex: missionIndex,
+      // Clear picks for missions at or after this index
+      finalPicksByMissionId: Object.fromEntries(
+        Object.entries(prev.finalPicksByMissionId).filter(([, pick]) => {
+          const mission = mainMissions.find(m => m.mission_id === pick.missionId);
+          return mission ? mission.sequence - 1 < missionIndex : false;
+        })
+      ),
+      tieMissionUsed: null,
+      tieChoiceMade: false,
+    }));
+  }, [mainMissions]);
+
   const canUndo = useMemo(() => {
     if (state.tieChoiceMade) return false;
     if (state.phase === 'tie') return true; // Can go back to mission 12
@@ -251,5 +271,6 @@ export function useGameState() {
     undo,
     checkAndSetTiePhase,
     setLeadForm,
+    jumpToMission,
   };
 }

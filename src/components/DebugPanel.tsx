@@ -9,9 +9,11 @@ interface DebugPanelProps {
   leaders: HollandCode[];
   historyLength: number;
   onToolEditModeChange?: (enabled: boolean) => void;
+  onJumpToMission?: (missionIndex: number) => void;
+  totalMissions?: number;
 }
 
-export function DebugPanel({ state, countsFinal, leaders, historyLength, onToolEditModeChange }: DebugPanelProps) {
+export function DebugPanel({ state, countsFinal, leaders, historyLength, onToolEditModeChange, onJumpToMission, totalMissions = 12 }: DebugPanelProps) {
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(false);
   const [toolEditMode, setToolEditMode] = useState(false);
@@ -71,6 +73,28 @@ export function DebugPanel({ state, countsFinal, leaders, historyLength, onToolE
           >
             <X className="w-3.5 h-3.5 text-muted-foreground" />
           </button>
+          
+          {/* Mission Jump Buttons */}
+          {onJumpToMission && (
+            <div className="mb-3 pb-2 border-b border-border">
+              <div className="text-muted-foreground mb-1.5 font-medium">קפיצה למשימה:</div>
+              <div className="flex flex-wrap gap-1">
+                {Array.from({ length: totalMissions }, (_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => onJumpToMission(i)}
+                    className={`w-7 h-7 rounded text-xs font-medium transition-colors ${
+                      state.mainIndex === i && state.phase === 'main'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted hover:bg-accent text-foreground'
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           
           <div className="grid grid-cols-2 gap-x-3 gap-y-1 pr-6">
             <div><strong>phase:</strong> {state.phase}</div>
