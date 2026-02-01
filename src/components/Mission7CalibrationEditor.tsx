@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Move, Copy, ChevronDown, ChevronUp } from 'lucide-react';
+import { Move, Copy, ChevronDown, ChevronUp, RotateCw } from 'lucide-react';
 import { getAnchorPosition } from '@/lib/jsonDataLoader';
 import { getToolImage, getBackgroundByName } from '@/lib/assetUtils';
 import type { AnchorRef, Mission } from '@/types/identity';
@@ -18,6 +18,7 @@ interface ToolPosition {
   y: number;
   scale: number;
   flipX: boolean;
+  rotation: number;
 }
 
 export function Mission7CalibrationEditor({ mission, onBackgroundChange }: Mission7CalibrationEditorProps) {
@@ -38,6 +39,7 @@ export function Mission7CalibrationEditor({ mission, onBackgroundChange }: Missi
         y: pos?.y ?? 75,
         scale: pos?.scale ?? 1.8,
         flipX: pos?.flipX ?? false,
+        rotation: (pos as any)?.rotation ?? 0,
       };
     };
     return { a: getInitialPos('a'), b: getInitialPos('b') };
@@ -121,6 +123,16 @@ export function Mission7CalibrationEditor({ mission, onBackgroundChange }: Missi
     }));
   };
 
+  const adjustRotation = (delta: number) => {
+    setPositions(prev => ({
+      ...prev,
+      [selectedTool]: {
+        ...prev[selectedTool],
+        rotation: (prev[selectedTool].rotation + delta + 360) % 360,
+      },
+    }));
+  };
+
   const copyToClipboard = () => {
     const entries = [
       {
@@ -131,6 +143,7 @@ export function Mission7CalibrationEditor({ mission, onBackgroundChange }: Missi
         scale: positions.a.scale,
         z_layer: "front",
         ...(positions.a.flipX && { flipX: true }),
+        ...(positions.a.rotation !== 0 && { rotation: positions.a.rotation }),
       },
       {
         background_asset_key: bgKeyB,
@@ -140,6 +153,7 @@ export function Mission7CalibrationEditor({ mission, onBackgroundChange }: Missi
         scale: positions.b.scale,
         z_layer: "front",
         ...(positions.b.flipX && { flipX: true }),
+        ...(positions.b.rotation !== 0 && { rotation: positions.b.rotation }),
       },
     ];
     
@@ -175,7 +189,7 @@ export function Mission7CalibrationEditor({ mission, onBackgroundChange }: Missi
             alt={`Tool ${selectedTool.toUpperCase()}`}
             className="w-24 h-24 object-contain pointer-events-none"
             style={{
-              transform: `scale(${currentPosition.scale}) ${currentPosition.flipX ? 'scaleX(-1)' : ''}`,
+              transform: `scale(${currentPosition.scale}) rotate(${currentPosition.rotation}deg) ${currentPosition.flipX ? 'scaleX(-1)' : ''}`,
               filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.5))',
             }}
           />
@@ -237,6 +251,16 @@ export function Mission7CalibrationEditor({ mission, onBackgroundChange }: Missi
                 <button onClick={() => adjustScale(-0.1)} className="px-2 py-1 bg-muted rounded hover:bg-accent">-</button>
                 <span>{currentPosition.scale.toFixed(1)}</span>
                 <button onClick={() => adjustScale(0.1)} className="px-2 py-1 bg-muted rounded hover:bg-accent">+</button>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground">Rotate:</span>
+                <button onClick={() => adjustRotation(-15)} className="px-2 py-1 bg-muted rounded hover:bg-accent">
+                  <RotateCw className="w-3 h-3 -scale-x-100" />
+                </button>
+                <span>{currentPosition.rotation}°</span>
+                <button onClick={() => adjustRotation(15)} className="px-2 py-1 bg-muted rounded hover:bg-accent">
+                  <RotateCw className="w-3 h-3" />
+                </button>
               </div>
               <button
                 onClick={toggleFlip}
