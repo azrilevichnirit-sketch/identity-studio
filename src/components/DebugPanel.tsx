@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { X, Bug, Move } from 'lucide-react';
+import { X, Bug } from 'lucide-react';
 import type { GameState, CountsFinal, HollandCode } from '@/types/identity';
 
 interface DebugPanelProps {
@@ -8,13 +8,11 @@ interface DebugPanelProps {
   countsFinal: CountsFinal;
   leaders: HollandCode[];
   historyLength: number;
-  onNpcEditModeChange?: (enabled: boolean) => void;
 }
 
-export function DebugPanel({ state, countsFinal, leaders, historyLength, onNpcEditModeChange }: DebugPanelProps) {
+export function DebugPanel({ state, countsFinal, leaders, historyLength }: DebugPanelProps) {
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(false);
-  const [npcEditMode, setNpcEditMode] = useState(false);
 
   // Default collapsed on mobile
   useEffect(() => {
@@ -23,27 +21,8 @@ export function DebugPanel({ state, countsFinal, leaders, historyLength, onNpcEd
     }
   }, [isMobile]);
 
-  const toggleNpcEditMode = () => {
-    const newValue = !npcEditMode;
-    setNpcEditMode(newValue);
-    onNpcEditModeChange?.(newValue);
-  };
-
   return (
-    <div className="fixed bottom-4 right-4 z-40 flex gap-2">
-      {/* NPC Edit Mode button */}
-      <button
-        onClick={toggleNpcEditMode}
-        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors shadow-lg ${
-          npcEditMode 
-            ? 'bg-yellow-500 border-yellow-600 text-black hover:bg-yellow-400' 
-            : 'bg-card border-border text-muted-foreground hover:text-foreground hover:bg-accent'
-        }`}
-      >
-        <Move className="w-3.5 h-3.5" />
-        <span>{npcEditMode ? '🎯 עריכה' : 'NPC Edit'}</span>
-      </button>
-
+    <div className="fixed bottom-4 right-4 z-40">
       {/* Toggle button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
@@ -92,10 +71,6 @@ export function DebugPanel({ state, countsFinal, leaders, historyLength, onNpcEd
             </div>
             <div className="col-span-2">
               <strong>tieMission:</strong> {state.tieMissionUsed?.mission_id || 'none'}
-            </div>
-            <div className="col-span-2 mt-2 pt-2 border-t border-border">
-              <strong className="text-yellow-500">NPC Edit:</strong>{' '}
-              {npcEditMode ? 'פעיל - גררי דמויות' : 'כבוי'}
             </div>
           </div>
         </div>
