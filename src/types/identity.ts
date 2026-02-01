@@ -37,9 +37,21 @@ export type AnchorRef =
   | 'm02_tool_b'
   | 'm03_tool_a'
   | 'm03_tool_b'
+  | 'm04_tool_a'
+  | 'm04_tool_b'
+  | 'm05_tool_a'
+  | 'm05_tool_b'
+  | 'm06_tool_a'
+  | 'm06_tool_b'
   | 'm01_npc_female'
   | 'm02_npc_male_a'
-  | 'm02_npc_male_b';
+  | 'm02_npc_male_b'
+  | 'm03_npc_male'
+  | 'm03_npc_female'
+  | 'm05_npc_entrance'
+  | 'm05_npc_entrance_2'
+  | 'm06_npc_male'
+  | 'm06_npc_female';
 
 export interface MissionOption {
   key: 'a' | 'b';

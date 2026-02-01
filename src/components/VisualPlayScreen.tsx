@@ -972,19 +972,22 @@ export function VisualPlayScreen({
       return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: 75, absoluteX: 65 }];
     }
 
-    // Mission 06 Tool A (wall decor): duplicates 6 times on the back wall only
+    // Mission 06 Tool A: single placement using anchor map coordinates
     if (prop.missionId === 'studio_06' && prop.key === 'a') {
-      const wallY = 54; // Calibrated Y position on wall
-      const spacing = 6.5; // Tighter spacing to fit on wall
-      const startX = 35; // Start more centered on the wall
-      return [
-        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: wallY, absoluteX: startX },
-        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: wallY, absoluteX: startX + spacing },
-        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: wallY, absoluteX: startX + spacing * 2 },
-        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: wallY, absoluteX: startX + spacing * 3 },
-        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: wallY, absoluteX: startX + spacing * 4 },
-        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: wallY, absoluteX: startX + spacing * 5 },
-      ];
+      const anchorPos = getAnchorPosition(lockedBgKey, 'm06_tool_a');
+      if (anchorPos) {
+        return [{ 
+          anchor: 'm06_tool_a' as AnchorRef, 
+          offsetX: 0, 
+          offsetY: 0, 
+          customScale: anchorPos.scale, 
+          absoluteY: anchorPos.y, 
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX
+        }];
+      }
+      // Fallback
+      return [{ anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: 45, absoluteX: 15 }];
     }
 
     // Mission 06 Tool B (lounge sofas): 2 sofas in corner arrangement along the wall
@@ -1017,8 +1020,7 @@ export function VisualPlayScreen({
         // This ensures tools stay exactly where they were placed, not recalculated
         // EXCEPTION: Missions with duplication patterns (M04, M06) should use getDuplicateAnchors
         const hasDuplicationPattern = 
-          (prop.missionId === 'studio_04') || 
-          (prop.missionId === 'studio_06' && prop.key === 'a');
+          (prop.missionId === 'studio_04');
         
         if (isPersisted && prop.fixedPlacement && !hasDuplicationPattern) {
           const fixed = prop.fixedPlacement;
