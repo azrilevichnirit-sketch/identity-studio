@@ -1226,6 +1226,36 @@ export function VisualPlayScreen({
       ];
     }
 
+    // Mission 05 Tool A (exterior decor): single placement outside
+    if (prop.missionId === 'studio_05' && prop.key === 'a') {
+      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: 75, absoluteX: 35 }];
+    }
+
+    // Mission 05 Tool B (exterior element): single placement outside
+    if (prop.missionId === 'studio_05' && prop.key === 'b') {
+      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: 75, absoluteX: 65 }];
+    }
+
+    // Mission 06 Tool A (wall decor): duplicates 6 times side by side on wall
+    if (prop.missionId === 'studio_06' && prop.key === 'a') {
+      const wallY = 42; // On the back wall
+      const spacing = 11; // Spacing between items
+      const startX = 18; // Start from left
+      return [
+        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: wallY, absoluteX: startX },
+        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: wallY, absoluteX: startX + spacing },
+        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: wallY, absoluteX: startX + spacing * 2 },
+        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: wallY, absoluteX: startX + spacing * 3 },
+        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: wallY, absoluteX: startX + spacing * 4 },
+        { anchor: 'wall_back', offsetX: 0, offsetY: 0, customScale: 1.2, absoluteY: wallY, absoluteX: startX + spacing * 5 },
+      ];
+    }
+
+    // Mission 06 Tool B (large item): grows large behind avatar
+    if (prop.missionId === 'studio_06' && prop.key === 'b') {
+      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 3.5, absoluteY: 85, absoluteX: 75 }];
+    }
+
     // Default: single placement at floor with realistic size
     return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 1.8 }];
   };
