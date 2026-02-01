@@ -1,17 +1,1 @@
-[
-  {
-    "world": "studio",
-    "phase": "main",
-    "order": 1,
-    "mission_id": "studio_10",
-    "trigger_when": "before",
-    "trigger_tool_ids": "",
-    "spawn_asset_key": "studio_work_desk_01",
-    "spawn_count": 1,
-    "placement_mode": "floor",
-    "anchor_ref": "m10_desk",
-    "note": "Work desk for Mission 10 and 11 only - not in Mission 12 gallery",
-    "despawn_mode": "remove_after_mission_id",
-    "despawn_value": "studio_11"
-  }
-]
+[]
