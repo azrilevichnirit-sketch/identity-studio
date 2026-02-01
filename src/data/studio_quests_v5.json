@@ -235,7 +235,7 @@
     "quest_id": "studio_08",
     "order": 8,
     "view": "in",
-    "bg_override": "studio_in_gallery_bg",
+    "bg_override": "studio_in_workshop_bg",
     "zone_id": null,
     "task_heb": "הסטודיו כבר מרגיש כמו הבית השני שלנו. איך נשמור על הוייב של הצוות?",
     "option_a_code": "s",
