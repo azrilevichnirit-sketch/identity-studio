@@ -807,7 +807,7 @@ export function VisualPlayScreen({
     // M12: Final mission - fresh gallery scene
     // Do NOT render persisted tools from previous missions here.
     // (This only affects visibility; it does not modify game state.)
-    const hidePersistedToolsForThisMission = mission.mission_id === 'studio_09' || mission.mission_id === 'studio_11' || mission.mission_id === 'studio_12';
+    const hidePersistedToolsForThisMission = mission.mission_id === 'studio_07' || mission.mission_id === 'studio_09' || mission.mission_id === 'studio_11' || mission.mission_id === 'studio_12';
     
     // Add persisted tools from previous missions based on persist flag AND zone
     if (!hidePersistedToolsForThisMission) {
