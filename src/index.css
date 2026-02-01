@@ -1273,12 +1273,12 @@
 }
 
 /* ============================================
-   MISSION SCREEN - MOBILE LANDSCAPE (<1024px)
-   Now that game is landscape-only, hero row goes bottom-right
+   MISSION SCREEN - MOBILE (<1024px)
+   Hero row with bubble + avatar, hides during drag
    ============================================ */
 
 @media (max-width: 1023px) {
-  /* Mission hero row - bottom-right on mobile landscape */
+  /* Mission hero row - bottom-right on mobile */
   .missionScreen .mission-hero-mobile {
     position: fixed;
     right: calc(env(safe-area-inset-right, 0px) + 12px);
@@ -1293,6 +1293,15 @@
     z-index: 80;
     direction: ltr;
     pointer-events: none;
+    /* Smooth transition for hide/show */
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+  }
+
+  /* Hide hero row during drag */
+  .missionScreen.is-dragging .mission-hero-mobile {
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none !important;
   }
 
   /* Mission bubble - positioned left of avatar */
@@ -1532,15 +1541,16 @@
   }
 }
 
-/* Small landscape mobile - width-based adjustments */
-@media (max-width: 699px) and (max-height: 450px) {
+/* Small mobile - portrait or landscape */
+@media (max-width: 450px) {
   .missionScreen .mission-bubble-mobile {
-    max-width: min(45vw, 240px);
-    margin-bottom: 10px;
+    max-width: min(55vw, 220px);
+    margin-bottom: 8px;
+    margin-right: -20px;
   }
 
   .missionScreen .mission-avatar-mobile {
-    width: clamp(80px, 15vw, 110px);
+    width: clamp(70px, 20vw, 100px);
   }
 
   .mobile-layout .tool-tile {

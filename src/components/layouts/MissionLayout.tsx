@@ -35,6 +35,8 @@ export interface MissionLayoutProps {
   onCancelCarry?: () => void;
   /** Whether carry mode is active */
   isCarryMode: boolean;
+  /** Whether a tool is currently being dragged */
+  isDragging?: boolean;
   /** Pan offset for panoramic backgrounds (mobile only) - percentage points */
   panOffsetX?: number;
   /** Whether panoramic panning is active */
@@ -130,6 +132,7 @@ function MobileMissionLayout({
   stageRef,
   onCancelCarry,
   isCarryMode,
+  isDragging = false,
   panOffsetX = 0,
   isPanoramic = false,
 }: MissionLayoutProps) {
@@ -150,10 +153,13 @@ function MobileMissionLayout({
   // Props need to move LEFT to stay on their painted positions.
   const propsTranslateX = isPanoramic ? `${-panOffsetX * 2}%` : '0';
 
+  // Add dragging class to enable CSS-based hiding of hero elements
+  const stageClasses = `game-stage mobile-layout missionScreen${isDragging ? ' is-dragging' : ''}`;
+
   return (
     <div 
       ref={stageRef} 
-      className="game-stage mobile-layout missionScreen"
+      className={stageClasses}
       onClick={isCarryMode ? onCancelCarry : undefined}
     >
       {/* Background layer with mobile zoom */}
