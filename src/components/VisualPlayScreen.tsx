@@ -7,7 +7,7 @@ import { Info, Hand, X } from 'lucide-react';
 import { UndoConfirmPopover } from './UndoConfirmDialog';
 import { ProgressTank } from './ProgressTank';
 import { DragHint } from './DragHint';
-// import { useSceneExtras } from '@/hooks/useSceneExtras'; // Disabled for now
+import { useSceneExtras } from '@/hooks/useSceneExtras';
 import { MissionLayout } from './layouts/MissionLayout';
 import { usePanningBackground } from '@/hooks/usePanningBackground';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -781,9 +781,54 @@ export function VisualPlayScreen({
     </>
   );
 
-  // ========== NPC RENDERING REMOVED ==========
-  // NPCs will be re-added after all tools are calibrated
-  const sceneExtrasElement = null;
+  // ========== SCENE EXTRAS (Floor artworks, wall art for M07) ==========
+  const sceneExtras = useSceneExtras(mission.mission_id, currentIndex, placedProps);
+  
+  const sceneExtrasElement = useMemo(() => {
+    // Only render extras for missions that define them (currently Mission 7)
+    if (sceneExtras.length === 0) return null;
+    
+    return (
+      <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 5 }}>
+        {sceneExtras.map((extra) => {
+          // Get anchor position from the current background
+          const anchorPos = getAnchorPosition(lockedBgKey, extra.anchorRef);
+          if (!anchorPos) {
+            // Fallback position if anchor not found
+            console.warn(`Anchor ${extra.anchorRef} not found for background ${lockedBgKey}`);
+            return null;
+          }
+          
+          const zIndex = zIndexForAnchorLayer(extra.zLayer);
+          const leftPos = anchorPos.x + extra.offsetX;
+          const topPos = anchorPos.y + extra.offsetY;
+          const scale = extra.scale * (anchorPos.scale || 1);
+          
+          return (
+            <div
+              key={extra.id}
+              className="absolute animate-fade-in"
+              style={{
+                left: `${leftPos}%`,
+                top: `${topPos}%`,
+                transform: `translate(-50%, -100%) scale(${scale})`,
+                zIndex,
+              }}
+            >
+              <img 
+                src={extra.image}
+                alt=""
+                className="w-32 h-32 md:w-48 md:h-48 object-contain"
+                style={{
+                  filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
+                }}
+              />
+            </div>
+          );
+        })}
+      </div>
+    );
+  }, [sceneExtras, lockedBgKey]);
 
   const targetZoneElement = activeToolVariant && targetPosition ? (
     <div 

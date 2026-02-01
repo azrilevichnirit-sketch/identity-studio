@@ -781,5 +781,29 @@
     "y_pct": 0.8,
     "scale": 0.55,
     "z_layer": "front"
+  },
+  {
+    "background_asset_key": "studio_in_gallery_wall_bg",
+    "anchor_ref": "m07_wall_art_left",
+    "x_pct": 0.18,
+    "y_pct": 0.42,
+    "scale": 0.45,
+    "z_layer": "back"
+  },
+  {
+    "background_asset_key": "studio_in_gallery_wall_bg",
+    "anchor_ref": "m07_wall_art_center",
+    "x_pct": 0.5,
+    "y_pct": 0.38,
+    "scale": 0.5,
+    "z_layer": "back"
+  },
+  {
+    "background_asset_key": "studio_in_gallery_wall_bg",
+    "anchor_ref": "m07_wall_art_right",
+    "x_pct": 0.82,
+    "y_pct": 0.42,
+    "scale": 0.45,
+    "z_layer": "back"
   }
 ]
