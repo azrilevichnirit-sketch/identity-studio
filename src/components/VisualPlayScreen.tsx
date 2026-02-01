@@ -140,9 +140,22 @@ export function VisualPlayScreen({
     preloadBackground('studio_exterior_bg'); // Mission 05 exterior
   }, []);
 
+  // Track if we're transitioning from Mission 7 (need to preserve bg during fixation)
+  const m7TransitionRef = useRef<{ active: boolean; bgKey: string | null }>({ active: false, bgKey: null });
+  
   // Clear any staged background override whenever the mission changes.
   // (Otherwise, a previous mission's bg beat can leak into the next mission.)
+  // EXCEPTION: Mission 7 transition - we preserve the target bg until fixation completes
   useEffect(() => {
+    // If coming from M7 with an active transition, don't clear immediately
+    if (m7TransitionRef.current.active) {
+      // Clear after a delay to allow the user to see the tool on its target background
+      const id = window.setTimeout(() => {
+        setLocalBgOverride(null);
+        m7TransitionRef.current = { active: false, bgKey: null };
+      }, 100);
+      return () => window.clearTimeout(id);
+    }
     const id = window.setTimeout(() => setLocalBgOverride(null), 0);
     return () => window.clearTimeout(id);
   }, [mission.mission_id]);
@@ -547,12 +560,14 @@ export function VisualPlayScreen({
         : undefined,
     });
 
-    // Mission 07: Lock the background to the target room AFTER placement
-    // This prevents the bg from reverting to workshop when activeToolVariant becomes null
+    // Mission 07: Lock the background to the target room IMMEDIATELY on placement
+    // This keeps the tool visible on its destination room during the fixation animation
     const isMission07 = mission.mission_id === 'studio_07';
     if (isMission07) {
       const targetBg = getTargetBgForOption(option);
       setLocalBgOverride(targetBg);
+      // Mark that we're in a M7 transition - prevents immediate bg clear on mission change
+      m7TransitionRef.current = { active: true, bgKey: targetBg.key };
     }
     setJustPlaced(null);
     setLockPulseKey(null);
@@ -608,10 +623,16 @@ export function VisualPlayScreen({
     // Animation is 800ms per item + 300ms stagger × 3 items = ~1700ms total
     // We wait 2500ms to ensure users see the full blink effect + painted walls
     // Mission 01 paint: only advance after the player clearly sees the "painted walls" beat.
+    // Mission 07: Extra delay to let players see the tool fixation on the destination room
     const isMission02 = mission.mission_id === 'studio_02';
     // Mission 01 Tool B: 2800ms - enough time for lock (1100ms) + staff entry + viewing
     // Mission 02: 3500ms - tool locks, then male staff enters, then wait 1 second before advancing
-    const advanceDelay = isMission01Paint ? 3200 : (isMission01ToolB ? 2800 : (isMission02 ? 3500 : 2500));
+    // Mission 07: 2800ms - tool locks on destination room, player sees it before transition
+    const advanceDelay = isMission01Paint ? 3200 
+      : isMission01ToolB ? 2800 
+      : isMission02 ? 3500 
+      : isMission07 ? 2800
+      : 2500;
     const advanceId = window.setTimeout(() => {
       // For Mission 01 Tool B: DON'T clear localPlacement before onSelect
       // This prevents the tool from disappearing before it's added to placedProps
