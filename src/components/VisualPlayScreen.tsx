@@ -163,8 +163,8 @@ export function VisualPlayScreen({
       return 'studio_in_workshop_bg';
     }
     
-    // Mission 09: Use bg_override from mission data (gallery_main_stylized)
-    if (mission.phase === 'main' && mission.mission_id === 'studio_09' && mission.bg_override) {
+    // Mission 09 & 12: Use bg_override from mission data (gallery_main_stylized)
+    if (mission.phase === 'main' && (mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12') && mission.bg_override) {
       return mission.bg_override;
     }
     
@@ -225,8 +225,8 @@ export function VisualPlayScreen({
   const isExteriorLocked =
     mission.phase === 'main' && mission.view === 'out' && mission.mission_id !== 'studio_11';
   // Mission 07: Workshop (not gallery) - same zone as Mission 06
-  // Mission 09: Gallery (uses bg_override) - NOT workshop locked
-  const isGalleryMission = mission.mission_id === 'studio_09' && mission.bg_override;
+  // Mission 09 & 12: Gallery (uses bg_override) - NOT workshop locked
+  const isGalleryMission = (mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12') && mission.bg_override;
   const isWorkshopLocked =
     mission.phase === 'main' && 
     ((mission.mission_id === 'studio_03' || mission.mission_id === 'studio_07' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission);
