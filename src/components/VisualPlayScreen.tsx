@@ -674,15 +674,17 @@ export function VisualPlayScreen({
       const normalizedX = (e.clientX - rect.left) / rect.width;
       updatePanFromDrag(normalizedX);
       
-      // Calculate edge proximity for visual indicators
-      const EDGE_ZONE = 0.2; // 20% from each edge
+      // Calculate edge proximity for visual indicators (matches panning edge zone)
+      const EDGE_ZONE = 0.18; // 18% from each edge - matches usePanningBackground
       if (normalizedX < EDGE_ZONE) {
-        // Approaching left edge
-        const intensity = 1 - (normalizedX / EDGE_ZONE);
+        // Approaching left edge - use easeOutQuad for natural feel
+        const t = 1 - (normalizedX / EDGE_ZONE);
+        const intensity = t * t;
         setEdgeProximity({ edge: 'left', intensity });
       } else if (normalizedX > 1 - EDGE_ZONE) {
-        // Approaching right edge
-        const intensity = (normalizedX - (1 - EDGE_ZONE)) / EDGE_ZONE;
+        // Approaching right edge - use easeOutQuad for natural feel
+        const t = (normalizedX - (1 - EDGE_ZONE)) / EDGE_ZONE;
+        const intensity = t * t;
         setEdgeProximity({ edge: 'right', intensity });
       } else {
         // In center zone
