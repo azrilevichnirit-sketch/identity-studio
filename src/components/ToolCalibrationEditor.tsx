@@ -72,8 +72,13 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission }: 
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!isDragging.current || !selectedTool || !dragStartPos.current || !dragStartToolPos.current) return;
     
-    const dx = e.clientX - dragStartPos.current.x;
-    const dy = e.clientY - dragStartPos.current.y;
+    const startX = dragStartPos.current.x;
+    const startY = dragStartPos.current.y;
+    const toolStartX = dragStartToolPos.current.x;
+    const toolStartY = dragStartToolPos.current.y;
+    
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
     
     // Convert pixel delta to percentage (approximate based on viewport)
     const vw = window.innerWidth;
@@ -81,12 +86,13 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission }: 
     const dxPct = (dx / vw) * 100;
     const dyPct = (dy / vh) * 100;
     
+    const tool = selectedTool;
     setPositions(prev => ({
       ...prev,
-      [selectedTool]: {
-        ...prev[selectedTool],
-        x: Math.max(0, Math.min(100, dragStartToolPos.current!.x + dxPct)),
-        y: Math.max(0, Math.min(100, dragStartToolPos.current!.y + dyPct)),
+      [tool]: {
+        ...prev[tool],
+        x: Math.max(0, Math.min(100, toolStartX + dxPct)),
+        y: Math.max(0, Math.min(100, toolStartY + dyPct)),
       },
     }));
   };
