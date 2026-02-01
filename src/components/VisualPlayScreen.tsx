@@ -89,6 +89,14 @@ export function VisualPlayScreen({
   // Local background override for "painted walls" beat before advancing missions
   const [localBgOverride, setLocalBgOverride] = useState<{ key: string; image: string } | null>(null);
 
+  // Mission 7 calibration editor background override
+  const [m7CalibrationBg, setM7CalibrationBg] = useState<{ key: string; image: string } | null>(null);
+
+  // Callback for Mission 7 calibration editor to change background
+  const handleM7BackgroundChange = useCallback((bgUrl: string, bgKey: string) => {
+    setM7CalibrationBg({ key: bgKey, image: bgUrl });
+  }, []);
+
   // Track and cleanup staged timeouts (avoid state updates after unmount)
   const timeoutsRef = useRef<number[]>([]);
   const didMountRef = useRef(false);
@@ -285,17 +293,23 @@ export function VisualPlayScreen({
     return null;
   }, [activeToolVariant, optionA, optionB, getTargetBgForOption, currentBgKey, hasPaintedWalls, mission.mission_id, mission.phase, mission.sequence]);
 
-  // Priority: local "painted" beat > drag preview > current
-  const displayBg = localBgOverride?.image || dragPreviewBg?.image || currentBg;
-  const displayBgKey = localBgOverride?.key || dragPreviewBg?.key || currentBgKey;
+  // Priority: M7 calibration > local "painted" beat > drag preview > current
+  const displayBg = m7CalibrationBg?.image || localBgOverride?.image || dragPreviewBg?.image || currentBg;
+  const displayBgKey = m7CalibrationBg?.key || localBgOverride?.key || dragPreviewBg?.key || currentBgKey;
+
+  // In M7 calibration mode, bypass the normal background locking
+  const isM7CalibrationMode = toolEditMode && mission.mission_id === 'studio_07' && m7CalibrationBg;
 
   // Final guardrail: Mission 02 = white walls OR cracked walls (based on M01 choice), exterior = park, M03+ = workshop
-  const lockedBgKey = isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY 
+  // BUT: M7 calibration mode overrides the workshop lock
+  const lockedBgKey = isM7CalibrationMode ? m7CalibrationBg!.key
+    : isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY 
     : isCrackedWallsLocked ? 'studio_entry_inside_bg'
     : isExteriorLocked ? 'studio_exterior_bg'
     : isWorkshopLocked ? 'studio_in_workshop_bg' 
     : displayBgKey;
-  const lockedBg = isWhiteWallsLocked 
+  const lockedBg = isM7CalibrationMode ? m7CalibrationBg!.image
+    : isWhiteWallsLocked 
     ? (getBackgroundByName(PAINTED_WALLS_BG_KEY) || displayBg) 
     : isCrackedWallsLocked
     ? (getBackgroundByName('studio_entry_inside_bg') || displayBg)
@@ -1641,6 +1655,7 @@ export function VisualPlayScreen({
       {toolEditMode && mission.mission_id === 'studio_07' && (
         <Mission7CalibrationEditor
           mission={mission}
+          onBackgroundChange={handleM7BackgroundChange}
         />
       )}
       {toolEditMode && mission.mission_id !== 'studio_07' && (
