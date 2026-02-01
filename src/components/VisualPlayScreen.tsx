@@ -574,6 +574,27 @@ export function VisualPlayScreen({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [carryModeTool]);
 
+  // Helper to determine if two backgrounds are in the same "zone"
+  // Tools placed in one background should appear in related backgrounds
+  const isSameZone = useCallback((bgKey1: string | undefined, bgKey2: string): boolean => {
+    if (!bgKey1) return true; // Legacy tools without bgKey always show
+    if (bgKey1 === bgKey2) return true;
+    
+    // Define zones - backgrounds that share the same "room"
+    const galleryZone = ['studio_entry_inside_bg', 'studio_in_gallery_wall_bg', 'studio_in_gallery_bg', 'studio_in_gallery_alt_bg'];
+    const workshopZone = ['studio_in_workshop_bg'];
+    const exteriorZone = ['studio_front_bg'];
+    
+    const getZone = (bg: string): string => {
+      if (galleryZone.includes(bg)) return 'gallery';
+      if (workshopZone.includes(bg)) return 'workshop';
+      if (exteriorZone.includes(bg)) return 'exterior';
+      return bg; // Unknown backgrounds are their own zone
+    };
+    
+    return getZone(bgKey1) === getZone(bgKey2);
+  }, []);
+
   // Show the current local placement AND persisted tools from previous missions
   const displayedPlacement = useMemo(() => {
     const placements: Array<{
@@ -597,20 +618,19 @@ export function VisualPlayScreen({
     const currentSeq = mission.sequence;
     
     // Add persisted tools from previous missions based on persist flag
-    // Only show tools that were placed on the CURRENT background
+    // Only show tools that were placed in the SAME ZONE as current background
     placedProps.forEach((prop) => {
       const propSeq = parseInt(prop.missionId.replace('studio_', ''), 10);
       
       // Skip if this is the current mission (tool still being placed)
       if (propSeq >= currentSeq) return;
       
-      // Tools with persist: 'keep' should show only when current background matches
+      // Tools with persist: 'keep' should show when in same zone
       if (prop.persist === 'keep' && prop.fixedPlacement) {
-        // Check if tool's background matches current background
         const toolBgKey = prop.fixedPlacement.bgKey;
         
-        // Only show if background matches, or if no bgKey was stored (legacy)
-        if (!toolBgKey || toolBgKey === lockedBgKey) {
+        // Only show if background is in the same zone
+        if (isSameZone(toolBgKey, lockedBgKey)) {
           placements.push({
             missionId: prop.missionId,
             key: prop.key,
@@ -634,7 +654,7 @@ export function VisualPlayScreen({
     }
     
     return placements;
-  }, [localPlacement, placedProps, mission.mission_id, mission.sequence, lockedBgKey]);
+  }, [localPlacement, placedProps, mission.mission_id, mission.sequence, lockedBgKey, isSameZone]);
 
   const targetPosition = useMemo(() => {
     if (activeToolVariant) {
