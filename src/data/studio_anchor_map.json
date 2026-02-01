@@ -578,5 +578,37 @@
     "y_pct": 0.745,
     "scale": 0.8,
     "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m06_tool_a",
+    "x_pct": 0.919,
+    "y_pct": 0.542,
+    "scale": 1.4,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m06_tool_b",
+    "x_pct": 0.178,
+    "y_pct": 0.864,
+    "scale": 1.8,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m06_npc_male",
+    "x_pct": 0.179,
+    "y_pct": 0.847,
+    "scale": 1.0,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m06_npc_female",
+    "x_pct": 0.138,
+    "y_pct": 0.853,
+    "scale": 1.0,
+    "z_layer": "mid"
   }
 ]
