@@ -94,21 +94,19 @@ export function useSceneExtras(
         const image = extraAssetMap[rule.spawn_asset_key];
         if (!image) continue;
         
-        // Mission 7 is curated: single instance per rule (no spreading)
+        // Single instance per rule
         const count = 1;
         
         for (let i = 0; i < count; i++) {
-          const isFloorArtwork = rule.spawn_asset_key.includes('floor_artworks');
-          const isCrate = rule.spawn_asset_key.includes('crate');
-          const baseScale = isFloorArtwork ? 1.0 : isCrate ? 0.9 : 0.85;
-          
+          // Use scale from anchor map (will be applied in render) - just pass 1.0 here
+          // The actual scale comes from getAnchorPosition in the renderer
           extras.push({
             id: `${rule.mission_id}-${rule.order}-${i}`,
             image,
             anchorRef: rule.anchor_ref as AnchorRef,
             offsetX: 0,
             offsetY: 0,
-            scale: baseScale,
+            scale: 1.0, // Base scale - anchor map scale is multiplied in renderer
             zLayer: getZLayerForPlacement(rule.placement_mode),
           });
         }
