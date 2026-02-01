@@ -244,12 +244,12 @@ export function VisualPlayScreen({
     mission.phase === 'main' && (mission.mission_id === 'studio_02' || mission.sequence === 2) && !hasPaintedWalls;
   const isExteriorLocked =
     mission.phase === 'main' && mission.view === 'out' && mission.mission_id !== 'studio_11';
-  // Mission 07: NOT workshop locked - each tool has its own background!
+  // Mission 07: Workshop locked UNTIL a tool is being dragged/carried
+  // When activeToolVariant is set, dragPreviewBg will override the workshop background
   // Mission 09 & 12: Gallery (uses bg_override) - NOT workshop locked
   const isGalleryMission = (mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12') && mission.bg_override;
   const isWorkshopLocked =
     mission.phase === 'main' && 
-    mission.mission_id !== 'studio_07' && // M07 has per-tool backgrounds
     ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission);
   const bgKeyForPanorama = isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY 
     : isCrackedWallsLocked ? 'studio_entry_inside_bg'
@@ -364,13 +364,17 @@ export function VisualPlayScreen({
 
   // Final guardrail: Mission 02 = white walls OR cracked walls (based on M01 choice), exterior = park, M03+ = workshop
   // BUT: M7 calibration mode FULLY overrides all locks - uses m7CalibrationBg directly
+  // ALSO: M7 during drag/carry uses dragPreviewBg to show the destination room
+  const isM7DragActive = mission.mission_id === 'studio_07' && activeToolVariant && dragPreviewBg;
   const lockedBgKey = isM7CalibrationMode && m7CalibrationBg ? m7CalibrationBg.key
+    : isM7DragActive ? dragPreviewBg.key // M7 drag overrides workshop lock
     : isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY 
     : isCrackedWallsLocked ? 'studio_entry_inside_bg'
     : isExteriorLocked ? 'studio_exterior_bg'
     : isWorkshopLocked && !isM7CalibrationMode ? 'studio_in_workshop_bg' 
     : displayBgKey;
   const lockedBg = isM7CalibrationMode && m7CalibrationBg ? m7CalibrationBg.image
+    : isM7DragActive ? dragPreviewBg.image // M7 drag overrides workshop lock
     : isWhiteWallsLocked 
     ? (getBackgroundByName(PAINTED_WALLS_BG_KEY) || displayBg) 
     : isCrackedWallsLocked
