@@ -323,7 +323,10 @@ export function VisualPlayScreen({
       ? `m${missionId.replace('studio_', '').padStart(2, '0')}_tool_a`
       : `m${missionId.replace('studio_', '').padStart(2, '0')}_tool_b`;
     
-    const anchorPos = getAnchorPosition(lockedBgKey, anchorRef as AnchorRef);
+    // IMPORTANT: Fixed placement must be computed from the *current* background where
+    // the user actually drops the tool (not from any drag-preview / next-bg override).
+    // Otherwise persisted tools can “jump” in the following mission.
+    const anchorPos = getAnchorPosition(currentBgKey, anchorRef as AnchorRef);
     if (anchorPos) {
       return {
         x: anchorPos.x,
@@ -334,7 +337,7 @@ export function VisualPlayScreen({
       };
     }
     return undefined;
-  }, [lockedBgKey, getAnchorPosition]);
+  }, [currentBgKey, getAnchorPosition]);
 
   // Complete a tool selection (used by both drag and carry mode)
   const completePlacement = useCallback((variant: 'a' | 'b') => {
