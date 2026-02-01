@@ -356,22 +356,24 @@ export function VisualPlayScreen({
   const displayBg = m7CalibrationBg?.image || localBgOverride?.image || dragPreviewBg?.image || currentBg;
   const displayBgKey = m7CalibrationBg?.key || localBgOverride?.key || dragPreviewBg?.key || currentBgKey;
 
-  // In M7 calibration mode, bypass the normal background locking
-  // Mission 7 calibration mode is active when toolEditMode is enabled for studio_07
+  // In calibration mode, bypass the normal background locking
+  // M07 and M11 have specialized calibration editors that must be able to switch backgrounds.
   const isM7CalibrationMode = toolEditMode && mission.mission_id === 'studio_07';
+  const isM11CalibrationMode = toolEditMode && mission.mission_id === 'studio_11';
+  const isCalibrationBgOverrideMode = isM7CalibrationMode || isM11CalibrationMode;
 
   // Final guardrail: Mission 02 = white walls OR cracked walls (based on M01 choice), exterior = park, M03+ = workshop
   // BUT: M7 calibration mode FULLY overrides all locks - uses m7CalibrationBg directly
   // ALSO: M7 during drag/carry uses dragPreviewBg to show the destination room
   const isM7DragActive = mission.mission_id === 'studio_07' && activeToolVariant && dragPreviewBg;
-  const lockedBgKey = isM7CalibrationMode && m7CalibrationBg ? m7CalibrationBg.key
+  const lockedBgKey = isCalibrationBgOverrideMode && m7CalibrationBg ? m7CalibrationBg.key
     : isM7DragActive ? dragPreviewBg.key // M7 drag overrides workshop lock
     : isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY 
     : isCrackedWallsLocked ? 'studio_entry_inside_bg'
     : isExteriorLocked ? 'studio_exterior_bg'
-    : isWorkshopLocked && !isM7CalibrationMode ? 'studio_in_workshop_bg' 
+    : isWorkshopLocked && !isCalibrationBgOverrideMode ? 'studio_in_workshop_bg' 
     : displayBgKey;
-  const lockedBg = isM7CalibrationMode && m7CalibrationBg ? m7CalibrationBg.image
+  const lockedBg = isCalibrationBgOverrideMode && m7CalibrationBg ? m7CalibrationBg.image
     : isM7DragActive ? dragPreviewBg.image // M7 drag overrides workshop lock
     : isWhiteWallsLocked 
     ? (getBackgroundByName(PAINTED_WALLS_BG_KEY) || displayBg) 
@@ -379,7 +381,7 @@ export function VisualPlayScreen({
     ? (getBackgroundByName('studio_entry_inside_bg') || displayBg)
     : isExteriorLocked 
     ? (getBackgroundByName('studio_exterior_bg') || displayBg)
-    : (isWorkshopLocked && !isM7CalibrationMode ? (getBackgroundByName('studio_in_workshop_bg') || displayBg) : displayBg);
+    : (isWorkshopLocked && !isCalibrationBgOverrideMode ? (getBackgroundByName('studio_in_workshop_bg') || displayBg) : displayBg);
 
   // Get target anchor for currently selected tool
   // Uses anchor_ref from quest data to look up coordinates in anchor map
