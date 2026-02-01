@@ -2,13 +2,15 @@
 
 import type { AvatarGender, Mission } from '@/types/identity';
 
-// Background imports - 5 backgrounds used:
-// 1. Mission 01 default: stylized main space (before paint) - gallery_main_stylized
-// 2. Mission 02: white walls (after paint) - gallery_main_stylized_white_v1
-// 3. Mission 03, 04, 06+: workshop with windows to park - studio_in_workshop_v3
-// 4. Mission 05, 11: exterior park view - studio_exterior_park_stylized_v2
-// 5. Mission 07: gallery looking outside - studio_in_entrance_view_bg
-// IMPORTANT: The studio "main space" background is ALWAYS gallery_main_stylized.webp
+// Background imports - 6 backgrounds used:
+// 1. Mission 01 STARTING: cracked walls (before paint) - gallery_main_stylized_v3
+// 2. Mission 01 Tool A result / Mission 02 (if A chosen): white walls - gallery_main_stylized_white_v1
+// 3. Mission 01 Tool B result / Mission 02+ (if B chosen) / M09, M12: main studio - gallery_main_stylized
+// 4. Mission 03, 04, 06, 07, 08, 10, 11: workshop - studio_in_workshop_v3
+// 5. Mission 05: exterior park - studio_exterior_park_stylized_v3
+// 6. Mission 07 entrance view: gallery looking outside - studio_entrance_view_stylized_v7
+// IMPORTANT: Mission 1 starts with CRACKED WALLS (v3), not the finished studio!
+import galleryCrackedWalls from '@/assets/backgrounds/gallery_main_stylized_v3.webp';
 import galleryMainStylized from '@/assets/backgrounds/gallery_main_stylized.webp';
 import galleryMainStylizedWhite from '@/assets/backgrounds/gallery_main_stylized_white_v1.webp';
 import studioWorkshopBg from '@/assets/backgrounds/studio_in_workshop_v3.webp';
@@ -138,44 +140,53 @@ const toolAssets: Record<string, string> = {
   studio_tie_15_b: studioTie15b,
 };
 
-// Background asset lookup - 5 backgrounds used:
-// 1. Mission 01: stylized room (before paint) - galleryMainStylized
-// 2. Mission 02: white walls (after paint) - galleryMainStylizedWhite  
-// 3. Mission 03, 04, 06+: workshop with windows - studioWorkshopBg
-// 4. Mission 05, 11: exterior park - studioExteriorBg
-// 5. Mission 07: gallery looking outside - studioEntranceViewBg
+// Background asset lookup - 6 backgrounds used:
+// 1. Mission 01 STARTING: cracked walls (v3) - galleryCrackedWalls
+// 2. Mission 01 Tool A result / Mission 02 (if A): white walls - galleryMainStylizedWhite  
+// 3. Mission 01 Tool B result / Mission 02 (if B) / M09, M12: main studio - galleryMainStylized
+// 4. Mission 03, 04, 06, 07, 08, 10, 11: workshop - studioWorkshopBg
+// 5. Mission 05: exterior park - studioExteriorBg
+// 6. Mission 07 entrance: gallery looking outside - studioEntranceViewBg
 const backgroundAssets: Record<string, string> = {
-  // Mission 01 starting bg -> stylized (before paint)
-  studio_front_bg: galleryMainStylized,
-  studio_in_gallery_bg: galleryMainStylized,
+  // Mission 01 starting bg -> CRACKED WALLS (v3)
+  studio_front_bg: galleryCrackedWalls,
+  studio_in_gallery_bg: galleryCrackedWalls,
+  studio_entry_inside_bg: galleryCrackedWalls,
+  gallery_main_stylized_v3: galleryCrackedWalls,
+  
+  // Mission 01 Tool B result / Mission 02 (if B chosen) / M09, M12: main studio (finished)
+  gallery_main_stylized: galleryMainStylized,
+  
+  // Mission 01 Tool A result / Mission 02 (if A chosen): white walls (after paint)
+  studio_in_gallery_wall_bg: galleryMainStylizedWhite,
+  gallery_main_stylized_white: galleryMainStylizedWhite,
+  
   // Storage room (Mission 07 Tool A destination)
   studio_in_storage_bg: studioStorageBg,
-  studio_entry_inside_bg: galleryMainStylized,
-  
-  // Mission 02 locked to white walls (after paint)
-  studio_in_gallery_wall_bg: galleryMainStylizedWhite,
   
   // Mission 07: gallery looking outside
   studio_in_entrance_view_bg: studioEntranceViewBg,
 
-  // Workshop (Mission 03, 04, 06+)
+  // Workshop (Mission 03, 04, 06, 07, 08, 10, 11)
   studio_in_workshop_bg: studioWorkshopBg,
   
-  // Exterior (Mission 05, 11)
+  // Exterior (Mission 05)
   studio_exterior_bg: studioExteriorBg,
   studio_exterior_park_bg: studioExteriorBg,
-
-  // Named keys
-  gallery_main_stylized: galleryMainStylized,
-  gallery_main_stylized_white: galleryMainStylizedWhite,
   studio_exterior: studioExteriorBg,
 };
 
 // Wide panoramic backgrounds for mobile panning (key -> asset)
 const panoramicBackgrounds: Record<string, string> = {
-  studio_in_gallery_bg: galleryMainStylized,
-  studio_entry_inside_bg: galleryMainStylized,
+  // Mission 01: cracked walls
+  studio_in_gallery_bg: galleryCrackedWalls,
+  studio_entry_inside_bg: galleryCrackedWalls,
+  gallery_main_stylized_v3: galleryCrackedWalls,
+  // Main studio (finished)
+  gallery_main_stylized: galleryMainStylized,
+  // White walls
   studio_in_gallery_wall_bg: galleryMainStylizedWhite,
+  // Other rooms
   studio_in_entrance_view_bg: studioEntranceViewBg,
   studio_in_workshop_bg: studioWorkshopBg,
   studio_in_storage_bg: studioStorageBg,
@@ -187,10 +198,10 @@ export function getPanoramicBackground(bgKey: string): string | null {
   return panoramicBackgrounds[bgKey] || null;
 }
 
-// Fallback background mapping - Mission 01 uses stylized, exterior for "out" view
+// Fallback background mapping - Mission 01 uses CRACKED WALLS, exterior for "out" view
 const backgroundFallback: Record<string, string> = {
-  'studio_in': galleryMainStylized,
-  'studio_front': galleryMainStylized,
+  'studio_in': galleryCrackedWalls,
+  'studio_front': galleryCrackedWalls,
   'studio_out': studioExteriorBg,
 };
 

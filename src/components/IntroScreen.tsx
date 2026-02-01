@@ -1,6 +1,7 @@
 import type { AvatarGender } from "@/types/identity";
 import { getAvatarImage } from "@/lib/assetUtils";
-import galleryMainBg from "@/assets/backgrounds/gallery_main_stylized.webp";
+// Intro screen uses cracked walls (same as Mission 01 starting point)
+import galleryCrackedWallsBg from "@/assets/backgrounds/gallery_main_stylized_v3.webp";
 import { SpeechBubble } from "./SpeechBubble";
 import { ArrowLeft } from "lucide-react";
 import { GameStage } from "./GameStage";
@@ -22,7 +23,7 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
   const arenaName = "סטודיו";
 
   return (
-    <GameStage backgroundImage={galleryMainBg} enhanceBackground className="welcomeScreen">
+    <GameStage backgroundImage={galleryCrackedWallsBg} enhanceBackground className="welcomeScreen">
       {/* Bottom gradient for grounding */}
       <div
         className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none"
