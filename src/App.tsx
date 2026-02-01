@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import BackgroundPreview from "./pages/BackgroundPreview";
+import { LandscapeBlocker } from "./components/LandscapeBlocker";
 
 const queryClient = new QueryClient();
 
@@ -14,6 +15,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <LandscapeBlocker />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
