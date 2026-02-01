@@ -108,8 +108,10 @@ export function VisualPlayScreen({
     };
   } | null>(null);
 
-  // Local background override for "painted walls" beat before advancing missions
-  const [localBgOverride, setLocalBgOverride] = useState<{ key: string; image: string } | null>(null);
+  // Local background override for short beats (e.g. M01 painted walls, M07 destination lock).
+  // IMPORTANT: scope to missionId to prevent one-mission overrides from leaking into the next
+  // and accidentally becoming the "previous" layer in BackgroundCrossfade.
+  const [localBgOverride, setLocalBgOverride] = useState<{ key: string; image: string; missionId: string } | null>(null);
 
   // Mission 7 calibration editor background override
   const [m7CalibrationBg, setM7CalibrationBg] = useState<{ key: string; image: string } | null>(null);
@@ -368,9 +370,11 @@ export function VisualPlayScreen({
     return null;
   }, [activeToolVariant, optionA, optionB, getTargetBgForOption, currentBgKey, hasPaintedWalls, mission.mission_id, mission.phase, mission.sequence]);
 
-  // Priority: M7 calibration > local "painted" beat > drag preview > current
-  const displayBg = m7CalibrationBg?.image || localBgOverride?.image || dragPreviewBg?.image || currentBg;
-  const displayBgKey = m7CalibrationBg?.key || localBgOverride?.key || dragPreviewBg?.key || currentBgKey;
+  const scopedLocalBgOverride = localBgOverride?.missionId === mission.mission_id ? localBgOverride : null;
+
+  // Priority: M7 calibration > local beat > drag preview > current
+  const displayBg = m7CalibrationBg?.image || scopedLocalBgOverride?.image || dragPreviewBg?.image || currentBg;
+  const displayBgKey = m7CalibrationBg?.key || scopedLocalBgOverride?.key || dragPreviewBg?.key || currentBgKey;
 
   // In calibration mode, bypass the normal background locking
   // M07 and M11 have specialized calibration editors that must be able to switch backgrounds.
@@ -602,7 +606,7 @@ export function VisualPlayScreen({
     const isMission07 = mission.mission_id === 'studio_07';
     if (isMission07) {
       const targetBg = getTargetBgForOption(option);
-      setLocalBgOverride(targetBg);
+      setLocalBgOverride({ ...targetBg, missionId: mission.mission_id });
       // Mark that we're in a M7 transition - prevents immediate bg clear on mission change
       m7TransitionRef.current = { active: true, bgKey: targetBg.key };
     }
@@ -646,7 +650,7 @@ export function VisualPlayScreen({
         : getTargetBgForOption(option);
 
       const beatId = window.setTimeout(() => {
-        setLocalBgOverride(paintTarget);
+         setLocalBgOverride({ ...paintTarget, missionId: mission.mission_id });
       }, beatDelay);
       timeoutsRef.current.push(beatId);
 
