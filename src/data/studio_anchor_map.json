@@ -508,17 +508,17 @@
   {
     "background_asset_key": "studio_in_gallery_wall_bg",
     "anchor_ref": "m02_tool_a",
-    "x_pct": 0.342,
-    "y_pct": 0.611,
+    "x_pct": 0.329,
+    "y_pct": 0.624,
     "scale": 1.5,
     "z_layer": "front"
   },
   {
     "background_asset_key": "studio_in_gallery_wall_bg",
     "anchor_ref": "m02_tool_b",
-    "x_pct": 0.242,
+    "x_pct": 0.231,
     "y_pct": 0.496,
-    "scale": 2.6,
+    "scale": 2.4,
     "z_layer": "front"
   },
   {
