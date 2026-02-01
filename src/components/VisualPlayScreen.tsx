@@ -780,8 +780,23 @@ export function VisualPlayScreen({
     if (wasActualDrag) {
       // It was a real drag - check if dropped near the target position
       const rect = stageRef.current.getBoundingClientRect();
-      const dropX = ((e.clientX - rect.left) / rect.width) * 100;
+      let dropX = ((e.clientX - rect.left) / rect.width) * 100;
       const dropY = ((e.clientY - rect.top) / rect.height) * 100;
+
+      // CRITICAL: When panning is active, adjust dropX to account for the pan offset
+      // panOffsetX is in percentage points: positive = showing left side, negative = showing right side
+      // The background position is `${50 + panOffsetX}%`
+      // So if panOffsetX = 22, we're showing the LEFT part of the image
+      // To convert screen X to image X: imageX = screenX - (panOffsetX * compensationFactor)
+      // The compensation factor depends on how much extra content the panoramic image has
+      // With panRange = 0.22 (22%), the full image is ~144% of viewport width
+      // So each percentage point of pan offset shifts the content by ~1.44 viewport percentages
+      if (isMobile && isPanoramic && panOffsetX !== 0) {
+        // panOffsetX positive = we see left side, so pointer is hitting content further RIGHT on the image
+        // panOffsetX negative = we see right side, so pointer is hitting content further LEFT on the image
+        const panCompensation = panOffsetX * 1.44;
+        dropX = dropX + panCompensation;
+      }
 
       const isMission01 = mission.mission_id === 'studio_01';
       const isMission01Paint = isMission01 && draggingTool === 'a';
@@ -789,16 +804,19 @@ export function VisualPlayScreen({
       // Get target position for current tool
       const target = getTargetAnchor(draggingTool);
       if (target) {
-        // Check if within target radius (generous ~20% of screen)
+        // Check if within target radius (generous ~20% of screen for mobile)
         const dx = dropX - target.x;
         const dy = dropY - target.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
         
+        // Mobile with panning: more generous acceptance (25% radius) since precise alignment is harder
+        const acceptRadius = (isMobile && isPanoramic) ? 28 : 20;
+        
         // Mission 01: accept if user drops on the floor
-        // Other missions: keep existing generous rules
+        // Other missions: generous zone-based acceptance
         const accepted = isMission01Paint
           ? (distance < 28 && dropY > 45 && dropY < 92)
-          : (isMission01 ? (dropY > 55 && dropY < 98) : (distance < 20 || (dropY < 75 && dropY > 5)));
+          : (isMission01 ? (dropY > 55 && dropY < 98) : (distance < acceptRadius || (dropY < 75 && dropY > 5)));
 
         if (accepted) {
           completePlacement(draggingTool);

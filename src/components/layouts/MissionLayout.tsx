@@ -138,20 +138,17 @@ function MobileMissionLayout({
 }: MissionLayoutProps) {
   // For panoramic backgrounds, we need to offset placed props to match background position
   // The background uses backgroundPosition: `${50 + panOffsetX}% 100%`
-  // We need to translate the props container by the same percentage to keep them aligned
   // 
-  // Math: When panOffsetX = 22%, background shows left side (pos = 72%)
-  // To align props, we need to shift them LEFT by the same relative amount
-  // The container width represents ~44% extra content (22% on each side)
-  // So we translate by: panOffsetX * (containerVisibleRatio)
-  // Since the panoramic bg is ~144% wide (22% extra each side), visible = 100/144 ≈ 69%
-  // Offset in pixels/vw: panOffsetX as percentage of the EXTRA width being shown
-  
-  // Simpler approach: The background offset is in percentage points from center.
-  // We can use CSS transform to shift the props layer proportionally.
-  // panOffsetX of 22 means bg is at 72%, showing left part of image.
-  // Props need to move LEFT to stay on their painted positions.
-  const propsTranslateX = isPanoramic ? `${-panOffsetX * 2}%` : '0';
+  // Math: Panoramic image width = ~144% of viewport (panRange 22% on each side)
+  // When panOffsetX = 22, background position = 72%, showing left side of image
+  // The visual content shifts RIGHT by: panOffsetX * (imageWidth / 100)
+  //   = 22 * 1.44 = ~31.7% of viewport width
+  // Props layer must shift LEFT by the same amount to stay aligned with painted positions
+  // 
+  // CSS translateX uses container width (100vw = viewport), so:
+  // propsTranslateX = -panOffsetX * 1.44
+  const panCompensationFactor = 1.44; // Based on 144% wide panoramic image
+  const propsTranslateX = isPanoramic ? `${-panOffsetX * panCompensationFactor}%` : '0';
 
   // Add dragging class to enable CSS-based hiding of hero elements
   const stageClasses = `game-stage mobile-layout missionScreen${isDragging ? ' is-dragging' : ''}`;
