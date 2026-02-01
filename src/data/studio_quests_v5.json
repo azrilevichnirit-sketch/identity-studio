@@ -30,7 +30,7 @@
     "offset_y_b": 0,
     "offset_x_b": 0,
     "scale_b": 1.0,
-    "persist_b": "temp"
+    "persist_b": "keep"
   },
   {
     "world": "studio",
