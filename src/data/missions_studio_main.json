@@ -171,7 +171,8 @@
         "asset": "studio_07_a",
         "tooltip_heb": "חדר ארכיון ואחסון",
         "view": "in",
-        "calibration_bg": "studio_in_storage_bg"
+        "calibration_bg": "studio_in_storage_bg",
+        "next_bg_override": "studio_in_storage_bg"
       },
       {
         "key": "b",
@@ -179,7 +180,8 @@
         "asset": "studio_07_b",
         "tooltip_heb": "חלון ראווה ותצוגת מכירות",
         "view": "in",
-        "calibration_bg": "studio_in_workshop_bg"
+        "calibration_bg": "gallery_main_stylized",
+        "next_bg_override": "gallery_main_stylized"
       }
     ]
   },
