@@ -3,15 +3,16 @@ import type { Dimension } from '@/types/identity';
 import { Disclaimer } from './Disclaimer';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { ArrowLeft } from 'lucide-react';
+import studioPreviewBg from '@/assets/backgrounds/gallery_main_stylized.webp';
 
 interface DimensionSelectProps {
   onSelect: (dimension: Dimension) => void;
 }
 
 const DIMENSIONS = [
-  { key: 'studio' as const, emoji: '🎨', label: 'סטודיו', available: true },
-  { key: 'farm' as const, emoji: '🌾', label: 'חווה', available: false },
-  { key: 'surprise' as const, emoji: '✨', label: 'הפתעה', available: false },
+  { key: 'studio' as const, emoji: '🎨', label: 'הסטודיו', available: true, image: studioPreviewBg },
+  { key: 'farm' as const, emoji: '🌾', label: 'חווה', available: false, image: null },
+  { key: 'surprise' as const, emoji: '✨', label: 'הפתעה', available: false, image: null },
 ];
 
 export function DimensionSelect({ onSelect }: DimensionSelectProps) {
@@ -34,17 +35,9 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
       <div 
         className="game-stage flex flex-col items-center justify-center"
         style={{
-          background: 'linear-gradient(135deg, hsl(220 25% 12%) 0%, hsl(220 20% 18%) 50%, hsl(220 15% 22%) 100%)',
+          background: '#FFFFFF',
         }}
       >
-        {/* Subtle pattern overlay */}
-        <div 
-          className="absolute inset-0 opacity-30 pointer-events-none"
-          style={{
-            backgroundImage: `radial-gradient(circle at 20% 50%, hsl(170 80% 45% / 0.1) 0%, transparent 50%),
-                             radial-gradient(circle at 80% 50%, hsl(280 60% 55% / 0.1) 0%, transparent 50%)`,
-          }}
-        />
         
         {/* Content - desktop centered, mobile with safe-area */}
         <div 
@@ -52,8 +45,8 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
         >
           {/* Title */}
           <div className="text-center px-4">
-            <h1 className="text-2xl md:text-4xl font-bold text-white mb-2 drop-shadow-lg">Identity Engine</h1>
-            <p className="text-base md:text-xl text-white/90 drop-shadow-md">בחר/י את העולם שלך</p>
+            <h1 className="text-2xl md:text-4xl font-bold text-slate-900 mb-2">נקודת הזינוק שלך</h1>
+            <p className="text-base md:text-xl text-slate-600">בחר/י את העולם שלך</p>
           </div>
           
           {/* Dimension cards - stacked on mobile, row on tablet+ */}
@@ -74,18 +67,26 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
                         width: 'min(88vw, 200px)',
                         height: 'clamp(100px, 20vw, 160px)',
                         minHeight: '100px',
-                        background: 'rgba(255, 252, 245, 0.9)',
+                        background: dim.image ? `url(${dim.image}) center/cover` : 'rgba(255, 252, 245, 0.9)',
                         boxShadow: isSelected 
                           ? '0 12px 40px rgba(0,0,0,0.4), 0 0 30px hsl(170 80% 45% / 0.3)'
-                          : '0 8px 32px rgba(0,0,0,0.3)',
+                          : '0 8px 32px rgba(0,0,0,0.2)',
                         margin: '0 auto',
                       }}
                     >
+                      {/* Dark overlay for image cards */}
+                      {dim.image && (
+                        <div className="absolute inset-0 bg-black/30 pointer-events-none" />
+                      )}
                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 md:gap-3 p-4">
-                        <span className={`text-4xl md:text-5xl transition-transform duration-300 ${isSelected ? 'scale-110' : 'group-hover:scale-110'}`}>
-                          {dim.emoji}
+                        {!dim.image && (
+                          <span className={`text-4xl md:text-5xl transition-transform duration-300 ${isSelected ? 'scale-110' : 'group-hover:scale-110'}`}>
+                            {dim.emoji}
+                          </span>
+                        )}
+                        <span className={`font-bold text-xl md:text-2xl ${dim.image ? 'text-white drop-shadow-lg' : 'text-slate-900'}`}>
+                          {dim.label}
                         </span>
-                        <span className="font-semibold text-lg md:text-xl text-slate-900">{dim.label}</span>
                         {!dim.available && (
                           <span className="text-xs md:text-sm text-slate-500">(בקרוב)</span>
                         )}
@@ -150,7 +151,7 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
             right: 'max(env(safe-area-inset-right, 8px), 16px)',
           }}
         >
-          <Disclaimer className="text-white/40" />
+          <Disclaimer className="text-slate-400" />
         </div>
       </div>
     </TooltipProvider>
