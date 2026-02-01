@@ -63,6 +63,7 @@ export interface MissionOption {
     scale: number;
     flipX?: boolean;
     wallMount?: boolean;
+    bgKey?: string; // background key where tool was placed
   };
 }
 
@@ -108,6 +109,7 @@ export interface PickRecord {
     scale: number;  // final scale applied
     flipX?: boolean;
     wallMount?: boolean;
+    bgKey?: string; // background key where tool was placed - only show when this bg is active
   };
 }
 
