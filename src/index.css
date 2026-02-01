@@ -1333,11 +1333,20 @@
     flex: 0 1 auto;
     min-width: 0;
     width: fit-content;
-    max-width: min(50vw, 260px);
+    max-width: min(55vw, 280px);
     pointer-events: auto;
     direction: rtl;
     margin-right: -25px;
     margin-bottom: 30px;
+    /* Prevent internal scrolling - bubble must fit content */
+    overflow: visible;
+  }
+
+  .missionScreen .mission-bubble-mobile .speech-bubble-wrapper,
+  .missionScreen .mission-bubble-mobile .speech-bubble-body,
+  .missionScreen .mission-bubble-mobile .speech-bubble-content {
+    overflow: visible;
+    max-height: none;
   }
 
   /* Mission avatar - anchored right, larger and more visible */
