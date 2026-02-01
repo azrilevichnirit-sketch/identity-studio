@@ -1278,15 +1278,16 @@
    ============================================ */
 
 @media (max-width: 1023px) {
-  /* Mission hero row - flex layout like Welcome */
+  /* Mission hero row - TOP of screen on mobile to free drag area */
   .missionScreen .mission-hero-mobile {
     position: fixed;
     left: 12px;
     right: 12px;
-    bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(100px, 16vh, 150px) + 12px);
+    top: calc(env(safe-area-inset-top, 0px) + 8px);
+    bottom: auto;
     display: flex;
     flex-direction: row;
-    align-items: flex-end;
+    align-items: flex-start;
     justify-content: flex-start;
     gap: 0;
     z-index: 80;
@@ -1294,34 +1295,31 @@
     pointer-events: none;
   }
 
-  /* Mission bubble - positioned behind avatar (shifted more right) */
+  /* Mission bubble - compact at top */
   .missionScreen .mission-bubble-mobile {
     order: 1;
-    z-index: 15; /* Behind avatar */
+    z-index: 85;
     flex: 0 1 auto;
     min-width: 0;
     width: fit-content;
-    max-width: 65%;
+    max-width: 70%;
     pointer-events: auto;
     direction: rtl;
-    /* Shift more right so bubble goes behind avatar */
-    margin-right: -92px;
-    margin-left: 52px;
-    margin-bottom: 30px;
+    margin-right: -40px;
+    margin-left: 8px;
+    margin-top: 8px;
   }
 
-  /* Mission avatar - positioned above Debug button, right side */
+  /* Mission avatar - small, next to bubble at top */
   .missionScreen .mission-avatar-mobile {
     order: 2;
-    z-index: 100;
+    z-index: 90;
     pointer-events: none;
-    position: fixed;
-    right: -70px;
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 50px);
-    width: 110px;
-    transform: scale(1.9);
-    transform-origin: bottom right;
-    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6));
+    width: 70px;
+    transform: scale(1);
+    transform-origin: top right;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+    margin-top: -5px;
   }
 
   .missionScreen .mission-avatar-mobile img {
@@ -1539,17 +1537,17 @@
 /* Small mobile (<400px) */
 @media (max-width: 399px) {
   .missionScreen .mission-hero-mobile {
-    bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(85px, 14vh, 120px) + 10px);
+    top: calc(env(safe-area-inset-top, 0px) + 6px);
+    bottom: auto;
   }
 
   .missionScreen .mission-bubble-mobile {
-    max-width: 72%;
+    max-width: 68%;
   }
 
   .missionScreen .mission-avatar-mobile {
-    width: 100px;
-    margin-left: -105px;
-    transform: scale(2);
+    width: 55px;
+    margin-top: -3px;
   }
 
   .mobile-layout .tool-tile {
