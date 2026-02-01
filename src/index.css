@@ -1173,10 +1173,10 @@
   position: relative;
   z-index: 25;
   flex: 0 0 auto;
-  width: min(380px, 32vw);
+  width: min(320px, 28vw);
   pointer-events: none;
   order: 2;
-  margin-left: -260px;
+  margin-left: -220px;
   filter: drop-shadow(0 14px 32px rgba(0,0,0,0.5));
 }
 
@@ -1277,10 +1277,10 @@
     z-index: 100;
     pointer-events: none;
     position: fixed;
-    right: -85px;
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 60px);
-    width: 120px;
-    transform: scale(2.2);
+    right: -70px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 50px);
+    width: 110px;
+    transform: scale(1.9);
     transform-origin: bottom right;
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6));
   }
@@ -1295,10 +1295,12 @@
   .missionScreen .mission-tool-panel-mobile {
     position: fixed;
     z-index: 70;
-    left: 24px;
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+    left: 20px;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
     width: fit-content;
-    max-width: min(92vw, 360px);
+    max-width: min(88vw, 320px);
+    transform: scale(0.9);
+    transform-origin: bottom left;
   }
 
   /* Mobile: panel styling */
@@ -1435,9 +1437,9 @@
 
   /* Tablet: keep avatar large and prominent (forward), above debug panel */
   .missionScreen .mission-avatar-desktop {
-    width: clamp(340px, 45vw, 480px);
+    width: clamp(280px, 38vw, 400px);
     /* reduce overlap vs desktop so it won't cover bubble text */
-    margin-left: clamp(-190px, -18vw, -140px);
+    margin-left: clamp(-160px, -15vw, -120px);
     z-index: 60;
     position: relative;
   }
@@ -1506,9 +1508,9 @@
   }
 
   .missionScreen .mission-avatar-mobile {
-    width: 140px;
-    margin-left: -145px;
-    transform: scale(2.3);
+    width: 100px;
+    margin-left: -105px;
+    transform: scale(2);
   }
 
   .mobile-layout .tool-tile {
@@ -1566,8 +1568,8 @@
   }
 
   .missionScreen .mission-avatar-desktop {
-    width: 380px;
-    margin-left: -260px;
+    width: 320px;
+    margin-left: -220px;
   }
 
   /* Larger tools on big screens */
