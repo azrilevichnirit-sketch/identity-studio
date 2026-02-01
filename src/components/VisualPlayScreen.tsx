@@ -288,13 +288,17 @@ export function VisualPlayScreen({
       return { key: lockedKey, image: lockedImage };
     }
     // Mission 07: Use calibration_bg from option for room transitions
-    if (mission.mission_id === 'studio_07' && (option as any).calibration_bg) {
-      const calibrationBgKey = (option as any).calibration_bg;
-      const calibrationBgImage = getBackgroundByName(calibrationBgKey) || currentBg;
-      return { key: calibrationBgKey, image: calibrationBgImage };
+    // This MUST come BEFORE the workshop lock check
+    if (mission.mission_id === 'studio_07') {
+      // Check for calibration_bg or next_bg_override
+      const targetBgKey = (option as any).calibration_bg || option.next_bg_override;
+      if (targetBgKey) {
+        const targetBgImage = getBackgroundByName(targetBgKey) || currentBg;
+        return { key: targetBgKey, image: targetBgImage };
+      }
     }
-    // Workshop missions (M03+, M07, except exterior, M09, M12)
-    if (mission.phase === 'main' && (mission.mission_id === 'studio_03' || mission.mission_id === 'studio_07' || mission.sequence >= 3) && !isGalleryMission) {
+    // Workshop missions (M03+, except M07, exterior, M09, M12)
+    if (mission.phase === 'main' && (mission.mission_id === 'studio_03' || mission.sequence >= 3) && mission.mission_id !== 'studio_07' && !isGalleryMission) {
       const lockedKey = 'studio_in_workshop_bg';
       const lockedImage = getBackgroundByName(lockedKey) || currentBg;
       return { key: lockedKey, image: lockedImage };
@@ -378,6 +382,21 @@ export function VisualPlayScreen({
     const missionNum = String(mission.mission_id).replace('studio_', '').padStart(2, '0');
     const preferredAnchorRef = (`m${missionNum}_tool_${variant}`) as AnchorRef;
     const fallbackAnchorRef = option.anchor_ref as AnchorRef;
+    
+    // SPECIAL CASE: Mission 07 - use calibration_bg for each tool
+    // Tool A -> studio_in_storage_bg, Tool B -> gallery_main_stylized
+    if (mission.mission_id === 'studio_07') {
+      const calibrationBg = (option as any).calibration_bg || option.next_bg_override;
+      if (calibrationBg) {
+        let anchorPos = getAnchorPosition(calibrationBg, preferredAnchorRef);
+        if (!anchorPos) {
+          anchorPos = getAnchorPosition(calibrationBg, fallbackAnchorRef);
+        }
+        if (anchorPos) {
+          return anchorPos;
+        }
+      }
+    }
     
     // CRITICAL: For missions with locked backgrounds (M02 = white/cracked walls, exterior, M03+ = workshop),
     // we must look up coordinates in the LOCKED background, not current
