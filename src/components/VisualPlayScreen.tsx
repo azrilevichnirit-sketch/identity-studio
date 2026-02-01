@@ -162,7 +162,12 @@ export function VisualPlayScreen({
       return mission.bg_override;
     }
     
-    // Mission 03+ (except exterior, M07, M09): use the workshop background
+    // Mission 10: Back to workshop (like M08)
+    if (mission.phase === 'main' && mission.mission_id === 'studio_10') {
+      return 'studio_in_workshop_bg';
+    }
+    
+    // Mission 03+ (except exterior, M07, M09, M10): use the workshop background
     if (mission.phase === 'main' && (mission.mission_id === 'studio_03' || mission.sequence >= 3)) {
       return 'studio_in_workshop_bg';
     }
@@ -699,7 +704,7 @@ export function VisualPlayScreen({
     // M9: Gallery scene - fresh start, no persisted tools
     // Do NOT render persisted tools from previous missions here.
     // (This only affects visibility; it does not modify game state.)
-    const hidePersistedToolsForThisMission = mission.mission_id === 'studio_07' || mission.mission_id === 'studio_08' || mission.mission_id === 'studio_09';
+    const hidePersistedToolsForThisMission = mission.mission_id === 'studio_07' || mission.mission_id === 'studio_08' || mission.mission_id === 'studio_09' || mission.mission_id === 'studio_10';
     
     // Add persisted tools from previous missions based on persist flag AND zone
     if (!hidePersistedToolsForThisMission) {
