@@ -4,9 +4,9 @@ import { getAnchorPosition } from '@/lib/jsonDataLoader';
 import { getToolImage, getBackgroundByName } from '@/lib/assetUtils';
 import type { AnchorRef, Mission } from '@/types/identity';
 
-// Import storage background for Tool A calibration
+// Import backgrounds for calibration
 import studioStorageBg from '@/assets/backgrounds/studio_in_storage_v2.webp';
-import studioWorkshopBg from '@/assets/backgrounds/studio_in_workshop_v3.webp';
+import galleryStylizedBg from '@/assets/backgrounds/gallery_main_stylized.webp';
 
 interface Mission7CalibrationEditorProps {
   mission: Mission;
@@ -25,9 +25,9 @@ export function Mission7CalibrationEditor({ mission, onBackgroundChange }: Missi
   const [isOpen, setIsOpen] = useState(true);
   const [selectedTool, setSelectedTool] = useState<'a' | 'b'>('b');
   
-  // Tool A = Storage, Tool B = Workshop
+  // Tool A = Storage, Tool B = Gallery (stylized with cracked walls)
   const bgKeyA = 'studio_in_storage_bg';
-  const bgKeyB = 'studio_in_workshop_bg';
+  const bgKeyB = 'gallery_main_stylized';
   
   const [positions, setPositions] = useState<{ a: ToolPosition; b: ToolPosition }>(() => {
     const getInitialPos = (key: 'a' | 'b'): ToolPosition => {
@@ -54,7 +54,7 @@ export function Mission7CalibrationEditor({ mission, onBackgroundChange }: Missi
     if (selectedTool === 'a') {
       onBackgroundChange?.(studioStorageBg, bgKeyA);
     } else {
-      onBackgroundChange?.(studioWorkshopBg, bgKeyB);
+      onBackgroundChange?.(galleryStylizedBg, bgKeyB);
     }
   }, [selectedTool, onBackgroundChange]);
 
@@ -234,7 +234,7 @@ export function Mission7CalibrationEditor({ mission, onBackgroundChange }: Missi
                     : 'bg-muted hover:bg-accent'
                 }`}
               >
-                Tool B (Workshop)
+                Tool B (Gallery)
               </button>
             </div>
             
