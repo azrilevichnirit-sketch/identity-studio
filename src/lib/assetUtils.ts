@@ -180,6 +180,7 @@ const backgroundAssets: Record<string, string> = {
 // Wide panoramic backgrounds for mobile panning (key -> asset)
 const panoramicBackgrounds: Record<string, string> = {
   // Mission 01: cracked walls
+  studio_front_bg: galleryCrackedWalls,
   studio_in_gallery_bg: galleryCrackedWalls,
   studio_entry_inside_bg: galleryCrackedWalls,
   gallery_main_stylized_v3: galleryCrackedWalls,

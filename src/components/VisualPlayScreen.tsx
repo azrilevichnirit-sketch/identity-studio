@@ -232,7 +232,7 @@ export function VisualPlayScreen({
   const toolAImage = getToolImage(optionA.asset);
   const toolBImage = getToolImage(optionB.asset);
   
-  // Mobile panning support
+  // Mobile detection (used across background + interactions)
   const isMobile = useIsMobile();
   // Product rule: Mission 02 uses white walls ONLY if Tool A was chosen in Mission 01.
   // If Tool B was chosen, keep the cracked walls background.
@@ -244,41 +244,11 @@ export function VisualPlayScreen({
     mission.phase === 'main' && (mission.mission_id === 'studio_02' || mission.sequence === 2) && !hasPaintedWalls;
   const isExteriorLocked =
     mission.phase === 'main' && mission.view === 'out' && mission.mission_id !== 'studio_11';
-  // Mission 07: Workshop locked UNTIL a tool is being dragged/carried
-  // When activeToolVariant is set, dragPreviewBg will override the workshop background
   // Mission 09 & 12: Gallery (uses bg_override) - NOT workshop locked
   const isGalleryMission = (mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12') && mission.bg_override;
   const isWorkshopLocked =
-    mission.phase === 'main' && 
+    mission.phase === 'main' &&
     ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission);
-  const bgKeyForPanorama = isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY 
-    : isCrackedWallsLocked ? 'studio_entry_inside_bg'
-    : isExteriorLocked ? 'studio_exterior_bg'
-    : isWorkshopLocked ? 'studio_in_workshop_bg' 
-    : currentBgKey;
-  const panoramicBg = useMemo(() => getPanoramicBackground(bgKeyForPanorama), [bgKeyForPanorama]);
-  
-  // Calculate initial pan position based on Tool A's target location
-  // This ensures the background auto-pans to show where the first tool should be placed
-  const initialPanTargetX = useMemo(() => {
-    if (!isMobile || !panoramicBg) return undefined;
-    
-    // Get Tool A's anchor position
-    const anchorRef = optionA.anchor_ref as AnchorRef;
-    const anchorPos = getAnchorPosition(currentBgKey, anchorRef);
-    
-    if (anchorPos) {
-      return anchorPos.x;
-    }
-    
-    // Fallback: center
-    return 50;
-  }, [isMobile, panoramicBg, optionA.anchor_ref, currentBgKey, getAnchorPosition]);
-  
-  const { backgroundPosition, updatePanFromDrag, resetPan, panToPosition } = usePanningBackground({
-    enabled: isMobile && !!panoramicBg,
-    initialTargetX: initialPanTargetX,
-  });
 
   const taskText = mission.task_heb || `MISSING: task_heb`;
 
@@ -389,6 +359,28 @@ export function VisualPlayScreen({
     : isExteriorLocked 
     ? (getBackgroundByName('studio_exterior_bg') || displayBg)
     : (isWorkshopLocked && !isCalibrationBgOverrideMode ? (getBackgroundByName('studio_in_workshop_bg') || displayBg) : displayBg);
+
+  // ==================== MOBILE PANORAMIC PANNING ====================
+  // IMPORTANT: panning must follow the *actual* background being shown (lockedBgKey),
+  // otherwise some missions won't pan on mobile and side-wall anchors become unreachable.
+  const isPanoramic = useMemo(() => {
+    if (!isMobile) return false;
+    return !!getPanoramicBackground(lockedBgKey);
+  }, [isMobile, lockedBgKey]);
+
+  // Auto-pan on mission entry toward Tool A's target (helps reveal side-wall targets)
+  const initialPanTargetX = useMemo(() => {
+    if (!isMobile || !isPanoramic) return undefined;
+
+    const anchorRef = optionA.anchor_ref as AnchorRef;
+    const anchorPos = getAnchorPosition(lockedBgKey, anchorRef);
+    return anchorPos?.x ?? 50;
+  }, [isMobile, isPanoramic, optionA.anchor_ref, lockedBgKey]);
+
+  const { backgroundPosition, updatePanFromDrag, resetPan, panToPosition } = usePanningBackground({
+    enabled: isMobile && isPanoramic,
+    initialTargetX: initialPanTargetX,
+  });
 
   // Get target anchor for currently selected tool
   // Uses anchor_ref from quest data to look up coordinates in anchor map
@@ -673,12 +665,12 @@ export function VisualPlayScreen({
     setDragPosition({ x: e.clientX, y: e.clientY });
     
     // Update panning based on pointer position (normalized 0-1)
-    if (stageRef.current && isMobile && panoramicBg) {
+    if (stageRef.current && isMobile && isPanoramic) {
       const rect = stageRef.current.getBoundingClientRect();
       const normalizedX = (e.clientX - rect.left) / rect.width;
       updatePanFromDrag(normalizedX);
     }
-  }, [draggingTool, isMobile, panoramicBg, updatePanFromDrag]);
+  }, [draggingTool, isMobile, isPanoramic, updatePanFromDrag]);
 
   const handlePointerUp = useCallback((e: React.PointerEvent) => {
     if (!draggingTool || !stageRef.current) {
@@ -891,10 +883,10 @@ export function VisualPlayScreen({
   // These are passed to the layout wrapper
 
   // Use panoramic background on mobile if available
-  const effectiveBg = isMobile && panoramicBg ? panoramicBg : lockedBg;
-  const effectiveBgPosition = isMobile && panoramicBg ? backgroundPosition : 'center';
+  const effectiveBg = lockedBg;
+  const effectiveBgPosition = isMobile && isPanoramic ? backgroundPosition : 'center';
   // For panoramic backgrounds, use 'auto 100%' to show full height and allow horizontal pan
-  const effectiveBgSize = isMobile && panoramicBg ? 'auto 100%' : 'cover';
+  const effectiveBgSize = isMobile && isPanoramic ? 'auto 100%' : 'cover';
 
   const backgroundElement = (
     <BackgroundCrossfade
