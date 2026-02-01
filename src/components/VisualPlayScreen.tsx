@@ -615,23 +615,24 @@ export function VisualPlayScreen({
     const isMission01Paint = mission.mission_id === 'studio_01' && variant === 'a';
     const isMission01ToolB = mission.mission_id === 'studio_01' && variant === 'b';
     
-    // ===== Mission 01 Tool B timing sequence =====
-    // 0ms:      Tool appears on floor (localPlacement set above)
-    // 300ms:    Lock glow starts (smooth confirmation)
-    // 1100ms:   Lock glow ends (300 + 800ms duration)
-    // 1200ms:   Staff character enters (after lock completes)
-    // 2800ms:   Mission advances (player sees staff arrive)
+    // ===== OPTIMIZED TIMING SEQUENCE =====
+    // All timings reduced by ~40% for snappier feel while preserving visual comprehension
+    // Mission 01 Paint:  Tool -> Lock (600ms) -> White walls beat (1000ms) -> Advance (2000ms)
+    // Mission 01 Tool B: Tool -> Lock (200ms) -> Advance (1600ms)
+    // Mission 02:        Tool -> Lock (80ms)  -> Advance (1800ms) 
+    // Mission 07/11:     Tool -> Lock (80ms)  -> BG switch -> Advance (1600ms)
+    // Regular:           Tool -> Lock (80ms)  -> Advance (1400ms)
     // ===============================================
     
-    const lockDelayMs = isMission01Paint ? 900 : (isMission01ToolB ? 300 : 120);
+    const lockDelayMs = isMission01Paint ? 600 : (isMission01ToolB ? 200 : 80);
     const lockOnId = window.setTimeout(() => {
       setJustPlaced(`${mission.mission_id}-${variant}`);
       setLockPulseKey(`${mission.mission_id}-${variant}`);
     }, lockDelayMs);
     timeoutsRef.current.push(lockOnId);
 
-    // Lock pulse duration
-    const lockPulseDuration = isMission01ToolB ? 800 : 650;
+    // Lock pulse duration - reduced from 650-800ms to 450-550ms
+    const lockPulseDuration = isMission01ToolB ? 550 : 450;
     const lockOffId = window.setTimeout(() => {
       setLockPulseKey(null);
     }, lockDelayMs + lockPulseDuration);
@@ -643,8 +644,10 @@ export function VisualPlayScreen({
     const allowBgBeat = mission.phase === 'main' && mission.sequence < 2;
     const hasBgBeat = allowBgBeat && (!!option.next_bg_override || isMission01Paint);
     if (hasBgBeat && !isMission01ToolB) {
-      const beatDelay = isMission01Paint ? 1600 : 900;
-      const clearDelay = isMission01Paint ? 2300 : 1800;
+      // Reduced from 1600/900 to 1000/600
+      const beatDelay = isMission01Paint ? 1000 : 600;
+      // Reduced from 2300/1800 to 1500/1100
+      const clearDelay = isMission01Paint ? 1500 : 1100;
       const paintTarget = isMission01Paint
         ? { key: PAINTED_WALLS_BG_KEY, image: getBackgroundByName(PAINTED_WALLS_BG_KEY) || currentBg }
         : getTargetBgForOption(option);
@@ -661,19 +664,19 @@ export function VisualPlayScreen({
     }
     
     // Step 3: Wait for animation to complete, then transition to next mission
-    // Animation is 800ms per item + 300ms stagger × 3 items = ~1700ms total
-    // We wait 2500ms to ensure users see the full blink effect + painted walls
-    // Mission 01 paint: only advance after the player clearly sees the "painted walls" beat.
-    // Mission 07: Extra delay to let players see the tool fixation on the destination room
+    // OPTIMIZED TIMINGS (reduced ~40%):
+    // Mission 01 paint: 2000ms (was 3200ms) - still enough to see painted walls
+    // Mission 01 Tool B: 1600ms (was 2800ms) - lock + brief view
+    // Mission 02: 1800ms (was 3500ms) - tool locks, brief pause
+    // Mission 07/11: 1600ms (was 2800ms) - see destination room
+    // Regular: 1400ms (was 2500ms) - snappy progression
     const isMission02 = mission.mission_id === 'studio_02';
-    // Mission 01 Tool B: 2800ms - enough time for lock (1100ms) + staff entry + viewing
-    // Mission 02: 3500ms - tool locks, then male staff enters, then wait 1 second before advancing
-    // Mission 07: 2800ms - tool locks on destination room, player sees it before transition
-    const advanceDelay = isMission01Paint ? 3200 
-      : isMission01ToolB ? 2800 
-      : isMission02 ? 3500 
-      : isMission07 ? 2800
-      : 2500;
+    const isMission11 = mission.mission_id === 'studio_11';
+    const advanceDelay = isMission01Paint ? 2000 
+      : isMission01ToolB ? 1600 
+      : isMission02 ? 1800 
+      : (isMission07 || isMission11) ? 1600
+      : 1400;
     const advanceId = window.setTimeout(() => {
       // For Mission 01 Tool B: DON'T clear localPlacement before onSelect
       // This prevents the tool from disappearing before it's added to placedProps

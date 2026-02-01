@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { cn } from "@/lib/utils";
 
 type BackgroundCrossfadeProps = {
@@ -12,8 +12,30 @@ type BackgroundCrossfadeProps = {
   zIndex?: number;
 };
 
+// Cache of preloaded images to avoid re-fetching
+const preloadedImages = new Set<string>();
+
+function preloadImage(src: string): Promise<void> {
+  if (preloadedImages.has(src)) {
+    return Promise.resolve();
+  }
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      preloadedImages.add(src);
+      resolve();
+    };
+    img.onerror = () => {
+      // Still resolve to avoid blocking - CSS will handle missing images gracefully
+      resolve();
+    };
+    img.src = src;
+  });
+}
+
 /**
  * Crossfades between background images using opacity.
+ * IMPORTANT: Preloads new background before transitioning to prevent black screen flash.
  * (CSS can't smoothly animate background-image changes.)
  */
 export function BackgroundCrossfade({
@@ -23,20 +45,26 @@ export function BackgroundCrossfade({
   backgroundPosition,
   backgroundRepeat = "no-repeat",
   filter,
-  durationMs = 900,
+  durationMs = 500,
   zIndex = 0,
 }: BackgroundCrossfadeProps) {
   const [current, setCurrent] = useState(src);
   const [previous, setPrevious] = useState<string | null>(null);
   const [fadeOutPrev, setFadeOutPrev] = useState(false);
+  const [isReady, setIsReady] = useState(true);
   const cleanupRef = useRef<number | null>(null);
+  const pendingSrcRef = useRef<string | null>(null);
 
+  // Preload initial image on mount
   useEffect(() => {
-    if (src === current) return;
+    preloadImage(src);
+  }, []);
 
+  const startTransition = useCallback((newSrc: string) => {
     setPrevious(current);
-    setCurrent(src);
+    setCurrent(newSrc);
     setFadeOutPrev(false);
+    setIsReady(true);
 
     const raf = window.requestAnimationFrame(() => setFadeOutPrev(true));
 
@@ -47,6 +75,25 @@ export function BackgroundCrossfade({
 
     return () => {
       window.cancelAnimationFrame(raf);
+    };
+  }, [current, durationMs]);
+
+  useEffect(() => {
+    if (src === current) return;
+
+    // Track the pending source to handle rapid changes
+    pendingSrcRef.current = src;
+
+    // Preload the new image before transitioning
+    preloadImage(src).then(() => {
+      // Only transition if this is still the latest requested src
+      if (pendingSrcRef.current === src) {
+        startTransition(src);
+        pendingSrcRef.current = null;
+      }
+    });
+
+    return () => {
       if (cleanupRef.current) window.clearTimeout(cleanupRef.current);
       cleanupRef.current = null;
     };
@@ -62,6 +109,7 @@ export function BackgroundCrossfade({
 
   return (
     <div className={cn("absolute inset-0", className)} style={{ zIndex }}>
+      {/* Current (new) background - always rendered at bottom of stack */}
       <div
         className="absolute inset-0"
         style={{
@@ -70,6 +118,7 @@ export function BackgroundCrossfade({
         }}
       />
 
+      {/* Previous background - fades out on top, hiding any loading delay */}
       {previous ? (
         <div
           className="absolute inset-0"
