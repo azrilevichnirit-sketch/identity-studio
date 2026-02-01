@@ -1531,9 +1531,7 @@ export function VisualPlayScreen({
                 top: `${fixed.y}%`,
                 transform: transformStyle,
                 zIndex,
-                // Fade in persisted tools after background transition completes
-                opacity: isBackgroundTransitioning ? 0 : 1,
-                transition: 'opacity 0.4s ease-in-out',
+                // Persisted tools should always be visible - no fade effect
               }}
             >
               <img 
@@ -1599,9 +1597,7 @@ export function VisualPlayScreen({
                 // Ensure tools near walls are visible above floor elements
                 zIndex: 15 + idx,
                 animationDelay: isPersisted ? '0ms' : `${animationDelay}ms`,
-                // Fade in persisted tools after background transition completes
-                opacity: (isPersisted && isBackgroundTransitioning) ? 0 : 1,
-                transition: isPersisted ? 'opacity 0.4s ease-in-out' : undefined,
+                // Persisted tools should always be visible - no fade effect
               }}
             >
               <img 
