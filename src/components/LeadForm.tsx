@@ -69,10 +69,10 @@ export function LeadForm({ onSubmit }: LeadFormProps) {
           }}
         >
           <h1 className="text-xl md:text-2xl font-bold mb-2 text-center" style={{ color: '#1a1a1a' }}>
-            כמעט סיימנו!
+            המשימה הושלמה. המידע נאסף.
           </h1>
           <p className="text-sm md:text-base mb-5 md:mb-6 text-center" style={{ color: '#555' }}>
-            מלא/י את הפרטים כדי לקבל את התוצאות
+            לאן לשלוח את התוצאות שלך?
           </p>
           
           <form onSubmit={handleSubmit} className="space-y-4">
