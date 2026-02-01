@@ -35,6 +35,10 @@ export interface MissionLayoutProps {
   onCancelCarry?: () => void;
   /** Whether carry mode is active */
   isCarryMode: boolean;
+  /** Pan offset for panoramic backgrounds (mobile only) - percentage points */
+  panOffsetX?: number;
+  /** Whether panoramic panning is active */
+  isPanoramic?: boolean;
 }
 
 /**
@@ -126,7 +130,26 @@ function MobileMissionLayout({
   stageRef,
   onCancelCarry,
   isCarryMode,
+  panOffsetX = 0,
+  isPanoramic = false,
 }: MissionLayoutProps) {
+  // For panoramic backgrounds, we need to offset placed props to match background position
+  // The background uses backgroundPosition: `${50 + panOffsetX}% 100%`
+  // We need to translate the props container by the same percentage to keep them aligned
+  // 
+  // Math: When panOffsetX = 22%, background shows left side (pos = 72%)
+  // To align props, we need to shift them LEFT by the same relative amount
+  // The container width represents ~44% extra content (22% on each side)
+  // So we translate by: panOffsetX * (containerVisibleRatio)
+  // Since the panoramic bg is ~144% wide (22% extra each side), visible = 100/144 ≈ 69%
+  // Offset in pixels/vw: panOffsetX as percentage of the EXTRA width being shown
+  
+  // Simpler approach: The background offset is in percentage points from center.
+  // We can use CSS transform to shift the props layer proportionally.
+  // panOffsetX of 22 means bg is at 72%, showing left part of image.
+  // Props need to move LEFT to stay on their painted positions.
+  const propsTranslateX = isPanoramic ? `${-panOffsetX * 2}%` : '0';
+
   return (
     <div 
       ref={stageRef} 
@@ -137,14 +160,34 @@ function MobileMissionLayout({
       {background}
       {gradientOverlay}
 
-      {/* Scene extras */}
-      {sceneExtras}
+      {/* Panoramic content layer - moves with background */}
+      <div 
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          transform: `translateX(${propsTranslateX})`,
+          transition: 'transform 0.15s ease-out',
+        }}
+      >
+        {/* Scene extras */}
+        {sceneExtras}
 
-      {/* Target zone */}
-      {targetZone}
+        {/* Placed props */}
+        {placedProps}
+      </div>
 
-      {/* Placed props */}
-      {placedProps}
+      {/* Target zone - also moves with background */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          transform: `translateX(${propsTranslateX})`,
+          transition: 'transform 0.15s ease-out',
+          pointerEvents: 'none',
+        }}
+      >
+        <div style={{ pointerEvents: 'auto' }}>
+          {targetZone}
+        </div>
+      </div>
 
       {/* Top-right undo button */}
       <div className="mission-undo-btn">
