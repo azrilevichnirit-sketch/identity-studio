@@ -89,6 +89,13 @@ export function VisualPlayScreen({
     missionId: string;
     key: 'a' | 'b';
     assetName: string;
+    fixedPlacement?: {
+      x: number;
+      y: number;
+      scale: number;
+      flipX?: boolean;
+      z_layer?: string;
+    };
   } | null>(null);
 
   // Local background override for "painted walls" beat before advancing missions
@@ -426,7 +433,7 @@ export function VisualPlayScreen({
     }
 
     // Default fallback
-    return { x: 50, y: 70, scale: 1, z_layer: 'mid' as const };
+    return { x: 50, y: 70, scale: 1, z_layer: 'mid' as const, flipX: false };
   }, [optionA, optionB, currentBgKey, isWhiteWallsLocked, isCrackedWallsLocked, isExteriorLocked, isWorkshopLocked, PAINTED_WALLS_BG_KEY, mission.mission_id]);
 
   // Flash cue when mission changes (helps player notice the transition)
@@ -516,10 +523,23 @@ export function VisualPlayScreen({
     timeoutsRef.current = [];
 
     // Step 1: Immediately show the tool on the floor (local state, before global update)
+    // Mission 10 bugfix: snap LOCAL placement immediately to the calibrated anchor
+    // (otherwise the user sees it "stick" where they released, until the next mission renders the persisted version)
+    const shouldSnapLocalToAnchorNow = mission.mission_id === 'studio_10';
+    const snapped = shouldSnapLocalToAnchorNow ? getTargetAnchor(variant) : null;
     setLocalPlacement({
       missionId: mission.mission_id,
       key: variant,
       assetName: option.asset,
+      fixedPlacement: snapped
+        ? {
+            x: snapped.x,
+            y: snapped.y,
+            scale: snapped.scale,
+            flipX: snapped.flipX,
+            z_layer: snapped.z_layer,
+          }
+        : undefined,
     });
 
     // Let the player *first* see the tool settle, then a subtle lock confirmation.
@@ -599,7 +619,7 @@ export function VisualPlayScreen({
     timeoutsRef.current.push(advanceId);
     
     setCarryModeTool(null);
-  }, [mission.mission_id, mission.phase, mission.sequence, optionA, optionB, onSelect, hasDraggedOnce, getTargetBgForOption, PAINTED_WALLS_BG_KEY, currentBg]);
+  }, [mission.mission_id, mission.phase, mission.sequence, optionA, optionB, onSelect, hasDraggedOnce, getTargetBgForOption, PAINTED_WALLS_BG_KEY, currentBg, getTargetAnchor]);
 
   // Pointer Events for unified mouse/touch handling
   const handlePointerDown = useCallback((variant: 'a' | 'b', e: React.PointerEvent) => {
@@ -831,6 +851,7 @@ export function VisualPlayScreen({
         key: localPlacement.key as 'a' | 'b',
         assetName: localPlacement.assetName,
         hollandCode: 'r' as HollandCode, // Not used for display
+        fixedPlacement: localPlacement.fixedPlacement,
       });
     }
     
@@ -1448,11 +1469,46 @@ export function VisualPlayScreen({
         const isMission01Buckets = prop.missionId === 'studio_01' && prop.key === 'a';
         const isMission01ToolB = prop.missionId === 'studio_01' && prop.key === 'b';
         const isMission02ToolB = prop.missionId === 'studio_02' && prop.key === 'b';
+        const isLocalCurrentMissionPlacement = prop.missionId === mission.mission_id;
         
         // USE FIXED PLACEMENT FOR PERSISTED TOOLS
         // This ensures tools stay exactly where they were placed, not recalculated
         // No more duplication patterns - all missions use single placement from anchor map
         const hasDuplicationPattern = false;
+
+        // Mission 10: LOCAL placement should use fixedPlacement immediately (snap-now)
+        if (!isPersisted && isLocalCurrentMissionPlacement && prop.fixedPlacement && !hasDuplicationPattern) {
+          const fixed = prop.fixedPlacement;
+          const zIndex = zIndexForAnchorLayer(fixed.z_layer);
+          const transformStyle = `translate(-50%, -100%) scale(${fixed.scale})`;
+
+          return [(
+            <div
+              key={`${prop.missionId}-${propIdx}-local-fixed`}
+              className={`absolute pointer-events-none ${
+                isMission01ToolB
+                  ? 'animate-tool-appear'
+                  : (isJustPlaced ? 'animate-snap-pop-blink' : 'animate-snap-place')
+              }`}
+              style={{
+                left: `${fixed.x}%`,
+                top: `${fixed.y}%`,
+                transform: transformStyle,
+                zIndex,
+              }}
+            >
+              <img
+                src={toolImg}
+                alt=""
+                className={`${isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32'} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
+                style={{
+                  filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
+                  transform: fixed.flipX ? 'scaleX(-1)' : undefined,
+                }}
+              />
+            </div>
+          )];
+        }
         
         if (isPersisted && prop.fixedPlacement && !hasDuplicationPattern) {
           const fixed = prop.fixedPlacement;
