@@ -80,6 +80,10 @@ export function VisualPlayScreen({
   const [showGridOverlay, setShowGridOverlay] = useState(false);
   const [showZLayerOverlay, setShowZLayerOverlay] = useState(false);
   
+  // Track background transitions - hide persisted tools during crossfade
+  const [isBackgroundTransitioning, setIsBackgroundTransitioning] = useState(false);
+  const previousBgKeyRef = useRef<string | null>(null);
+  
   // Local placement state - shows tool BEFORE it's added to global placedProps
   const [localPlacement, setLocalPlacement] = useState<{
     missionId: string;
@@ -425,6 +429,30 @@ export function VisualPlayScreen({
       window.clearTimeout(flashId);
     };
   }, [mission.mission_id]);
+
+  // Track background changes and trigger transition state
+  // This hides persisted tools during the crossfade to prevent them appearing before bg changes
+  const CROSSFADE_DURATION = 1500; // Must match BackgroundCrossfade durationMs
+  useEffect(() => {
+    // Skip if this is the first render or bg hasn't changed
+    if (previousBgKeyRef.current === null) {
+      previousBgKeyRef.current = lockedBgKey;
+      return;
+    }
+    
+    if (previousBgKeyRef.current !== lockedBgKey) {
+      // Background is changing - hide persisted tools during transition
+      setIsBackgroundTransitioning(true);
+      previousBgKeyRef.current = lockedBgKey;
+      
+      // After crossfade completes, show the tools
+      const fadeTimer = window.setTimeout(() => {
+        setIsBackgroundTransitioning(false);
+      }, CROSSFADE_DURATION);
+      
+      return () => window.clearTimeout(fadeTimer);
+    }
+  }, [lockedBgKey]);
 
   useEffect(() => {
     return () => {
@@ -1262,6 +1290,9 @@ export function VisualPlayScreen({
                 top: `${fixed.y}%`,
                 transform: transformStyle,
                 zIndex,
+                // Fade in persisted tools after background transition completes
+                opacity: isBackgroundTransitioning ? 0 : 1,
+                transition: 'opacity 0.4s ease-in-out',
               }}
             >
               <img 
@@ -1327,6 +1358,9 @@ export function VisualPlayScreen({
                 // Ensure tools near walls are visible above floor elements
                 zIndex: 15 + idx,
                 animationDelay: isPersisted ? '0ms' : `${animationDelay}ms`,
+                // Fade in persisted tools after background transition completes
+                opacity: (isPersisted && isBackgroundTransitioning) ? 0 : 1,
+                transition: isPersisted ? 'opacity 0.4s ease-in-out' : undefined,
               }}
             >
               <img 
