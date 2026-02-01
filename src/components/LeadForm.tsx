@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { LeadFormData } from '@/types/identity';
-import studioEntranceBg from '@/assets/backgrounds/studio_in_entrance_view_bg.webp';
+import galleryBg from '@/assets/backgrounds/gallery_main_stylized.webp';
 import { GameStage } from './GameStage';
 
 interface LeadFormProps {
@@ -48,7 +48,7 @@ export function LeadForm({ onSubmit, isSubmitting = false }: LeadFormProps) {
   };
 
   return (
-    <GameStage backgroundImage={studioEntranceBg} enhanceBackground>
+    <GameStage backgroundImage={galleryBg} enhanceBackground>
       {/* Dark overlay - no pointer events */}
       <div className="absolute inset-0 bg-black/50 pointer-events-none z-1" />
       
