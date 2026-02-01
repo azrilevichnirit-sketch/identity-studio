@@ -162,8 +162,27 @@ export function VisualPlayScreen({
     mission.phase === 'main' && (mission.mission_id === 'studio_03' || mission.sequence >= 3);
   const bgKeyForPanorama = isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY : (isWorkshopLocked ? 'studio_in_workshop_bg' : currentBgKey);
   const panoramicBg = useMemo(() => getPanoramicBackground(bgKeyForPanorama), [bgKeyForPanorama]);
-  const { backgroundPosition, updatePanFromDrag, resetPan } = usePanningBackground({
+  
+  // Calculate initial pan position based on Tool A's target location
+  // This ensures the background auto-pans to show where the first tool should be placed
+  const initialPanTargetX = useMemo(() => {
+    if (!isMobile || !panoramicBg) return undefined;
+    
+    // Get Tool A's anchor position
+    const anchorRef = optionA.anchor_ref as AnchorRef;
+    const anchorPos = getAnchorPosition(currentBgKey, anchorRef);
+    
+    if (anchorPos) {
+      return anchorPos.x;
+    }
+    
+    // Fallback: center
+    return 50;
+  }, [isMobile, panoramicBg, optionA.anchor_ref, currentBgKey, getAnchorPosition]);
+  
+  const { backgroundPosition, updatePanFromDrag, resetPan, panToPosition } = usePanningBackground({
     enabled: isMobile && !!panoramicBg,
+    initialTargetX: initialPanTargetX,
   });
 
   const taskText = mission.task_heb || `MISSING: task_heb`;
