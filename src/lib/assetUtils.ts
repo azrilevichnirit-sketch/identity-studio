@@ -3,12 +3,13 @@
 import type { AvatarGender, Mission } from '@/types/identity';
 
 // Background imports - 5 backgrounds used:
-// 1. Mission 01 only: stylized room (before paint) - gallery_main_stylized_v3
+// 1. Mission 01 default: stylized main space (before paint) - gallery_main_stylized
 // 2. Mission 02: white walls (after paint) - gallery_main_stylized_white_v1
 // 3. Mission 03, 04, 06+: workshop with windows to park - studio_in_workshop_v3
 // 4. Mission 05, 11: exterior park view - studio_exterior_park_stylized_v2
 // 5. Mission 07: gallery looking outside - studio_in_entrance_view_bg
-import galleryMainStylized from '@/assets/backgrounds/gallery_main_stylized_v3.webp';
+// IMPORTANT: The studio "main space" background is ALWAYS gallery_main_stylized.webp
+import galleryMainStylized from '@/assets/backgrounds/gallery_main_stylized.webp';
 import galleryMainStylizedWhite from '@/assets/backgrounds/gallery_main_stylized_white_v1.webp';
 import studioWorkshopBg from '@/assets/backgrounds/studio_in_workshop_v3.webp';
 import studioExteriorBg from '@/assets/backgrounds/studio_exterior_park_stylized_v3.webp';
