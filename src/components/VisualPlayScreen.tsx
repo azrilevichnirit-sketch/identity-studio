@@ -123,12 +123,19 @@ export function VisualPlayScreen({
   }, [mission.mission_id]);
 
   // Get the *actual* previous mission pick (Object.values order is not reliable)
-  // Product rule: Mission 02 uses white walls. Mission 03, 04, 06+ uses workshop background.
+  // Product rule: Mission 02 uses white walls ONLY if Tool A was chosen in Mission 01 (paint buckets).
+  // If Tool B was chosen, keep the cracked walls.
+  // Mission 03, 04, 06+ uses workshop background.
   // Mission 05, 07, 11 (view: "out") use exterior background.
   const previousBgOverride = useMemo(() => {
-    // Mission 02 only: always use white walls
+    // Mission 02: use white walls ONLY if Tool A was chosen in Mission 01
     if (mission.phase === 'main' && (mission.mission_id === 'studio_02' || mission.sequence === 2)) {
-      return PAINTED_WALLS_BG_KEY;
+      // Check if Tool A was chosen in Mission 01 (painted walls)
+      if (hasPaintedWalls) {
+        return PAINTED_WALLS_BG_KEY;
+      }
+      // Tool B was chosen - keep the cracked walls (same as Mission 01)
+      return 'studio_entry_inside_bg';
     }
     
     // Exterior missions (view: "out") - Mission 05, 07, 11
@@ -142,7 +149,7 @@ export function VisualPlayScreen({
     }
 
     return undefined;
-  }, [mission.phase, mission.sequence, mission.mission_id, mission.view]);
+  }, [mission.phase, mission.sequence, mission.mission_id, mission.view, hasPaintedWalls]);
 
   const currentBg = useMemo(() => getBackgroundForMission(mission, previousBgOverride), [mission, previousBgOverride]);
   const currentBgKey = useMemo(() => getBackgroundKey(mission, previousBgOverride), [mission, previousBgOverride]);
@@ -177,16 +184,20 @@ export function VisualPlayScreen({
   
   // Mobile panning support
   const isMobile = useIsMobile();
-  // Product rule: Mission 02 uses white walls, Mission 03+ uses workshop (except exterior).
+  // Product rule: Mission 02 uses white walls ONLY if Tool A was chosen in Mission 01.
+  // If Tool B was chosen, keep the cracked walls background.
   // Exterior missions (view: "out") use exterior background.
   // Guardrail: lock by mission_id too (in case sequence is inconsistent).
   const isWhiteWallsLocked =
-    mission.phase === 'main' && (mission.mission_id === 'studio_02' || mission.sequence === 2);
+    mission.phase === 'main' && (mission.mission_id === 'studio_02' || mission.sequence === 2) && hasPaintedWalls;
+  const isCrackedWallsLocked =
+    mission.phase === 'main' && (mission.mission_id === 'studio_02' || mission.sequence === 2) && !hasPaintedWalls;
   const isExteriorLocked =
     mission.phase === 'main' && mission.view === 'out';
   const isWorkshopLocked =
     mission.phase === 'main' && (mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked;
   const bgKeyForPanorama = isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY 
+    : isCrackedWallsLocked ? 'studio_entry_inside_bg'
     : isExteriorLocked ? 'studio_exterior_bg'
     : isWorkshopLocked ? 'studio_in_workshop_bg' 
     : currentBgKey;
@@ -272,13 +283,16 @@ export function VisualPlayScreen({
   const displayBg = localBgOverride?.image || dragPreviewBg?.image || currentBg;
   const displayBgKey = localBgOverride?.key || dragPreviewBg?.key || currentBgKey;
 
-  // Final guardrail: Mission 02 = white walls, exterior = park, Mission 03+ = workshop
+  // Final guardrail: Mission 02 = white walls OR cracked walls (based on M01 choice), exterior = park, Mission 03+ = workshop
   const lockedBgKey = isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY 
+    : isCrackedWallsLocked ? 'studio_entry_inside_bg'
     : isExteriorLocked ? 'studio_exterior_bg'
     : isWorkshopLocked ? 'studio_in_workshop_bg' 
     : displayBgKey;
   const lockedBg = isWhiteWallsLocked 
     ? (getBackgroundByName(PAINTED_WALLS_BG_KEY) || displayBg) 
+    : isCrackedWallsLocked
+    ? (getBackgroundByName('studio_entry_inside_bg') || displayBg)
     : isExteriorLocked 
     ? (getBackgroundByName('studio_exterior_bg') || displayBg)
     : (isWorkshopLocked ? (getBackgroundByName('studio_in_workshop_bg') || displayBg) : displayBg);
@@ -293,9 +307,10 @@ export function VisualPlayScreen({
     // Use anchor_ref from quest data (e.g. m01_tool_a, m01_tool_b)
     const anchorRef = option.anchor_ref as AnchorRef;
     
-    // CRITICAL: For missions with locked backgrounds (M02 = white walls, exterior, M03+ = workshop),
+    // CRITICAL: For missions with locked backgrounds (M02 = white/cracked walls, exterior, M03+ = workshop),
     // we must look up coordinates in the LOCKED background, not current
     const lookupBgKey = isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY 
+      : isCrackedWallsLocked ? 'studio_entry_inside_bg'
       : isExteriorLocked ? 'studio_exterior_bg'
       : isWorkshopLocked ? 'studio_in_workshop_bg' 
       : currentBgKey;
@@ -315,7 +330,7 @@ export function VisualPlayScreen({
 
     // Default fallback
     return { x: 50, y: 70, scale: 1, z_layer: 'mid' as const };
-  }, [optionA, optionB, currentBgKey, isWhiteWallsLocked, isWorkshopLocked, PAINTED_WALLS_BG_KEY]);
+  }, [optionA, optionB, currentBgKey, isWhiteWallsLocked, isCrackedWallsLocked, isExteriorLocked, isWorkshopLocked, PAINTED_WALLS_BG_KEY]);
 
   // Flash cue when mission changes (helps player notice the transition)
   const [showMissionFlash, setShowMissionFlash] = useState(false);
