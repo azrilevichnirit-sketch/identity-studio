@@ -603,7 +603,15 @@ export function VisualPlayScreen({
     if (bgKey1 === bgKey2) return true;
     
     // Define zones - backgrounds that share the same "room"
-    const galleryZone = ['studio_entry_inside_bg', 'studio_in_gallery_wall_bg', 'studio_in_gallery_bg', 'studio_in_gallery_alt_bg'];
+    // Gallery zone includes Mission 01 (stylized) and Mission 02 (white walls)
+    const galleryZone = [
+      'studio_entry_inside_bg', 
+      'studio_in_gallery_wall_bg', 
+      'studio_in_gallery_bg', 
+      'studio_in_gallery_alt_bg',
+      'gallery_main_stylized',           // Mission 01 stylized (key name)
+      'gallery_main_stylized_white',     // Mission 02 white walls (key name)
+    ];
     const workshopZone = ['studio_in_workshop_bg'];
     const exteriorZone = ['studio_front_bg', 'studio_exterior_bg', 'studio_exterior_park_bg'];
     
