@@ -1648,12 +1648,13 @@ export function VisualPlayScreen({
     return () => window.removeEventListener('resize', checkWidth);
   }, []);
 
-  // Get mission number for display (1-12 for main, special for tie)
+  // Get mission number for display (1-12 for main, 13 for tie-breaker)
   const missionDisplayNumber = useMemo(() => {
     if (mission.phase === 'main') {
       return mission.sequence;
     }
-    return null; // Tie-breaker missions don't show number
+    // Tie-breaker missions always show as mission 13
+    return 13;
   }, [mission.phase, mission.sequence]);
 
   // Split task text after comma for better readability (tablet/mobile only)
