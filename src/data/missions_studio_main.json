@@ -234,6 +234,7 @@
     "mission_id": "studio_10",
     "sequence": 10,
     "view": "in",
+    "bg_override": "studio_in_workshop_bg",
     "task_heb": "יש המון התעניינות בסטודיו והביקוש לעבודות גדל בטירוף. איך נעמוד בקצב?",
     "options": [
       {
