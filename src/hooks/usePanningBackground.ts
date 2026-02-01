@@ -44,9 +44,9 @@ export function usePanningBackground(
   const isMobile = useIsMobile();
   const {
     enabled = isMobile,
-    panRange = 0.25, // 25% extra on each side (so 16:9 can show in 9:16 viewport)
-    edgeZone = 0.2, // 20% from each edge triggers pan
-    panSpeed = 0.8, // percentage points per frame
+    panRange = 0.22, // 22% extra on each side - slightly reduced for smoother feel
+    edgeZone = 0.18, // 18% from each edge triggers pan - narrower for less aggressive activation
+    panSpeed = 0.8, // percentage points per frame (not directly used, easing controls speed)
     initialTargetX,
   } = options;
 
@@ -59,18 +59,23 @@ export function usePanningBackground(
   const hasInitializedRef = useRef(false);
 
   // Calculate target offset based on pointer position
+  // Uses easeOutQuad curve for more natural acceleration near edges
   const calculateTargetOffset = useCallback((normalizedX: number): number => {
     if (!enabled) return 0;
     
     // Left edge zone (0 to edgeZone) -> pan right (show left side of image)
     if (normalizedX < edgeZone) {
-      const intensity = 1 - (normalizedX / edgeZone); // 1 at edge, 0 at zone boundary
+      const t = 1 - (normalizedX / edgeZone); // 1 at edge, 0 at zone boundary
+      // Apply easeOutQuad: starts slow, accelerates toward edge
+      const intensity = t * t;
       return panRange * 100 * intensity;
     }
     
     // Right edge zone (1-edgeZone to 1) -> pan left (show right side of image)
     if (normalizedX > 1 - edgeZone) {
-      const intensity = (normalizedX - (1 - edgeZone)) / edgeZone; // 0 at zone boundary, 1 at edge
+      const t = (normalizedX - (1 - edgeZone)) / edgeZone; // 0 at zone boundary, 1 at edge
+      // Apply easeOutQuad: starts slow, accelerates toward edge
+      const intensity = t * t;
       return -panRange * 100 * intensity;
     }
     
@@ -98,22 +103,25 @@ export function usePanningBackground(
     return 0;
   }, [enabled, panRange]);
 
-  // Animation loop for smooth panning
+  // Animation loop for smooth panning with adaptive easing
   const animatePan = useCallback(() => {
     setPanState(prev => {
       const target = targetOffsetRef.current;
       const diff = target - prev.offsetX;
       
       // If close enough, snap to target
-      if (Math.abs(diff) < 0.1) {
+      if (Math.abs(diff) < 0.08) {
         if (target === 0) {
           setIsPanning(false);
         }
         return { offsetX: target };
       }
       
-      // Ease toward target
-      const newOffset = prev.offsetX + diff * 0.15;
+      // Adaptive easing: faster when far from target, slower when close
+      // This creates a more natural deceleration feel
+      const absDiff = Math.abs(diff);
+      const easeFactor = absDiff > 5 ? 0.12 : absDiff > 2 ? 0.10 : 0.08;
+      const newOffset = prev.offsetX + diff * easeFactor;
       return { offsetX: newOffset };
     });
     
