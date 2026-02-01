@@ -802,15 +802,14 @@ export function VisualPlayScreen({
     // their background keys both resolve to "gallery" zone
     const currentZone = getZoneForMission(currentSeq);
 
-    // Product/UI rule: Missions 07, 08, 09, 11, and 12 are "clean scene" resets.
+    // Product/UI rule: Missions 07, 09, and 12 are "clean scene" resets.
     // M7: Player chooses storage vs gallery - different room entirely
-    // M8: New "workers' room" - fresh workshop without previous tools
     // M9: Gallery scene - fresh start, no persisted tools
-    // M11: Exterior/Gallery choice - fresh scene, no M10 tools
     // M12: Final mission - fresh gallery scene
+    // M8, M10, M11 share the "workshop2" zone - tools persist between them
     // Do NOT render persisted tools from previous missions here.
     // (This only affects visibility; it does not modify game state.)
-    const hidePersistedToolsForThisMission = mission.mission_id === 'studio_07' || mission.mission_id === 'studio_09' || mission.mission_id === 'studio_11' || mission.mission_id === 'studio_12';
+    const hidePersistedToolsForThisMission = mission.mission_id === 'studio_07' || mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12';
     
     // Add persisted tools from previous missions based on persist flag AND zone
     if (!hidePersistedToolsForThisMission) {
