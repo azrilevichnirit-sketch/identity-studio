@@ -27,6 +27,8 @@ export interface MissionLayoutProps {
   toolPanel: React.ReactNode;
   /** Dragging ghost (follows cursor) */
   draggingGhost: React.ReactNode;
+  /** Edge pan indicators (mobile only) */
+  edgePanIndicators?: React.ReactNode;
   /** Stage ref for drag calculations */
   stageRef: React.RefObject<HTMLDivElement>;
   /** Handler for canceling carry mode */
@@ -120,6 +122,7 @@ function MobileMissionLayout({
   speechBubble,
   toolPanel,
   draggingGhost,
+  edgePanIndicators,
   stageRef,
   onCancelCarry,
   isCarryMode,
@@ -162,6 +165,9 @@ function MobileMissionLayout({
           {avatar}
         </div>
       </div>
+
+      {/* Edge pan indicators (mobile only) */}
+      {edgePanIndicators}
 
       {/* Dragging ghost */}
       {draggingGhost}
