@@ -78,6 +78,8 @@ export function VisualPlayScreen({
   });
   // Carry mode for touch fallback - tap to pick up, tap target to place
   const [carryModeTool, setCarryModeTool] = useState<'a' | 'b' | null>(null);
+  // Ref to prevent immediate cancel after entering carry mode (click fires after pointerup)
+  const carryModeJustSetRef = useRef(false);
   const [showToolSwapCue, setShowToolSwapCue] = useState(false);
   const [showDebugOverlay, setShowDebugOverlay] = useState(false);
   const [showGridOverlay, setShowGridOverlay] = useState(false);
@@ -396,6 +398,7 @@ export function VisualPlayScreen({
     : isExteriorLocked 
     ? (getBackgroundByName('studio_exterior_bg') || displayBg)
     : (isWorkshopLocked && !isCalibrationBgOverrideMode ? (getBackgroundByName('studio_in_workshop_bg') || displayBg) : displayBg);
+
 
   // ==================== MOBILE PANORAMIC PANNING ====================
   // IMPORTANT: panning must follow the *actual* background being shown (lockedBgKey),
@@ -750,6 +753,9 @@ export function VisualPlayScreen({
   }, [draggingTool, isMobile, isPanoramic]);
 
   const handlePointerUp = useCallback((e: React.PointerEvent) => {
+    // CRITICAL: Stop propagation to prevent stage's onClick from canceling carry mode
+    e.stopPropagation();
+    
     if (!draggingTool || !stageRef.current) {
       // Release pointer capture
       try {
@@ -800,7 +806,10 @@ export function VisualPlayScreen({
       }
     } else {
       // It was a tap - enter carry mode
+      carryModeJustSetRef.current = true;
       setCarryModeTool(draggingTool);
+      // Clear the guard after click event would have fired
+      setTimeout(() => { carryModeJustSetRef.current = false; }, 50);
     }
     
     setDraggingTool(null);
@@ -823,6 +832,8 @@ export function VisualPlayScreen({
 
   // Cancel carry mode on escape or background tap
   const handleCancelCarry = useCallback(() => {
+    // Guard: don't cancel if carry mode was just set (click fires after pointerup)
+    if (carryModeJustSetRef.current) return;
     setCarryModeTool(null);
   }, []);
 
