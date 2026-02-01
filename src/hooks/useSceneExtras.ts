@@ -2,26 +2,24 @@ import { useMemo } from 'react';
 import type { PickRecord, AnchorRef } from '@/types/identity';
 import sceneExtrasData from '@/data/studio_scene_extras.json';
 
-// Wall gallery art for Mission 7 - matching Mission 5 exterior style
-import wallGallery01 from '@/assets/extras/studio_wall_gallery_01.webp';
-import wallGallery02 from '@/assets/extras/studio_wall_gallery_02.webp';
-import wallGallery03 from '@/assets/extras/studio_wall_gallery_03.webp';
-
-// Leaning canvases for Mission 7 - artworks leaning against walls
-import leaningCanvases01 from '@/assets/extras/studio_leaning_canvases_01.webp';
-import leaningCanvases02 from '@/assets/extras/studio_leaning_canvases_02.webp';
-import leaningCanvases03 from '@/assets/extras/studio_leaning_canvases_03.webp';
+// Mission 7 floor clutter assets (existing transparent WEBPs)
+import floorArtworks01 from '@/assets/extras/studio_floor_artworks_01.webp';
+import floorArtworks02 from '@/assets/extras/studio_floor_artworks_02.webp';
+import floorArtworks03 from '@/assets/extras/studio_floor_artworks_03.webp';
+import crate01 from '@/assets/extras/studio_crate_01.webp';
+import crate02 from '@/assets/extras/studio_crate_02.webp';
+import extra02 from '@/assets/extras/studio_extra_asset_02.webp';
+import extra03 from '@/assets/extras/studio_extra_asset_03.webp';
 
 // Map asset keys to actual images
 const extraAssetMap: Record<string, string> = {
-  // Wall gallery art
-  studio_wall_gallery_01: wallGallery01,
-  studio_wall_gallery_02: wallGallery02,
-  studio_wall_gallery_03: wallGallery03,
-  // Leaning canvases
-  studio_leaning_canvases_01: leaningCanvases01,
-  studio_leaning_canvases_02: leaningCanvases02,
-  studio_leaning_canvases_03: leaningCanvases03,
+  studio_floor_artworks_01: floorArtworks01,
+  studio_floor_artworks_02: floorArtworks02,
+  studio_floor_artworks_03: floorArtworks03,
+  studio_crate_01: crate01,
+  studio_crate_02: crate02,
+  studio_extra_asset_02: extra02,
+  studio_extra_asset_03: extra03,
 };
 
 export interface SpawnedExtra {
@@ -94,22 +92,19 @@ export function useSceneExtras(
         const image = extraAssetMap[rule.spawn_asset_key];
         if (!image) continue;
         
-        // For Mission 7 floor artworks: single instance per anchor, no spreading
-        const isM07FloorArt = rule.mission_id === 'studio_07' && rule.placement_mode === 'floor';
-        const count = isM07FloorArt ? 1 : Math.min(rule.spawn_count, 3);
+        // Mission 7 is curated: single instance per rule (no spreading)
+        const count = 1;
         
         for (let i = 0; i < count; i++) {
-          // Use fixed scale for NPC characters (realistic size)
-          // For floor artworks, use a larger base scale
-          const isNpcCharacter = rule.spawn_asset_key.includes('staff') || rule.spawn_asset_key.includes('visitor');
           const isFloorArtwork = rule.spawn_asset_key.includes('floor_artworks');
-          const baseScale = isNpcCharacter ? 1.0 : isFloorArtwork ? 1.2 : (0.6 + Math.random() * 0.2);
+          const isCrate = rule.spawn_asset_key.includes('crate');
+          const baseScale = isFloorArtwork ? 1.0 : isCrate ? 0.9 : 0.85;
           
           extras.push({
             id: `${rule.mission_id}-${rule.order}-${i}`,
             image,
             anchorRef: rule.anchor_ref as AnchorRef,
-            offsetX: isM07FloorArt ? 0 : getSpreadOffset(i, count),
+            offsetX: 0,
             offsetY: 0,
             scale: baseScale,
             zLayer: getZLayerForPlacement(rule.placement_mode),

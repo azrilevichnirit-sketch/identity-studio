@@ -877,5 +877,29 @@
     "y_pct": 0.55,
     "scale": 0.28,
     "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_in_entrance_view_bg",
+    "anchor_ref": "m07_floor_near_wall_left",
+    "x_pct": 0.12,
+    "y_pct": 0.78,
+    "scale": 0.55,
+    "z_layer": "front"
+  },
+  {
+    "background_asset_key": "studio_in_entrance_view_bg",
+    "anchor_ref": "m07_floor_near_wall_center",
+    "x_pct": 0.32,
+    "y_pct": 0.76,
+    "scale": 0.50,
+    "z_layer": "front"
+  },
+  {
+    "background_asset_key": "studio_in_entrance_view_bg",
+    "anchor_ref": "m07_floor_near_wall_right",
+    "x_pct": 0.54,
+    "y_pct": 0.77,
+    "scale": 0.52,
+    "z_layer": "front"
   }
 ]
