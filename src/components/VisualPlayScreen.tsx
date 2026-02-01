@@ -284,6 +284,13 @@ export function VisualPlayScreen({
 
   // Get the target background for a tool option
   const getTargetBgForOption = useCallback((option: MissionOption) => {
+    // TIE-BREAKER MISSIONS: Stay on mission's bg_override, game ends after choice
+    // No background transition - the tool is placed and then we go to summary
+    if (mission.phase === 'tb') {
+      const lockedKey = mission.bg_override || currentBgKey;
+      const lockedImage = getBackgroundByName(lockedKey) || currentBg;
+      return { key: lockedKey, image: lockedImage };
+    }
     // Product rule: Mission 02 locked to white walls
     if (mission.phase === 'main' && (mission.mission_id === 'studio_02' || mission.sequence === 2)) {
       const lockedKey = PAINTED_WALLS_BG_KEY;
