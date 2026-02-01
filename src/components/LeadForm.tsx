@@ -5,9 +5,10 @@ import { GameStage } from './GameStage';
 
 interface LeadFormProps {
   onSubmit: (data: LeadFormData) => void;
+  isSubmitting?: boolean;
 }
 
-export function LeadForm({ onSubmit }: LeadFormProps) {
+export function LeadForm({ onSubmit, isSubmitting = false }: LeadFormProps) {
   const [formData, setFormData] = useState<LeadFormData>({
     fullName: '',
     email: '',
@@ -41,7 +42,7 @@ export function LeadForm({ onSubmit }: LeadFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validate()) {
+    if (validate() && !isSubmitting) {
       onSubmit(formData);
     }
   };
@@ -88,6 +89,7 @@ export function LeadForm({ onSubmit }: LeadFormProps) {
                 placeholder="הכנס/י שם מלא"
                 autoComplete="name"
                 inputMode="text"
+                disabled={isSubmitting}
               />
               {errors.fullName && (
                 <p className="text-destructive text-xs mt-1">{errors.fullName}</p>
@@ -106,6 +108,7 @@ export function LeadForm({ onSubmit }: LeadFormProps) {
                 dir="ltr"
                 autoComplete="email"
                 inputMode="email"
+                disabled={isSubmitting}
               />
               {errors.email && (
                 <p className="text-destructive text-xs mt-1">{errors.email}</p>
@@ -124,6 +127,7 @@ export function LeadForm({ onSubmit }: LeadFormProps) {
                 dir="ltr"
                 autoComplete="tel"
                 inputMode="tel"
+                disabled={isSubmitting}
               />
               {errors.phone && (
                 <p className="text-destructive text-xs mt-1">{errors.phone}</p>
@@ -132,10 +136,11 @@ export function LeadForm({ onSubmit }: LeadFormProps) {
             
             <button
               type="submit"
-              className="w-full py-4 rounded-xl bg-primary text-primary-foreground font-semibold text-base md:text-lg hover:bg-primary/90 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] mt-4 md:mt-6"
+              disabled={isSubmitting}
+              className="w-full py-4 rounded-xl bg-primary text-primary-foreground font-semibold text-base md:text-lg hover:bg-primary/90 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] mt-4 md:mt-6 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
               style={{ minHeight: '52px' }}
             >
-              קחו אותי לפרופיל שלי &gt;&gt;
+              {isSubmitting ? 'מעבד...' : 'קחו אותי לפרופיל שלי >>'}
             </button>
             
             <label className="flex items-center gap-3 mt-4 cursor-pointer">
@@ -144,6 +149,7 @@ export function LeadForm({ onSubmit }: LeadFormProps) {
                 checked={formData.wantsUpdates}
                 onChange={(e) => setFormData({ ...formData, wantsUpdates: e.target.checked })}
                 className="w-5 h-5 rounded border-2 border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                disabled={isSubmitting}
               />
               <span className="text-sm" style={{ color: '#555' }}>אני רוצה לקבל מידע ועדכונים</span>
             </label>
