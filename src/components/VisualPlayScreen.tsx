@@ -111,7 +111,7 @@ export function VisualPlayScreen({
   const optionB = mission.options.find((o) => o.key === 'b')!;
 
   // Mission 01 special rule (per product spec): choosing tool A paints the walls white
-  const PAINTED_WALLS_BG_KEY = 'studio_in_gallery_wall_bg';
+  const PAINTED_WALLS_BG_KEY = 'gallery_main_stylized_white_v1';
   const hasPaintedWalls = useMemo(() => {
     return placedProps.some((p) => p.missionId === 'studio_01' && p.key === 'a');
   }, [placedProps]);
