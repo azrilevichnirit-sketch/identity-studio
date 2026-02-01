@@ -2017,6 +2017,7 @@ export function VisualPlayScreen({
           ) : null
         }
         isCarryMode={!!carryModeTool}
+        isDragging={!!draggingTool}
         onCancelCarry={handleCancelCarry}
         panOffsetX={panOffsetX}
         isPanoramic={isPanoramic}
