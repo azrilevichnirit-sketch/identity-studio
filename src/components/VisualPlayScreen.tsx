@@ -223,7 +223,7 @@ export function VisualPlayScreen({
   const isCrackedWallsLocked =
     mission.phase === 'main' && (mission.mission_id === 'studio_02' || mission.sequence === 2) && !hasPaintedWalls;
   const isExteriorLocked =
-    mission.phase === 'main' && mission.view === 'out';
+    mission.phase === 'main' && mission.view === 'out' && mission.mission_id !== 'studio_11';
   // Mission 07: Workshop (not gallery) - same zone as Mission 06
   // Mission 09: Gallery (uses bg_override) - NOT workshop locked
   const isGalleryMission = mission.mission_id === 'studio_09' && mission.bg_override;
