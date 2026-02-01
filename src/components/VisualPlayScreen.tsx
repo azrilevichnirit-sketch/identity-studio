@@ -1322,7 +1322,12 @@ export function VisualPlayScreen({
         
         // USE FIXED PLACEMENT FOR PERSISTED TOOLS
         // This ensures tools stay exactly where they were placed, not recalculated
-        if (isPersisted && prop.fixedPlacement) {
+        // EXCEPTION: Missions with duplication patterns (M04, M06) should use getDuplicateAnchors
+        const hasDuplicationPattern = 
+          (prop.missionId === 'studio_04') || 
+          (prop.missionId === 'studio_06' && prop.key === 'a');
+        
+        if (isPersisted && prop.fixedPlacement && !hasDuplicationPattern) {
           const fixed = prop.fixedPlacement;
           const transformStyle = fixed.wallMount
             ? `translate(-50%, -50%) scale(${fixed.scale})`

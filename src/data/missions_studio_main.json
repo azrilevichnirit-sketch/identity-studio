@@ -91,14 +91,16 @@
         "holland_code": "r",
         "asset": "studio_04_a",
         "tooltip_heb": "גופי תאורה תעשייתיים",
-        "view": "in"
+        "view": "in",
+        "persist": "keep"
       },
       {
         "key": "b",
         "holland_code": "a",
         "asset": "studio_04_b",
         "tooltip_heb": "פסלי תאורה מעוצבים",
-        "view": "in"
+        "view": "in",
+        "persist": "keep"
       }
     ]
   },
