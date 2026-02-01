@@ -371,18 +371,25 @@ export function VisualPlayScreen({
     
     // Get the option to check for next_bg_override
     const option = key === 'a' ? optionA : optionB;
-    
-    // IMPORTANT: For persisted tools, calculate placement relative to the TARGET background
-    // (next_bg_override) if one exists, otherwise use current background.
-    // This prevents tools from "jumping" when the background changes after placement.
-    const targetBgKey = option?.next_bg_override || lockedBgKey;
-    
-    // Get anchor info from the placement logic
-    const anchorRef = key === 'a' 
+
+    // Prefer the option's explicit anchor_ref (from quest data) when available.
+    // Fallback to the derived ref for safety.
+    const derivedAnchorRef = (key === 'a'
       ? `m${missionId.replace('studio_', '').padStart(2, '0')}_tool_a`
-      : `m${missionId.replace('studio_', '').padStart(2, '0')}_tool_b`;
-    
-    const anchorPos = getAnchorPosition(targetBgKey, anchorRef as AnchorRef);
+      : `m${missionId.replace('studio_', '').padStart(2, '0')}_tool_b`) as AnchorRef;
+    const anchorRef = (option?.anchor_ref as AnchorRef) || derivedAnchorRef;
+
+    // IMPORTANT: Persisted tools must not "jump" across missions.
+    // Strategy:
+    // 1) If a next_bg_override exists AND it has this anchor, use it (for genuine bg swaps).
+    // 2) Otherwise, use the lockedBgKey (the actual scene the user placed on).
+    // This fixes cases like Mission 01 Tool B where next_bg_override points to a bg that
+    // doesn't contain the tool anchor, causing fixedPlacement to be undefined.
+    const nextBgKey = option?.next_bg_override;
+    const anchorPosFromNext = nextBgKey ? getAnchorPosition(nextBgKey, anchorRef) : null;
+    const targetBgKey = anchorPosFromNext ? nextBgKey! : lockedBgKey;
+
+    const anchorPos = anchorPosFromNext || getAnchorPosition(targetBgKey, anchorRef);
     if (anchorPos) {
       return {
         x: anchorPos.x,
