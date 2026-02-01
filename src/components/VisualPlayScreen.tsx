@@ -131,19 +131,27 @@ export function VisualPlayScreen({
   }, [mission.mission_id]);
 
   // Get the *actual* previous mission pick (Object.values order is not reliable)
-  // Product rule: Mission 02 uses white walls ONLY if Tool A was chosen in Mission 01 (paint buckets).
-  // If Tool B was chosen, keep the cracked walls.
-  // Mission 03, 04, 06+ uses workshop background.
-  // Mission 05, 07, 11 (view: "out") use exterior background.
+  // BACKGROUND LOGIC:
+  // - Mission 01: STARTS with cracked walls (gallery_main_stylized_v3)
+  // - Mission 01 Tool A chosen -> white walls (gallery_main_stylized_white_v1)
+  // - Mission 01 Tool B chosen -> main studio (gallery_main_stylized)
+  // - Mission 02: Uses result from Mission 01 (white or main studio)
+  // - Mission 03+: Workshop (studio_in_workshop_v3)
+  // - Mission 05: Exterior
+  // - Mission 09, 12: Main studio (gallery_main_stylized)
   const previousBgOverride = useMemo(() => {
-    // Mission 02: use white walls ONLY if Tool A was chosen in Mission 01
+    // Mission 01: ALWAYS start with cracked walls
+    if (mission.phase === 'main' && mission.mission_id === 'studio_01') {
+      return 'gallery_main_stylized_v3'; // Cracked walls
+    }
+    
+    // Mission 02: depends on Mission 01 choice
     if (mission.phase === 'main' && (mission.mission_id === 'studio_02' || mission.sequence === 2)) {
-      // Check if Tool A was chosen in Mission 01 (painted walls)
       if (hasPaintedWalls) {
-        return PAINTED_WALLS_BG_KEY;
+        return PAINTED_WALLS_BG_KEY; // White walls (Tool A chosen)
       }
-      // Tool B was chosen - keep the cracked walls (same as Mission 01)
-      return 'studio_entry_inside_bg';
+      // Tool B was chosen - use main studio (finished)
+      return 'gallery_main_stylized';
     }
     
     // Exterior missions (view: "out") - Mission 05 ONLY
@@ -163,9 +171,9 @@ export function VisualPlayScreen({
       return 'studio_in_workshop_bg';
     }
     
-    // Mission 09 & 12: Use bg_override from mission data (gallery_main_stylized)
-    if (mission.phase === 'main' && (mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12') && mission.bg_override) {
-      return mission.bg_override;
+    // Mission 09 & 12: Use main studio (gallery_main_stylized)
+    if (mission.phase === 'main' && (mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12')) {
+      return 'gallery_main_stylized';
     }
     
     // Mission 10: Back to workshop (like M08)
@@ -179,7 +187,7 @@ export function VisualPlayScreen({
     }
 
     return undefined;
-  }, [mission.phase, mission.sequence, mission.mission_id, mission.view, mission.bg_override, hasPaintedWalls]);
+  }, [mission.phase, mission.sequence, mission.mission_id, mission.view, hasPaintedWalls]);
 
   const currentBg = useMemo(() => getBackgroundForMission(mission, previousBgOverride), [mission, previousBgOverride]);
   const currentBgKey = useMemo(() => getBackgroundKey(mission, previousBgOverride), [mission, previousBgOverride]);
