@@ -34,38 +34,40 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
   return (
     <TooltipProvider>
       <div 
-        className="game-stage flex flex-col items-center justify-center"
+        className="game-stage flex flex-col items-center justify-start pt-safe"
         style={{
           background: '#FFFFFF',
+          paddingTop: 'max(env(safe-area-inset-top, 16px), 16px)',
+          paddingBottom: 'max(env(safe-area-inset-bottom, 80px), 80px)',
         }}
       >
         {/* Logo top-right */}
         <div 
           className="absolute z-20"
           style={{
-            top: 'max(env(safe-area-inset-top, 16px), 20px)',
-            right: 'max(env(safe-area-inset-right, 16px), 20px)',
+            top: 'max(env(safe-area-inset-top, 12px), 12px)',
+            right: 'max(env(safe-area-inset-right, 12px), 12px)',
           }}
         >
           <img 
             src={kinneretLogo} 
             alt="האקדמית כנרת" 
-            className="h-20 md:h-28 w-auto"
+            className="h-14 sm:h-20 md:h-28 w-auto"
           />
         </div>
         
-        {/* Content - desktop centered, mobile with safe-area */}
+        {/* Content - mobile-first compact layout */}
         <div 
-          className="relative z-10 flex flex-col items-center gap-5 md:gap-8 animate-fade-in w-full max-w-3xl overflow-auto game-stage-content p-4 md:p-8"
+          className="relative z-10 flex flex-col items-center gap-3 sm:gap-5 md:gap-8 animate-fade-in w-full max-w-3xl game-stage-content px-3 sm:px-4 md:px-8 mt-16 sm:mt-20 md:mt-8"
         >
           {/* Title */}
-          <div className="text-center px-4">
-            <h1 className="text-2xl md:text-4xl font-bold text-slate-900 mb-2">נקודת הזינוק שלך</h1>
-            <p className="text-base md:text-xl text-slate-600">לאיזה עולם קופצים?</p>
+          <div className="text-center px-2">
+            <h1 className="text-xl sm:text-2xl md:text-4xl font-bold text-slate-900 mb-1 sm:mb-2">נקודת הזינוק שלך</h1>
+            <p className="text-sm sm:text-base md:text-xl text-slate-600">לאיזה עולם קופצים?</p>
           </div>
           
-          {/* Dimension cards - stacked on mobile, row on tablet+ */}
-          <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 md:gap-6 w-full px-2">
+          {/* Dimension cards - compact on mobile */}
+          <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4 md:gap-6 w-full px-1">
             {DIMENSIONS.map((dim) => {
               const isSelected = selectedDimension === dim.key;
               
@@ -75,13 +77,13 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
                     <button
                       onClick={() => handleCardClick(dim)}
                       disabled={!dim.available}
-                      className={`group relative rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 ${
+                      className={`group relative rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 ${
                         isSelected ? 'ring-4 ring-primary scale-105' : ''
                       }`}
                       style={{
-                        width: 'min(88vw, 200px)',
-                        height: 'clamp(100px, 20vw, 160px)',
-                        minHeight: '100px',
+                        width: 'min(85vw, 200px)',
+                        height: 'clamp(70px, 15vw, 160px)',
+                        minHeight: '70px',
                         background: dim.image ? `url(${dim.image}) center/cover` : 'rgba(255, 252, 245, 0.9)',
                         boxShadow: isSelected 
                           ? '0 12px 40px rgba(0,0,0,0.4), 0 0 30px hsl(170 80% 45% / 0.3)'
@@ -93,17 +95,17 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
                       {dim.image && (
                         <div className="absolute inset-0 bg-black/30 pointer-events-none" />
                       )}
-                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 md:gap-3 p-4">
+                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 sm:gap-2 md:gap-3 p-3 sm:p-4">
                         {!dim.image && (
-                          <span className={`text-4xl md:text-5xl transition-transform duration-300 ${isSelected ? 'scale-110' : 'group-hover:scale-110'}`}>
+                          <span className={`text-3xl sm:text-4xl md:text-5xl transition-transform duration-300 ${isSelected ? 'scale-110' : 'group-hover:scale-110'}`}>
                             {dim.emoji}
                           </span>
                         )}
-                        <span className={`font-bold text-xl md:text-2xl ${dim.image ? 'text-white drop-shadow-lg' : 'text-slate-900'}`}>
+                        <span className={`font-bold text-lg sm:text-xl md:text-2xl ${dim.image ? 'text-white drop-shadow-lg' : 'text-slate-900'}`}>
                           {dim.label}
                         </span>
                         {!dim.available && (
-                          <span className="text-xs md:text-sm text-slate-500">(בקרוב)</span>
+                          <span className="text-xs text-slate-500">(בקרוב)</span>
                         )}
                       </div>
                       
@@ -134,14 +136,14 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
           </div>
         </div>
 
-        {/* Bottom-left arrow CTA - appears when dimension is selected */}
+        {/* Bottom-left arrow CTA - fixed position, always visible when selected */}
         <div 
-          className={`absolute z-20 transition-all duration-300 ${
+          className={`fixed z-30 transition-all duration-300 ${
             selectedDimension ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
           }`}
           style={{
-            bottom: 'max(env(safe-area-inset-bottom, 16px), 24px)',
-            left: 'max(env(safe-area-inset-left, 16px), 24px)',
+            bottom: 'max(env(safe-area-inset-bottom, 16px), 20px)',
+            left: 'max(env(safe-area-inset-left, 16px), 20px)',
           }}
         >
           <button
@@ -158,16 +160,15 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
           </button>
         </div>
 
-        {/* Disclaimer at bottom right */}
-        <div 
-          className="absolute z-20"
-          style={{
-            bottom: 'max(env(safe-area-inset-bottom, 8px), 16px)',
-            right: 'max(env(safe-area-inset-right, 8px), 16px)',
-          }}
-        >
-          <Disclaimer className="text-slate-400" />
-        </div>
+        {/* Hide the Lovable badge on this screen via CSS */}
+        <style>{`
+          a[href*="lovable.dev"],
+          div[class*="lovable"],
+          #lovable-badge,
+          [data-lovable-badge] {
+            display: none !important;
+          }
+        `}</style>
       </div>
     </TooltipProvider>
   );
