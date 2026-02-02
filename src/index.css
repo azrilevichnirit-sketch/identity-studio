@@ -1300,11 +1300,11 @@
    ============================================ */
 
 @media (max-width: 1023px) {
-  /* Mission hero row - right side, above tool panel */
+  /* Mission hero row - right side, raised higher to not overlap tool panel */
   .missionScreen .mission-hero-mobile {
     position: fixed;
     right: calc(env(safe-area-inset-right, 0px) + 8px);
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 100px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 140px);
     left: auto;
     top: auto;
     display: flex;
@@ -1366,15 +1366,15 @@
     display: block;
   }
 
-  /* Mission tool panel - bottom-left */
+  /* Mission tool panel - bottom-left, scaled down on mobile */
   .missionScreen .mission-tool-panel-mobile {
     position: fixed;
     z-index: 70;
-    left: calc(env(safe-area-inset-left, 0px) + 16px);
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+    left: calc(env(safe-area-inset-left, 0px) + 12px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
     width: fit-content;
-    max-width: min(45vw, 300px);
-    transform: scale(1);
+    max-width: min(40vw, 260px);
+    transform: scale(0.85);
     transform-origin: bottom left;
   }
 
