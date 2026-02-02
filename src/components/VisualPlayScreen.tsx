@@ -925,7 +925,7 @@ export function VisualPlayScreen({
     // Gallery: Missions 1-2 (gallery scenes)
     // Workshop: Missions 3, 4, 6, 7 (original workshop - M7 CONTINUES workshop!)
     // Exterior: Mission 5 only
-    // Workshop2: Missions 8, 10, 11 (duplicated workshop - separate persistence)
+    // Workshop2: Missions 8, 10, 11 (workshop continuation - M10 shows M9, M11 shows M8+M10)
     // M9 and M12 are clean gallery resets - no persisted tools
     if (missionSeq <= 2) return 'gallery';
     if (missionSeq === 5) return 'exterior';
@@ -961,7 +961,9 @@ export function VisualPlayScreen({
     // M9: Gallery scene - fresh start, no persisted tools
     // M12: Final mission - fresh gallery scene
     // M7: Continues workshop zone - tools from M3, M4, M6 persist
-    // M8, M10, M11 share the "workshop2" zone - tools persist between them
+    // M8: NO old tools from workshop zone
+    // M10: ONLY show tool from M9 (bg_override="gallery_main_stylized", so M9 is in 'gallery' zone, not workshop2)
+    // M11: Show tools from M8 and M10 (workshop2)
     // Do NOT render persisted tools from previous missions here.
     // (This only affects visibility; it does not modify game state.)
     const hidePersistedToolsForThisMission = mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12';
@@ -973,6 +975,32 @@ export function VisualPlayScreen({
         
         // Skip if this is the current mission (tool still being placed)
         if (propSeq >= currentSeq) return;
+        
+        // SPECIAL CASE: Mission 10 shows ONLY the tool from Mission 9
+        // (M9 bg_override resolves to 'gallery' zone, not 'workshop2')
+        if (mission.mission_id === 'studio_10') {
+          if (propSeq === 9 && prop.persist === 'keep') {
+            const anchorRef = `m${prop.missionId.replace('studio_', '').padStart(2, '0')}_tool_${prop.key}` as AnchorRef;
+            const placement = getAnchorPosition(lockedBgKey, anchorRef);
+            if (placement) {
+              placements.push({
+                missionId: prop.missionId,
+                key: prop.key,
+                assetName: prop.assetName || `${prop.missionId}_${prop.key}`,
+                hollandCode: prop.hollandCode,
+                isPersisted: true,
+                fixedPlacement: {
+                  x: placement.x,
+                  y: placement.y,
+                  scale: placement.scale,
+                  flipX: placement.flipX,
+                  z_layer: placement.z_layer,
+                },
+              });
+            }
+          }
+          return; // Skip zone-based persistence for M10
+        }
         
         // Check zone compatibility - tools only persist in the same zone
         const toolZone = getZoneForMission(propSeq);
@@ -1037,7 +1065,7 @@ export function VisualPlayScreen({
       src={lockedBg}
       className="layout-bg"
       filter="saturate(1.18) contrast(1.08)"
-      durationMs={1500}
+      durationMs={800}
       zIndex={0}
       enabled={isMobile && isPanoramic}
       isPanoramic={isMobile && isPanoramic}
@@ -1136,7 +1164,7 @@ export function VisualPlayScreen({
           left: '50%',
           top: '50%',
           transform: 'translate(-50%, -50%)',
-          background: 'radial-gradient(circle, hsl(170 80% 50% / 0.35) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(100, 220, 200, 0.35) 0%, transparent 70%)',
           animation: 'pulse-glow 1.2s ease-in-out infinite',
         }}
       />
@@ -1145,9 +1173,9 @@ export function VisualPlayScreen({
       <div 
         className="w-20 h-20 md:w-28 md:h-28 rounded-full relative"
         style={{
-          border: '4px solid hsl(170 80% 50%)',
-          boxShadow: '0 0 40px hsl(170 80% 50% / 0.6), inset 0 0 25px hsl(170 80% 50% / 0.2)',
-          background: 'radial-gradient(circle, hsl(170 80% 50% / 0.25) 0%, transparent 60%)',
+          border: '4px solid rgba(100, 220, 200, 1)',
+          boxShadow: '0 0 40px rgba(100, 220, 200, 0.6), inset 0 0 25px rgba(100, 220, 200, 0.2)',
+          background: 'radial-gradient(circle, rgba(100, 220, 200, 0.25) 0%, transparent 60%)',
           animation: 'pulse 1.2s ease-in-out infinite',
         }}
       >
@@ -1161,9 +1189,9 @@ export function VisualPlayScreen({
         <svg 
           className="animate-bounce drop-shadow-lg"
           width="36" height="36" viewBox="0 0 24 24" 
-          fill="hsl(170, 80%, 50%)" stroke="white" strokeWidth="1"
+          fill="rgba(100, 220, 200, 1)" stroke="white" strokeWidth="1"
         >
-          <path d="M12 5v14M5 12l7 7 7-7" fill="none" stroke="hsl(170, 80%, 50%)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M12 5v14M5 12l7 7 7-7" fill="none" stroke="rgba(100, 220, 200, 1)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
       
@@ -1172,7 +1200,7 @@ export function VisualPlayScreen({
         <svg 
           className="animate-hand-move drop-shadow-md"
           width="28" height="28" viewBox="0 0 24 24" 
-          fill="none" stroke="hsl(170, 80%, 50%)" strokeWidth="2"
+          fill="none" stroke="rgba(100, 220, 200, 1)" strokeWidth="2"
         >
           <path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v6M10 10.5V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8" strokeLinecap="round" strokeLinejoin="round" />
           <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15V6" strokeLinecap="round" strokeLinejoin="round" />

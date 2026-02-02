@@ -76,7 +76,7 @@ export function PannableBackground({
       backgroundPosition={effectiveBgPosition}
       backgroundRepeat="no-repeat"
       filter={filter}
-      durationMs={durationMs}
+      durationMs={durationMs ?? 800}
       zIndex={zIndex}
     />
   );
