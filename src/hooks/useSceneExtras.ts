@@ -64,16 +64,9 @@ export function useSceneExtras(
     // Get list of picked tool IDs
     const pickedToolIds = placedProps.map(p => p.assetName).filter(Boolean);
     
-    // PRODUCT RULE: Mission 7 is a "clean slate" scene.
-    // Only show extras that are SPECIFICALLY defined for studio_07.
-    // Do NOT carry over persisted extras from earlier missions.
-    const isMission07 = currentMissionId === 'studio_07';
-    
+    // Process all rules - Mission 7 now continues the workshop zone
+    // and shows extras from earlier missions
     for (const rule of rules) {
-      // Mission 7 filter: only show M07-specific extras
-      if (isMission07 && rule.mission_id !== 'studio_07') {
-        continue;
-      }
       
       // Check if this extra should spawn
       const shouldSpawn = checkShouldSpawn(
