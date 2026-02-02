@@ -179,7 +179,16 @@ export function VisualPlayScreen({
   // - Mission 03+: Workshop (studio_in_workshop_v3)
   // - Mission 05: Exterior
   // - Mission 09, 12: Main studio (gallery_main_stylized)
+  // TIE-BREAKER BACKGROUND: Always use the LAST main game background (gallery_main_stylized)
+  // This is the background from Mission 12 - the final stylized gallery scene
+  const TIE_BREAKER_BG_KEY = 'gallery_main_stylized';
+  
   const previousBgOverride = useMemo(() => {
+    // TIE-BREAKER MISSIONS: Lock to the last main game background (gallery from M12)
+    if (mission.phase === 'tb') {
+      return TIE_BREAKER_BG_KEY;
+    }
+    
     // Mission 01: ALWAYS start with cracked walls
     if (mission.phase === 'main' && mission.mission_id === 'studio_01') {
       return 'gallery_main_stylized_v3'; // Cracked walls
@@ -273,7 +282,9 @@ export function VisualPlayScreen({
   const isExteriorLocked =
     mission.phase === 'main' && mission.view === 'out' && mission.mission_id !== 'studio_11';
   // Mission 09 & 12: Gallery (uses bg_override) - NOT workshop locked
-  const isGalleryMission = (mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12') && mission.bg_override;
+  // TIE-BREAKER missions also use gallery (stays on last main game background)
+  const isGalleryMission = ((mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12') && mission.bg_override) || mission.phase === 'tb';
+  const isTieBreakerLocked = mission.phase === 'tb';
   const isWorkshopLocked =
     mission.phase === 'main' &&
     ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission);
@@ -394,6 +405,7 @@ export function VisualPlayScreen({
   const isBgSwitchingDragActive = isM7DragActive || isM11DragActive;
   const lockedBgKey = isCalibrationBgOverrideMode && m7CalibrationBg ? m7CalibrationBg.key
     : isBgSwitchingDragActive ? dragPreviewBg.key // M7/M11 drag overrides workshop lock
+    : isTieBreakerLocked ? TIE_BREAKER_BG_KEY // Tie-breaker stays on last main game background
     : isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY 
     : isCrackedWallsLocked ? 'studio_entry_inside_bg'
     : isExteriorLocked ? 'studio_exterior_bg'
@@ -401,6 +413,8 @@ export function VisualPlayScreen({
     : displayBgKey;
   const lockedBg = isCalibrationBgOverrideMode && m7CalibrationBg ? m7CalibrationBg.image
     : isBgSwitchingDragActive ? dragPreviewBg.image // M7/M11 drag overrides workshop lock
+    : isTieBreakerLocked
+    ? (getBackgroundByName(TIE_BREAKER_BG_KEY) || displayBg)
     : isWhiteWallsLocked 
     ? (getBackgroundByName(PAINTED_WALLS_BG_KEY) || displayBg) 
     : isCrackedWallsLocked

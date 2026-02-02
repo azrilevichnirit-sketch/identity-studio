@@ -34,14 +34,14 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
   return (
     <TooltipProvider>
       <div 
-        className="game-stage flex flex-col items-start justify-start"
+        className="game-stage flex flex-col items-start justify-start lg:items-center lg:justify-center"
         style={{
           background: '#FFFFFF',
         }}
       >
-        {/* Content - positioned at top with safe-area */}
+        {/* Content - positioned at top on mobile, centered on desktop */}
         <div 
-          className="relative z-10 flex flex-col items-center gap-0 animate-fade-in w-full max-w-3xl overflow-auto game-stage-content p-4 md:p-8"
+          className="relative z-10 flex flex-col items-center gap-0 animate-fade-in w-full max-w-3xl overflow-auto game-stage-content p-4 md:p-8 lg:overflow-visible"
           style={{
             paddingTop: 'max(env(safe-area-inset-top, 16px), 24px)',
           }}
