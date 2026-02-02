@@ -2087,26 +2087,173 @@
   transition: opacity 0.1s ease-out;
   display: flex;
   align-items: center;
+
+  /* Use tokens + per-instance intensity vars set from React */
+  background: none;
 }
 
 .edge-pan-left {
   left: 0;
   justify-content: flex-start;
   padding-left: 8px;
+
+  background: linear-gradient(
+    to right,
+    hsl(var(--primary) / var(--edge-pan-strong, 0.45)),
+    hsl(var(--primary) / var(--edge-pan-soft, 0.22)),
+    transparent
+  );
+  box-shadow: inset var(--edge-pan-spread, 35px) 0 calc(var(--edge-pan-spread, 35px) * 2) calc(var(--edge-pan-spread, 35px) * -0.3)
+    hsl(var(--primary) / var(--edge-pan-shadow, 0.5));
 }
 
 .edge-pan-right {
   right: 0;
   justify-content: flex-end;
   padding-right: 8px;
+
+  background: linear-gradient(
+    to left,
+    hsl(var(--primary) / var(--edge-pan-strong, 0.45)),
+    hsl(var(--primary) / var(--edge-pan-soft, 0.22)),
+    transparent
+  );
+  box-shadow: inset calc(var(--edge-pan-spread, 35px) * -1) 0 calc(var(--edge-pan-spread, 35px) * 2) calc(var(--edge-pan-spread, 35px) * -0.3)
+    hsl(var(--primary) / var(--edge-pan-shadow, 0.5));
 }
 
 .edge-pan-chevrons {
   display: flex;
   flex-direction: row;
   color: white;
-  filter: drop-shadow(0 0 8px rgba(100, 220, 200, 0.8)) 
-          drop-shadow(0 0 4px rgba(0, 0, 0, 0.6));
+  filter: drop-shadow(0 0 8px hsl(var(--primary) / 0.8))
+          drop-shadow(0 0 4px hsl(0 0% 0% / 0.6));
+}
+
+/* ================================
+   Drop Target Indicator (Mobile + Desktop)
+   Ring + arrow + hand + (optional) label
+   ================================ */
+
+.drop-target-anchor {
+  position: absolute;
+  /* keep it above scene extras + placed props + hero */
+  z-index: 160;
+  cursor: pointer;
+  /* helps iOS hit-testing while still letting inner be pointer-free */
+  touch-action: manipulation;
+}
+
+.drop-target {
+  position: relative;
+  width: 1px;
+  height: 1px;
+}
+
+.drop-target-glow {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  pointer-events: none;
+  background: radial-gradient(circle, hsl(var(--primary) / 0.28) 0%, transparent 70%);
+  animation: pulse-glow 1.2s ease-in-out infinite;
+}
+
+.drop-target-ring {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  pointer-events: none;
+  border: 4px solid hsl(var(--primary) / 1);
+  box-shadow:
+    0 0 40px hsl(var(--primary) / 0.55),
+    inset 0 0 25px hsl(var(--primary) / 0.18);
+  background: radial-gradient(circle, hsl(var(--primary) / 0.22) 0%, transparent 60%);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.drop-target-dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: hsl(var(--bubble-bg) / 0.95);
+  box-shadow: 0 0 8px hsl(var(--bubble-bg) / 1);
+}
+
+.drop-target-arrow {
+  position: absolute;
+  left: 50%;
+  top: -54px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  filter: drop-shadow(0 6px 12px hsl(0 0% 0% / 0.35));
+}
+
+.drop-target-arrow svg {
+  display: block;
+  animation: bounce-subtle 1s ease-in-out infinite;
+}
+
+.drop-target-arrow svg path {
+  stroke: hsl(var(--primary) / 1);
+}
+
+.drop-target-hand {
+  position: absolute;
+  left: 50%;
+  top: 86px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  filter: drop-shadow(0 4px 10px hsl(0 0% 0% / 0.25));
+}
+
+.drop-target-hand svg {
+  animation: hand-move 1s ease-in-out infinite;
+}
+
+.drop-target-hand svg path {
+  stroke: hsl(var(--primary) / 1);
+}
+
+.drop-target-label {
+  position: absolute;
+  left: 50%;
+  top: 122px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  white-space: nowrap;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.45rem 0.85rem;
+  border-radius: 14px;
+  background: hsl(var(--primary) / 1);
+  color: hsl(var(--primary-foreground) / 1);
+  box-shadow: 0 6px 18px hsl(var(--primary) / 0.35);
+}
+
+@media (min-width: 768px) {
+  .drop-target-ring {
+    width: 112px;
+    height: 112px;
+  }
+  .drop-target-hand {
+    top: 116px;
+  }
+  .drop-target-label {
+    top: 156px;
+  }
 }
 
 .edge-pan-chevron {
