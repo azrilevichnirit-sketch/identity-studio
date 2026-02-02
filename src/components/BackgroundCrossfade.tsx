@@ -26,7 +26,8 @@ function preloadImage(src: string): Promise<void> {
       resolve();
     };
     img.onerror = () => {
-      // Still resolve to avoid blocking - CSS will handle missing images gracefully
+      console.warn(`BackgroundCrossfade: Failed to preload ${src}`);
+      // Still resolve to avoid blocking
       resolve();
     };
     img.src = src;
@@ -45,7 +46,7 @@ export function BackgroundCrossfade({
   backgroundPosition,
   backgroundRepeat = "no-repeat",
   filter,
-  durationMs = 500,
+  durationMs = 800,
   zIndex = 0,
 }: BackgroundCrossfadeProps) {
   const [current, setCurrent] = useState(src);
