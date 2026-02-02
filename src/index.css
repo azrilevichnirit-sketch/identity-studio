@@ -1360,8 +1360,9 @@
     order: 2;
     z-index: 90;
     pointer-events: none;
-    width: clamp(100px, 24vw, 140px);
-    transform: scale(1.15);
+    /* Keep avatar readable/proportional on real phones */
+    width: clamp(120px, 32vw, 210px);
+    transform: scale(1.25);
     transform-origin: bottom right;
     filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
   }
@@ -1596,8 +1597,8 @@
   }
 
   .missionScreen .mission-avatar-mobile {
-    width: clamp(80px, 22vw, 120px);
-    transform: scale(1.1);
+    width: clamp(110px, 34vw, 200px);
+    transform: scale(1.22);
   }
 
   /* Small mobile tool panel - even more compact */

@@ -734,7 +734,10 @@ export function VisualPlayScreen({
     setDragPosition({ x: e.clientX, y: e.clientY });
     
     // Capture pointer for reliable tracking
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    // IMPORTANT: capture on the element that owns the handlers (currentTarget),
+    // not the deepest child (target). This is critical on mobile Safari where
+    // capturing on <img> can break subsequent pointermove/pointerup events.
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
   }, [carryModeTool]);
 
   const handlePointerMove = useCallback((e: React.PointerEvent) => {
@@ -795,7 +798,7 @@ export function VisualPlayScreen({
     if (!draggingTool || !stageRef.current) {
       // Release pointer capture
       try {
-        (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+        (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
       } catch {}
       return;
     }
@@ -804,7 +807,7 @@ export function VisualPlayScreen({
     
     // Release pointer capture
     try {
-      (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
     } catch {}
     
     if (wasActualDrag) {
@@ -2190,6 +2193,7 @@ const DraggableToolTile = forwardRef<HTMLDivElement, DraggableToolTileProps>(fun
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
         className="draggable-tool group relative overflow-visible transition-all duration-200 hover:scale-110 active:scale-95 cursor-grab active:cursor-grabbing tool-tile"
       >
         {/* Tool image - transparent PNG with subtle shadow */}
