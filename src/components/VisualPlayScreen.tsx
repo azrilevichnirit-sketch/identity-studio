@@ -1,6 +1,7 @@
 import { useMemo, useState, useRef, useCallback, useEffect, forwardRef } from 'react';
 import type { Mission, HollandCode, AvatarGender, PickRecord, MissionOption, AnchorRef } from '@/types/identity';
 import { getToolImage, getBackgroundForMission, getAvatarImage, getBackgroundKey, getBackgroundByName, getPanoramicBackground, preloadBackground } from '@/lib/assetUtils';
+import { panOffsetToDropCompensation, panOffsetToTranslatePercent } from '@/lib/pan';
 import { getAnchorPosition } from '@/lib/jsonDataLoader';
 import { SpeechBubble } from './SpeechBubble';
 import { Info, Hand, X } from 'lucide-react';
@@ -87,9 +88,7 @@ export function VisualPlayScreen({
   
   // Edge proximity for mobile pan indicators
   const [edgeProximity, setEdgeProximity] = useState<{ edge: 'left' | 'right' | null; intensity: number }>({ edge: null, intensity: 0 });
-  
-  // Track pan offset for placed props positioning (mobile panoramic only)
-  const [panOffsetX, setPanOffsetX] = useState(0);
+
   // Track background transitions - hide persisted tools during crossfade
   const [isBackgroundTransitioning, setIsBackgroundTransitioning] = useState(false);
   const previousBgKeyRef = useRef<string | null>(null);
@@ -128,6 +127,10 @@ export function VisualPlayScreen({
   const stageRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
   const dragStartPosRef = useRef<{ x: number; y: number } | null>(null);
+
+  // Keep latest pan offset WITHOUT triggering React re-renders.
+  const panOffsetXRef = useRef(0);
+  const panSyncRafRef = useRef<number | null>(null);
   
   // Options from mission
   const optionA = mission.options.find((o) => o.key === 'a')!;
@@ -425,19 +428,28 @@ export function VisualPlayScreen({
 
   const panApiRef = useRef<PanningApi | null>(null);
 
-  // Sync pan offset when initial target changes (mission transition)
+  // Sync initial pan into the CSS var (no React state) when missions change.
   useEffect(() => {
-    if (isMobile && isPanoramic && initialPanTargetX !== undefined) {
-      // Initial pan is set by usePanningBackground, sync our state
-      // Give a small delay for the hook to initialize
-      const timer = setTimeout(() => {
-        if (panApiRef.current) {
-          setPanOffsetX(panApiRef.current.getOffsetX());
-        }
-      }, 50);
-      return () => clearTimeout(timer);
-    }
+    if (!isMobile || !isPanoramic) return;
+    const timer = window.setTimeout(() => {
+      const offset = panApiRef.current?.getOffsetX() ?? 0;
+      panOffsetXRef.current = offset;
+      if (stageRef.current) {
+        stageRef.current.style.setProperty('--pan-shift-x', panOffsetToTranslatePercent(offset));
+      }
+    }, 60);
+    return () => window.clearTimeout(timer);
   }, [isMobile, isPanoramic, initialPanTargetX]);
+
+  // Cleanup any pending RAF on unmount
+  useEffect(() => {
+    return () => {
+      if (panSyncRafRef.current) {
+        window.cancelAnimationFrame(panSyncRafRef.current);
+        panSyncRafRef.current = null;
+      }
+    };
+  }, []);
 
   // Uses anchor_ref from quest data to look up coordinates in anchor map
   // IMPORTANT: Look up anchor in the CURRENT background (where placement happens),
@@ -744,10 +756,17 @@ export function VisualPlayScreen({
       const rect = stageRef.current.getBoundingClientRect();
       const normalizedX = (e.clientX - rect.left) / rect.width;
       panApiRef.current?.updatePanFromDrag(normalizedX);
-      
-      // Update pan offset for placed props positioning
-      if (panApiRef.current) {
-        setPanOffsetX(panApiRef.current.getOffsetX());
+
+      // Sync pan shift to CSS variable (1 update per animation frame)
+      if (!panSyncRafRef.current) {
+        panSyncRafRef.current = window.requestAnimationFrame(() => {
+          panSyncRafRef.current = null;
+          const offset = panApiRef.current?.getOffsetX() ?? 0;
+          panOffsetXRef.current = offset;
+          if (stageRef.current) {
+            stageRef.current.style.setProperty('--pan-shift-x', panOffsetToTranslatePercent(offset));
+          }
+        });
       }
       
       // Calculate edge proximity for visual indicators (matches panning edge zone)
@@ -802,11 +821,11 @@ export function VisualPlayScreen({
       // The compensation factor depends on how much extra content the panoramic image has
       // With panRange = 0.22 (22%), the full image is ~144% of viewport width
       // So each percentage point of pan offset shifts the content by ~1.44 viewport percentages
-      if (isMobile && isPanoramic && panOffsetX !== 0) {
-        // panOffsetX positive = we see left side, so pointer is hitting content further RIGHT on the image
-        // panOffsetX negative = we see right side, so pointer is hitting content further LEFT on the image
-        const panCompensation = panOffsetX * 1.44;
-        dropX = dropX + panCompensation;
+      if (isMobile && isPanoramic) {
+        const panOffsetNow = panApiRef.current?.getOffsetX() ?? panOffsetXRef.current;
+        if (panOffsetNow !== 0) {
+          dropX = dropX + panOffsetToDropCompensation(panOffsetNow);
+        }
       }
 
       const isMission01 = mission.mission_id === 'studio_01';
@@ -854,7 +873,10 @@ export function VisualPlayScreen({
     
     // Reset pan and edge indicators when drag ends
     panApiRef.current?.resetPan();
-    setPanOffsetX(0);
+    panOffsetXRef.current = 0;
+    if (stageRef.current) {
+      stageRef.current.style.setProperty('--pan-shift-x', '0%');
+    }
     setEdgeProximity({ edge: null, intensity: 0 });
   }, [draggingTool, completePlacement, getTargetAnchor, mission.mission_id]);
 
@@ -2082,7 +2104,6 @@ export function VisualPlayScreen({
         isCarryMode={!!carryModeTool}
         isDragging={!!draggingTool}
         onCancelCarry={handleCancelCarry}
-        panOffsetX={panOffsetX}
         isPanoramic={isPanoramic}
       />
       

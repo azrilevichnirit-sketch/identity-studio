@@ -133,22 +133,14 @@ function MobileMissionLayout({
   onCancelCarry,
   isCarryMode,
   isDragging = false,
-  panOffsetX = 0,
   isPanoramic = false,
 }: MissionLayoutProps) {
-  // For panoramic backgrounds, we need to offset placed props to match background position
-  // The background uses backgroundPosition: `${50 + panOffsetX}% 100%`
-  // 
-  // Math: Panoramic image width = ~144% of viewport (panRange 22% on each side)
-  // When panOffsetX = 22, background position = 72%, showing left side of image
-  // The visual content shifts RIGHT by: panOffsetX * (imageWidth / 100)
-  //   = 22 * 1.44 = ~31.7% of viewport width
-  // Props layer must shift LEFT by the same amount to stay aligned with painted positions
-  // 
-  // CSS translateX uses container width (100vw = viewport), so:
-  // propsTranslateX = -panOffsetX * 1.44
-  const panCompensationFactor = 1.44; // Based on 144% wide panoramic image
-  const propsTranslateX = isPanoramic ? `${-panOffsetX * panCompensationFactor}%` : '0';
+  // Pan compensation is synced imperatively via a CSS var on the stage element:
+  //   --pan-shift-x: "-12.3%"
+  // This avoids 60fps React re-renders while dragging.
+  const panTransform = isPanoramic
+    ? 'translateX(var(--pan-shift-x, 0%))'
+    : 'translateX(0%)';
 
   // Add dragging class to enable CSS-based hiding of hero elements
   const stageClasses = `game-stage mobile-layout missionScreen${isDragging ? ' is-dragging' : ''}`;
@@ -167,7 +159,7 @@ function MobileMissionLayout({
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
-          transform: `translateX(${propsTranslateX})`,
+          transform: panTransform,
           transition: 'transform 0.15s ease-out',
         }}
       >
@@ -182,7 +174,7 @@ function MobileMissionLayout({
       <div 
         className="absolute inset-0"
         style={{
-          transform: `translateX(${propsTranslateX})`,
+          transform: panTransform,
           transition: 'transform 0.15s ease-out',
           pointerEvents: 'none',
         }}
