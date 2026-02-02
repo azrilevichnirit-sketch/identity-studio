@@ -1,6 +1,9 @@
+import { useEffect } from 'react';
 import type { AvatarGender } from '@/types/identity';
 import { getAvatarImage } from '@/lib/assetUtils';
 import galleryBg from '@/assets/backgrounds/gallery_main_stylized.webp';
+// Preload the intro screen background to prevent black flash during transition
+import introScreenBg from '@/assets/backgrounds/gallery_main_stylized_v3.webp';
 import { GameStage } from './GameStage';
 
 interface AvatarSelectProps {
@@ -10,6 +13,12 @@ interface AvatarSelectProps {
 export function AvatarSelect({ onSelect }: AvatarSelectProps) {
   const femaleAvatar = getAvatarImage('female', 'idle');
   const maleAvatar = getAvatarImage('male', 'idle');
+
+  // Preload intro screen background when this component mounts
+  useEffect(() => {
+    const img = new Image();
+    img.src = introScreenBg;
+  }, []);
 
   return (
     <GameStage backgroundImage={galleryBg} enhanceBackground>
