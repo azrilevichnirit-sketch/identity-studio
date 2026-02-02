@@ -1,3 +1,4 @@
+import type React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface EdgePanIndicatorsProps {
@@ -21,9 +22,18 @@ export function EdgePanIndicators({ activeEdge, intensity }: EdgePanIndicatorsPr
   
   // Calculate opacity (more aggressive fade in)
   const opacity = boostedIntensity;
-  
   // Calculate glow spread based on intensity (wider and brighter)
   const glowSpread = 25 + clampedIntensity * 40; // 25-65px
+
+  // Drive visuals through CSS tokens (HSL) instead of raw rgba.
+  const styleVars = {
+    opacity,
+    // Alpha scalars (0-1)
+    ['--edge-pan-strong' as any]: String(0.5 * boostedIntensity),
+    ['--edge-pan-soft' as any]: String(0.25 * boostedIntensity),
+    ['--edge-pan-shadow' as any]: String(0.6 * boostedIntensity),
+    ['--edge-pan-spread' as any]: `${glowSpread}px`,
+  } as React.CSSProperties;
 
   return (
     <>
@@ -31,14 +41,8 @@ export function EdgePanIndicators({ activeEdge, intensity }: EdgePanIndicatorsPr
       <div
         className="edge-pan-indicator edge-pan-left"
         style={{
+          ...styleVars,
           opacity: activeEdge === 'left' ? opacity : 0,
-          background: `linear-gradient(to right, 
-            rgba(100, 220, 200, ${0.5 * boostedIntensity}), 
-            rgba(100, 220, 200, ${0.25 * boostedIntensity}), 
-            transparent)`,
-          boxShadow: activeEdge === 'left' 
-            ? `inset ${glowSpread}px 0 ${glowSpread * 2}px -${glowSpread * 0.3}px rgba(100, 220, 200, ${0.6 * boostedIntensity})`
-            : 'none',
         }}
       >
         <div 
@@ -56,14 +60,8 @@ export function EdgePanIndicators({ activeEdge, intensity }: EdgePanIndicatorsPr
       <div
         className="edge-pan-indicator edge-pan-right"
         style={{
+          ...styleVars,
           opacity: activeEdge === 'right' ? opacity : 0,
-          background: `linear-gradient(to left, 
-            rgba(100, 220, 200, ${0.5 * boostedIntensity}), 
-            rgba(100, 220, 200, ${0.25 * boostedIntensity}), 
-            transparent)`,
-          boxShadow: activeEdge === 'right'
-            ? `inset -${glowSpread}px 0 ${glowSpread * 2}px -${glowSpread * 0.3}px rgba(100, 220, 200, ${0.6 * boostedIntensity})`
-            : 'none',
         }}
       >
         <div 

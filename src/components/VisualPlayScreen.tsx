@@ -15,6 +15,7 @@ import { PannableBackground } from './PannableBackground';
 import { useIsMobile } from '@/hooks/use-mobile';
 // BackgroundCrossfade is used inside PannableBackground
 import { EdgePanIndicators } from './EdgePanIndicators';
+import { DropTargetIndicator } from './DropTargetIndicator';
 import { AnchorDebugOverlay } from './AnchorDebugOverlay';
 import { GridDebugOverlay } from './GridDebugOverlay';
 import { ZLayerDebugOverlay, type ZLayerItem, LAYER_ZINDEX } from './ZLayerDebugOverlay';
@@ -1137,8 +1138,8 @@ export function VisualPlayScreen({
   }, [sceneExtras, lockedBgKey]);
 
   const targetZoneElement = activeToolVariant && targetPosition ? (
-    <div 
-      className="absolute z-[12] animate-fade-in cursor-pointer"
+    <div
+      className="drop-target-anchor"
       style={{
         left: `${targetPosition.x}%`,
         top: `${targetPosition.y}%`,
@@ -1155,71 +1156,7 @@ export function VisualPlayScreen({
         handleDropZoneTap();
       }}
     >
-      {/* Outer glow effect */}
-      <div 
-        className="absolute inset-0 rounded-full pointer-events-none"
-        style={{
-          width: '140px',
-          height: '140px',
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-          background: 'radial-gradient(circle, rgba(100, 220, 200, 0.35) 0%, transparent 70%)',
-          animation: 'pulse-glow 1.2s ease-in-out infinite',
-        }}
-      />
-      
-      {/* Main pulsing ring */}
-      <div 
-        className="w-20 h-20 md:w-28 md:h-28 rounded-full relative"
-        style={{
-          border: '4px solid rgba(100, 220, 200, 1)',
-          boxShadow: '0 0 40px rgba(100, 220, 200, 0.6), inset 0 0 25px rgba(100, 220, 200, 0.2)',
-          background: 'radial-gradient(circle, rgba(100, 220, 200, 0.25) 0%, transparent 60%)',
-          animation: 'pulse 1.2s ease-in-out infinite',
-        }}
-      >
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-3 h-3 rounded-full bg-white/80" style={{ boxShadow: '0 0 8px white' }} />
-        </div>
-      </div>
-      
-      {/* Downward arrow */}
-      <div className="absolute left-1/2 -top-14 -translate-x-1/2 flex flex-col items-center">
-        <svg 
-          className="animate-bounce drop-shadow-lg"
-          width="36" height="36" viewBox="0 0 24 24" 
-          fill="rgba(100, 220, 200, 1)" stroke="white" strokeWidth="1"
-        >
-          <path d="M12 5v14M5 12l7 7 7-7" fill="none" stroke="rgba(100, 220, 200, 1)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </div>
-      
-      {/* Hand icon */}
-      <div className="absolute left-1/2 -bottom-10 -translate-x-1/2">
-        <svg 
-          className="animate-hand-move drop-shadow-md"
-          width="28" height="28" viewBox="0 0 24 24" 
-          fill="none" stroke="rgba(100, 220, 200, 1)" strokeWidth="2"
-        >
-          <path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v6M10 10.5V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15V6" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </div>
-      
-      {/* Carry mode instruction */}
-      {carryModeTool && !draggingTool && (
-        <div 
-          className="absolute top-full mt-14 left-1/2 -translate-x-1/2 whitespace-nowrap text-sm font-semibold px-4 py-2 rounded-xl animate-pulse"
-          style={{
-            background: 'hsl(170 80% 45%)',
-            color: 'white',
-            boxShadow: '0 4px 16px hsl(170 80% 45% / 0.5)',
-          }}
-        >
-          לחץ כאן להנחה
-        </div>
-      )}
+      <DropTargetIndicator mode={carryModeTool && !draggingTool ? 'carry' : 'drag'} />
     </div>
   ) : null;
 
