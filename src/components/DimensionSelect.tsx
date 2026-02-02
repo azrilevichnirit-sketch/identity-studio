@@ -34,32 +34,35 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
   return (
     <TooltipProvider>
       <div 
-        className="game-stage flex flex-col items-center justify-center"
+        className="game-stage flex flex-col items-start justify-start"
         style={{
           background: '#FFFFFF',
         }}
       >
-        {/* Content - desktop centered, mobile with safe-area */}
+        {/* Content - positioned at top with safe-area */}
         <div 
-          className="relative z-10 flex flex-col items-center gap-0 animate-fade-in w-full max-w-3xl overflow-auto game-stage-content p-4 md:p-8 -mt-16 md:-mt-16"
+          className="relative z-10 flex flex-col items-center gap-0 animate-fade-in w-full max-w-3xl overflow-auto game-stage-content p-4 md:p-8"
+          style={{
+            paddingTop: 'max(env(safe-area-inset-top, 16px), 24px)',
+          }}
         >
           {/* Logo - above title, aligned right (RTL) */}
-          <div className="w-full flex justify-start px-4 -mb-6 md:-mb-0">
+          <div className="w-full flex justify-start px-4 -mb-8 md:-mb-0">
             <img 
               src={kinneretLogo} 
               alt="האקדמית כנרת" 
-              className="h-44 md:h-56 w-auto"
+              className="h-36 md:h-56 w-auto"
             />
           </div>
 
           {/* Title */}
-          <div className="text-center px-4">
-            <h1 className="text-2xl md:text-4xl font-bold text-slate-900 mb-2">נקודת הזינוק שלך</h1>
-            <p className="text-base md:text-xl text-slate-600">לאיזה עולם קופצים?</p>
+          <div className="text-center px-4 mb-2">
+            <h1 className="text-xl md:text-4xl font-bold text-slate-900 mb-1">נקודת הזינוק שלך</h1>
+            <p className="text-sm md:text-xl text-slate-600">לאיזה עולם קופצים?</p>
           </div>
           
           {/* Dimension cards - stacked on mobile, row on tablet+ */}
-          <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 md:gap-6 w-full px-2">
+          <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 md:gap-6 w-full px-2">
             {DIMENSIONS.map((dim) => {
               const isSelected = selectedDimension === dim.key;
               
@@ -73,9 +76,9 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
                         isSelected ? 'ring-4 ring-primary scale-105' : ''
                       }`}
                       style={{
-                        width: 'min(88vw, 200px)',
-                        height: 'clamp(100px, 20vw, 160px)',
-                        minHeight: '100px',
+                        width: 'min(85vw, 200px)',
+                        height: 'clamp(90px, 18vw, 140px)',
+                        minHeight: '90px',
                         background: dim.image ? `url(${dim.image}) center/cover` : 'rgba(255, 252, 245, 0.9)',
                         boxShadow: isSelected 
                           ? '0 12px 40px rgba(0,0,0,0.4), 0 0 30px hsl(170 80% 45% / 0.3)'
