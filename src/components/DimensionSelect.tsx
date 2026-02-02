@@ -39,25 +39,19 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
           background: '#FFFFFF',
         }}
       >
-        {/* Logo top-right */}
-        <div 
-          className="absolute z-20"
-          style={{
-            top: 'max(env(safe-area-inset-top, 16px), 20px)',
-            right: 'max(env(safe-area-inset-right, 16px), 20px)',
-          }}
-        >
-          <img 
-            src={kinneretLogo} 
-            alt="האקדמית כנרת" 
-            className="h-60 md:h-80 w-auto"
-          />
-        </div>
-        
         {/* Content - desktop centered, mobile with safe-area */}
         <div 
           className="relative z-10 flex flex-col items-center gap-5 md:gap-8 animate-fade-in w-full max-w-3xl overflow-auto game-stage-content p-4 md:p-8"
         >
+          {/* Logo - above title, aligned right */}
+          <div className="w-full flex justify-end px-4">
+            <img 
+              src={kinneretLogo} 
+              alt="האקדמית כנרת" 
+              className="h-44 md:h-56 w-auto"
+            />
+          </div>
+
           {/* Title */}
           <div className="text-center px-4">
             <h1 className="text-2xl md:text-4xl font-bold text-slate-900 mb-2">נקודת הזינוק שלך</h1>
