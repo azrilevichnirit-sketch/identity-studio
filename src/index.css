@@ -1296,15 +1296,15 @@
 
 /* ============================================
    MISSION SCREEN - MOBILE (<1024px)
-   Hero row with bubble + avatar, hides during drag
+   Optimized for real mobile devices
    ============================================ */
 
 @media (max-width: 1023px) {
-  /* Mission hero row - right side, raised higher to not overlap tool panel */
+  /* Mission hero row - compact and positioned for real mobile screens */
   .missionScreen .mission-hero-mobile {
     position: fixed;
-    right: calc(env(safe-area-inset-right, 0px) + 8px);
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 140px);
+    right: calc(env(safe-area-inset-right, 0px) + 6px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 120px);
     left: auto;
     top: auto;
     display: flex;
@@ -1326,18 +1326,18 @@
     pointer-events: none !important;
   }
 
-  /* Mission bubble - positioned left of avatar */
+  /* Mission bubble - compact for mobile */
   .missionScreen .mission-bubble-mobile {
     order: 1;
     z-index: 85;
     flex: 0 1 auto;
     min-width: 0;
     width: fit-content;
-    max-width: min(55vw, 280px);
+    max-width: min(52vw, 220px);
     pointer-events: auto;
     direction: rtl;
-    margin-right: -25px;
-    margin-bottom: 30px;
+    margin-right: -20px;
+    margin-bottom: 24px;
     /* Prevent internal scrolling - bubble must fit content */
     overflow: visible;
   }
@@ -1349,15 +1349,21 @@
     max-height: none;
   }
 
-  /* Mission avatar - anchored right, larger and more visible */
+  /* Mission bubble text - smaller for mobile */
+  .missionScreen .mission-bubble-mobile p {
+    font-size: 12px !important;
+    line-height: 1.35 !important;
+  }
+
+  /* Mission avatar - compact for mobile */
   .missionScreen .mission-avatar-mobile {
     order: 2;
     z-index: 90;
     pointer-events: none;
-    width: clamp(140px, 32vw, 200px);
-    transform: scale(1.3);
+    width: clamp(100px, 24vw, 140px);
+    transform: scale(1.15);
     transform-origin: bottom right;
-    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
   }
 
   .missionScreen .mission-avatar-mobile img {
@@ -1366,28 +1372,28 @@
     display: block;
   }
 
-  /* Mission tool panel - bottom-left, scaled down on mobile */
+  /* Mission tool panel - optimized for mobile, centered at bottom */
   .missionScreen .mission-tool-panel-mobile {
     position: fixed;
     z-index: 70;
-    left: calc(env(safe-area-inset-left, 0px) + 12px);
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+    left: calc(env(safe-area-inset-left, 0px) + 8px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
     width: fit-content;
-    max-width: min(40vw, 260px);
-    transform: scale(0.85);
+    max-width: min(55vw, 240px);
+    transform: scale(0.75);
     transform-origin: bottom left;
   }
 
   /* Mobile: panel styling */
   .mobile-layout .layout-tool-panel-inner {
-    padding: 8px 10px;
-    border-radius: 12px;
+    padding: 6px 8px;
+    border-radius: 10px;
     gap: 0;
   }
 
   /* Mobile: progress becomes horizontal ABOVE tools */
   .mobile-layout .tool-panel-main-row {
-    gap: 8px;
+    gap: 6px;
   }
 
   .mobile-layout .progress-tank-wrapper {
@@ -1397,28 +1403,28 @@
 
   .mobile-layout .tool-tiles-row,
   .mobile-layout .tool-tooltip-row {
-    gap: 14px;
+    gap: 10px;
   }
 
   .mobile-layout .tool-tooltip-col {
-    width: 84px;
+    width: 72px;
   }
 
-  /* Mobile tool tiles - bigger */
+  /* Mobile tool tiles - compact */
   .mobile-layout .tool-tile {
-    width: 84px;
-    height: 84px;
-    min-width: 84px;
-    min-height: 84px;
+    width: 72px;
+    height: 72px;
+    min-width: 72px;
+    min-height: 72px;
   }
 
   /* Mobile tooltip - dark compact style like desktop */
   .mobile-layout .tooltip-area {
     margin-top: 4px;
-    padding: 10px 12px;
-    padding-left: 30px;
-    border-radius: 14px;
-    max-width: min(200px, 52vw);
+    padding: 8px 10px;
+    padding-left: 26px;
+    border-radius: 12px;
+    max-width: min(180px, 50vw);
     /* Dark background like desktop */
     background: hsl(0 0% 12%);
     border: 1px solid hsl(0 0% 22%);
@@ -1426,8 +1432,8 @@
 
   .mobile-layout .tooltip-area::before {
     top: -6px;
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     /* Match dark background */
     background: hsl(0 0% 12%);
     border: 1px solid hsl(0 0% 22%);
@@ -1435,56 +1441,56 @@
 
   .mobile-layout .tooltip-area[data-placement="tool"] {
     /* Mobile: show BELOW the tool like desktop */
-    top: calc(100% + 6px);
+    top: calc(100% + 5px);
     bottom: auto;
-    max-width: min(200px, 60vw);
+    max-width: min(180px, 55vw);
   }
 
   .mobile-layout .tooltip-area[data-placement="tool"]::before {
-    top: -6px;
+    top: -5px;
     bottom: auto;
-    left: 18px;
+    left: 16px;
     transform: translateY(1px) rotate(45deg);
   }
 
   .mobile-layout .tooltip-area[data-placement="tool"][data-variant="b"]::before {
     left: auto;
-    right: 18px;
+    right: 16px;
   }
 
   .mobile-layout .tooltip-close-btn {
-    width: 16px;
-    height: 16px;
-    left: 6px;
-    top: 6px;
+    width: 14px;
+    height: 14px;
+    left: 5px;
+    top: 5px;
     background: hsl(0 0% 20%);
     border: 1px solid hsl(0 0% 30%);
     color: hsl(0 0% 100%);
   }
 
   .mobile-layout .tooltip-text {
-    font-size: 12px;
-    line-height: 1.4;
+    font-size: 11px;
+    line-height: 1.35;
     /* White text on dark background */
     color: hsl(0 0% 100%);
   }
 
   .mobile-layout .tool-info-btn {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
   }
 
   .mobile-layout .tool-info-icon {
-    width: 13px;
-    height: 13px;
+    width: 12px;
+    height: 12px;
   }
 
   /* Mission undo button */
   .missionScreen .mission-undo-btn {
     position: absolute;
     z-index: 90;
-    top: max(env(safe-area-inset-top, 12px), 16px);
-    right: max(env(safe-area-inset-right, 12px), 16px);
+    top: max(env(safe-area-inset-top, 10px), 12px);
+    right: max(env(safe-area-inset-right, 10px), 12px);
   }
 }
 
@@ -1572,28 +1578,40 @@
   }
 }
 
-/* Small mobile - portrait or landscape */
+/* Small mobile - portrait or landscape (real phones) */
 @media (max-width: 450px) {
   .missionScreen .mission-hero-mobile {
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 90px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 80px);
+    right: calc(env(safe-area-inset-right, 0px) + 4px);
   }
 
   .missionScreen .mission-bubble-mobile {
-    max-width: min(50vw, 200px);
-    margin-bottom: 20px;
-    margin-right: -15px;
+    max-width: min(48vw, 180px);
+    margin-bottom: 16px;
+    margin-right: -12px;
+  }
+
+  .missionScreen .mission-bubble-mobile p {
+    font-size: 11px !important;
+    line-height: 1.3 !important;
   }
 
   .missionScreen .mission-avatar-mobile {
-    width: clamp(120px, 28vw, 160px);
-    transform: scale(1.2);
+    width: clamp(80px, 22vw, 120px);
+    transform: scale(1.1);
+  }
+
+  /* Small mobile tool panel - even more compact */
+  .missionScreen .mission-tool-panel-mobile {
+    transform: scale(0.7);
+    max-width: min(50vw, 200px);
   }
 
   .mobile-layout .tool-tile {
-    width: 76px;
-    height: 76px;
-    min-width: 76px;
-    min-height: 76px;
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    min-height: 64px;
   }
 
   .tool-tiles-area {
@@ -1601,34 +1619,39 @@
   }
 
   .mobile-layout .tool-panel-main-row {
+    gap: 5px;
+  }
+
+  .mobile-layout .tool-tiles-row {
     gap: 8px;
   }
 
   /* Small mobile tooltip */
   .tooltip-area {
     padding: 4px 6px;
-    padding-left: 26px;
+    padding-left: 22px;
+    max-width: min(160px, 48vw);
   }
 
   .tooltip-text {
-    font-size: 11px;
+    font-size: 10px;
   }
 
   .tooltip-close-btn {
-    width: 14px;
-    height: 14px;
-    left: 5px;
-    top: 5px;
+    width: 12px;
+    height: 12px;
+    left: 4px;
+    top: 4px;
   }
 
   .tool-info-btn {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
   }
 
   .tool-info-icon {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
   }
 }
 
