@@ -38,7 +38,7 @@ export function ZLayerDebugOverlay({ items, isVisible, onToggle }: ZLayerDebugOv
     return (
       <button
         onClick={onToggle}
-        className="fixed bottom-4 left-4 z-[100] px-2 py-1 text-xs bg-black/70 text-white rounded hover:bg-black/90 flex items-center gap-1"
+        className="fixed bottom-4 left-4 z-[100] px-2 py-1 text-xs bg-black/70 text-white rounded hover:bg-black/90 hidden lg:flex items-center gap-1"
       >
         <Eye className="w-3 h-3" />
         Z-Layers
@@ -76,8 +76,8 @@ export function ZLayerDebugOverlay({ items, isVisible, onToggle }: ZLayerDebugOv
         </div>
       ))}
 
-      {/* Legend panel */}
-      <div className="fixed bottom-12 left-4 z-[100] bg-black/80 text-white p-2 rounded-lg text-xs">
+      {/* Legend panel - hidden on mobile */}
+      <div className="fixed bottom-12 left-4 z-[100] bg-black/80 text-white p-2 rounded-lg text-xs hidden lg:block">
         <div className="font-bold mb-1">Z-Layer Legend:</div>
         <div className="flex flex-col gap-0.5">
           <div className="flex items-center gap-2">
@@ -95,10 +95,10 @@ export function ZLayerDebugOverlay({ items, isVisible, onToggle }: ZLayerDebugOv
         </div>
       </div>
 
-      {/* Close button */}
+      {/* Close button - hidden on mobile */}
       <button
         onClick={onToggle}
-        className="fixed bottom-4 left-4 z-[100] px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 flex items-center gap-1"
+        className="fixed bottom-4 left-4 z-[100] px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 hidden lg:flex items-center gap-1"
       >
         <EyeOff className="w-3 h-3" />
         סגור

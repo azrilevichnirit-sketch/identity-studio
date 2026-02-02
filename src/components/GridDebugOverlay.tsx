@@ -49,10 +49,10 @@ export function GridDebugOverlay({
 
   return (
     <>
-      {/* Toggle Button */}
+      {/* Toggle Button - hidden on mobile */}
       <button
         onClick={onToggle}
-        className="fixed bottom-4 right-32 z-50 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all"
+        className="fixed bottom-4 right-32 z-50 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all hidden lg:block"
         style={{
           background: isVisible ? 'hsl(50 90% 50%)' : 'hsl(220 15% 25% / 0.8)',
           color: isVisible ? 'black' : 'white',
