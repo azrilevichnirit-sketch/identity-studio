@@ -41,7 +41,7 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
       >
         {/* Content - desktop centered, mobile with safe-area */}
         <div 
-          className="relative z-10 flex flex-col items-center gap-3 md:gap-4 animate-fade-in w-full max-w-3xl overflow-auto game-stage-content p-4 md:p-8"
+          className="relative z-10 flex flex-col items-center gap-1 md:gap-2 animate-fade-in w-full max-w-3xl overflow-auto game-stage-content p-4 md:p-8"
         >
           {/* Logo - above title, aligned right (RTL) */}
           <div className="w-full flex justify-start px-4">
