@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useIsMobile } from './use-mobile';
+import { DEFAULT_PAN_RANGE } from '@/lib/pan';
 
 interface PanState {
   offsetX: number; // 0 = centered, negative = showing right side, positive = showing left side
@@ -44,7 +45,7 @@ export function usePanningBackground(
   const isMobile = useIsMobile();
   const {
     enabled = isMobile,
-    panRange = 0.22, // 22% extra on each side - slightly reduced for smoother feel
+    panRange = DEFAULT_PAN_RANGE, // 22% extra on each side - slightly reduced for smoother feel
     edgeZone = 0.18, // 18% from each edge triggers pan - narrower for less aggressive activation
     panSpeed = 0.8, // percentage points per frame (not directly used, easing controls speed)
     initialTargetX,

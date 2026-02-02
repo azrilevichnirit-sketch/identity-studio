@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { BackgroundCrossfade } from './BackgroundCrossfade';
 import { usePanningBackground } from '@/hooks/usePanningBackground';
+import { PAN_BG_SIZE } from '@/lib/pan';
 
 export type PanningApi = {
   updatePanFromDrag: (normalizedX: number) => void;
@@ -63,7 +64,9 @@ export function PannableBackground({
   }, [panApiRef, updatePanFromDrag, resetPan, panToPosition, offsetX]);
 
   const effectiveBgPosition = isPanoramic ? backgroundPosition : 'center';
-  const effectiveBgSize = isPanoramic ? 'auto 100%' : 'cover';
+  // IMPORTANT: Use an explicit panoramic width so panning is always visible
+  // and matches our compensation math (see src/lib/pan.ts).
+  const effectiveBgSize = isPanoramic ? PAN_BG_SIZE : 'cover';
 
   return (
     <BackgroundCrossfade
