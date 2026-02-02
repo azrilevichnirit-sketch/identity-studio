@@ -44,7 +44,7 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
           className="relative z-10 flex flex-col items-center gap-0 animate-fade-in w-full max-w-3xl overflow-auto game-stage-content p-4 md:p-8 -mt-8 md:-mt-16"
         >
           {/* Logo - above title, aligned right (RTL) */}
-          <div className="w-full flex justify-start px-4">
+          <div className="w-full flex justify-start px-4 -mb-6 md:-mb-0">
             <img 
               src={kinneretLogo} 
               alt="האקדמית כנרת" 
