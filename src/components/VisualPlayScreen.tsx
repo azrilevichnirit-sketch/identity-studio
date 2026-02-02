@@ -668,14 +668,14 @@ export function VisualPlayScreen({
     // Mission 01 paint: 2000ms (was 3200ms) - still enough to see painted walls
     // Mission 01 Tool B: 1600ms (was 2800ms) - lock + brief view
     // Mission 02: 1800ms (was 3500ms) - tool locks, brief pause
-    // Mission 07/11: 1600ms (was 2800ms) - see destination room
+    // Mission 07/11: 2000ms - see tool fixation on destination room for 2 full seconds
     // Regular: 1400ms (was 2500ms) - snappy progression
     const isMission02 = mission.mission_id === 'studio_02';
     const isMission11 = mission.mission_id === 'studio_11';
     const advanceDelay = isMission01Paint ? 2000 
       : isMission01ToolB ? 1600 
       : isMission02 ? 1800 
-      : (isMission07 || isMission11) ? 1600
+      : (isMission07 || isMission11) ? 2000
       : 1400;
     const advanceId = window.setTimeout(() => {
       // For Mission 01 Tool B: DON'T clear localPlacement before onSelect
@@ -685,6 +685,14 @@ export function VisualPlayScreen({
       }
       setJustPlaced(null);
       setLockPulseKey(null);
+      
+      // Mission 07: Clear background override BEFORE advancing so M8 starts fresh
+      // The tool should NOT be visible when transitioning to M8
+      if (isMission07) {
+        setLocalBgOverride(null);
+        m7TransitionRef.current = { active: false, bgKey: null };
+      }
+      
       // SIMPLIFIED: Just pass the option without fixedPlacement - anchor map is source of truth
       onSelect(mission.mission_id, variant, option.holland_code as HollandCode, option);
       // Clear localPlacement AFTER onSelect has added it to placedProps (next tick)
