@@ -35,26 +35,11 @@ export function SummaryScreen({ state, countsFinal, leaders, analysis }: Summary
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-black/50" />
       
-      {/* Logo - top right */}
-      <div 
-        className="absolute z-20"
-        style={{
-          top: 'max(env(safe-area-inset-top, 16px), 20px)',
-          right: 'max(env(safe-area-inset-right, 16px), 20px)',
-        }}
-      >
-        <img 
-          src={logoKinneret} 
-          alt="Kinneret Academy" 
-          className="h-14 md:h-16 object-contain"
-        />
-      </div>
-      
       {/* Content */}
       <div 
         className="relative z-10 flex flex-col gap-4 animate-fade-in overflow-auto w-full h-full items-center justify-start md:justify-center game-stage-content p-4 md:p-8"
         style={{
-          paddingTop: 'max(calc(env(safe-area-inset-top, 16px) + 80px), 100px)',
+          paddingTop: 'max(env(safe-area-inset-top, 16px), 24px)',
         }}
       >
         {/* Main results card */}
@@ -66,7 +51,15 @@ export function SummaryScreen({ state, countsFinal, leaders, analysis }: Summary
             boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
           }}
         >
-          <div className="text-3xl md:text-4xl mb-2 md:mb-3 text-center">🎉</div>
+          {/* Logo inside card - centered at top */}
+          <div className="flex justify-center mb-3">
+            <img 
+              src={logoKinneret} 
+              alt="Kinneret Academy" 
+              className="h-10 md:h-12 object-contain"
+            />
+          </div>
+          
           <h1 
             className="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-center"
             style={{ color: '#111', fontFamily: "'Rubik', sans-serif" }}
