@@ -992,9 +992,11 @@ export function VisualPlayScreen({
         if (propSeq >= currentSeq) return;
         
         // SPECIAL CASE: Mission 10 shows ONLY the tool from Mission 9
-        // (M9 bg_override resolves to 'gallery' zone, not 'workshop2')
+        // NOTE: We intentionally do NOT gate this by prop.persist because some
+        // selection paths may not carry persist reliably, but product behavior
+        // requires the Mission 9 choice to remain visible in Mission 10.
         if (mission.mission_id === 'studio_10') {
-          if (propSeq === 9 && prop.persist === 'keep') {
+          if (propSeq === 9) {
             const anchorRef = `m${prop.missionId.replace('studio_', '').padStart(2, '0')}_tool_${prop.key}` as AnchorRef;
             const placement = getAnchorPosition(lockedBgKey, anchorRef);
             if (placement) {
