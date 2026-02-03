@@ -940,7 +940,7 @@ export function VisualPlayScreen({
     // Gallery: Missions 1-2 (gallery scenes)
     // Workshop: Missions 3, 4, 6, 7 (original workshop - M7 CONTINUES workshop!)
     // Exterior: Mission 5 only
-    // Workshop2: Missions 8, 10, 11 (workshop continuation - M10 shows M9, M11 shows M8+M10)
+    // Workshop2: Missions 8, 10, 11 (workshop continuation - M11 shows M8+M10)
     // M9 and M12 are clean gallery resets - no persisted tools
     if (missionSeq <= 2) return 'gallery';
     if (missionSeq === 5) return 'exterior';
@@ -977,7 +977,6 @@ export function VisualPlayScreen({
     // M12: Final mission - fresh gallery scene
     // M7: Continues workshop zone - tools from M3, M4, M6 persist
     // M8: NO old tools from workshop zone
-    // M10: ONLY show tool from M9 (bg_override="gallery_main_stylized", so M9 is in 'gallery' zone, not workshop2)
     // M11: Show tools from M8 and M10 (workshop2)
     // Do NOT render persisted tools from previous missions here.
     // (This only affects visibility; it does not modify game state.)
@@ -990,39 +989,6 @@ export function VisualPlayScreen({
         
         // Skip if this is the current mission (tool still being placed)
         if (propSeq >= currentSeq) return;
-        
-        // SPECIAL CASE: Mission 10 shows ONLY the tool from Mission 9
-        // NOTE: We intentionally do NOT gate this by prop.persist because some
-        // selection paths may not carry persist reliably, but product behavior
-        // requires the Mission 9 choice to remain visible in Mission 10.
-        if (mission.mission_id === 'studio_10') {
-          if (propSeq === 9) {
-            const anchorRef = `m${prop.missionId.replace('studio_', '').padStart(2, '0')}_tool_${prop.key}` as AnchorRef;
-            // Mission 10 renders the Mission 9 tool on the Mission 10 background.
-            // If that background has no calibrated anchor for m09_tool_*, fall back to the
-            // canonical gallery anchors so the tool is still visible (prevents "missing" tool).
-            const placement =
-              getAnchorPosition(lockedBgKey, anchorRef) ||
-              getAnchorPosition('gallery_main_stylized', anchorRef);
-            if (placement) {
-              placements.push({
-                missionId: prop.missionId,
-                key: prop.key,
-                assetName: prop.assetName || `${prop.missionId}_${prop.key}`,
-                hollandCode: prop.hollandCode,
-                isPersisted: true,
-                fixedPlacement: {
-                  x: placement.x,
-                  y: placement.y,
-                  scale: placement.scale,
-                  flipX: placement.flipX,
-                  z_layer: placement.z_layer,
-                },
-              });
-            }
-          }
-          return; // Skip zone-based persistence for M10
-        }
         
         // Check zone compatibility - tools only persist in the same zone
         const toolZone = getZoneForMission(propSeq);
