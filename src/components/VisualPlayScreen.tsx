@@ -403,25 +403,44 @@ export function VisualPlayScreen({
   const isM7DragActive = mission.mission_id === 'studio_07' && activeToolVariant && dragPreviewBg;
   const isM11DragActive = mission.mission_id === 'studio_11' && activeToolVariant && dragPreviewBg;
   const isBgSwitchingDragActive = isM7DragActive || isM11DragActive;
-  const lockedBgKey = isCalibrationBgOverrideMode && m7CalibrationBg ? m7CalibrationBg.key
-    : isBgSwitchingDragActive ? dragPreviewBg.key // M7/M11 drag overrides workshop lock
-    : isTieBreakerLocked ? TIE_BREAKER_BG_KEY // Tie-breaker stays on last main game background
-    : isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY 
-    : isCrackedWallsLocked ? 'studio_entry_inside_bg'
-    : isExteriorLocked ? 'studio_exterior_bg'
-    : isWorkshopLocked && !isCalibrationBgOverrideMode ? 'studio_in_workshop_bg' 
+  // IMPORTANT: scopedLocalBgOverride must be able to override the workshop lock.
+  // This is required for Mission 7/11 post-drop “fixation” where the background
+  // switches rooms and must remain there until mission advance.
+  const lockedBgKey = isCalibrationBgOverrideMode && m7CalibrationBg
+    ? m7CalibrationBg.key
+    : isBgSwitchingDragActive
+    ? dragPreviewBg.key // M7/M11 drag overrides workshop lock
+    : isTieBreakerLocked
+    ? TIE_BREAKER_BG_KEY // Tie-breaker stays on last main game background
+    : isWhiteWallsLocked
+    ? PAINTED_WALLS_BG_KEY
+    : isCrackedWallsLocked
+    ? 'studio_entry_inside_bg'
+    : isExteriorLocked
+    ? 'studio_exterior_bg'
+    : scopedLocalBgOverride
+    ? scopedLocalBgOverride.key
+    : isWorkshopLocked && !isCalibrationBgOverrideMode
+    ? 'studio_in_workshop_bg'
     : displayBgKey;
-  const lockedBg = isCalibrationBgOverrideMode && m7CalibrationBg ? m7CalibrationBg.image
-    : isBgSwitchingDragActive ? dragPreviewBg.image // M7/M11 drag overrides workshop lock
+
+  const lockedBg = isCalibrationBgOverrideMode && m7CalibrationBg
+    ? m7CalibrationBg.image
+    : isBgSwitchingDragActive
+    ? dragPreviewBg.image // M7/M11 drag overrides workshop lock
     : isTieBreakerLocked
     ? (getBackgroundByName(TIE_BREAKER_BG_KEY) || displayBg)
-    : isWhiteWallsLocked 
-    ? (getBackgroundByName(PAINTED_WALLS_BG_KEY) || displayBg) 
+    : isWhiteWallsLocked
+    ? (getBackgroundByName(PAINTED_WALLS_BG_KEY) || displayBg)
     : isCrackedWallsLocked
     ? (getBackgroundByName('studio_entry_inside_bg') || displayBg)
-    : isExteriorLocked 
+    : isExteriorLocked
     ? (getBackgroundByName('studio_exterior_bg') || displayBg)
-    : (isWorkshopLocked && !isCalibrationBgOverrideMode ? (getBackgroundByName('studio_in_workshop_bg') || displayBg) : displayBg);
+    : scopedLocalBgOverride
+    ? scopedLocalBgOverride.image
+    : isWorkshopLocked && !isCalibrationBgOverrideMode
+    ? (getBackgroundByName('studio_in_workshop_bg') || displayBg)
+    : displayBg;
 
 
   // ==================== MOBILE PANORAMIC PANNING ====================
@@ -637,6 +656,14 @@ export function VisualPlayScreen({
       // Mark that we're in a M7 transition - prevents immediate bg clear on mission change
       m7TransitionRef.current = { active: true, bgKey: targetBg.key };
     }
+
+    // Mission 11: Lock the background to the tool-specific destination room on placement
+    // so it does NOT snap back to the workshop before advancing to Mission 12.
+    const isMission11 = mission.mission_id === 'studio_11';
+    if (isMission11) {
+      const targetBg = getTargetBgForOption(option);
+      setLocalBgOverride({ ...targetBg, missionId: mission.mission_id });
+    }
     setJustPlaced(null);
     setLockPulseKey(null);
     const isMission01Paint = mission.mission_id === 'studio_01' && variant === 'a';
@@ -698,7 +725,6 @@ export function VisualPlayScreen({
     // Mission 07/11: 2000ms - see tool fixation on destination room for 2 full seconds
     // Regular: 1400ms (was 2500ms) - snappy progression
     const isMission02 = mission.mission_id === 'studio_02';
-    const isMission11 = mission.mission_id === 'studio_11';
     const advanceDelay = isMission01Paint ? 2000 
       : isMission01ToolB ? 1600 
       : isMission02 ? 1800 
