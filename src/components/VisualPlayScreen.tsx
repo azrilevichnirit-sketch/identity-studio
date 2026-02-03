@@ -998,7 +998,12 @@ export function VisualPlayScreen({
         if (mission.mission_id === 'studio_10') {
           if (propSeq === 9) {
             const anchorRef = `m${prop.missionId.replace('studio_', '').padStart(2, '0')}_tool_${prop.key}` as AnchorRef;
-            const placement = getAnchorPosition(lockedBgKey, anchorRef);
+            // Mission 10 renders the Mission 9 tool on the Mission 10 background.
+            // If that background has no calibrated anchor for m09_tool_*, fall back to the
+            // canonical gallery anchors so the tool is still visible (prevents "missing" tool).
+            const placement =
+              getAnchorPosition(lockedBgKey, anchorRef) ||
+              getAnchorPosition('gallery_main_stylized', anchorRef);
             if (placement) {
               placements.push({
                 missionId: prop.missionId,
