@@ -238,6 +238,8 @@ export function useTelemetry() {
         events: [...eventsRef.current],
       };
 
+      console.log("[Telemetry] Sending gameplay payload:", JSON.stringify(payload, null, 2));
+
       try {
         const response = await fetchWithRetry(MAKE_WEBHOOK_URL, {
           method: "POST",
