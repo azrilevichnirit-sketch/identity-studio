@@ -216,8 +216,12 @@ export function useRank23Tournament(countsFinal: CountsFinal, rank1Code: Holland
    * Initialize the tournament after Rank 1 is resolved
    */
   const startTournament = useCallback((finalRank1: HollandCode) => {
+    console.log('[Rank23] startTournament called with rank1:', finalRank1);
+    console.log('[Rank23] countsFinal:', countsFinal);
+    
     // Find candidates for Rank 2
     const candidates = findCandidates(countsFinal, [finalRank1]);
+    console.log('[Rank23] Rank 2 candidates:', candidates);
     
     if (candidates.length === 0) {
       // Should not happen with valid data
@@ -228,13 +232,17 @@ export function useRank23Tournament(countsFinal: CountsFinal, rank1Code: Holland
     if (candidates.length === 1) {
       // Single candidate, auto-resolve Rank 2 and move to Rank 3
       const rank2 = candidates[0];
+      console.log('[Rank23] Rank 2 auto-resolved (single candidate):', rank2);
+      
       const rank3Candidates = findCandidates(countsFinal, [finalRank1, rank2]);
+      console.log('[Rank23] Rank 3 candidates:', rank3Candidates);
       
       if (rank3Candidates.length <= 1) {
         // Rank 3 also resolved
         const rank3 = rank3Candidates[0] || resolveByDefaultOrder(
           DEFAULT_ORDER.filter(c => c !== finalRank1 && c !== rank2)
         );
+        console.log('[Rank23] Rank 3 auto-resolved:', rank3);
         setState({
           phase: 'complete',
           rank1Code: finalRank1,
@@ -246,6 +254,8 @@ export function useRank23Tournament(countsFinal: CountsFinal, rank1Code: Holland
         });
         return;
       }
+      
+      console.log('[Rank23] Rank 3 needs tournament with', rank3Candidates.length, 'candidates');
       
       // Need tournament for Rank 3
       const pair = selectNextPair(rank3Candidates);
