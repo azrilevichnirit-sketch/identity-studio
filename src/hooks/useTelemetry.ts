@@ -49,7 +49,6 @@ function calculateCounts(picks: Record<string, PickRecord>): CountsFinal {
 // Tie flags structure for payload
 export interface TieFlags {
   rank1_triggered: boolean;
-  rank1_candidates: HollandCode[];
   rank2_triggered: boolean;
   rank2_candidates: HollandCode[];
   rank3_triggered: boolean;
