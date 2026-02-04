@@ -32,6 +32,11 @@ const getInitialState = (): GameState => {
     tieMissionUsed: null,
     tieChoiceMade: false,
     leadForm: null,
+    // Rank 2/3 tournament results
+    rank1Code: null,
+    rank2Code: null,
+    rank3Code: null,
+    rank23TieTrace: [],
   };
 };
 
@@ -254,6 +259,23 @@ export function useGameState() {
 
   const isMainComplete = state.mainIndex >= mainMissions.length;
 
+  // Setters for Rank 2/3 results
+  const setRank1Code = useCallback((code: HollandCode) => {
+    setState((prev) => ({ ...prev, rank1Code: code }));
+  }, []);
+
+  const setRank2Code = useCallback((code: HollandCode) => {
+    setState((prev) => ({ ...prev, rank2Code: code }));
+  }, []);
+
+  const setRank3Code = useCallback((code: HollandCode) => {
+    setState((prev) => ({ ...prev, rank3Code: code }));
+  }, []);
+
+  const setRank23TieTrace = useCallback((trace: GameState['rank23TieTrace']) => {
+    setState((prev) => ({ ...prev, rank23TieTrace: trace }));
+  }, []);
+
   return {
     state,
     countsFinal,
@@ -272,5 +294,9 @@ export function useGameState() {
     checkAndSetTiePhase,
     setLeadForm,
     jumpToMission,
+    setRank1Code,
+    setRank2Code,
+    setRank3Code,
+    setRank23TieTrace,
   };
 }

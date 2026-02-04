@@ -4,7 +4,7 @@ export type AvatarGender = 'female' | 'male' | null;
 
 export type Dimension = 'studio' | 'farm' | 'surprise' | null;
 
-export type Phase = 'dimension' | 'avatar' | 'intro' | 'main' | 'tie' | 'lead' | 'processing' | 'summary' | 'coming-soon';
+export type Phase = 'dimension' | 'avatar' | 'intro' | 'main' | 'tie' | 'tie2' | 'tie3' | 'lead' | 'processing' | 'summary' | 'coming-soon';
 
 // Placement modes for tool rendering
 export type PlacementMode = 
@@ -148,6 +148,17 @@ export interface GameState {
   tieMissionUsed: Mission | null;
   tieChoiceMade: boolean;
   leadForm: LeadFormData | null;
+  // Rank 2/3 tournament results
+  rank1Code: HollandCode | null;
+  rank2Code: HollandCode | null;
+  rank3Code: HollandCode | null;
+  // Trace of Rank 2/3 comparisons for telemetry
+  rank23TieTrace: Array<{
+    pairCodes: string;
+    winner: HollandCode;
+    loser: HollandCode;
+    timestamp: number;
+  }>;
 }
 
 export interface LeadFormData {

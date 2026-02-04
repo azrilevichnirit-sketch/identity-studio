@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useGameState } from '@/hooks/useGameState';
 import { useTelemetry } from '@/hooks/useTelemetry';
+import { useRank23Tournament } from '@/hooks/useRank23Tournament';
 import { GameStage } from '@/components/GameStage';
 import { DimensionSelect } from '@/components/DimensionSelect';
 import { ComingSoon } from '@/components/ComingSoon';
@@ -43,7 +44,14 @@ const Index = () => {
     checkAndSetTiePhase,
     setLeadForm,
     jumpToMission,
+    setRank1Code,
+    setRank2Code,
+    setRank3Code,
+    setRank23TieTrace,
   } = useGameState();
+
+  // Rank 2/3 tournament hook
+  const rank23Tournament = useRank23Tournament(countsFinal, state.rank1Code);
 
   const {
     trackRunStarted,
@@ -63,20 +71,84 @@ const Index = () => {
   // Track mission shown when currentMission changes
   const lastTrackedMissionRef = useRef<string | null>(null);
   useEffect(() => {
+    // Track main/tie missions
     if (currentMission && currentMission.mission_id !== lastTrackedMissionRef.current) {
       lastTrackedMissionRef.current = currentMission.mission_id;
       const isTie = state.phase === 'tie';
       trackMissionShown(currentMission.mission_id, isTie);
     }
-  }, [currentMission, state.phase, trackMissionShown]);
+    // Track Rank 2/3 tournament missions
+    if (rank23Tournament.currentMission && rank23Tournament.currentMission.mission_id !== lastTrackedMissionRef.current) {
+      lastTrackedMissionRef.current = rank23Tournament.currentMission.mission_id;
+      trackMissionShown(rank23Tournament.currentMission.mission_id, true);
+    }
+  }, [currentMission, rank23Tournament.currentMission, state.phase, trackMissionShown]);
 
   // Handle phase transitions after main missions complete
   useEffect(() => {
     if (state.phase === 'main' && isMainComplete) {
-      // Check for two-way tie
+      // Check for two-way tie for Rank 1
       const hasTie = checkAndSetTiePhase();
       if (!hasTie) {
-        // No tie, send gameplay payload then go to lead form
+        // No Rank 1 tie - determine Rank 1 from leaders and check for Rank 2/3 ties
+        const rank1 = leaders[0];
+        setRank1Code(rank1);
+        
+        // Check if Rank 2/3 needs tournament
+        if (rank23Tournament.needsTournament) {
+          rank23Tournament.startTournament(rank1);
+          setPhase('tie2');
+        } else {
+          // No tournament needed - auto-resolve and go to lead form
+          const autoResolved = rank23Tournament.getAutoResolvedRankings(rank1);
+          if (autoResolved) {
+            setRank2Code(autoResolved.rank2Code);
+            setRank3Code(autoResolved.rank3Code);
+          }
+          
+          // Send gameplay payload
+          const tieState = {
+            triggered: state.tieMissionUsed !== null,
+            missionId: state.tieMissionUsed?.mission_id || null,
+            choiceMade: state.tieChoiceMade,
+            locked: state.tieChoiceMade,
+          };
+          sendGameplayPayload(
+            state.avatarGender,
+            state.firstPicksByMissionId,
+            state.finalPicksByMissionId,
+            state.undoEvents,
+            tieState,
+            countsFinal,
+            leaders,
+          );
+          setPhase('lead');
+        }
+      }
+    }
+  }, [state.phase, isMainComplete, checkAndSetTiePhase, setPhase, sendGameplayPayload, state.avatarGender, state.firstPicksByMissionId, state.finalPicksByMissionId, state.undoEvents, state.tieMissionUsed, state.tieChoiceMade, countsFinal, leaders, rank23Tournament, setRank1Code, setRank2Code, setRank3Code]);
+
+  // Handle Rank 1 tie choice completion - then check for Rank 2/3 ties
+  useEffect(() => {
+    if (state.phase === 'tie' && state.tieChoiceMade) {
+      // Rank 1 tie is resolved - determine the winner
+      // The winner is the leader after the tie-breaker choice
+      const rank1 = leaders[0];
+      setRank1Code(rank1);
+      
+      // Check if Rank 2/3 needs tournament
+      if (rank23Tournament.needsTournament) {
+        rank23Tournament.startTournament(rank1);
+        setPhase('tie2');
+      } else {
+        // No tournament needed - auto-resolve and go to lead form
+        const autoResolved = rank23Tournament.getAutoResolvedRankings(rank1);
+        if (autoResolved) {
+          setRank2Code(autoResolved.rank2Code);
+          setRank3Code(autoResolved.rank3Code);
+        }
+        
+        // Send gameplay payload after tie is resolved
         const tieState = {
           triggered: state.tieMissionUsed !== null,
           missionId: state.tieMissionUsed?.mission_id || null,
@@ -95,17 +167,26 @@ const Index = () => {
         setPhase('lead');
       }
     }
-  }, [state.phase, isMainComplete, checkAndSetTiePhase, setPhase, sendGameplayPayload, state.avatarGender, state.firstPicksByMissionId, state.finalPicksByMissionId, state.undoEvents, state.tieMissionUsed, state.tieChoiceMade, countsFinal, leaders]);
+  }, [state.phase, state.tieChoiceMade, setPhase, sendGameplayPayload, state.avatarGender, state.firstPicksByMissionId, state.finalPicksByMissionId, state.undoEvents, state.tieMissionUsed, countsFinal, leaders, rank23Tournament, setRank1Code, setRank2Code, setRank3Code]);
 
-  // Handle tie choice completion
+  // Handle Rank 2/3 tournament completion
   useEffect(() => {
-    if (state.phase === 'tie' && state.tieChoiceMade) {
-      // Send gameplay payload after tie is resolved
+    if (rank23Tournament.isComplete && (state.phase === 'tie2' || state.phase === 'tie3')) {
+      // Store final rankings
+      if (rank23Tournament.state.rank2Code) {
+        setRank2Code(rank23Tournament.state.rank2Code);
+      }
+      if (rank23Tournament.state.rank3Code) {
+        setRank3Code(rank23Tournament.state.rank3Code);
+      }
+      setRank23TieTrace(rank23Tournament.state.tieTrace);
+      
+      // Send gameplay payload
       const tieState = {
         triggered: state.tieMissionUsed !== null,
         missionId: state.tieMissionUsed?.mission_id || null,
         choiceMade: state.tieChoiceMade,
-        locked: state.tieChoiceMade,
+        locked: true,
       };
       sendGameplayPayload(
         state.avatarGender,
@@ -118,7 +199,14 @@ const Index = () => {
       );
       setPhase('lead');
     }
-  }, [state.phase, state.tieChoiceMade, setPhase, sendGameplayPayload, state.avatarGender, state.firstPicksByMissionId, state.finalPicksByMissionId, state.undoEvents, state.tieMissionUsed, countsFinal, leaders]);
+  }, [rank23Tournament.isComplete, rank23Tournament.state, state.phase, setRank2Code, setRank3Code, setRank23TieTrace, sendGameplayPayload, state.avatarGender, state.firstPicksByMissionId, state.finalPicksByMissionId, state.undoEvents, state.tieMissionUsed, state.tieChoiceMade, countsFinal, leaders, setPhase]);
+
+  // Update phase when tournament moves from rank2 to rank3
+  useEffect(() => {
+    if (state.phase === 'tie2' && rank23Tournament.state.phase === 'rank3') {
+      setPhase('tie3');
+    }
+  }, [state.phase, rank23Tournament.state.phase, setPhase]);
 
   const handleDimensionSelect = (dimension: Dimension) => {
     setDimension(dimension);
@@ -171,6 +259,11 @@ const Index = () => {
       state.finalPicksByMissionId,
       state.undoEvents,
       tieState,
+      // Include Rank 2/3 results
+      state.rank1Code,
+      state.rank2Code,
+      state.rank3Code,
+      state.rank23TieTrace,
     );
 
     // Store analysis data and move to summary
@@ -185,6 +278,12 @@ const Index = () => {
     selectOption(missionId, key, hollandCode, option);
   };
 
+  // Handler for Rank 2/3 tournament choices
+  const handleRank23Select = (missionId: string, key: 'a' | 'b', hollandCode: HollandCode) => {
+    trackMissionPicked(missionId, key, true);
+    rank23Tournament.processChoice(key);
+  };
+
   // Wrapper for undo that includes telemetry
   const handleUndo = () => {
     if (currentMission) {
@@ -197,6 +296,12 @@ const Index = () => {
   const placedProps = useMemo(() => {
     return Object.values(state.finalPicksByMissionId);
   }, [state.finalPicksByMissionId]);
+
+  // Determine which mission to show for Rank 2/3 phases
+  const rank23Mission = rank23Tournament.currentMission;
+  const rank23MissionNumber = state.phase === 'tie2' 
+    ? (rank23Tournament.currentRankBeingResolved === 2 ? 14 : 15)
+    : (rank23Tournament.currentRankBeingResolved === 3 ? 15 : 14);
 
   return (
     <>
@@ -254,6 +359,28 @@ const Index = () => {
               const optionA = currentMission.options.find(o => o.key === 'a');
               if (optionA) {
                 handleSelect(currentMission.mission_id, 'a', optionA.holland_code, optionA);
+              }
+            }}
+          />
+        )}
+
+        {/* Rank 2/3 Tournament Phases */}
+        {(state.phase === 'tie2' || state.phase === 'tie3') && rank23Mission && (
+          <VisualPlayScreen
+            mission={rank23Mission}
+            currentIndex={rank23MissionNumber - 1}
+            totalMissions={mainMissions.length + 3} // 12 main + tie1 + tie2 + tie3
+            isTieBreaker={true}
+            canUndo={false} // No undo during Rank 2/3 tournament
+            avatarGender={state.avatarGender}
+            placedProps={placedProps}
+            onSelect={handleRank23Select}
+            onUndo={() => {}} // Disabled
+            toolEditMode={toolEditMode}
+            onEditorNextMission={() => {
+              const optionA = rank23Mission.options.find(o => o.key === 'a');
+              if (optionA) {
+                handleRank23Select(rank23Mission.mission_id, 'a', optionA.holland_code);
               }
             }}
           />

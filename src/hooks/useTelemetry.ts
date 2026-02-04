@@ -269,6 +269,16 @@ export function useTelemetry() {
       finalPicksByMissionId: Record<string, PickRecord>,
       undoEvents: UndoEvent[],
       tieState: TieState,
+      // Rank 2/3 results
+      rank1Code?: HollandCode | null,
+      rank2Code?: HollandCode | null,
+      rank3Code?: HollandCode | null,
+      rank23TieTrace?: Array<{
+        pairCodes: string;
+        winner: HollandCode;
+        loser: HollandCode;
+        timestamp: number;
+      }>,
     ): Promise<{ success: boolean; analysis: AnalysisResponse | null }> => {
       const gameEndedAt = Date.now();
 
@@ -301,6 +311,11 @@ export function useTelemetry() {
         countsFirst,
         countsFinal,
         leaders,
+        // Rank 2/3 final results
+        rank1Code: rank1Code || leaders[0] || null,
+        rank2Code: rank2Code || null,
+        rank3Code: rank3Code || null,
+        rank23TieTrace: rank23TieTrace || [],
         leadForm: {
           fullName: leadForm.fullName,
           firstName: leadForm.fullName.trim().split(/\s+/)[0] || "",
