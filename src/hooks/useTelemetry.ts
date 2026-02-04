@@ -56,6 +56,9 @@ export interface TieFlags {
   rank3_candidates: HollandCode[];
 }
 
+// Resolved scores with fractional bonuses for tie-breaker winners
+export type ResolvedScores = Record<HollandCode, number>;
+
 // Payload sent BEFORE lead form (gameplay data only)
 export interface GameplayPayload {
   runId: string;
@@ -72,6 +75,7 @@ export interface GameplayPayload {
   tie: TieState;
   countsFirst: CountsFinal; // Counts from first picks (before any undos)
   countsFinal: CountsFinal; // Counts from final picks (after all undos)
+  resolvedScores: ResolvedScores; // Scores with fractional bonuses: +0.5 for rank1, +0.3 for rank2, +0.1 for rank3
   leaders: HollandCode[];
   clientContext: ClientContext;
   events: TelemetryEvent[];
@@ -234,6 +238,21 @@ export function useTelemetry() {
 
       const countsFirst = calculateCounts(firstPicksByMissionId);
 
+      // Calculate resolved scores: base scores + fractional bonuses for ranks
+      // +0.5 for rank1, +0.3 for rank2, +0.1 for rank3
+      const resolvedScores: ResolvedScores = { ...countsFinal };
+      if (rank1Code) {
+        resolvedScores[rank1Code] = (resolvedScores[rank1Code] || 0) + 0.5;
+      }
+      if (rank2Code) {
+        resolvedScores[rank2Code] = (resolvedScores[rank2Code] || 0) + 0.3;
+      }
+      if (rank3Code) {
+        resolvedScores[rank3Code] = (resolvedScores[rank3Code] || 0) + 0.1;
+      }
+
+      console.log("[Telemetry] Resolved scores with bonuses:", resolvedScores);
+
       const payload: GameplayPayload = {
         runId: runIdRef.current,
         stage: "gameplay",
@@ -254,6 +273,7 @@ export function useTelemetry() {
         tie: tieState,
         countsFirst,
         countsFinal,
+        resolvedScores,
         leaders,
         clientContext,
         events: [...eventsRef.current],
