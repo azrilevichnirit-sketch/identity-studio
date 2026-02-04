@@ -46,6 +46,16 @@ function calculateCounts(picks: Record<string, PickRecord>): CountsFinal {
   return counts;
 }
 
+// Tie flags structure for payload
+export interface TieFlags {
+  rank1_triggered: boolean;
+  rank1_candidates: HollandCode[];
+  rank2_triggered: boolean;
+  rank2_candidates: HollandCode[];
+  rank3_triggered: boolean;
+  rank3_candidates: HollandCode[];
+}
+
 // Payload sent BEFORE lead form (gameplay data only)
 export interface GameplayPayload {
   runId: string;
@@ -65,6 +75,12 @@ export interface GameplayPayload {
   leaders: HollandCode[];
   clientContext: ClientContext;
   events: TelemetryEvent[];
+  // New tie-breaker fields
+  rank1_code: string;
+  rank2_code: string;
+  rank3_code: string;
+  tie_flags: TieFlags;
+  tie_trace: Array<{ round: string; pair: string; winner: string }>;
 }
 
 // Payload sent AFTER lead form submission (completion + lead data)
@@ -200,6 +216,11 @@ export function useTelemetry() {
       tieState: TieState,
       countsFinal: CountsFinal,
       leaders: HollandCode[],
+      rank1Code: HollandCode | null,
+      rank2Code: HollandCode | null,
+      rank3Code: HollandCode | null,
+      tieFlags: TieFlags,
+      tieTrace: Array<{ round: string; pair: string; winner: string }>,
     ): Promise<boolean> => {
       const gameplayEndedAt = Date.now();
 
@@ -236,6 +257,12 @@ export function useTelemetry() {
         leaders,
         clientContext,
         events: [...eventsRef.current],
+        // New tie-breaker fields - lowercase, no nulls
+        rank1_code: rank1Code?.toLowerCase() || "",
+        rank2_code: rank2Code?.toLowerCase() || "",
+        rank3_code: rank3Code?.toLowerCase() || "",
+        tie_flags: tieFlags,
+        tie_trace: tieTrace,
       };
 
       console.log("[Telemetry] Sending gameplay payload:", JSON.stringify(payload, null, 2));

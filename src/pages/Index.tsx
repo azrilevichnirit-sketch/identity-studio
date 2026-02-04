@@ -112,6 +112,29 @@ const Index = () => {
             choiceMade: state.tieChoiceMade,
             locked: state.tieChoiceMade,
           };
+          
+          // Calculate tie flags for payload
+          const DEFAULT_ORDER_LOCAL: HollandCode[] = ['r', 'i', 'a', 's', 'e', 'c'];
+          const findCandidatesLocal = (excludeCodes: HollandCode[]): HollandCode[] => {
+            const remaining = DEFAULT_ORDER_LOCAL.filter(code => !excludeCodes.includes(code));
+            if (remaining.length === 0) return [];
+            const maxScore = Math.max(...remaining.map(code => countsFinal[code]));
+            return remaining.filter(code => countsFinal[code] === maxScore);
+          };
+          
+          const rank2CandidatesLocal = findCandidatesLocal([rank1]);
+          const autoRank2 = rank2CandidatesLocal.length === 1 ? rank2CandidatesLocal[0] : autoResolved?.rank2Code || null;
+          const rank3CandidatesLocal = autoRank2 ? findCandidatesLocal([rank1, autoRank2]) : [];
+          
+          const tieFlagsLocal = {
+            rank1_triggered: leaders.length > 1,
+            rank1_candidates: leaders.map(c => c.toLowerCase() as HollandCode),
+            rank2_triggered: rank2CandidatesLocal.length > 1,
+            rank2_candidates: rank2CandidatesLocal.map(c => c.toLowerCase() as HollandCode),
+            rank3_triggered: rank3CandidatesLocal.length > 1,
+            rank3_candidates: rank3CandidatesLocal.map(c => c.toLowerCase() as HollandCode),
+          };
+          
           sendGameplayPayload(
             state.avatarGender,
             state.firstPicksByMissionId,
@@ -120,6 +143,11 @@ const Index = () => {
             tieState,
             countsFinal,
             leaders,
+            rank1,
+            autoResolved?.rank2Code || null,
+            autoResolved?.rank3Code || null,
+            tieFlagsLocal,
+            [], // No tie trace for auto-resolved
           );
           setPhase('lead');
         }
@@ -156,6 +184,29 @@ const Index = () => {
           choiceMade: state.tieChoiceMade,
           locked: state.tieChoiceMade,
         };
+        
+        // Calculate tie flags for payload
+        const DEFAULT_ORDER_LOCAL2: HollandCode[] = ['r', 'i', 'a', 's', 'e', 'c'];
+        const findCandidatesLocal2 = (excludeCodes: HollandCode[]): HollandCode[] => {
+          const remaining = DEFAULT_ORDER_LOCAL2.filter(code => !excludeCodes.includes(code));
+          if (remaining.length === 0) return [];
+          const maxScore = Math.max(...remaining.map(code => countsFinal[code]));
+          return remaining.filter(code => countsFinal[code] === maxScore);
+        };
+        
+        const rank2CandidatesLocal2 = findCandidatesLocal2([rank1]);
+        const autoRank2Local = rank2CandidatesLocal2.length === 1 ? rank2CandidatesLocal2[0] : autoResolved?.rank2Code || null;
+        const rank3CandidatesLocal2 = autoRank2Local ? findCandidatesLocal2([rank1, autoRank2Local]) : [];
+        
+        const tieFlagsLocal2 = {
+          rank1_triggered: leaders.length > 1,
+          rank1_candidates: leaders.map(c => c.toLowerCase() as HollandCode),
+          rank2_triggered: rank2CandidatesLocal2.length > 1,
+          rank2_candidates: rank2CandidatesLocal2.map(c => c.toLowerCase() as HollandCode),
+          rank3_triggered: rank3CandidatesLocal2.length > 1,
+          rank3_candidates: rank3CandidatesLocal2.map(c => c.toLowerCase() as HollandCode),
+        };
+        
         sendGameplayPayload(
           state.avatarGender,
           state.firstPicksByMissionId,
@@ -164,6 +215,11 @@ const Index = () => {
           tieState,
           countsFinal,
           leaders,
+          rank1,
+          autoResolved?.rank2Code || null,
+          autoResolved?.rank3Code || null,
+          tieFlagsLocal2,
+          [], // No tie trace for auto-resolved
         );
         setPhase('lead');
       }
@@ -189,6 +245,38 @@ const Index = () => {
         choiceMade: state.tieChoiceMade,
         locked: true,
       };
+      
+      // Calculate tie flags for payload
+      const DEFAULT_ORDER: HollandCode[] = ['r', 'i', 'a', 's', 'e', 'c'];
+      const findCandidates = (excludeCodes: HollandCode[]): HollandCode[] => {
+        const remaining = DEFAULT_ORDER.filter(code => !excludeCodes.includes(code));
+        if (remaining.length === 0) return [];
+        const maxScore = Math.max(...remaining.map(code => countsFinal[code]));
+        return remaining.filter(code => countsFinal[code] === maxScore);
+      };
+      
+      const rank1Candidates = leaders;
+      const finalRank1 = rank23Tournament.state.rank1Code || state.rank1Code || (leaders.length === 1 ? leaders[0] : null);
+      const rank2Candidates = finalRank1 ? findCandidates([finalRank1]) : [];
+      const finalRank2 = rank23Tournament.state.rank2Code;
+      const rank3Candidates = (finalRank1 && finalRank2) ? findCandidates([finalRank1, finalRank2]) : [];
+      
+      const tieFlags = {
+        rank1_triggered: leaders.length > 1,
+        rank1_candidates: rank1Candidates.map(c => c.toLowerCase() as HollandCode),
+        rank2_triggered: rank2Candidates.length > 1,
+        rank2_candidates: rank2Candidates.map(c => c.toLowerCase() as HollandCode),
+        rank3_triggered: rank3Candidates.length > 1,
+        rank3_candidates: rank3Candidates.map(c => c.toLowerCase() as HollandCode),
+      };
+      
+      // Combine all tie traces - map from TournamentComparison to payload format
+      const combinedTieTrace = rank23Tournament.state.tieTrace.map((t, index) => ({
+        round: `comparison_${index + 1}`,
+        pair: t.pairCodes.toLowerCase(),
+        winner: t.winner.toLowerCase(),
+      }));
+      
       sendGameplayPayload(
         state.avatarGender,
         state.firstPicksByMissionId,
@@ -197,6 +285,11 @@ const Index = () => {
         tieState,
         countsFinal,
         leaders,
+        finalRank1,
+        finalRank2,
+        rank23Tournament.state.rank3Code,
+        tieFlags,
+        combinedTieTrace,
       );
       setPhase('lead');
     }
