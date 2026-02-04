@@ -2090,22 +2090,6 @@ export function VisualPlayScreen({
       
       {/* Water leak effect for Mission 9 */}
       {mission.mission_id === 'studio_09' && <WaterLeakEffect />}
-      <AnchorDebugOverlay
-        anchors={debugAnchors}
-        isVisible={showDebugOverlay}
-        onToggle={() => setShowDebugOverlay(!showDebugOverlay)}
-      />
-      <GridDebugOverlay
-        isVisible={showGridOverlay}
-        onToggle={() => setShowGridOverlay(!showGridOverlay)}
-        rows={5}
-        cols={5}
-      />
-      <ZLayerDebugOverlay
-        items={zLayerItems}
-        isVisible={showZLayerOverlay}
-        onToggle={() => setShowZLayerOverlay(!showZLayerOverlay)}
-      />
       
       {/* Tool Calibration Editor */}
       {toolEditMode && mission.mission_id === 'studio_07' && (

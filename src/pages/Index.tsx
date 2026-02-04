@@ -18,8 +18,8 @@ import type { Dimension, HollandCode, MissionOption, LeadFormData, AnalysisRespo
 const Index = () => {
   const [toolEditMode, setToolEditMode] = useState(false);
   
-  // Debug mode: always show for now (set to false to hide)
-  const showDebug = true;
+  // Debug mode: disabled for production
+  const showDebug = false;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [analysisData, setAnalysisData] = useState<AnalysisResponse | null>(null);
   const pendingLeadFormRef = useRef<LeadFormData | null>(null);
