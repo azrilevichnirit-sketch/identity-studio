@@ -1,13 +1,13 @@
 import { useState, useMemo } from 'react';
 import { X, Bug } from 'lucide-react';
 import type { GameState, CountsFinal, HollandCode } from '@/types/identity';
-import type { Rank23State, TournamentComparison } from '@/hooks/useRank23Tournament';
+import type { FullTournamentState, TournamentComparison } from '@/hooks/useFullTournament';
 
 interface TieBreakDebugPanelProps {
   state: GameState;
   countsFinal: CountsFinal;
   leaders: HollandCode[];
-  rank23State: Rank23State;
+  rank23State: FullTournamentState;
   startingPhase: 'rank2' | 'rank3' | null;
   currentPhase: string;
   rank2Candidates: HollandCode[];
@@ -179,7 +179,7 @@ export function TieBreakDebugPanel({
               <div className="text-orange-400 space-y-0.5">
                 {rank23State.tieTrace.map((t, i) => (
                   <div key={i}>
-                    {i + 1}. {t.pairCodes}: {HOLLAND_SHORT[t.winner]} &gt; {HOLLAND_SHORT[t.loser]}
+                    R{t.rank} #{i + 1}. {t.pairCodes}: {HOLLAND_SHORT[t.winner]} &gt; {HOLLAND_SHORT[t.loser]}
                   </div>
                 ))}
               </div>

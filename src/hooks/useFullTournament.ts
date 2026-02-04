@@ -1,0 +1,608 @@
+// Full Tournament Resolution Hook
+// Implements winner-stays tournament for resolving Rank 1, 2, and 3
+// Supports 2+ candidates at any rank level
+import { useState, useCallback, useMemo } from 'react';
+import type { HollandCode, CountsFinal, Mission, MissionOption } from '@/types/identity';
+import studioTieV6Data from '@/data/studio_tie_v6.json';
+
+export interface TieMissionV6 {
+  world: string;
+  phase: string;
+  pair_codes: string;
+  pair_sequence: number;
+  quest_id: string;
+  task_heb: string;
+  option_a_code: HollandCode;
+  option_a_asset: string;
+  option_a_tooltip_heb: string;
+  option_b_code: HollandCode;
+  option_b_asset: string;
+  option_b_tooltip_heb: string;
+}
+
+export interface TournamentComparison {
+  rank: 1 | 2 | 3;
+  pairCodes: string;
+  winner: HollandCode;
+  loser: HollandCode;
+  timestamp: number;
+}
+
+export interface FullTournamentState {
+  // Current phase: 'idle' | 'rank1' | 'rank2' | 'rank3' | 'complete'
+  phase: 'idle' | 'rank1' | 'rank2' | 'rank3' | 'complete';
+  // Final results
+  rank1Code: HollandCode | null;
+  rank2Code: HollandCode | null;
+  rank3Code: HollandCode | null;
+  // Current tournament state
+  candidateSet: HollandCode[];
+  currentMission: Mission | null;
+  // Trace of all comparisons made (for telemetry)
+  tieTrace: TournamentComparison[];
+}
+
+// Default deterministic order for fallback: r > i > a > s > e > c
+const DEFAULT_ORDER: HollandCode[] = ['r', 'i', 'a', 's', 'e', 'c'];
+
+// Hex circle order for distance calculation (clockwise: R-I-A-S-E-C)
+const HEX_ORDER: HollandCode[] = ['r', 'i', 'a', 's', 'e', 'c'];
+
+// Opposite pairs on the hexagon (distance 3)
+const OPPOSITE_PAIRS: [HollandCode, HollandCode][] = [
+  ['r', 's'], // Realistic - Social
+  ['i', 'e'], // Investigative - Enterprising
+  ['a', 'c'], // Artistic - Conventional
+];
+
+// Get the tie-breaker missions from v6 JSON
+const tieMissionsV6 = studioTieV6Data as TieMissionV6[];
+
+/**
+ * Calculate circular distance between two codes on the hex circle
+ * Distance can be 1, 2, or 3 (max)
+ */
+function getCircularDistance(a: HollandCode, b: HollandCode): number {
+  const idxA = HEX_ORDER.indexOf(a);
+  const idxB = HEX_ORDER.indexOf(b);
+  const rawDist = Math.abs(idxA - idxB);
+  return Math.min(rawDist, 6 - rawDist);
+}
+
+/**
+ * Normalize pair codes to alphabetical order (e.g., "ri" -> "ir", "ra" -> "ar")
+ */
+function normalizePairCodes(a: HollandCode, b: HollandCode): string {
+  const sorted = [a.toLowerCase(), b.toLowerCase()].sort();
+  return sorted.join('');
+}
+
+/**
+ * Select the first pair for a tournament round.
+ * Priority: Find an opposite pair (distance 3) first, then max distance.
+ */
+function selectFirstPair(candidates: HollandCode[]): [HollandCode, HollandCode] | null {
+  if (candidates.length < 2) return null;
+  
+  // First, look for an opposite pair among candidates
+  for (const [a, b] of OPPOSITE_PAIRS) {
+    if (candidates.includes(a) && candidates.includes(b)) {
+      return [a, b];
+    }
+  }
+  
+  // No opposite pair found, use max distance
+  return selectNextPairByDistance(candidates);
+}
+
+/**
+ * Select the next pair for tournament comparison using max distance rule
+ */
+function selectNextPairByDistance(candidates: HollandCode[]): [HollandCode, HollandCode] | null {
+  if (candidates.length < 2) return null;
+  
+  let bestPair: [HollandCode, HollandCode] | null = null;
+  let maxDistance = -1;
+  
+  for (let i = 0; i < candidates.length; i++) {
+    for (let j = i + 1; j < candidates.length; j++) {
+      const dist = getCircularDistance(candidates[i], candidates[j]);
+      
+      if (dist > maxDistance) {
+        maxDistance = dist;
+        bestPair = [candidates[i], candidates[j]];
+      } else if (dist === maxDistance && bestPair) {
+        // Tiebreaker: choose pair containing highest priority trait
+        const currentBestIdx = Math.min(
+          DEFAULT_ORDER.indexOf(bestPair[0]),
+          DEFAULT_ORDER.indexOf(bestPair[1])
+        );
+        const newPairBestIdx = Math.min(
+          DEFAULT_ORDER.indexOf(candidates[i]),
+          DEFAULT_ORDER.indexOf(candidates[j])
+        );
+        
+        if (newPairBestIdx < currentBestIdx) {
+          bestPair = [candidates[i], candidates[j]];
+        } else if (newPairBestIdx === currentBestIdx) {
+          const currentSecondIdx = Math.max(
+            DEFAULT_ORDER.indexOf(bestPair[0]),
+            DEFAULT_ORDER.indexOf(bestPair[1])
+          );
+          const newSecondIdx = Math.max(
+            DEFAULT_ORDER.indexOf(candidates[i]),
+            DEFAULT_ORDER.indexOf(candidates[j])
+          );
+          if (newSecondIdx < currentSecondIdx) {
+            bestPair = [candidates[i], candidates[j]];
+          }
+        }
+      }
+    }
+  }
+  
+  return bestPair;
+}
+
+/**
+ * Look up a mission from the v6 CSV by pair_codes
+ */
+function findMissionByPairCodes(pairCodes: string): TieMissionV6 | null {
+  return tieMissionsV6.find(m => m.pair_codes === pairCodes) || null;
+}
+
+/**
+ * Convert TieMissionV6 to Mission format for rendering
+ */
+function convertToMission(tieMission: TieMissionV6): Mission {
+  const optionA: MissionOption = {
+    key: 'a',
+    holland_code: tieMission.option_a_code,
+    asset: tieMission.option_a_asset,
+    tooltip_heb: tieMission.option_a_tooltip_heb,
+    view: 'in',
+    placement_mode: 'floor',
+    anchor_ref: 'floor',
+    offset_x: 0,
+    offset_y: 0,
+    scale: 1,
+    persist: 'temp',
+  };
+  
+  const optionB: MissionOption = {
+    key: 'b',
+    holland_code: tieMission.option_b_code,
+    asset: tieMission.option_b_asset,
+    tooltip_heb: tieMission.option_b_tooltip_heb,
+    view: 'in',
+    placement_mode: 'floor',
+    anchor_ref: 'floor',
+    offset_x: 0,
+    offset_y: 0,
+    scale: 1,
+    persist: 'temp',
+  };
+  
+  return {
+    world: tieMission.world,
+    phase: 'tb',
+    mission_id: tieMission.quest_id,
+    sequence: 100 + tieMission.pair_sequence,
+    view: 'in',
+    task_heb: tieMission.task_heb,
+    pair_key: tieMission.pair_codes,
+    options: [optionA, optionB],
+  };
+}
+
+/**
+ * Find candidates for a rank based on scores, excluding already-placed codes
+ */
+function findCandidates(
+  countsFinal: CountsFinal,
+  excludeCodes: HollandCode[]
+): HollandCode[] {
+  const remaining = DEFAULT_ORDER.filter(code => !excludeCodes.includes(code));
+  if (remaining.length === 0) return [];
+  
+  const maxScore = Math.max(...remaining.map(code => countsFinal[code]));
+  return remaining.filter(code => countsFinal[code] === maxScore);
+}
+
+/**
+ * Resolve instantly using default order (fallback when CSV row not found)
+ */
+function resolveByDefaultOrder(candidates: HollandCode[]): HollandCode {
+  for (const code of DEFAULT_ORDER) {
+    if (candidates.includes(code)) {
+      return code;
+    }
+  }
+  return candidates[0];
+}
+
+export function useFullTournament(countsFinal: CountsFinal) {
+  const [state, setState] = useState<FullTournamentState>({
+    phase: 'idle',
+    rank1Code: null,
+    rank2Code: null,
+    rank3Code: null,
+    candidateSet: [],
+    currentMission: null,
+    tieTrace: [],
+  });
+
+  /**
+   * Start a tournament for the specified rank with given candidates
+   */
+  const startRankTournament = useCallback((
+    rank: 1 | 2 | 3,
+    candidates: HollandCode[],
+    existingRank1: HollandCode | null,
+    existingRank2: HollandCode | null,
+    existingTrace: TournamentComparison[]
+  ) => {
+    console.log(`[Tournament] Starting Rank ${rank} tournament with candidates:`, candidates);
+    
+    const pair = rank === 1 ? selectFirstPair(candidates) : selectNextPairByDistance(candidates);
+    if (!pair) {
+      console.error(`[Tournament] No pair found for Rank ${rank}`);
+      return;
+    }
+    
+    const pairCodes = normalizePairCodes(pair[0], pair[1]);
+    const tieMission = findMissionByPairCodes(pairCodes);
+    
+    if (!tieMission) {
+      console.warn(`[Tournament] No mission found for pair ${pairCodes}, using fallback`);
+      const winner = resolveByDefaultOrder(candidates);
+      handleRankResolved(rank, winner, existingRank1, existingRank2, existingTrace);
+      return;
+    }
+    
+    console.log(`[Tournament] Mission for Rank ${rank}:`, tieMission.quest_id, 'pair:', pairCodes);
+    
+    const phaseMap = { 1: 'rank1' as const, 2: 'rank2' as const, 3: 'rank3' as const };
+    setState({
+      phase: phaseMap[rank],
+      rank1Code: existingRank1,
+      rank2Code: existingRank2,
+      rank3Code: null,
+      candidateSet: candidates,
+      currentMission: convertToMission(tieMission),
+      tieTrace: existingTrace,
+    });
+  }, []);
+
+  /**
+   * Handle when a rank is fully resolved (winner determined)
+   */
+  const handleRankResolved = useCallback((
+    resolvedRank: 1 | 2 | 3,
+    winner: HollandCode,
+    existingRank1: HollandCode | null,
+    existingRank2: HollandCode | null,
+    trace: TournamentComparison[]
+  ) => {
+    console.log(`[Tournament] Rank ${resolvedRank} resolved with winner:`, winner);
+    
+    if (resolvedRank === 1) {
+      // Rank 1 done, check Rank 2
+      const rank2Candidates = findCandidates(countsFinal, [winner]);
+      console.log('[Tournament] Rank 2 candidates:', rank2Candidates);
+      
+      if (rank2Candidates.length <= 1) {
+        // Rank 2 auto-resolved
+        const rank2 = rank2Candidates[0] || resolveByDefaultOrder(
+          DEFAULT_ORDER.filter(c => c !== winner)
+        );
+        console.log('[Tournament] Rank 2 auto-resolved:', rank2);
+        
+        // Check Rank 3
+        const rank3Candidates = findCandidates(countsFinal, [winner, rank2]);
+        console.log('[Tournament] Rank 3 candidates:', rank3Candidates);
+        
+        if (rank3Candidates.length <= 1) {
+          // All resolved
+          const rank3 = rank3Candidates[0] || resolveByDefaultOrder(
+            DEFAULT_ORDER.filter(c => c !== winner && c !== rank2)
+          );
+          console.log('[Tournament] All ranks resolved:', winner, rank2, rank3);
+          setState({
+            phase: 'complete',
+            rank1Code: winner,
+            rank2Code: rank2,
+            rank3Code: rank3,
+            candidateSet: [],
+            currentMission: null,
+            tieTrace: trace,
+          });
+        } else {
+          // Need Rank 3 tournament
+          startRankTournament(3, rank3Candidates, winner, rank2, trace);
+        }
+      } else {
+        // Need Rank 2 tournament
+        startRankTournament(2, rank2Candidates, winner, null, trace);
+      }
+    } else if (resolvedRank === 2) {
+      // Rank 2 done, check Rank 3
+      const rank3Candidates = findCandidates(countsFinal, [existingRank1!, winner]);
+      console.log('[Tournament] Rank 3 candidates:', rank3Candidates);
+      
+      if (rank3Candidates.length <= 1) {
+        // Rank 3 auto-resolved
+        const rank3 = rank3Candidates[0] || resolveByDefaultOrder(
+          DEFAULT_ORDER.filter(c => c !== existingRank1 && c !== winner)
+        );
+        console.log('[Tournament] All ranks resolved:', existingRank1, winner, rank3);
+        setState({
+          phase: 'complete',
+          rank1Code: existingRank1,
+          rank2Code: winner,
+          rank3Code: rank3,
+          candidateSet: [],
+          currentMission: null,
+          tieTrace: trace,
+        });
+      } else {
+        // Need Rank 3 tournament
+        startRankTournament(3, rank3Candidates, existingRank1, winner, trace);
+      }
+    } else {
+      // Rank 3 done - all complete
+      console.log('[Tournament] All ranks resolved:', existingRank1, existingRank2, winner);
+      setState({
+        phase: 'complete',
+        rank1Code: existingRank1,
+        rank2Code: existingRank2,
+        rank3Code: winner,
+        candidateSet: [],
+        currentMission: null,
+        tieTrace: trace,
+      });
+    }
+  }, [countsFinal, startRankTournament]);
+
+  /**
+   * Initialize tournament starting from Rank 1
+   */
+  const startTournament = useCallback((rank1Candidates: HollandCode[]) => {
+    console.log('[Tournament] startTournament called with rank1 candidates:', rank1Candidates);
+    
+    if (rank1Candidates.length === 0) {
+      console.error('[Tournament] No candidates for Rank 1');
+      return;
+    }
+    
+    if (rank1Candidates.length === 1) {
+      // Single candidate for Rank 1, move to checking Rank 2
+      const rank1 = rank1Candidates[0];
+      handleRankResolved(1, rank1, null, null, []);
+      return;
+    }
+    
+    // Multiple candidates - start Rank 1 tournament
+    startRankTournament(1, rank1Candidates, null, null, []);
+  }, [handleRankResolved, startRankTournament]);
+
+  /**
+   * Start tournament from Rank 2 (when Rank 1 is already known)
+   */
+  const startFromRank2 = useCallback((rank1: HollandCode) => {
+    console.log('[Tournament] startFromRank2 called with rank1:', rank1);
+    
+    const rank2Candidates = findCandidates(countsFinal, [rank1]);
+    console.log('[Tournament] Rank 2 candidates:', rank2Candidates);
+    
+    if (rank2Candidates.length <= 1) {
+      // Rank 2 auto-resolved
+      const rank2 = rank2Candidates[0] || resolveByDefaultOrder(
+        DEFAULT_ORDER.filter(c => c !== rank1)
+      );
+      
+      // Check Rank 3
+      const rank3Candidates = findCandidates(countsFinal, [rank1, rank2]);
+      
+      if (rank3Candidates.length <= 1) {
+        const rank3 = rank3Candidates[0] || resolveByDefaultOrder(
+          DEFAULT_ORDER.filter(c => c !== rank1 && c !== rank2)
+        );
+        setState({
+          phase: 'complete',
+          rank1Code: rank1,
+          rank2Code: rank2,
+          rank3Code: rank3,
+          candidateSet: [],
+          currentMission: null,
+          tieTrace: [],
+        });
+      } else {
+        startRankTournament(3, rank3Candidates, rank1, rank2, []);
+      }
+    } else {
+      startRankTournament(2, rank2Candidates, rank1, null, []);
+    }
+  }, [countsFinal, startRankTournament]);
+
+  /**
+   * Process a user choice in the current tournament round
+   */
+  const processChoice = useCallback((chosenKey: 'a' | 'b') => {
+    if (!state.currentMission || state.phase === 'idle' || state.phase === 'complete') {
+      return;
+    }
+    
+    const mission = state.currentMission;
+    const optionA = mission.options.find(o => o.key === 'a');
+    const optionB = mission.options.find(o => o.key === 'b');
+    
+    if (!optionA || !optionB) return;
+    
+    const winnerCode = chosenKey === 'a' ? optionA.holland_code : optionB.holland_code;
+    const loserCode = chosenKey === 'a' ? optionB.holland_code : optionA.holland_code;
+    
+    const currentRank = state.phase === 'rank1' ? 1 : state.phase === 'rank2' ? 2 : 3;
+    
+    const comparison: TournamentComparison = {
+      rank: currentRank,
+      pairCodes: mission.pair_key || '',
+      winner: winnerCode,
+      loser: loserCode,
+      timestamp: Date.now(),
+    };
+    
+    const newTrace = [...state.tieTrace, comparison];
+    const newCandidates = state.candidateSet.filter(c => c !== loserCode);
+    
+    console.log(`[Tournament] Choice made: ${winnerCode} beats ${loserCode}`);
+    console.log(`[Tournament] Remaining candidates for Rank ${currentRank}:`, newCandidates);
+    
+    if (newCandidates.length === 1) {
+      // Tournament for this rank is complete
+      const winner = newCandidates[0];
+      handleRankResolved(currentRank, winner, state.rank1Code, state.rank2Code, newTrace);
+      return;
+    }
+    
+    // Continue tournament - select next pair
+    const pair = selectNextPairByDistance(newCandidates);
+    if (!pair) {
+      const winner = resolveByDefaultOrder(newCandidates);
+      handleRankResolved(currentRank, winner, state.rank1Code, state.rank2Code, newTrace);
+      return;
+    }
+    
+    const pairCodes = normalizePairCodes(pair[0], pair[1]);
+    const tieMission = findMissionByPairCodes(pairCodes);
+    
+    if (!tieMission) {
+      const winner = resolveByDefaultOrder(newCandidates);
+      handleRankResolved(currentRank, winner, state.rank1Code, state.rank2Code, newTrace);
+      return;
+    }
+    
+    setState(prev => ({
+      ...prev,
+      candidateSet: newCandidates,
+      currentMission: convertToMission(tieMission),
+      tieTrace: newTrace,
+    }));
+  }, [state, handleRankResolved]);
+
+  /**
+   * Check if any tournament is needed (based on current scores)
+   */
+  const checkNeedsTournament = useCallback((leaders: HollandCode[]): {
+    needsRank1: boolean;
+    needsRank2: boolean;
+    needsRank3: boolean;
+  } => {
+    const needsRank1 = leaders.length >= 2;
+    
+    if (leaders.length === 1) {
+      const rank2Candidates = findCandidates(countsFinal, [leaders[0]]);
+      const needsRank2 = rank2Candidates.length >= 2;
+      
+      if (rank2Candidates.length === 1) {
+        const rank3Candidates = findCandidates(countsFinal, [leaders[0], rank2Candidates[0]]);
+        return {
+          needsRank1: false,
+          needsRank2: false,
+          needsRank3: rank3Candidates.length >= 2,
+        };
+      }
+      
+      return {
+        needsRank1: false,
+        needsRank2,
+        needsRank3: false, // Will be determined after Rank 2
+      };
+    }
+    
+    return {
+      needsRank1,
+      needsRank2: false, // Will be determined after Rank 1
+      needsRank3: false,
+    };
+  }, [countsFinal]);
+
+  /**
+   * Get auto-resolved rankings when no tournament is needed
+   */
+  const getAutoResolvedRankings = useCallback((rank1: HollandCode): {
+    rank1Code: HollandCode;
+    rank2Code: HollandCode;
+    rank3Code: HollandCode;
+  } | null => {
+    const rank2Candidates = findCandidates(countsFinal, [rank1]);
+    if (rank2Candidates.length !== 1) return null;
+    
+    const rank2 = rank2Candidates[0];
+    const rank3Candidates = findCandidates(countsFinal, [rank1, rank2]);
+    if (rank3Candidates.length !== 1) return null;
+    
+    return {
+      rank1Code: rank1,
+      rank2Code: rank2,
+      rank3Code: rank3Candidates[0],
+    };
+  }, [countsFinal]);
+
+  /**
+   * Get current rank being resolved for display purposes
+   */
+  const currentRankBeingResolved = useMemo(() => {
+    switch (state.phase) {
+      case 'rank1': return 1;
+      case 'rank2': return 2;
+      case 'rank3': return 3;
+      default: return null;
+    }
+  }, [state.phase]);
+
+  /**
+   * Get candidates for debug panel display
+   */
+  const getCandidatesForDebug = useCallback((finalRank1: HollandCode | null): {
+    rank1Candidates: HollandCode[];
+    rank2Candidates: HollandCode[];
+    rank3Candidates: HollandCode[];
+  } => {
+    // For Rank 1, we need the leaders (passed from outside)
+    const rank1Candidates: HollandCode[] = [];
+    
+    if (!finalRank1) {
+      return { rank1Candidates, rank2Candidates: [], rank3Candidates: [] };
+    }
+    
+    const rank2Candidates = findCandidates(countsFinal, [finalRank1]);
+    
+    let rank2ForRank3: HollandCode | null = null;
+    if (state.rank2Code) {
+      rank2ForRank3 = state.rank2Code;
+    } else if (rank2Candidates.length === 1) {
+      rank2ForRank3 = rank2Candidates[0];
+    }
+    
+    const rank3Candidates = rank2ForRank3 
+      ? findCandidates(countsFinal, [finalRank1, rank2ForRank3])
+      : [];
+    
+    return { rank1Candidates, rank2Candidates, rank3Candidates };
+  }, [countsFinal, state.rank2Code]);
+
+  return {
+    state,
+    startTournament,
+    startFromRank2,
+    processChoice,
+    checkNeedsTournament,
+    getAutoResolvedRankings,
+    getCandidatesForDebug,
+    isComplete: state.phase === 'complete',
+    isActive: state.phase === 'rank1' || state.phase === 'rank2' || state.phase === 'rank3',
+    currentMission: state.currentMission,
+    currentRankBeingResolved,
+  };
+}
