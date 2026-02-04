@@ -264,28 +264,11 @@ const Index = () => {
       ? findCandidatesLocal([state.rank1Code, state.rank2Code]) 
       : [];
 
-    // Send completion payload and wait for analysis response
-    const result = await sendCompletionPayload(
-      data,
-      state.avatarGender,
-      countsFinal,
-      leaders,
-      state.firstPicksByMissionId,
-      state.finalPicksByMissionId,
-      state.undoEvents,
-      tieState,
-      // Include Rank 2/3 results
-      state.rank1Code,
-      state.rank2Code,
-      state.rank3Code,
-      state.rank23TieTrace,
-      // NEW: Include candidates for tie_flags
-      rank2Candidates,
-      rank3Candidates,
-    );
+    // Send completion payload (only lead form data)
+    await sendCompletionPayload(data);
 
-    // Store analysis data and move to summary
-    setAnalysisData(result.analysis);
+    // Move to summary
+    setAnalysisData(null);
     setPhase('summary');
   };
 
