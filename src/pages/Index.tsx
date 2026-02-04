@@ -128,7 +128,6 @@ const Index = () => {
           
           const tieFlagsLocal = {
             rank1_triggered: leaders.length > 1,
-            rank1_candidates: leaders.map(c => c.toLowerCase() as HollandCode),
             rank2_triggered: rank2CandidatesLocal.length > 1,
             rank2_candidates: rank2CandidatesLocal.map(c => c.toLowerCase() as HollandCode),
             rank3_triggered: rank3CandidatesLocal.length > 1,
@@ -201,7 +200,6 @@ const Index = () => {
         
         const tieFlagsLocal2 = {
           rank1_triggered: leaders.length > 1,
-          rank1_candidates: leaders.map(c => c.toLowerCase() as HollandCode),
           rank2_triggered: rank2CandidatesLocal2.length > 1,
           rank2_candidates: rank2CandidatesLocal2.map(c => c.toLowerCase() as HollandCode),
           rank3_triggered: rank3CandidatesLocal2.length > 1,
@@ -265,7 +263,6 @@ const Index = () => {
       
       const tieFlags = {
         rank1_triggered: leaders.length > 1,
-        rank1_candidates: rank1Candidates.map(c => c.toLowerCase() as HollandCode),
         rank2_triggered: rank2Candidates.length > 1,
         rank2_candidates: rank2Candidates.map(c => c.toLowerCase() as HollandCode),
         rank3_triggered: rank3Candidates.length > 1,
