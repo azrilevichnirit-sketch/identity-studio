@@ -148,6 +148,7 @@ const Index = () => {
             autoResolved?.rank3Code || null,
             tieFlagsLocal,
             [], // No tie trace for auto-resolved
+            [], // No rank23 tie trace for auto-resolved
           );
           setPhase('lead');
         }
@@ -220,6 +221,7 @@ const Index = () => {
           autoResolved?.rank3Code || null,
           tieFlagsLocal2,
           [], // No tie trace for auto-resolved
+          [], // No rank23 tie trace for auto-resolved
         );
         setPhase('lead');
       }
@@ -277,6 +279,14 @@ const Index = () => {
         winner: t.winner.toLowerCase(),
       }));
       
+      // Rank 2/3 specific tie trace with loser info
+      const rank23TieTrace = rank23Tournament.state.tieTrace.map((t, index) => ({
+        round: `rank23_comparison_${index + 1}`,
+        pair: t.pairCodes.toLowerCase(),
+        winner: t.winner.toLowerCase(),
+        loser: t.loser.toLowerCase(),
+      }));
+      
       sendGameplayPayload(
         state.avatarGender,
         state.firstPicksByMissionId,
@@ -290,6 +300,7 @@ const Index = () => {
         rank23Tournament.state.rank3Code,
         tieFlags,
         combinedTieTrace,
+        rank23TieTrace,
       );
       setPhase('lead');
     }
