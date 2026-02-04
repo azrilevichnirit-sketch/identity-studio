@@ -94,8 +94,8 @@ const Index = () => {
         const rank1 = leaders[0];
         setRank1Code(rank1);
         
-        // Check if Rank 2/3 needs tournament
-        if (rank23Tournament.needsTournament) {
+        // Check if Rank 2/3 needs tournament using the new function with rank1 parameter
+        if (rank23Tournament.checkNeedsTournament(rank1)) {
           rank23Tournament.startTournament(rank1);
           setPhase('tie2');
         } else {
@@ -136,8 +136,8 @@ const Index = () => {
       const rank1 = leaders[0];
       setRank1Code(rank1);
       
-      // Check if Rank 2/3 needs tournament
-      if (rank23Tournament.needsTournament) {
+      // Check if Rank 2/3 needs tournament using the new function with rank1 parameter
+      if (rank23Tournament.checkNeedsTournament(rank1)) {
         rank23Tournament.startTournament(rank1);
         setPhase('tie2');
       } else {
