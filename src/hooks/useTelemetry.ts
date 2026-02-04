@@ -73,18 +73,21 @@ export interface GameplayPayload {
   finalPicksByMissionId: Record<string, PickRecord>;
   undoEvents: Array<{ missionId: string; prevTrait: HollandCode; newTrait: HollandCode; timestampMs: number }>;
   tie: TieState;
-  countsFirst: CountsFinal; // Counts from first picks (before any undos)
-  countsFinal: CountsFinal; // Counts from final picks (after all undos)
-  resolvedScores: ResolvedScores; // Scores with fractional bonuses: +0.5 for rank1, +0.3 for rank2, +0.1 for rank3
+  tie_state: TieState; // Duplicate with snake_case for Make compatibility
+  countsFirst: CountsFinal;
+  countsFinal: CountsFinal;
+  base_scores: CountsFinal; // Snake_case alias for countsFinal
+  resolved_scores: ResolvedScores; // Scores with fractional bonuses: +0.5 for rank1, +0.3 for rank2, +0.1 for rank3
   leaders: HollandCode[];
   clientContext: ClientContext;
   events: TelemetryEvent[];
-  // New tie-breaker fields
+  // Tie-breaker fields
   rank1_code: string;
   rank2_code: string;
   rank3_code: string;
   tie_flags: TieFlags;
-  tie_trace: Array<{ round: string; pair: string; winner: string }>;
+  tie_trace: Array<{ round: string; pair: string; winner: string }>; // Rank 1 tie-breaker trace
+  rank23_tie_trace: Array<{ round: string; pair: string; winner: string; loser: string }>; // Rank 2/3 tournament trace
 }
 
 // Payload sent AFTER lead form submission (completion + lead data)
@@ -225,6 +228,7 @@ export function useTelemetry() {
       rank3Code: HollandCode | null,
       tieFlags: TieFlags,
       tieTrace: Array<{ round: string; pair: string; winner: string }>,
+      rank23TieTrace: Array<{ round: string; pair: string; winner: string; loser: string }>,
     ): Promise<boolean> => {
       const gameplayEndedAt = Date.now();
 
@@ -271,18 +275,21 @@ export function useTelemetry() {
           timestampMs: e.timestamp,
         })),
         tie: tieState,
+        tie_state: tieState, // Snake_case duplicate for Make
         countsFirst,
         countsFinal,
-        resolvedScores,
+        base_scores: countsFinal, // Snake_case alias
+        resolved_scores: resolvedScores,
         leaders,
         clientContext,
         events: [...eventsRef.current],
-        // New tie-breaker fields - lowercase, no nulls
+        // Tie-breaker fields - lowercase, no nulls
         rank1_code: rank1Code?.toLowerCase() || "",
         rank2_code: rank2Code?.toLowerCase() || "",
         rank3_code: rank3Code?.toLowerCase() || "",
         tie_flags: tieFlags,
         tie_trace: tieTrace,
+        rank23_tie_trace: rank23TieTrace,
       };
 
       console.log("[Telemetry] Sending gameplay payload:", JSON.stringify(payload, null, 2));
