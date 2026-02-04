@@ -12,6 +12,7 @@ import { LeadForm } from '@/components/LeadForm';
 import { ProcessingScreen } from '@/components/ProcessingScreen';
 import { SummaryScreen } from '@/components/SummaryScreen';
 import { DebugPanel } from '@/components/DebugPanel';
+import { TieBreakDebugPanel } from '@/components/TieBreakDebugPanel';
 import type { Dimension, HollandCode, MissionOption, LeadFormData, AnalysisResponse } from '@/types/identity';
 
 const Index = () => {
@@ -409,15 +410,28 @@ const Index = () => {
       </GameStage>
 
       {showDebug && (
-        <DebugPanel
-          state={state}
-          countsFinal={countsFinal}
-          leaders={leaders}
-          historyLength={historyLength}
-          onToolEditModeChange={setToolEditMode}
-          onJumpToMission={jumpToMission}
-          totalMissions={mainMissions.length}
-        />
+        <>
+          <DebugPanel
+            state={state}
+            countsFinal={countsFinal}
+            leaders={leaders}
+            historyLength={historyLength}
+            onToolEditModeChange={setToolEditMode}
+            onJumpToMission={jumpToMission}
+            totalMissions={mainMissions.length}
+          />
+          <TieBreakDebugPanel
+            state={state}
+            countsFinal={countsFinal}
+            leaders={leaders}
+            rank23State={rank23Tournament.state}
+            startingPhase={state.rank1Code ? rank23Tournament.getStartingPhase(state.rank1Code) : null}
+            currentPhase={state.phase}
+            rank2Candidates={rank23Tournament.getCandidatesForDebug(state.rank1Code).rank2Candidates}
+            rank3Candidates={rank23Tournament.getCandidatesForDebug(state.rank1Code).rank3Candidates}
+            lastComparison={rank23Tournament.state.tieTrace[rank23Tournament.state.tieTrace.length - 1]}
+          />
+        </>
       )}
     </>
   );
