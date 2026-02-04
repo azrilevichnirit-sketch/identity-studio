@@ -18,12 +18,8 @@ import type { Dimension, HollandCode, MissionOption, LeadFormData, AnalysisRespo
 const Index = () => {
   const [toolEditMode, setToolEditMode] = useState(false);
   
-  // Debug mode: only show DebugPanel when ?debug=true is in the URL
-  const showDebug = useMemo(() => {
-    if (typeof window === 'undefined') return false;
-    const params = new URLSearchParams(window.location.search);
-    return params.get('debug') === 'true';
-  }, []);
+  // Debug mode: always show for now (set to false to hide)
+  const showDebug = true;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [analysisData, setAnalysisData] = useState<AnalysisResponse | null>(null);
   const pendingLeadFormRef = useRef<LeadFormData | null>(null);
