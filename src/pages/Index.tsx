@@ -240,34 +240,17 @@ const Index = () => {
     
     // Move to processing screen immediately
     setPhase('processing');
-    setIsSubmitting(false);
 
-    // Prepare tie state for the payload
-    const tieState = {
-      triggered: state.tieMissionUsed !== null,
-      missionId: state.tieMissionUsed?.mission_id || null,
-      choiceMade: state.tieChoiceMade,
-      locked: state.tieChoiceMade,
-    };
-
-    // Calculate rank2 and rank3 candidates for tie_flags
-    const DEFAULT_ORDER: HollandCode[] = ['r', 'i', 'a', 's', 'e', 'c'];
-    const findCandidatesLocal = (excludeCodes: HollandCode[]): HollandCode[] => {
-      const remaining = DEFAULT_ORDER.filter(code => !excludeCodes.includes(code));
-      if (remaining.length === 0) return [];
-      const maxScore = Math.max(...remaining.map(code => countsFinal[code]));
-      return remaining.filter(code => countsFinal[code] === maxScore);
-    };
-    
-    const rank2Candidates = state.rank1Code ? findCandidatesLocal([state.rank1Code]) : [];
-    const rank3Candidates = (state.rank1Code && state.rank2Code) 
-      ? findCandidatesLocal([state.rank1Code, state.rank2Code]) 
-      : [];
-
-    // Send completion payload (only lead form data)
-    await sendCompletionPayload(data);
+    try {
+      // Send completion payload (only lead form data)
+      const result = await sendCompletionPayload(data);
+      console.log("[Index] Completion payload result:", result);
+    } catch (error) {
+      console.error("[Index] Failed to send completion payload:", error);
+    }
 
     // Move to summary
+    setIsSubmitting(false);
     setAnalysisData(null);
     setPhase('summary');
   };
