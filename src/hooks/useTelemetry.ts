@@ -306,9 +306,9 @@ export function useTelemetry() {
         rank1_tie: tieRank1,
         rank2_tie: tieRank2,
         rank3_tie: tieRank3,
-        rank1_candidates: leaders.map(c => c.toUpperCase()),
-        rank2_candidates: (rank2Candidates ?? []).map(c => c.toUpperCase()),
-        rank3_candidates: (rank3Candidates ?? []).map(c => c.toUpperCase()),
+        rank1_candidates: leaders,
+        rank2_candidates: rank2Candidates ?? [],
+        rank3_candidates: rank3Candidates ?? [],
       };
       
       // 3) resolved_scores - base + bonus for tie resolution visualization
@@ -378,8 +378,7 @@ export function useTelemetry() {
       
       // Add rank1 tie if it happened
       if (tieRank1 && rank1Code) {
-        const losers = leaders.filter(c => c !== rank1Code).map(c => c.toUpperCase()).join(', ');
-        tie_trace.push(`rank1: ${leaders.map(c => c.toUpperCase()).join(' vs ')} -> ${rank1Code.toUpperCase()}`);
+        tie_trace.push(`rank1: ${leaders.join(' vs ')} -> ${rank1Code}`);
       }
       
       // Add rank2/3 traces from the tournament
@@ -388,7 +387,7 @@ export function useTelemetry() {
         let rank2Done = !tieRank2;
         
         rank23TieTrace.forEach(t => {
-          tie_trace.push(`${currentRank}: ${t.winner.toUpperCase()} vs ${t.loser.toUpperCase()} -> ${t.winner.toUpperCase()}`);
+          tie_trace.push(`${currentRank}: ${t.winner} vs ${t.loser} -> ${t.winner}`);
           if (!rank2Done && t.winner === rank2Code) {
             rank2Done = true;
             currentRank = 'rank3';
