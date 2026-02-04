@@ -506,6 +506,7 @@ export function useRank23Tournament(countsFinal: CountsFinal, rank1Code: Holland
 
   /**
    * Check if tournament needs to run (Rank 2 or 3 has ties)
+   * Note: This uses the prop rank1Code which may be stale - use checkNeedsTournament for accurate check
    */
   const needsTournament = useMemo(() => {
     if (!rank1Code) return false;
@@ -520,6 +521,34 @@ export function useRank23Tournament(countsFinal: CountsFinal, rank1Code: Holland
     
     return false;
   }, [countsFinal, rank1Code]);
+
+  /**
+   * Check if tournament needs to run with a specific rank1 code
+   * Use this when rank1 is just determined but not yet in state
+   */
+  const checkNeedsTournament = useCallback((finalRank1: HollandCode): boolean => {
+    console.log('[Rank23] checkNeedsTournament called with rank1:', finalRank1);
+    
+    const rank2Candidates = findCandidates(countsFinal, [finalRank1]);
+    console.log('[Rank23] Rank 2 candidates for check:', rank2Candidates);
+    
+    if (rank2Candidates.length >= 2) {
+      console.log('[Rank23] Tournament needed: Rank 2 has', rank2Candidates.length, 'candidates');
+      return true;
+    }
+    
+    if (rank2Candidates.length === 1) {
+      const rank3Candidates = findCandidates(countsFinal, [finalRank1, rank2Candidates[0]]);
+      console.log('[Rank23] Rank 3 candidates for check:', rank3Candidates);
+      if (rank3Candidates.length >= 2) {
+        console.log('[Rank23] Tournament needed: Rank 3 has', rank3Candidates.length, 'candidates');
+        return true;
+      }
+    }
+    
+    console.log('[Rank23] No tournament needed');
+    return false;
+  }, [countsFinal]);
 
   /**
    * Get final rankings without tournament (when no ties exist)
@@ -546,6 +575,7 @@ export function useRank23Tournament(countsFinal: CountsFinal, rank1Code: Holland
     startTournament,
     processChoice,
     needsTournament,
+    checkNeedsTournament,
     getAutoResolvedRankings,
     isComplete: state.phase === 'complete',
     isActive: state.phase === 'rank2' || state.phase === 'rank3',
