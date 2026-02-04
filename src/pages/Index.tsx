@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useGameState } from '@/hooks/useGameState';
 import { useTelemetry } from '@/hooks/useTelemetry';
-import { useRank23Tournament } from '@/hooks/useRank23Tournament';
+import { useFullTournament } from '@/hooks/useFullTournament';
 import { GameStage } from '@/components/GameStage';
 import { DimensionSelect } from '@/components/DimensionSelect';
 import { ComingSoon } from '@/components/ComingSoon';
@@ -47,8 +47,8 @@ const Index = () => {
     setRank23TieTrace,
   } = useGameState();
 
-  // Rank 2/3 tournament hook
-  const rank23Tournament = useRank23Tournament(countsFinal, state.rank1Code);
+  // Full tournament hook (supports Rank 1, 2, and 3)
+  const tournament = useFullTournament(countsFinal);
 
   const {
     trackRunStarted,
@@ -74,241 +74,223 @@ const Index = () => {
       const isTie = state.phase === 'tie';
       trackMissionShown(currentMission.mission_id, isTie);
     }
-    // Track Rank 2/3 tournament missions
-    if (rank23Tournament.currentMission && rank23Tournament.currentMission.mission_id !== lastTrackedMissionRef.current) {
-      lastTrackedMissionRef.current = rank23Tournament.currentMission.mission_id;
-      trackMissionShown(rank23Tournament.currentMission.mission_id, true);
+    // Track tournament missions
+    if (tournament.currentMission && tournament.currentMission.mission_id !== lastTrackedMissionRef.current) {
+      lastTrackedMissionRef.current = tournament.currentMission.mission_id;
+      trackMissionShown(tournament.currentMission.mission_id, true);
     }
-  }, [currentMission, rank23Tournament.currentMission, state.phase, trackMissionShown]);
+  }, [currentMission, tournament.currentMission, state.phase, trackMissionShown]);
 
   // Handle phase transitions after main missions complete
   useEffect(() => {
     if (state.phase === 'main' && isMainComplete) {
-      // Check for two-way tie for Rank 1
-      const hasTie = checkAndSetTiePhase();
-      if (!hasTie) {
-        // No Rank 1 tie - determine Rank 1 from leaders and check for Rank 2/3 ties
+      console.log('[Index] Main complete. Leaders:', leaders, 'Count:', leaders.length);
+      
+      // Check what tournament is needed
+      const tournamentNeeds = tournament.checkNeedsTournament(leaders);
+      console.log('[Index] Tournament needs:', tournamentNeeds);
+      
+      if (leaders.length >= 2) {
+        // Need Rank 1 tournament (2+ leaders)
+        console.log('[Index] Starting Rank 1 tournament with leaders:', leaders);
+        tournament.startTournament(leaders);
+        setPhase('tie1');
+      } else if (leaders.length === 1) {
+        // Rank 1 is clear, check Rank 2/3
         const rank1 = leaders[0];
         setRank1Code(rank1);
         
-        // Check if Rank 2/3 needs tournament using the new function with rank1 parameter
-        const startingPhase = rank23Tournament.getStartingPhase(rank1);
-        if (startingPhase) {
-          rank23Tournament.startTournament(rank1);
-          // Set the correct phase based on where the tournament starts
-          setPhase(startingPhase === 'rank2' ? 'tie2' : 'tie3');
+        if (tournamentNeeds.needsRank2 || tournamentNeeds.needsRank3) {
+          console.log('[Index] Starting Rank 2/3 tournament with rank1:', rank1);
+          tournament.startFromRank2(rank1);
+          setPhase(tournamentNeeds.needsRank2 ? 'tie2' : 'tie3');
         } else {
           // No tournament needed - auto-resolve and go to lead form
-          const autoResolved = rank23Tournament.getAutoResolvedRankings(rank1);
+          const autoResolved = tournament.getAutoResolvedRankings(rank1);
           if (autoResolved) {
             setRank2Code(autoResolved.rank2Code);
             setRank3Code(autoResolved.rank3Code);
           }
           
-          // Send gameplay payload
-          const tieState = {
-            triggered: state.tieMissionUsed !== null,
-            missionId: state.tieMissionUsed?.mission_id || null,
-            choiceMade: state.tieChoiceMade,
-            locked: state.tieChoiceMade,
-          };
-          
-          // Calculate tie flags for payload
-          const DEFAULT_ORDER_LOCAL: HollandCode[] = ['r', 'i', 'a', 's', 'e', 'c'];
-          const findCandidatesLocal = (excludeCodes: HollandCode[]): HollandCode[] => {
-            const remaining = DEFAULT_ORDER_LOCAL.filter(code => !excludeCodes.includes(code));
-            if (remaining.length === 0) return [];
-            const maxScore = Math.max(...remaining.map(code => countsFinal[code]));
-            return remaining.filter(code => countsFinal[code] === maxScore);
-          };
-          
-          const rank2CandidatesLocal = findCandidatesLocal([rank1]);
-          const autoRank2 = rank2CandidatesLocal.length === 1 ? rank2CandidatesLocal[0] : autoResolved?.rank2Code || null;
-          const rank3CandidatesLocal = autoRank2 ? findCandidatesLocal([rank1, autoRank2]) : [];
-          
-          const tieFlagsLocal = {
-            rank1_triggered: leaders.length > 1,
-            rank2_triggered: rank2CandidatesLocal.length > 1,
-            rank2_candidates: rank2CandidatesLocal.map(c => c.toLowerCase() as HollandCode),
-            rank3_triggered: rank3CandidatesLocal.length > 1,
-            rank3_candidates: rank3CandidatesLocal.map(c => c.toLowerCase() as HollandCode),
-          };
-          
-          sendGameplayPayload(
-            state.avatarGender,
-            state.firstPicksByMissionId,
-            state.finalPicksByMissionId,
-            state.undoEvents,
-            tieState,
-            countsFinal,
-            leaders,
-            rank1,
-            autoResolved?.rank2Code || null,
-            autoResolved?.rank3Code || null,
-            tieFlagsLocal,
-            [], // No tie trace for auto-resolved
-            [], // No rank23 tie trace for auto-resolved
-          );
+          sendAutoResolvedPayload(rank1, autoResolved?.rank2Code || null, autoResolved?.rank3Code || null);
           setPhase('lead');
         }
       }
     }
-  }, [state.phase, isMainComplete, checkAndSetTiePhase, setPhase, sendGameplayPayload, state.avatarGender, state.firstPicksByMissionId, state.finalPicksByMissionId, state.undoEvents, state.tieMissionUsed, state.tieChoiceMade, countsFinal, leaders, rank23Tournament, setRank1Code, setRank2Code, setRank3Code]);
+  }, [state.phase, isMainComplete, leaders, tournament, setPhase, setRank1Code, setRank2Code, setRank3Code]);
 
-  // Handle Rank 1 tie choice completion - then check for Rank 2/3 ties
+  // Handle 2-way tie for Rank 1 using legacy tie system (phase: 'tie')
+  // This is for backward compatibility with existing 2-way tie missions
   useEffect(() => {
     if (state.phase === 'tie' && state.tieChoiceMade) {
-      // Rank 1 tie is resolved - determine the winner
-      // The winner is the leader after the tie-breaker choice
+      // Rank 1 tie is resolved via legacy system
       const rank1 = leaders[0];
       setRank1Code(rank1);
       
-      // Check if Rank 2/3 needs tournament using the new function with rank1 parameter
-      const startingPhase = rank23Tournament.getStartingPhase(rank1);
-      if (startingPhase) {
-        rank23Tournament.startTournament(rank1);
-        // Set the correct phase based on where the tournament starts
-        setPhase(startingPhase === 'rank2' ? 'tie2' : 'tie3');
+      // Check if Rank 2/3 needs tournament
+      const tournamentNeeds = tournament.checkNeedsTournament([rank1]);
+      
+      if (tournamentNeeds.needsRank2 || tournamentNeeds.needsRank3) {
+        tournament.startFromRank2(rank1);
+        setPhase(tournamentNeeds.needsRank2 ? 'tie2' : 'tie3');
       } else {
         // No tournament needed - auto-resolve and go to lead form
-        const autoResolved = rank23Tournament.getAutoResolvedRankings(rank1);
+        const autoResolved = tournament.getAutoResolvedRankings(rank1);
         if (autoResolved) {
           setRank2Code(autoResolved.rank2Code);
           setRank3Code(autoResolved.rank3Code);
         }
         
-        // Send gameplay payload after tie is resolved
-        const tieState = {
-          triggered: state.tieMissionUsed !== null,
-          missionId: state.tieMissionUsed?.mission_id || null,
-          choiceMade: state.tieChoiceMade,
-          locked: state.tieChoiceMade,
-        };
-        
-        // Calculate tie flags for payload
-        const DEFAULT_ORDER_LOCAL2: HollandCode[] = ['r', 'i', 'a', 's', 'e', 'c'];
-        const findCandidatesLocal2 = (excludeCodes: HollandCode[]): HollandCode[] => {
-          const remaining = DEFAULT_ORDER_LOCAL2.filter(code => !excludeCodes.includes(code));
-          if (remaining.length === 0) return [];
-          const maxScore = Math.max(...remaining.map(code => countsFinal[code]));
-          return remaining.filter(code => countsFinal[code] === maxScore);
-        };
-        
-        const rank2CandidatesLocal2 = findCandidatesLocal2([rank1]);
-        const autoRank2Local = rank2CandidatesLocal2.length === 1 ? rank2CandidatesLocal2[0] : autoResolved?.rank2Code || null;
-        const rank3CandidatesLocal2 = autoRank2Local ? findCandidatesLocal2([rank1, autoRank2Local]) : [];
-        
-        const tieFlagsLocal2 = {
-          rank1_triggered: leaders.length > 1,
-          rank2_triggered: rank2CandidatesLocal2.length > 1,
-          rank2_candidates: rank2CandidatesLocal2.map(c => c.toLowerCase() as HollandCode),
-          rank3_triggered: rank3CandidatesLocal2.length > 1,
-          rank3_candidates: rank3CandidatesLocal2.map(c => c.toLowerCase() as HollandCode),
-        };
-        
-        sendGameplayPayload(
-          state.avatarGender,
-          state.firstPicksByMissionId,
-          state.finalPicksByMissionId,
-          state.undoEvents,
-          tieState,
-          countsFinal,
-          leaders,
-          rank1,
-          autoResolved?.rank2Code || null,
-          autoResolved?.rank3Code || null,
-          tieFlagsLocal2,
-          [], // No tie trace for auto-resolved
-          [], // No rank23 tie trace for auto-resolved
-        );
+        sendAutoResolvedPayload(rank1, autoResolved?.rank2Code || null, autoResolved?.rank3Code || null);
         setPhase('lead');
       }
     }
-  }, [state.phase, state.tieChoiceMade, setPhase, sendGameplayPayload, state.avatarGender, state.firstPicksByMissionId, state.finalPicksByMissionId, state.undoEvents, state.tieMissionUsed, countsFinal, leaders, rank23Tournament, setRank1Code, setRank2Code, setRank3Code]);
+  }, [state.phase, state.tieChoiceMade, leaders, tournament, setPhase, setRank1Code, setRank2Code, setRank3Code]);
 
-  // Handle Rank 2/3 tournament completion
+  // Handle tournament completion
   useEffect(() => {
-    if (rank23Tournament.isComplete && (state.phase === 'tie2' || state.phase === 'tie3')) {
+    if (tournament.isComplete && (state.phase === 'tie1' || state.phase === 'tie2' || state.phase === 'tie3')) {
+      console.log('[Index] Tournament complete:', tournament.state);
+      
       // Store final rankings
-      if (rank23Tournament.state.rank2Code) {
-        setRank2Code(rank23Tournament.state.rank2Code);
+      if (tournament.state.rank1Code) {
+        setRank1Code(tournament.state.rank1Code);
       }
-      if (rank23Tournament.state.rank3Code) {
-        setRank3Code(rank23Tournament.state.rank3Code);
+      if (tournament.state.rank2Code) {
+        setRank2Code(tournament.state.rank2Code);
       }
-      setRank23TieTrace(rank23Tournament.state.tieTrace);
+      if (tournament.state.rank3Code) {
+        setRank3Code(tournament.state.rank3Code);
+      }
+      setRank23TieTrace(tournament.state.tieTrace);
       
       // Send gameplay payload
-      const tieState = {
-        triggered: state.tieMissionUsed !== null,
-        missionId: state.tieMissionUsed?.mission_id || null,
-        choiceMade: state.tieChoiceMade,
-        locked: true,
-      };
-      
-      // Calculate tie flags for payload
-      const DEFAULT_ORDER: HollandCode[] = ['r', 'i', 'a', 's', 'e', 'c'];
-      const findCandidates = (excludeCodes: HollandCode[]): HollandCode[] => {
-        const remaining = DEFAULT_ORDER.filter(code => !excludeCodes.includes(code));
-        if (remaining.length === 0) return [];
-        const maxScore = Math.max(...remaining.map(code => countsFinal[code]));
-        return remaining.filter(code => countsFinal[code] === maxScore);
-      };
-      
-      const rank1Candidates = leaders;
-      const finalRank1 = rank23Tournament.state.rank1Code || state.rank1Code || (leaders.length === 1 ? leaders[0] : null);
-      const rank2Candidates = finalRank1 ? findCandidates([finalRank1]) : [];
-      const finalRank2 = rank23Tournament.state.rank2Code;
-      const rank3Candidates = (finalRank1 && finalRank2) ? findCandidates([finalRank1, finalRank2]) : [];
-      
-      const tieFlags = {
-        rank1_triggered: leaders.length > 1,
-        rank2_triggered: rank2Candidates.length > 1,
-        rank2_candidates: rank2Candidates.map(c => c.toLowerCase() as HollandCode),
-        rank3_triggered: rank3Candidates.length > 1,
-        rank3_candidates: rank3Candidates.map(c => c.toLowerCase() as HollandCode),
-      };
-      
-      // Combine all tie traces - map from TournamentComparison to payload format
-      const combinedTieTrace = rank23Tournament.state.tieTrace.map((t, index) => ({
-        round: `comparison_${index + 1}`,
-        pair: t.pairCodes.toLowerCase(),
-        winner: t.winner.toLowerCase(),
-      }));
-      
-      // Rank 2/3 specific tie trace with loser info
-      const rank23TieTrace = rank23Tournament.state.tieTrace.map((t, index) => ({
-        round: `rank23_comparison_${index + 1}`,
-        pair: t.pairCodes.toLowerCase(),
-        winner: t.winner.toLowerCase(),
-        loser: t.loser.toLowerCase(),
-      }));
-      
-      sendGameplayPayload(
-        state.avatarGender,
-        state.firstPicksByMissionId,
-        state.finalPicksByMissionId,
-        state.undoEvents,
-        tieState,
-        countsFinal,
-        leaders,
-        finalRank1,
-        finalRank2,
-        rank23Tournament.state.rank3Code,
-        tieFlags,
-        combinedTieTrace,
-        rank23TieTrace,
+      sendTournamentPayload(
+        tournament.state.rank1Code,
+        tournament.state.rank2Code,
+        tournament.state.rank3Code,
+        tournament.state.tieTrace
       );
       setPhase('lead');
     }
-  }, [rank23Tournament.isComplete, rank23Tournament.state, state.phase, setRank2Code, setRank3Code, setRank23TieTrace, sendGameplayPayload, state.avatarGender, state.firstPicksByMissionId, state.finalPicksByMissionId, state.undoEvents, state.tieMissionUsed, state.tieChoiceMade, countsFinal, leaders, setPhase]);
+  }, [tournament.isComplete, tournament.state, state.phase, setRank1Code, setRank2Code, setRank3Code, setRank23TieTrace, setPhase]);
 
-  // Update phase when tournament moves from rank2 to rank3
+  // Update phase when tournament moves between ranks
   useEffect(() => {
-    if (state.phase === 'tie2' && rank23Tournament.state.phase === 'rank3') {
+    if (state.phase === 'tie1' && tournament.state.phase === 'rank2') {
+      setPhase('tie2');
+    } else if ((state.phase === 'tie1' || state.phase === 'tie2') && tournament.state.phase === 'rank3') {
       setPhase('tie3');
     }
-  }, [state.phase, rank23Tournament.state.phase, setPhase]);
+  }, [state.phase, tournament.state.phase, setPhase]);
+
+  // Helper function to send payload when auto-resolved
+  const sendAutoResolvedPayload = (rank1: HollandCode, rank2: HollandCode | null, rank3: HollandCode | null) => {
+    const tieState = {
+      triggered: state.tieMissionUsed !== null,
+      missionId: state.tieMissionUsed?.mission_id || null,
+      choiceMade: state.tieChoiceMade,
+      locked: state.tieChoiceMade,
+    };
+    
+    const DEFAULT_ORDER: HollandCode[] = ['r', 'i', 'a', 's', 'e', 'c'];
+    const findCandidates = (excludeCodes: HollandCode[]): HollandCode[] => {
+      const remaining = DEFAULT_ORDER.filter(code => !excludeCodes.includes(code));
+      if (remaining.length === 0) return [];
+      const maxScore = Math.max(...remaining.map(code => countsFinal[code]));
+      return remaining.filter(code => countsFinal[code] === maxScore);
+    };
+    
+    const rank2Candidates = findCandidates([rank1]);
+    const rank3Candidates = rank2 ? findCandidates([rank1, rank2]) : [];
+    
+    const tieFlags = {
+      rank1_triggered: leaders.length > 1,
+      rank2_triggered: rank2Candidates.length > 1,
+      rank2_candidates: rank2Candidates.map(c => c.toLowerCase() as HollandCode),
+      rank3_triggered: rank3Candidates.length > 1,
+      rank3_candidates: rank3Candidates.map(c => c.toLowerCase() as HollandCode),
+    };
+    
+    sendGameplayPayload(
+      state.avatarGender,
+      state.firstPicksByMissionId,
+      state.finalPicksByMissionId,
+      state.undoEvents,
+      tieState,
+      countsFinal,
+      leaders,
+      rank1,
+      rank2,
+      rank3,
+      tieFlags,
+      [],
+      [],
+    );
+  };
+
+  // Helper function to send payload after tournament
+  const sendTournamentPayload = (
+    rank1: HollandCode | null,
+    rank2: HollandCode | null,
+    rank3: HollandCode | null,
+    tieTrace: typeof tournament.state.tieTrace
+  ) => {
+    const tieState = {
+      triggered: true,
+      missionId: state.tieMissionUsed?.mission_id || null,
+      choiceMade: true,
+      locked: true,
+    };
+    
+    const DEFAULT_ORDER: HollandCode[] = ['r', 'i', 'a', 's', 'e', 'c'];
+    const findCandidates = (excludeCodes: HollandCode[]): HollandCode[] => {
+      const remaining = DEFAULT_ORDER.filter(code => !excludeCodes.includes(code));
+      if (remaining.length === 0) return [];
+      const maxScore = Math.max(...remaining.map(code => countsFinal[code]));
+      return remaining.filter(code => countsFinal[code] === maxScore);
+    };
+    
+    const rank2Candidates = rank1 ? findCandidates([rank1]) : [];
+    const rank3Candidates = (rank1 && rank2) ? findCandidates([rank1, rank2]) : [];
+    
+    const tieFlags = {
+      rank1_triggered: leaders.length > 1,
+      rank2_triggered: rank2Candidates.length > 1,
+      rank2_candidates: rank2Candidates.map(c => c.toLowerCase() as HollandCode),
+      rank3_triggered: rank3Candidates.length > 1,
+      rank3_candidates: rank3Candidates.map(c => c.toLowerCase() as HollandCode),
+    };
+    
+    const combinedTieTrace = tieTrace.map((t, index) => ({
+      round: `rank${t.rank}_comparison_${index + 1}`,
+      pair: t.pairCodes.toLowerCase(),
+      winner: t.winner.toLowerCase(),
+    }));
+    
+    const rank23TieTrace = tieTrace.map((t, index) => ({
+      round: `rank${t.rank}_comparison_${index + 1}`,
+      pair: t.pairCodes.toLowerCase(),
+      winner: t.winner.toLowerCase(),
+      loser: t.loser.toLowerCase(),
+    }));
+    
+    sendGameplayPayload(
+      state.avatarGender,
+      state.firstPicksByMissionId,
+      state.finalPicksByMissionId,
+      state.undoEvents,
+      tieState,
+      countsFinal,
+      leaders,
+      rank1,
+      rank2,
+      rank3,
+      tieFlags,
+      combinedTieTrace,
+      rank23TieTrace,
+    );
+  };
 
   const handleDimensionSelect = (dimension: Dimension) => {
     setDimension(dimension);
@@ -340,19 +322,16 @@ const Index = () => {
     pendingLeadFormRef.current = data;
     setLeadForm(data);
     
-    // Move to processing screen immediately
     setPhase('processing');
 
     try {
       console.log("[Index] About to call sendCompletionPayload...");
-      // Send completion payload (only lead form data)
       const result = await sendCompletionPayload(data);
       console.log("[Index] Completion payload result:", result);
     } catch (error) {
       console.error("[Index] Failed to send completion payload:", error);
     }
 
-    // Move to summary
     setIsSubmitting(false);
     setAnalysisData(null);
     setPhase('summary');
@@ -365,10 +344,10 @@ const Index = () => {
     selectOption(missionId, key, hollandCode, option);
   };
 
-  // Handler for Rank 2/3 tournament choices
-  const handleRank23Select = (missionId: string, key: 'a' | 'b', hollandCode: HollandCode) => {
+  // Handler for tournament choices
+  const handleTournamentSelect = (missionId: string, key: 'a' | 'b', hollandCode: HollandCode) => {
     trackMissionPicked(missionId, key, true);
-    rank23Tournament.processChoice(key);
+    tournament.processChoice(key);
   };
 
   // Wrapper for undo that includes telemetry
@@ -384,11 +363,13 @@ const Index = () => {
     return Object.values(state.finalPicksByMissionId);
   }, [state.finalPicksByMissionId]);
 
-  // Determine which mission to show for Rank 2/3 phases
-  const rank23Mission = rank23Tournament.currentMission;
-  const rank23MissionNumber = state.phase === 'tie2' 
-    ? (rank23Tournament.currentRankBeingResolved === 2 ? 14 : 15)
-    : (rank23Tournament.currentRankBeingResolved === 3 ? 15 : 14);
+  // Determine which mission to show for tournament phases
+  const tournamentMission = tournament.currentMission;
+  const tournamentMissionNumber = useMemo(() => {
+    // Base number is 12 (main missions) + rank number
+    const rankNum = tournament.currentRankBeingResolved || 1;
+    return 12 + rankNum;
+  }, [tournament.currentRankBeingResolved]);
 
   return (
     <>
@@ -430,6 +411,7 @@ const Index = () => {
           />
         )}
 
+        {/* Legacy 2-way tie phase (for backward compatibility) */}
         {state.phase === 'tie' && currentMission && (
           <VisualPlayScreen
             mission={currentMission}
@@ -451,23 +433,23 @@ const Index = () => {
           />
         )}
 
-        {/* Rank 2/3 Tournament Phases */}
-        {(state.phase === 'tie2' || state.phase === 'tie3') && rank23Mission && (
+        {/* Tournament Phases (Rank 1, 2, or 3) */}
+        {(state.phase === 'tie1' || state.phase === 'tie2' || state.phase === 'tie3') && tournamentMission && (
           <VisualPlayScreen
-            mission={rank23Mission}
-            currentIndex={rank23MissionNumber - 1}
-            totalMissions={mainMissions.length + 3} // 12 main + tie1 + tie2 + tie3
+            mission={tournamentMission}
+            currentIndex={tournamentMissionNumber - 1}
+            totalMissions={mainMissions.length + 3}
             isTieBreaker={true}
-            canUndo={false} // No undo during Rank 2/3 tournament
+            canUndo={false}
             avatarGender={state.avatarGender}
             placedProps={placedProps}
-            onSelect={handleRank23Select}
-            onUndo={() => {}} // Disabled
+            onSelect={handleTournamentSelect}
+            onUndo={() => {}}
             toolEditMode={toolEditMode}
             onEditorNextMission={() => {
-              const optionA = rank23Mission.options.find(o => o.key === 'a');
+              const optionA = tournamentMission.options.find(o => o.key === 'a');
               if (optionA) {
-                handleRank23Select(rank23Mission.mission_id, 'a', optionA.holland_code);
+                handleTournamentSelect(tournamentMission.mission_id, 'a', optionA.holland_code);
               }
             }}
           />
@@ -506,12 +488,12 @@ const Index = () => {
             state={state}
             countsFinal={countsFinal}
             leaders={leaders}
-            rank23State={rank23Tournament.state}
-            startingPhase={state.rank1Code ? rank23Tournament.getStartingPhase(state.rank1Code) : null}
+            rank23State={tournament.state}
+            startingPhase={state.rank1Code ? (tournament.checkNeedsTournament([state.rank1Code]).needsRank2 ? 'rank2' : 'rank3') : null}
             currentPhase={state.phase}
-            rank2Candidates={rank23Tournament.getCandidatesForDebug(state.rank1Code).rank2Candidates}
-            rank3Candidates={rank23Tournament.getCandidatesForDebug(state.rank1Code).rank3Candidates}
-            lastComparison={rank23Tournament.state.tieTrace[rank23Tournament.state.tieTrace.length - 1]}
+            rank2Candidates={tournament.getCandidatesForDebug(state.rank1Code).rank2Candidates}
+            rank3Candidates={tournament.getCandidatesForDebug(state.rank1Code).rank3Candidates}
+            lastComparison={tournament.state.tieTrace[tournament.state.tieTrace.length - 1]}
           />
         </>
       )}
