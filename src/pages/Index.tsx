@@ -338,6 +338,7 @@ const Index = () => {
   };
 
   const handleLeadSubmit = async (data: LeadFormData) => {
+    console.log("[Index] handleLeadSubmit called with:", data);
     setIsSubmitting(true);
     pendingLeadFormRef.current = data;
     setLeadForm(data);
@@ -346,6 +347,7 @@ const Index = () => {
     setPhase('processing');
 
     try {
+      console.log("[Index] About to call sendCompletionPayload...");
       // Send completion payload (only lead form data)
       const result = await sendCompletionPayload(data);
       console.log("[Index] Completion payload result:", result);
