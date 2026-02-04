@@ -95,9 +95,11 @@ const Index = () => {
         setRank1Code(rank1);
         
         // Check if Rank 2/3 needs tournament using the new function with rank1 parameter
-        if (rank23Tournament.checkNeedsTournament(rank1)) {
+        const startingPhase = rank23Tournament.getStartingPhase(rank1);
+        if (startingPhase) {
           rank23Tournament.startTournament(rank1);
-          setPhase('tie2');
+          // Set the correct phase based on where the tournament starts
+          setPhase(startingPhase === 'rank2' ? 'tie2' : 'tie3');
         } else {
           // No tournament needed - auto-resolve and go to lead form
           const autoResolved = rank23Tournament.getAutoResolvedRankings(rank1);
@@ -137,9 +139,11 @@ const Index = () => {
       setRank1Code(rank1);
       
       // Check if Rank 2/3 needs tournament using the new function with rank1 parameter
-      if (rank23Tournament.checkNeedsTournament(rank1)) {
+      const startingPhase = rank23Tournament.getStartingPhase(rank1);
+      if (startingPhase) {
         rank23Tournament.startTournament(rank1);
-        setPhase('tie2');
+        // Set the correct phase based on where the tournament starts
+        setPhase(startingPhase === 'rank2' ? 'tie2' : 'tie3');
       } else {
         // No tournament needed - auto-resolve and go to lead form
         const autoResolved = rank23Tournament.getAutoResolvedRankings(rank1);

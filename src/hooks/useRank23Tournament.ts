@@ -292,6 +292,9 @@ export function useRank23Tournament(countsFinal: CountsFinal, rank1Code: Holland
         return;
       }
       
+      console.log('[Rank23] Starting Rank 3 tournament - setting phase to rank3');
+      console.log('[Rank23] Mission for Rank 3:', tieMission.quest_id, 'pair_codes:', tieMission.pair_codes);
+      
       setState({
         phase: 'rank3',
         rank1Code: finalRank1,
@@ -570,6 +573,29 @@ export function useRank23Tournament(countsFinal: CountsFinal, rank1Code: Holland
     };
   }, [countsFinal]);
 
+  /**
+   * Check which phase the tournament will start at (rank2 or rank3)
+   * Used by Index.tsx to set the correct game phase
+   */
+  const getStartingPhase = useCallback((finalRank1: HollandCode): 'rank2' | 'rank3' | null => {
+    const rank2Candidates = findCandidates(countsFinal, [finalRank1]);
+    console.log('[Rank23] getStartingPhase - rank2Candidates:', rank2Candidates);
+    
+    if (rank2Candidates.length >= 2) {
+      return 'rank2';
+    }
+    
+    if (rank2Candidates.length === 1) {
+      const rank3Candidates = findCandidates(countsFinal, [finalRank1, rank2Candidates[0]]);
+      console.log('[Rank23] getStartingPhase - rank3Candidates:', rank3Candidates);
+      if (rank3Candidates.length >= 2) {
+        return 'rank3';
+      }
+    }
+    
+    return null;
+  }, [countsFinal]);
+
   return {
     state,
     startTournament,
@@ -577,6 +603,7 @@ export function useRank23Tournament(countsFinal: CountsFinal, rank1Code: Holland
     needsTournament,
     checkNeedsTournament,
     getAutoResolvedRankings,
+    getStartingPhase,
     isComplete: state.phase === 'complete',
     isActive: state.phase === 'rank2' || state.phase === 'rank3',
     currentMission: state.currentMission,
