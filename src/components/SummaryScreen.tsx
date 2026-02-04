@@ -67,28 +67,82 @@ export function SummaryScreen({ state, countsFinal, leaders, analysis }: Summary
             התוצאות שלך!
           </h1>
           
-          {/* Leading profile */}
-          {leaders.length > 0 && (
-            <div className="mb-3 md:mb-4">
-              <p 
-                className="text-sm mb-2 text-center"
-                style={{ color: '#555', fontFamily: "'Rubik', sans-serif" }}
-              >
-                הפרופיל המוביל שלך:
-              </p>
-              <div className="flex flex-wrap gap-2 justify-center">
-                {leaders.map((code) => (
+          {/* Top 3 Profile Rankings */}
+          <div className="mb-3 md:mb-4">
+            <p 
+              className="text-sm mb-3 text-center"
+              style={{ color: '#555', fontFamily: "'Rubik', sans-serif" }}
+            >
+              שלושת הפרופילים המובילים שלך:
+            </p>
+            <div className="flex flex-col gap-2">
+              {/* Rank 1 */}
+              {state.rank1Code && (
+                <div className="flex items-center gap-2 justify-center">
+                  <span 
+                    className="w-6 h-6 rounded-full bg-amber-400 text-white text-xs font-bold flex items-center justify-center"
+                    title="מקום ראשון"
+                  >
+                    1
+                  </span>
                   <span
-                    key={code}
                     className="px-3 py-1 rounded-full bg-primary text-primary-foreground text-sm font-medium"
                     style={{ fontFamily: "'Rubik', sans-serif" }}
                   >
-                    {HOLLAND_LABELS[code]}
+                    {HOLLAND_LABELS[state.rank1Code]}
                   </span>
-                ))}
-              </div>
+                </div>
+              )}
+              {/* Rank 2 */}
+              {state.rank2Code && (
+                <div className="flex items-center gap-2 justify-center">
+                  <span 
+                    className="w-6 h-6 rounded-full bg-slate-400 text-white text-xs font-bold flex items-center justify-center"
+                    title="מקום שני"
+                  >
+                    2
+                  </span>
+                  <span
+                    className="px-3 py-1 rounded-full bg-primary/80 text-primary-foreground text-sm font-medium"
+                    style={{ fontFamily: "'Rubik', sans-serif" }}
+                  >
+                    {HOLLAND_LABELS[state.rank2Code]}
+                  </span>
+                </div>
+              )}
+              {/* Rank 3 */}
+              {state.rank3Code && (
+                <div className="flex items-center gap-2 justify-center">
+                  <span 
+                    className="w-6 h-6 rounded-full bg-amber-700 text-white text-xs font-bold flex items-center justify-center"
+                    title="מקום שלישי"
+                  >
+                    3
+                  </span>
+                  <span
+                    className="px-3 py-1 rounded-full bg-primary/60 text-primary-foreground text-sm font-medium"
+                    style={{ fontFamily: "'Rubik', sans-serif" }}
+                  >
+                    {HOLLAND_LABELS[state.rank3Code]}
+                  </span>
+                </div>
+              )}
+              {/* Fallback to old leaders if new ranks not available */}
+              {!state.rank1Code && leaders.length > 0 && (
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {leaders.map((code) => (
+                    <span
+                      key={code}
+                      className="px-3 py-1 rounded-full bg-primary text-primary-foreground text-sm font-medium"
+                      style={{ fontFamily: "'Rubik', sans-serif" }}
+                    >
+                      {HOLLAND_LABELS[code]}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
+          </div>
 
           {/* Analysis from Make - if available */}
           {analysis && (
