@@ -596,6 +596,35 @@ export function useRank23Tournament(countsFinal: CountsFinal, rank1Code: Holland
     return null;
   }, [countsFinal]);
 
+  /**
+   * Get candidates for debug panel display
+   */
+  const getCandidatesForDebug = useCallback((finalRank1: HollandCode | null): {
+    rank2Candidates: HollandCode[];
+    rank3Candidates: HollandCode[];
+  } => {
+    if (!finalRank1) {
+      return { rank2Candidates: [], rank3Candidates: [] };
+    }
+    
+    const rank2Candidates = findCandidates(countsFinal, [finalRank1]);
+    
+    // For rank3, we need to know rank2. If tournament is active, use state.rank2Code
+    // Otherwise, if only one rank2 candidate, use that
+    let rank2ForRank3: HollandCode | null = null;
+    if (state.rank2Code) {
+      rank2ForRank3 = state.rank2Code;
+    } else if (rank2Candidates.length === 1) {
+      rank2ForRank3 = rank2Candidates[0];
+    }
+    
+    const rank3Candidates = rank2ForRank3 
+      ? findCandidates(countsFinal, [finalRank1, rank2ForRank3])
+      : [];
+    
+    return { rank2Candidates, rank3Candidates };
+  }, [countsFinal, state.rank2Code]);
+
   return {
     state,
     startTournament,
@@ -604,6 +633,7 @@ export function useRank23Tournament(countsFinal: CountsFinal, rank1Code: Holland
     checkNeedsTournament,
     getAutoResolvedRankings,
     getStartingPhase,
+    getCandidatesForDebug,
     isComplete: state.phase === 'complete',
     isActive: state.phase === 'rank2' || state.phase === 'rank3',
     currentMission: state.currentMission,
