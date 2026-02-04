@@ -463,15 +463,8 @@ export function useTelemetry() {
         console.log("[Telemetry] Completion payload sent, status:", response.status);
 
         if (response.ok) {
-          try {
-            const analysisData = (await response.json()) as AnalysisResponse;
-            console.log("[Telemetry] Received analysis:", analysisData);
-            return { success: true, analysis: analysisData };
-          } catch {
-            // Response was OK but no JSON body - that's fine
-            console.log("[Telemetry] No JSON response from Make");
-            return { success: true, analysis: null };
-          }
+          console.log("[Telemetry] Completion payload sent successfully");
+          return { success: true, analysis: null };
         }
 
         return { success: false, analysis: null };
