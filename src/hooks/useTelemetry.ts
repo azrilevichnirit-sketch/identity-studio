@@ -446,6 +446,9 @@ export function useTelemetry() {
         tie_trace,
       };
 
+      // Log full payload for debugging
+      console.log("[Telemetry] Full completion payload:", JSON.stringify(payload, null, 2));
+
       try {
         const response = await fetchWithRetry(MAKE_WEBHOOK_URL, {
           method: "POST",
