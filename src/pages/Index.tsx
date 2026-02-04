@@ -250,6 +250,20 @@ const Index = () => {
       locked: state.tieChoiceMade,
     };
 
+    // Calculate rank2 and rank3 candidates for tie_flags
+    const DEFAULT_ORDER: HollandCode[] = ['r', 'i', 'a', 's', 'e', 'c'];
+    const findCandidatesLocal = (excludeCodes: HollandCode[]): HollandCode[] => {
+      const remaining = DEFAULT_ORDER.filter(code => !excludeCodes.includes(code));
+      if (remaining.length === 0) return [];
+      const maxScore = Math.max(...remaining.map(code => countsFinal[code]));
+      return remaining.filter(code => countsFinal[code] === maxScore);
+    };
+    
+    const rank2Candidates = state.rank1Code ? findCandidatesLocal([state.rank1Code]) : [];
+    const rank3Candidates = (state.rank1Code && state.rank2Code) 
+      ? findCandidatesLocal([state.rank1Code, state.rank2Code]) 
+      : [];
+
     // Send completion payload and wait for analysis response
     const result = await sendCompletionPayload(
       data,
@@ -265,6 +279,9 @@ const Index = () => {
       state.rank2Code,
       state.rank3Code,
       state.rank23TieTrace,
+      // NEW: Include candidates for tie_flags
+      rank2Candidates,
+      rank3Candidates,
     );
 
     // Store analysis data and move to summary
