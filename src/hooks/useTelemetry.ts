@@ -279,6 +279,9 @@ export function useTelemetry() {
         loser: HollandCode;
         timestamp: number;
       }>,
+      // NEW: Additional tie info for enhanced payload
+      rank2Candidates?: HollandCode[],
+      rank3Candidates?: HollandCode[],
     ): Promise<{ success: boolean; analysis: AnalysisResponse | null }> => {
       const gameEndedAt = Date.now();
 
@@ -288,6 +291,110 @@ export function useTelemetry() {
 
       // Calculate counts from first picks for comparison
       const countsFirst = calculateCounts(firstPicksByMissionId);
+
+      // === NEW FIELDS (append only, no existing fields modified) ===
+      
+      // 1) base_scores - the original scores from 12 missions, unchanged
+      const base_scores: CountsFinal = { ...countsFinal };
+      
+      // 2) tie_flags - explicitly indicate where ties happened
+      const tieRank1 = leaders.length >= 2;
+      const tieRank2 = (rank2Candidates?.length ?? 0) >= 2;
+      const tieRank3 = (rank3Candidates?.length ?? 0) >= 2;
+      
+      const tie_flags = {
+        rank1_tie: tieRank1,
+        rank2_tie: tieRank2,
+        rank3_tie: tieRank3,
+        rank1_candidates: leaders.map(c => c.toUpperCase()),
+        rank2_candidates: (rank2Candidates ?? []).map(c => c.toUpperCase()),
+        rank3_candidates: (rank3Candidates ?? []).map(c => c.toUpperCase()),
+      };
+      
+      // 3) resolved_scores - base + bonus for tie resolution visualization
+      // Winner gets +0.5, Runner-up gets +0.3, Third gets +0.1
+      const resolved_scores: Record<HollandCode, number> = { ...countsFinal };
+      
+      // Apply bonuses based on tie-breaker trace
+      // Group trace by rank phase and apply bonuses
+      const traceByRank: Record<string, Array<{ winner: HollandCode; loser: HollandCode }>> = {
+        rank1: [],
+        rank2: [],
+        rank3: [],
+      };
+      
+      // Rank1 tie was resolved by the original tie mission (state.tieMissionUsed)
+      if (tieRank1 && rank1Code) {
+        // The rank1 winner gets bonus, others in tie get less
+        const rank1Losers = leaders.filter(c => c !== rank1Code);
+        resolved_scores[rank1Code] += 0.5;
+        rank1Losers.forEach((loser, idx) => {
+          resolved_scores[loser] += idx === 0 ? 0.3 : 0.1;
+        });
+      }
+      
+      // Rank2/3 tie trace processing
+      if (rank23TieTrace && rank23TieTrace.length > 0) {
+        // Determine which traces belong to rank2 vs rank3
+        // The trace is sequential: first resolve rank2, then rank3
+        const r2Candidates = rank2Candidates ?? [];
+        const r3Candidates = rank3Candidates ?? [];
+        
+        // Track winners to determine rank assignment
+        let rank2Resolved = !tieRank2;
+        
+        rank23TieTrace.forEach(t => {
+          if (!rank2Resolved && r2Candidates.includes(t.winner)) {
+            traceByRank.rank2.push({ winner: t.winner, loser: t.loser });
+            if (t.winner === rank2Code) {
+              rank2Resolved = true;
+            }
+          } else {
+            traceByRank.rank3.push({ winner: t.winner, loser: t.loser });
+          }
+        });
+        
+        // Apply rank2 bonuses
+        if (tieRank2 && rank2Code) {
+          resolved_scores[rank2Code] += 0.5;
+          const r2Losers = r2Candidates.filter(c => c !== rank2Code);
+          r2Losers.forEach((loser, idx) => {
+            resolved_scores[loser] += idx === 0 ? 0.3 : 0.1;
+          });
+        }
+        
+        // Apply rank3 bonuses
+        if (tieRank3 && rank3Code) {
+          resolved_scores[rank3Code] += 0.5;
+          const r3Losers = r3Candidates.filter(c => c !== rank3Code);
+          r3Losers.forEach((loser, idx) => {
+            resolved_scores[loser] += idx === 0 ? 0.3 : 0.1;
+          });
+        }
+      }
+      
+      // 4) tie_trace - minimal readable log of tie-breaker matches
+      const tie_trace: string[] = [];
+      
+      // Add rank1 tie if it happened
+      if (tieRank1 && rank1Code) {
+        const losers = leaders.filter(c => c !== rank1Code).map(c => c.toUpperCase()).join(', ');
+        tie_trace.push(`rank1: ${leaders.map(c => c.toUpperCase()).join(' vs ')} -> ${rank1Code.toUpperCase()}`);
+      }
+      
+      // Add rank2/3 traces from the tournament
+      if (rank23TieTrace && rank23TieTrace.length > 0) {
+        let currentRank = tieRank2 ? 'rank2' : 'rank3';
+        let rank2Done = !tieRank2;
+        
+        rank23TieTrace.forEach(t => {
+          tie_trace.push(`${currentRank}: ${t.winner.toUpperCase()} vs ${t.loser.toUpperCase()} -> ${t.winner.toUpperCase()}`);
+          if (!rank2Done && t.winner === rank2Code) {
+            rank2Done = true;
+            currentRank = 'rank3';
+          }
+        });
+      }
 
       // Send full payload including all game data for analysis
       const payload = {
@@ -332,6 +439,11 @@ export function useTelemetry() {
           deviceType: getDeviceType(),
         },
         events: [...eventsRef.current],
+        // === NEW APPENDED FIELDS ===
+        base_scores,
+        resolved_scores,
+        tie_flags,
+        tie_trace,
       };
 
       try {
