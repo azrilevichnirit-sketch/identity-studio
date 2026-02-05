@@ -1,4 +1,4 @@
-import type { GameState, CountsFinal, HollandCode, AnalysisResponse } from '@/types/identity';
+import type { GameState, CountsFinal, HollandCode } from '@/types/identity';
 import logoKinneret from '@/assets/logo_kinneret.png';
 import { Disclaimer } from './Disclaimer';
 
@@ -6,7 +6,7 @@ interface SummaryScreenProps {
   state: GameState;
   countsFinal: CountsFinal;
   leaders: HollandCode[];
-  analysis: AnalysisResponse | null;
+  resultText: string | null;
 }
 
 const HOLLAND_LABELS: Record<HollandCode, string> = {
@@ -18,7 +18,7 @@ const HOLLAND_LABELS: Record<HollandCode, string> = {
   c: 'מאורגן (Conventional)',
 };
 
-export function SummaryScreen({ state, countsFinal, leaders, analysis }: SummaryScreenProps) {
+export function SummaryScreen({ state, countsFinal, leaders, resultText }: SummaryScreenProps) {
   const maxCount = Math.max(...Object.values(countsFinal));
 
   return (
@@ -138,79 +138,15 @@ export function SummaryScreen({ state, countsFinal, leaders, analysis }: Summary
             </div>
           </div>
 
-          {/* Analysis from Make - if available */}
-          {analysis && (
+          {/* Result text from Make - displayed as-is */}
+          {resultText && (
             <div className="mt-4 pt-4 border-t border-slate-200">
-              {/* Summary text */}
-              {analysis.summary && (
-                <div className="mb-4">
-                  <p 
-                    className="text-sm leading-relaxed text-center"
-                    style={{ color: '#333', fontFamily: "'Rubik', sans-serif" }}
-                  >
-                    {analysis.summary}
-                  </p>
-                </div>
-              )}
-
-              {/* Personality type */}
-              {analysis.personalityType && (
-                <div className="mb-4 text-center">
-                  <span 
-                    className="inline-block px-4 py-2 rounded-xl bg-primary/10 text-primary font-semibold"
-                    style={{ fontFamily: "'Rubik', sans-serif" }}
-                  >
-                    {analysis.personalityType}
-                  </span>
-                </div>
-              )}
-
-              {/* Traits */}
-              {analysis.traits && analysis.traits.length > 0 && (
-                <div className="mb-4">
-                  <h3 
-                    className="text-sm font-semibold mb-2"
-                    style={{ color: '#555', fontFamily: "'Rubik', sans-serif" }}
-                  >
-                    תכונות בולטות:
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {analysis.traits.map((trait, idx) => (
-                      <span
-                        key={idx}
-                        className="px-2 py-1 rounded-lg bg-slate-100 text-xs"
-                        style={{ color: '#444', fontFamily: "'Rubik', sans-serif" }}
-                      >
-                        {trait}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Recommendations */}
-              {analysis.recommendations && analysis.recommendations.length > 0 && (
-                <div>
-                  <h3 
-                    className="text-sm font-semibold mb-2"
-                    style={{ color: '#555', fontFamily: "'Rubik', sans-serif" }}
-                  >
-                    המלצות:
-                  </h3>
-                  <ul className="space-y-1.5">
-                    {analysis.recommendations.map((rec, idx) => (
-                      <li 
-                        key={idx}
-                        className="text-sm flex items-start gap-2"
-                        style={{ color: '#333', fontFamily: "'Rubik', sans-serif" }}
-                      >
-                        <span className="text-primary mt-0.5">•</span>
-                        <span>{rec}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              <div 
+                className="text-sm leading-relaxed whitespace-pre-wrap"
+                style={{ color: '#333', fontFamily: "'Rubik', sans-serif" }}
+              >
+                {resultText}
+              </div>
             </div>
           )}
 
