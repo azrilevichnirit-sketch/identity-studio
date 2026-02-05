@@ -343,24 +343,13 @@ const Index = () => {
     
     // Show processing screen while we wait
     setPhase('processing');
-    
-    // Debug toast - sending lead form to Make
-    toast.info("📤 שולח פרטי יצירת קשר ל-Make...", { duration: 3000 });
 
     try {
       console.log("[Index] About to call sendCompletionPayload...");
       const result = await sendCompletionPayload(data);
       console.log("[Index] Completion payload result:", result);
-      
-      // Debug toast - completion response
-      if (result.success) {
-        toast.success("✅ פרטי יצירת קשר נשלחו בהצלחה", { duration: 3000 });
-      } else {
-        toast.warning("⚠️ שגיאה בשליחת פרטי יצירת קשר", { duration: 5000 });
-      }
     } catch (error) {
       console.error("[Index] Failed to send completion payload:", error);
-      toast.error(`❌ שגיאה בשליחה: ${error}`, { duration: 5000 });
     }
 
     setIsSubmitting(false);
@@ -369,24 +358,20 @@ const Index = () => {
     // Use ref to check current value in polling loop
     if (resultTextRef.current) {
       console.log("[Index] Result text available, showing summary:", resultTextRef.current.length, "chars");
-      toast.info(`📝 מציג ניתוח (${resultTextRef.current.length} תווים)`, { duration: 3000 });
       setPhase('summary');
     } else {
       // If no result text yet, wait a bit and check again
       console.log("[Index] No result text yet, waiting...");
-      toast.warning("⏳ ממתין לניתוח מ-Make...", { duration: 3000 });
       
       // Poll for result text for up to 15 seconds
       const startTime = Date.now();
       const checkForResult = () => {
         if (resultTextRef.current) {
           console.log("[Index] Result text received:", resultTextRef.current.length, "chars");
-          toast.success(`📝 ניתוח התקבל (${resultTextRef.current.length} תווים)`, { duration: 3000 });
           setPhase('summary');
         } else if (Date.now() - startTime > 15000) {
           // Timeout - show summary anyway
           console.log("[Index] Timeout waiting for result text, showing summary");
-          toast.warning("⚠️ לא התקבל ניתוח, מציג תוצאות", { duration: 5000 });
           setPhase('summary');
         } else {
           setTimeout(checkForResult, 500);
