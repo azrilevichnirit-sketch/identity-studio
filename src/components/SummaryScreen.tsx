@@ -32,8 +32,8 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
       <div 
         className="flex flex-col gap-4 animate-fade-in w-full items-center py-8 px-4 md:px-8"
         style={{
-          paddingTop: 'max(env(safe-area-inset-top, 32px), 32px)',
-          paddingBottom: 'max(env(safe-area-inset-bottom, 32px), 32px)',
+          paddingTop: 'calc(env(safe-area-inset-top, 0px) + 32px)',
+          paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 32px)',
         }}
       >
         {/* Main results card */}
