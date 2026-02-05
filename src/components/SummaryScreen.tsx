@@ -21,11 +21,9 @@ const HOLLAND_LABELS: Record<HollandCode, string> = {
 export function SummaryScreen({ state, countsFinal, leaders, resultText }: SummaryScreenProps) {
   return (
     <div 
-      className="w-full h-full overflow-y-auto"
+      className="absolute inset-0 overflow-y-auto"
       style={{
         background: '#FFFCF5',
-        height: '100%',
-        maxHeight: '100dvh',
         WebkitOverflowScrolling: 'touch',
         overscrollBehaviorY: 'contain',
         touchAction: 'pan-y',
