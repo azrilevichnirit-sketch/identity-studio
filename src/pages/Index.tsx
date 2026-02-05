@@ -23,7 +23,13 @@ const Index = () => {
   const showDebug = false;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [resultText, setResultText] = useState<string | null>(null);
+  const resultTextRef = useRef<string | null>(null);
   const pendingLeadFormRef = useRef<LeadFormData | null>(null);
+  
+  // Keep ref in sync with state for polling
+  useEffect(() => {
+    resultTextRef.current = resultText;
+  }, [resultText]);
   
   const {
     state,
@@ -335,6 +341,7 @@ const Index = () => {
     pendingLeadFormRef.current = data;
     setLeadForm(data);
     
+    // Show processing screen while we wait
     setPhase('processing');
     
     // Debug toast - sending lead form to Make
@@ -351,22 +358,42 @@ const Index = () => {
       } else {
         toast.warning("⚠️ שגיאה בשליחת פרטי יצירת קשר", { duration: 5000 });
       }
-      
-      // Debug - show if we have result text from gameplay payload
-      if (resultText) {
-        console.log("[Index] Using gameplay result text for summary:", resultText.substring(0, 100) + "...");
-        toast.info(`📝 מציג ניתוח (${resultText.length} תווים)`, { duration: 3000 });
-      } else {
-        console.log("[Index] No gameplay result text available");
-        toast.warning("⚠️ אין ניתוח זמין מ-Make", { duration: 5000 });
-      }
     } catch (error) {
       console.error("[Index] Failed to send completion payload:", error);
       toast.error(`❌ שגיאה בשליחה: ${error}`, { duration: 5000 });
     }
 
     setIsSubmitting(false);
-    setPhase('summary');
+    
+    // Wait for resultText to be available before showing summary
+    // Use ref to check current value in polling loop
+    if (resultTextRef.current) {
+      console.log("[Index] Result text available, showing summary:", resultTextRef.current.length, "chars");
+      toast.info(`📝 מציג ניתוח (${resultTextRef.current.length} תווים)`, { duration: 3000 });
+      setPhase('summary');
+    } else {
+      // If no result text yet, wait a bit and check again
+      console.log("[Index] No result text yet, waiting...");
+      toast.warning("⏳ ממתין לניתוח מ-Make...", { duration: 3000 });
+      
+      // Poll for result text for up to 15 seconds
+      const startTime = Date.now();
+      const checkForResult = () => {
+        if (resultTextRef.current) {
+          console.log("[Index] Result text received:", resultTextRef.current.length, "chars");
+          toast.success(`📝 ניתוח התקבל (${resultTextRef.current.length} תווים)`, { duration: 3000 });
+          setPhase('summary');
+        } else if (Date.now() - startTime > 15000) {
+          // Timeout - show summary anyway
+          console.log("[Index] Timeout waiting for result text, showing summary");
+          toast.warning("⚠️ לא התקבל ניתוח, מציג תוצאות", { duration: 5000 });
+          setPhase('summary');
+        } else {
+          setTimeout(checkForResult, 500);
+        }
+      };
+      setTimeout(checkForResult, 500);
+    }
   };
 
   // Wrapper for selectOption that includes telemetry
