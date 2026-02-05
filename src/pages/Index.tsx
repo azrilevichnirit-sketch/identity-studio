@@ -186,7 +186,7 @@ const Index = () => {
   }, [state.phase, tournament.state.phase, setPhase]);
 
   // Helper function to send payload when auto-resolved
-  const sendAutoResolvedPayload = (rank1: HollandCode, rank2: HollandCode | null, rank3: HollandCode | null) => {
+  const sendAutoResolvedPayload = async (rank1: HollandCode, rank2: HollandCode | null, rank3: HollandCode | null) => {
     const tieState = {
       triggered: state.tieMissionUsed !== null,
       missionId: state.tieMissionUsed?.mission_id || null,
@@ -213,7 +213,7 @@ const Index = () => {
       rank3_candidates: rank3Candidates.map(c => c.toLowerCase() as HollandCode),
     };
     
-    sendGameplayPayload(
+    const result = await sendGameplayPayload(
       state.avatarGender,
       state.firstPicksByMissionId,
       state.finalPicksByMissionId,
@@ -228,10 +228,16 @@ const Index = () => {
       [],
       [],
     );
+    
+    // Store result text from gameplay payload
+    if (result.success && result.resultText) {
+      console.log("[Index] Gameplay result text received:", result.resultText.substring(0, 100) + "...");
+      setResultText(result.resultText);
+    }
   };
 
   // Helper function to send payload after tournament
-  const sendTournamentPayload = (
+  const sendTournamentPayload = async (
     rank1: HollandCode | null,
     rank2: HollandCode | null,
     rank3: HollandCode | null,
@@ -276,7 +282,7 @@ const Index = () => {
       loser: t.loser.toLowerCase(),
     }));
     
-    sendGameplayPayload(
+    const result = await sendGameplayPayload(
       state.avatarGender,
       state.firstPicksByMissionId,
       state.finalPicksByMissionId,
@@ -291,6 +297,12 @@ const Index = () => {
       combinedTieTrace,
       rank23TieTrace,
     );
+    
+    // Store result text from gameplay payload
+    if (result.success && result.resultText) {
+      console.log("[Index] Tournament gameplay result text received:", result.resultText.substring(0, 100) + "...");
+      setResultText(result.resultText);
+    }
   };
 
   const handleDimensionSelect = (dimension: Dimension) => {
@@ -325,29 +337,32 @@ const Index = () => {
     
     setPhase('processing');
     
-    // Debug toast - sending to Make
-    toast.info("📤 שולח נתונים ל-Make...", { duration: 3000 });
+    // Debug toast - sending lead form to Make
+    toast.info("📤 שולח פרטי יצירת קשר ל-Make...", { duration: 3000 });
 
     try {
       console.log("[Index] About to call sendCompletionPayload...");
       const result = await sendCompletionPayload(data);
       console.log("[Index] Completion payload result:", result);
       
-      // Debug toast - response from Make
+      // Debug toast - completion response
       if (result.success) {
-        if (result.resultText) {
-          toast.success(`✅ Make החזיר תשובה (${result.resultText.length} תווים)`, { duration: 5000 });
-          console.log("[Make Debug] Response text preview:", result.resultText.substring(0, 200) + "...");
-          setResultText(result.resultText);
-        } else {
-          toast.warning("⚠️ Make החזיר 200 אבל בלי טקסט", { duration: 5000 });
-        }
+        toast.success("✅ פרטי יצירת קשר נשלחו בהצלחה", { duration: 3000 });
       } else {
-        toast.error("❌ Make לא החזיר תשובה תקינה", { duration: 5000 });
+        toast.warning("⚠️ שגיאה בשליחת פרטי יצירת קשר", { duration: 5000 });
+      }
+      
+      // Debug - show if we have result text from gameplay payload
+      if (resultText) {
+        console.log("[Index] Using gameplay result text for summary:", resultText.substring(0, 100) + "...");
+        toast.info(`📝 מציג ניתוח (${resultText.length} תווים)`, { duration: 3000 });
+      } else {
+        console.log("[Index] No gameplay result text available");
+        toast.warning("⚠️ אין ניתוח זמין מ-Make", { duration: 5000 });
       }
     } catch (error) {
       console.error("[Index] Failed to send completion payload:", error);
-      toast.error(`❌ שגיאה בשליחה ל-Make: ${error}`, { duration: 5000 });
+      toast.error(`❌ שגיאה בשליחה: ${error}`, { duration: 5000 });
     }
 
     setIsSubmitting(false);
