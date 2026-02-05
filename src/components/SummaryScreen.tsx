@@ -1,5 +1,4 @@
 import type { GameState, CountsFinal, HollandCode, AnalysisResponse } from '@/types/identity';
-import galleryBg from '@/assets/backgrounds/gallery_main_stylized.webp';
 import logoKinneret from '@/assets/logo_kinneret.png';
 import { Disclaimer } from './Disclaimer';
 
@@ -24,31 +23,26 @@ export function SummaryScreen({ state, countsFinal, leaders, analysis }: Summary
 
   return (
     <div 
-      className="game-stage flex items-center justify-center"
+      className="min-h-screen w-full"
       style={{
-        backgroundImage: `url(${galleryBg})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center bottom',
-        filter: 'saturate(1.18) contrast(1.08)',
+        background: '#FFFCF5', // Light cream background
       }}
     >
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/50" />
-      
-      {/* Content */}
+      {/* Content - regular page flow */}
       <div 
-        className="relative z-10 flex flex-col gap-4 animate-fade-in overflow-auto w-full h-full items-center justify-start md:justify-center game-stage-content p-4 md:p-8"
+        className="flex flex-col gap-4 animate-fade-in w-full items-center py-8 px-4 md:px-8"
         style={{
-          paddingTop: 'max(env(safe-area-inset-top, 16px), 24px)',
+          paddingTop: 'max(env(safe-area-inset-top, 32px), 32px)',
+          paddingBottom: 'max(env(safe-area-inset-bottom, 32px), 32px)',
         }}
       >
         {/* Main results card */}
         <div 
-          className="p-5 md:p-6 rounded-2xl w-full flex-shrink-0"
+          className="p-5 md:p-6 rounded-2xl w-full"
           style={{
-            maxWidth: 'min(400px, 92vw)',
-            background: 'rgba(255, 252, 245, 0.96)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+            maxWidth: 'min(500px, 92vw)',
+            background: 'white',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
           }}
         >
           {/* Logo inside card - centered at top */}
@@ -256,17 +250,11 @@ export function SummaryScreen({ state, countsFinal, leaders, analysis }: Summary
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Disclaimer in bottom corner */}
-      <div 
-        className="absolute z-20"
-        style={{
-          bottom: 'max(env(safe-area-inset-bottom, 8px), 16px)',
-          left: 'max(env(safe-area-inset-left, 8px), 16px)',
-        }}
-      >
-        <Disclaimer className="text-white/60" />
+        {/* Disclaimer at bottom */}
+        <div className="mt-6">
+          <Disclaimer className="text-slate-400" />
+        </div>
       </div>
     </div>
   );
