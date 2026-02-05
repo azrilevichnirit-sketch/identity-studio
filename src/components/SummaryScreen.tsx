@@ -19,8 +19,6 @@ const HOLLAND_LABELS: Record<HollandCode, string> = {
 };
 
 export function SummaryScreen({ state, countsFinal, leaders, resultText }: SummaryScreenProps) {
-  const maxCount = Math.max(...Object.values(countsFinal));
-
   return (
     <div 
       className="min-h-screen w-full"
@@ -28,11 +26,24 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
         background: '#FFFCF5', // Light cream background
       }}
     >
-      {/* Content - regular page flow */}
+      {/* Logo - top right, on the background (outside card) */}
       <div 
-        className="flex flex-col gap-4 animate-fade-in w-full items-center py-8 px-4 md:px-8"
+        className="flex justify-start py-4 px-4 md:px-8"
         style={{
-          paddingTop: 'calc(env(safe-area-inset-top, 0px) + 32px)',
+          paddingTop: 'calc(env(safe-area-inset-top, 0px) + 16px)',
+        }}
+      >
+        <img 
+          src={logoKinneret} 
+          alt="Kinneret Academy" 
+          className="h-14 md:h-16 object-contain"
+        />
+      </div>
+
+      {/* Content */}
+      <div 
+        className="flex flex-col gap-4 animate-fade-in w-full items-center pb-8 px-4 md:px-8"
+        style={{
           paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 32px)',
         }}
       >
@@ -45,15 +56,6 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
             boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
           }}
         >
-          {/* Logo inside card - centered at top */}
-          <div className="flex justify-center mb-3">
-            <img 
-              src={logoKinneret} 
-              alt="Kinneret Academy" 
-              className="h-10 md:h-12 object-contain"
-            />
-          </div>
-          
           <h1 
             className="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-center"
             style={{ color: '#111', fontFamily: "'Rubik', sans-serif" }}
@@ -138,53 +140,33 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
             </div>
           </div>
 
-          {/* Result text from Make - displayed as-is */}
+          {/* Result text from Make - displayed as-is, FULL TEXT */}
           {resultText && (
             <div className="mt-4 pt-4 border-t border-slate-200">
               <div 
-                className="text-sm leading-relaxed whitespace-pre-wrap"
-                style={{ color: '#333', fontFamily: "'Rubik', sans-serif" }}
+                className="text-sm leading-relaxed whitespace-pre-wrap break-words"
+                style={{ 
+                  color: '#333', 
+                  fontFamily: "'Rubik', sans-serif",
+                  wordBreak: 'break-word',
+                }}
               >
                 {resultText}
               </div>
             </div>
           )}
 
-          {/* Scores breakdown */}
-          <div className="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-slate-200">
-            <h2 
-              className="text-sm font-semibold mb-2 md:mb-3"
-              style={{ color: '#555', fontFamily: "'Rubik', sans-serif" }}
-            >
-              חלוקת הניקוד
-            </h2>
-            <div className="space-y-1.5 md:space-y-2">
-              {(Object.keys(countsFinal) as HollandCode[]).map((code) => (
-                <div key={code} className="flex items-center gap-2">
-                  <span 
-                    className="text-xs w-16 md:w-20 truncate"
-                    style={{ color: '#333', fontFamily: "'Rubik', sans-serif" }}
-                  >
-                    {HOLLAND_LABELS[code].split(' ')[0]}
-                  </span>
-                  <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-primary transition-all duration-500"
-                      style={{
-                        width: maxCount > 0 ? `${(countsFinal[code] / maxCount) * 100}%` : '0%',
-                      }}
-                    />
-                  </div>
-                  <span 
-                    className="text-xs font-medium w-4"
-                    style={{ color: '#333' }}
-                  >
-                    {countsFinal[code]}
-                  </span>
-                </div>
-              ))}
+          {/* Fallback message if no result text */}
+          {!resultText && (
+            <div className="mt-4 pt-4 border-t border-slate-200 text-center">
+              <p 
+                className="text-sm"
+                style={{ color: '#666', fontFamily: "'Rubik', sans-serif" }}
+              >
+                הניתוח יישלח אליך בקרוב
+              </p>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Disclaimer at bottom */}
