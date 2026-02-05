@@ -11,18 +11,19 @@ interface ProcessingScreenProps {
  * Loading screen shown while waiting for Make webhook response.
  * Features an animated "tank" filling up with the text "התוצאות מתבשלות..."
  */
-export function ProcessingScreen({ estimatedTimeMs = 8000 }: ProcessingScreenProps) {
-  const [progress, setProgress] = useState(0);
+export function ProcessingScreen({ estimatedTimeMs = 5000 }: ProcessingScreenProps) {
+  // Start at 15% so user immediately sees activity
+  const [progress, setProgress] = useState(15);
 
   useEffect(() => {
     const startTime = Date.now();
     
     const animate = () => {
       const elapsed = Date.now() - startTime;
-      // Ease-out curve: starts fast, slows down near end
-      // Never quite reaches 100% (stops at ~95%) until actual completion
+      // Faster fill: use shorter estimated time
       const rawProgress = Math.min(elapsed / estimatedTimeMs, 0.95);
-      const easedProgress = 1 - Math.pow(1 - rawProgress, 3); // Ease-out cubic
+      // Ease-out cubic but starting from 15%
+      const easedProgress = 0.15 + (1 - Math.pow(1 - rawProgress, 3)) * 0.80;
       setProgress(easedProgress * 100);
       
       if (rawProgress < 0.95) {
