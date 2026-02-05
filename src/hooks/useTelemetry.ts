@@ -315,7 +315,7 @@ export function useTelemetry() {
   // Send completion payload (AFTER lead form submission)
   // Only sends lead form data - all game data was already sent in gameplay payload
   const sendCompletionPayload = useCallback(
-    async (leadForm: LeadFormData): Promise<{ success: boolean }> => {
+    async (leadForm: LeadFormData): Promise<{ success: boolean; resultText?: string }> => {
       const gameEndedAt = Date.now();
 
       // Log final events
@@ -352,8 +352,10 @@ export function useTelemetry() {
         console.log("[Telemetry] Completion payload sent, status:", response.status);
 
         if (response.ok) {
-          console.log("[Telemetry] Completion payload sent successfully");
-          return { success: true };
+          // Read response as text (not JSON)
+          const resultText = await response.text();
+          console.log("[Telemetry] Completion response text:", resultText);
+          return { success: true, resultText };
         }
 
         return { success: false };

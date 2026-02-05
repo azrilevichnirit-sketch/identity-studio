@@ -13,7 +13,7 @@ import { ProcessingScreen } from '@/components/ProcessingScreen';
 import { SummaryScreen } from '@/components/SummaryScreen';
 import { DebugPanel } from '@/components/DebugPanel';
 import { TieBreakDebugPanel } from '@/components/TieBreakDebugPanel';
-import type { Dimension, HollandCode, MissionOption, LeadFormData, AnalysisResponse } from '@/types/identity';
+import type { Dimension, HollandCode, MissionOption, LeadFormData } from '@/types/identity';
 
 const Index = () => {
   const [toolEditMode, setToolEditMode] = useState(false);
@@ -21,7 +21,7 @@ const Index = () => {
   // Debug mode: disabled for production
   const showDebug = false;
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [analysisData, setAnalysisData] = useState<AnalysisResponse | null>(null);
+  const [resultText, setResultText] = useState<string | null>(null);
   const pendingLeadFormRef = useRef<LeadFormData | null>(null);
   
   const {
@@ -328,12 +328,16 @@ const Index = () => {
       console.log("[Index] About to call sendCompletionPayload...");
       const result = await sendCompletionPayload(data);
       console.log("[Index] Completion payload result:", result);
+      
+      // Store the result text from Make response
+      if (result.resultText) {
+        setResultText(result.resultText);
+      }
     } catch (error) {
       console.error("[Index] Failed to send completion payload:", error);
     }
 
     setIsSubmitting(false);
-    setAnalysisData(null);
     setPhase('summary');
   };
 
@@ -468,7 +472,7 @@ const Index = () => {
             state={state}
             countsFinal={countsFinal}
             leaders={leaders}
-            analysis={analysisData}
+            resultText={resultText}
           />
         )}
       </GameStage>
