@@ -21,12 +21,17 @@ const HOLLAND_LABELS: Record<HollandCode, string> = {
 export function SummaryScreen({ state, countsFinal, leaders, resultText }: SummaryScreenProps) {
   return (
     <div 
-      className="absolute inset-0 overflow-y-auto"
+      className="fixed inset-0 overflow-y-auto"
       style={{
         background: '#FFFCF5',
+        // Force a concrete scroll container size on Android (Galaxy/Chrome)
+        width: '100vw',
+        height: '100dvh',
+        minHeight: '100vh',
         WebkitOverflowScrolling: 'touch',
         overscrollBehaviorY: 'contain',
         touchAction: 'pan-y',
+        zIndex: 1000,
       }}
     >
       {/* Logo - top right, on the background */}
