@@ -213,6 +213,7 @@ export function useTelemetry() {
   );
 
   // Send gameplay payload (BEFORE lead form)
+  // Now returns the analysis text from Make
   const sendGameplayPayload = useCallback(
     async (
       avatarGender: "female" | "male" | null,
@@ -228,7 +229,7 @@ export function useTelemetry() {
       tieFlags: TieFlags,
       tieTrace: Array<{ round: string; pair: string; winner: string }>,
       rank23TieTrace: Array<{ round: string; pair: string; winner: string; loser: string }>,
-    ): Promise<boolean> => {
+    ): Promise<{ success: boolean; resultText?: string }> => {
       const gameplayEndedAt = Date.now();
 
       const clientContext: ClientContext = {
@@ -303,10 +304,18 @@ export function useTelemetry() {
         });
 
         console.log("[Telemetry] Gameplay payload sent, status:", response.status);
-        return response.ok;
+        
+        if (response.ok) {
+          // Read response as text (analysis results from Make)
+          const resultText = await response.text();
+          console.log("[Telemetry] Gameplay response text:", resultText);
+          return { success: true, resultText };
+        }
+        
+        return { success: false };
       } catch (error) {
         console.error("[Telemetry] Failed to send gameplay payload after retries:", error);
-        return false;
+        return { success: false };
       }
     },
     [],
