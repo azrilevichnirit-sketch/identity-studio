@@ -21,13 +21,9 @@ const HOLLAND_LABELS: Record<HollandCode, string> = {
 export function SummaryScreen({ state, countsFinal, leaders, resultText }: SummaryScreenProps) {
   return (
     <div 
-      className="fixed inset-0 overflow-y-auto"
+      className="fixed inset-0 w-screen h-[100svh] overflow-y-auto"
       style={{
         background: '#FFFCF5',
-        // Force a concrete scroll container size on Android (Galaxy/Chrome)
-        width: '100vw',
-        height: '100dvh',
-        minHeight: '100vh',
         WebkitOverflowScrolling: 'touch',
         overscrollBehaviorY: 'contain',
         touchAction: 'pan-y',
@@ -52,7 +48,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
       <div 
         className="flex flex-col gap-4 animate-fade-in w-full items-center px-4 md:px-8"
         style={{
-          paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 48px)',
+          paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 120px)',
         }}
       >
         {/* Main results card */}
