@@ -13,6 +13,7 @@ import { ProcessingScreen } from '@/components/ProcessingScreen';
 import { SummaryScreen } from '@/components/SummaryScreen';
 import { DebugPanel } from '@/components/DebugPanel';
 import { TieBreakDebugPanel } from '@/components/TieBreakDebugPanel';
+import { toast } from 'sonner';
 import type { Dimension, HollandCode, MissionOption, LeadFormData } from '@/types/identity';
 
 const Index = () => {
@@ -323,18 +324,30 @@ const Index = () => {
     setLeadForm(data);
     
     setPhase('processing');
+    
+    // Debug toast - sending to Make
+    toast.info("📤 שולח נתונים ל-Make...", { duration: 3000 });
 
     try {
       console.log("[Index] About to call sendCompletionPayload...");
       const result = await sendCompletionPayload(data);
       console.log("[Index] Completion payload result:", result);
       
-      // Store the result text from Make response
-      if (result.resultText) {
-        setResultText(result.resultText);
+      // Debug toast - response from Make
+      if (result.success) {
+        if (result.resultText) {
+          toast.success(`✅ Make החזיר תשובה (${result.resultText.length} תווים)`, { duration: 5000 });
+          console.log("[Make Debug] Response text preview:", result.resultText.substring(0, 200) + "...");
+          setResultText(result.resultText);
+        } else {
+          toast.warning("⚠️ Make החזיר 200 אבל בלי טקסט", { duration: 5000 });
+        }
+      } else {
+        toast.error("❌ Make לא החזיר תשובה תקינה", { duration: 5000 });
       }
     } catch (error) {
       console.error("[Index] Failed to send completion payload:", error);
+      toast.error(`❌ שגיאה בשליחה ל-Make: ${error}`, { duration: 5000 });
     }
 
     setIsSubmitting(false);
