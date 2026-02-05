@@ -324,9 +324,9 @@ export function useTelemetry() {
 
       // Simple payload with only lead form data
       const payload = {
-        run_id: runIdRef.current,
+        runId: runIdRef.current,
         stage: "completion",
-        game_ended_at: gameEndedAt,
+        gameEndedAt,
         lead_form: {
           full_name: leadForm.fullName,
           first_name: leadForm.fullName.trim().split(/\s+/)[0] || "",
