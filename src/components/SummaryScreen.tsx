@@ -20,16 +20,23 @@ const HOLLAND_LABELS: Record<HollandCode, string> = {
 
 export function SummaryScreen({ state, countsFinal, leaders, resultText }: SummaryScreenProps) {
   return (
-    <div 
-      className="fixed inset-0 w-screen h-[100svh] overflow-y-auto"
+    <div
+      className="fixed inset-0 w-screen"
       style={{
         background: '#FFFCF5',
-        WebkitOverflowScrolling: 'touch',
-        overscrollBehaviorY: 'contain',
-        touchAction: 'pan-y',
+        height: '100svh',
+        minHeight: '100vh',
         zIndex: 1000,
       }}
     >
+      <div
+        className="absolute inset-0 overflow-y-scroll"
+        style={{
+          WebkitOverflowScrolling: 'touch',
+          overscrollBehaviorY: 'contain',
+          touchAction: 'pan-y',
+        }}
+      >
       {/* Logo - top right, on the background */}
       <div 
         className="flex justify-end py-4 px-4 md:px-8"
@@ -98,6 +105,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
         <div className="mt-6">
           <Disclaimer className="text-slate-400" />
         </div>
+      </div>
       </div>
     </div>
   );
