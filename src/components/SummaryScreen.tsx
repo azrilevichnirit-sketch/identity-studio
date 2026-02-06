@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import type { GameState, CountsFinal, HollandCode } from '@/types/identity';
 import logoKinneret from '@/assets/logo_kinneret.png';
 import { Disclaimer } from './Disclaimer';
@@ -19,12 +20,36 @@ const HOLLAND_LABELS: Record<HollandCode, string> = {
 };
 
 export function SummaryScreen({ state, countsFinal, leaders, resultText }: SummaryScreenProps) {
+  const [viewportHeightPx, setViewportHeightPx] = useState<number | null>(null);
+
+  useEffect(() => {
+    const update = () => {
+      const vv = window.visualViewport;
+      const h = vv?.height ?? window.innerHeight;
+      // Round to avoid sub-pixel layout jitter on some Android browsers
+      setViewportHeightPx(Math.round(h));
+    };
+
+    update();
+
+    window.addEventListener('resize', update);
+    window.visualViewport?.addEventListener('resize', update);
+    // Some mobile browsers change viewport height when the URL bar collapses/expands
+    window.visualViewport?.addEventListener('scroll', update);
+
+    return () => {
+      window.removeEventListener('resize', update);
+      window.visualViewport?.removeEventListener('resize', update);
+      window.visualViewport?.removeEventListener('scroll', update);
+    };
+  }, []);
+
   return (
     <div
       className="fixed inset-0 w-screen"
       style={{
         background: '#FFFCF5',
-        height: '100svh',
+        height: viewportHeightPx ? `${viewportHeightPx}px` : '100svh',
         minHeight: '100vh',
         zIndex: 1000,
       }}
@@ -55,7 +80,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
       <div 
         className="flex flex-col gap-4 animate-fade-in w-full items-center px-4 md:px-8"
         style={{
-          paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 120px)',
+          paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 200px)',
         }}
       >
         {/* Main results card */}
