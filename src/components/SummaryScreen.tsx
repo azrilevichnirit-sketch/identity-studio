@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import type { GameState, CountsFinal, HollandCode } from '@/types/identity';
 import logoKinneret from '@/assets/logo_kinneret.png';
@@ -20,18 +21,53 @@ const HOLLAND_LABELS: Record<HollandCode, string> = {
 };
 
 export function SummaryScreen({ state, countsFinal, leaders, resultText }: SummaryScreenProps) {
+  // The app uses global scroll-lock (html/body/#root overflow:hidden + fixed root on mobile).
+  // For the results screen we must temporarily allow scrolling across iOS/Android.
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    const root = document.getElementById('root');
+
+    const prev = {
+      htmlOverflow: html.style.overflow,
+      bodyOverflow: body.style.overflow,
+      rootOverflow: root?.style.overflow ?? '',
+      rootPosition: root?.style.position ?? '',
+      rootInset: (root as HTMLElement | null)?.style.inset ?? '',
+      rootHeight: root?.style.height ?? '',
+      rootMinHeight: root?.style.minHeight ?? '',
+    };
+
+    html.style.overflow = 'auto';
+    body.style.overflow = 'auto';
+
+    if (root) {
+      root.style.overflow = 'visible';
+      root.style.position = 'relative';
+      root.style.inset = 'auto';
+      root.style.height = 'auto';
+      root.style.minHeight = '100dvh';
+    }
+
+    return () => {
+      html.style.overflow = prev.htmlOverflow;
+      body.style.overflow = prev.bodyOverflow;
+      if (root) {
+        root.style.overflow = prev.rootOverflow;
+        root.style.position = prev.rootPosition;
+        root.style.inset = prev.rootInset;
+        root.style.height = prev.rootHeight;
+        root.style.minHeight = prev.rootMinHeight;
+      }
+    };
+  }, []);
+
   return (
     <div
-      className="fixed inset-0 w-full"
+      className="w-full"
       style={{
         background: '#FFFCF5',
-        // Fixed viewport height so this container can scroll even if the app locks body scroll
-        height: '100vh',
-        overflowY: 'auto',
-        overflowX: 'hidden',
-        WebkitOverflowScrolling: 'touch',
-        // Ensure touch gestures are allowed to scroll vertically on mobile browsers
-        touchAction: 'pan-y',
+        minHeight: '100dvh',
       }}
     >
       {/* Logo - top right */}
