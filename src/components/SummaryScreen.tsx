@@ -21,21 +21,10 @@ const HOLLAND_LABELS: Record<HollandCode, string> = {
 
 export function SummaryScreen({ state, countsFinal, leaders, resultText }: SummaryScreenProps) {
   return (
-    // Full-screen fixed overlay with internal scrolling - works even when body/root have overflow:hidden
-    <div
-      className="fixed inset-0 z-[9999] flex flex-col"
-      style={{
-        background: '#FFFCF5',
-      }}
-    >
-      {/* Scrollable inner container */}
-      <div
-        className="flex-1 w-full overflow-y-auto overflow-x-hidden"
-        style={{
-          WebkitOverflowScrolling: 'touch',
-          overscrollBehavior: 'contain',
-        }}
-      >
+    // Full-screen fixed overlay with internal scrolling - uses CSS class for cross-browser support
+    <div className="summary-screen-overlay">
+      {/* Scrollable inner container with cross-browser support */}
+      <div className="summary-screen-scroller">
         {/* Logo - top right */}
         <div 
           className="flex justify-end py-4 px-4 md:px-8"
