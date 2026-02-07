@@ -92,7 +92,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
           {/* Result text from Make - rendered as Markdown, no limits */}
           {resultText && (
             <div 
-              className="text-sm leading-relaxed prose prose-sm max-w-none"
+              className="text-base leading-relaxed prose prose-base max-w-none"
               style={{ 
                 color: '#333', 
                 fontFamily: "'Rubik', sans-serif",
