@@ -2291,3 +2291,53 @@
 .animate-pulse-right {
   animation: pulse-right 0.5s ease-in-out infinite;
 }
+
+/* ========================================
+   Summary Screen - Cross-browser scrolling
+   ======================================== */
+
+.summary-screen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  background: #FFFCF5;
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-screen-scroller {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* iOS Safari smooth scrolling */
+  -webkit-overflow-scrolling: touch;
+  /* Prevent scroll chaining to parent */
+  overscroll-behavior: contain;
+  overscroll-behavior-y: contain;
+  /* Ensure touch events trigger scroll */
+  touch-action: pan-y;
+  /* Fallback for older browsers */
+  -ms-overflow-style: auto;
+  scrollbar-width: thin;
+}
+
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+  .summary-screen-scroller {
+    /* Force hardware acceleration */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+}
+
+/* Android Chrome specific fixes */
+@supports (overflow: overlay) {
+  .summary-screen-scroller {
+    overflow-y: overlay;
+  }
+}
