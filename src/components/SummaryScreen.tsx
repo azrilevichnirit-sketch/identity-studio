@@ -47,9 +47,10 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
 
   return (
     <div
-      className="min-h-screen w-full"
+      className="w-full overflow-y-auto"
       style={{
         background: '#FFFCF5',
+        minHeight: '100dvh',
       }}
     >
       {/* Logo - top right */}
