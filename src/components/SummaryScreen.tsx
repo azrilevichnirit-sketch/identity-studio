@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import type { GameState, CountsFinal, HollandCode } from '@/types/identity';
 import logoKinneret from '@/assets/logo_kinneret.png';
@@ -21,36 +20,15 @@ const HOLLAND_LABELS: Record<HollandCode, string> = {
 };
 
 export function SummaryScreen({ state, countsFinal, leaders, resultText }: SummaryScreenProps) {
-  const [viewportHeightPx, setViewportHeightPx] = useState<number | null>(null);
-
-  useEffect(() => {
-    const update = () => {
-      const vv = window.visualViewport;
-      const h = vv?.height ?? window.innerHeight;
-      // Round to avoid sub-pixel layout jitter on some Android browsers
-      setViewportHeightPx(Math.round(h));
-    };
-
-    update();
-
-    window.addEventListener('resize', update);
-    window.visualViewport?.addEventListener('resize', update);
-    // Some mobile browsers change viewport height when the URL bar collapses/expands
-    window.visualViewport?.addEventListener('scroll', update);
-
-    return () => {
-      window.removeEventListener('resize', update);
-      window.visualViewport?.removeEventListener('resize', update);
-      window.visualViewport?.removeEventListener('scroll', update);
-    };
-  }, []);
-
   return (
     <div
-      className="w-full overflow-y-auto"
+      className="w-full"
       style={{
         background: '#FFFCF5',
         minHeight: '100dvh',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        WebkitOverflowScrolling: 'touch',
       }}
     >
       {/* Logo - top right */}
@@ -67,11 +45,11 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
         />
       </div>
 
-      {/* Content - no height limits, natural document flow */}
+      {/* Content - natural document flow, no height constraints */}
       <div 
         className="flex flex-col gap-4 animate-fade-in w-full items-center px-4 md:px-8"
         style={{
-          paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 80px)',
+          paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 100px)',
         }}
       >
         {/* Main results card */}
