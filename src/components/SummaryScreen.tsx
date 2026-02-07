@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import type { GameState, CountsFinal, HollandCode } from '@/types/identity';
 import logoKinneret from '@/assets/logo_kinneret.png';
@@ -21,142 +20,110 @@ const HOLLAND_LABELS: Record<HollandCode, string> = {
 };
 
 export function SummaryScreen({ state, countsFinal, leaders, resultText }: SummaryScreenProps) {
-  // The app uses global scroll-lock (html/body/#root overflow:hidden + fixed root on mobile).
-  // For the results screen we must temporarily allow scrolling across iOS/Android.
-  useEffect(() => {
-    const html = document.documentElement;
-    const body = document.body;
-    const root = document.getElementById('root');
-
-    const prev = {
-      htmlOverflow: html.style.overflow,
-      bodyOverflow: body.style.overflow,
-      rootOverflow: root?.style.overflow ?? '',
-      rootPosition: root?.style.position ?? '',
-      rootInset: (root as HTMLElement | null)?.style.inset ?? '',
-      rootHeight: root?.style.height ?? '',
-      rootMinHeight: root?.style.minHeight ?? '',
-    };
-
-    html.style.overflow = 'auto';
-    body.style.overflow = 'auto';
-
-    if (root) {
-      root.style.overflow = 'visible';
-      root.style.position = 'relative';
-      root.style.inset = 'auto';
-      root.style.height = 'auto';
-      root.style.minHeight = '100dvh';
-    }
-
-    return () => {
-      html.style.overflow = prev.htmlOverflow;
-      body.style.overflow = prev.bodyOverflow;
-      if (root) {
-        root.style.overflow = prev.rootOverflow;
-        root.style.position = prev.rootPosition;
-        root.style.inset = prev.rootInset;
-        root.style.height = prev.rootHeight;
-        root.style.minHeight = prev.rootMinHeight;
-      }
-    };
-  }, []);
-
   return (
+    // Full-screen fixed overlay with internal scrolling - works even when body/root have overflow:hidden
     <div
-      className="w-full"
+      className="fixed inset-0 z-[9999] flex flex-col"
       style={{
         background: '#FFFCF5',
-        minHeight: '100dvh',
       }}
     >
-      {/* Logo - top right */}
-      <div 
-        className="flex justify-end py-4 px-4 md:px-8"
+      {/* Scrollable inner container */}
+      <div
+        className="flex-1 w-full overflow-y-auto overflow-x-hidden"
         style={{
-          paddingTop: 'calc(env(safe-area-inset-top, 0px) + 16px)',
+          WebkitOverflowScrolling: 'touch',
+          overscrollBehavior: 'contain',
         }}
       >
-        <img 
-          src={logoKinneret} 
-          alt="Kinneret Academy" 
-          className="h-16 md:h-20 object-contain"
-        />
-      </div>
-
-      {/* Content - natural document flow, no height constraints */}
-      <div 
-        className="flex flex-col gap-4 animate-fade-in w-full items-center px-4 md:px-8"
-        style={{
-          paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 100px)',
-        }}
-      >
-        {/* Main results card */}
+        {/* Logo - top right */}
         <div 
-          className="p-5 md:p-6 rounded-2xl w-full"
+          className="flex justify-end py-4 px-4 md:px-8"
           style={{
-            maxWidth: 'min(500px, 92vw)',
-            background: 'white',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+            paddingTop: 'calc(env(safe-area-inset-top, 0px) + 16px)',
           }}
         >
-          <h1 
-            className="text-xl md:text-2xl font-bold mb-4 text-center"
-            style={{ color: '#111', fontFamily: "'Rubik', sans-serif" }}
-          >
-            בנית לעצמך כיוון
-          </h1>
-
-          {/* Result text from Make - rendered as Markdown, no limits */}
-          {resultText && (
-            <div 
-              className="text-base leading-relaxed prose prose-base max-w-none"
-              style={{ 
-                color: '#333', 
-                fontFamily: "'Rubik', sans-serif",
-                wordBreak: 'break-word',
-                whiteSpace: 'pre-wrap',
-              }}
-            >
-              <ReactMarkdown
-                components={{
-                  h1: ({ children }) => <h1 className="text-xl font-bold mt-4 mb-2">{children}</h1>,
-                  h2: ({ children }) => <h2 className="text-lg font-bold mt-3 mb-2">{children}</h2>,
-                  h3: ({ children }) => <h3 className="text-base font-bold mt-2 mb-1">{children}</h3>,
-                  p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
-                  ul: ({ children }) => <ul className="list-disc list-inside mb-3 space-y-1">{children}</ul>,
-                  ol: ({ children }) => <ol className="list-decimal list-inside mb-3 space-y-1">{children}</ol>,
-                  li: ({ children }) => <li className="leading-relaxed">{children}</li>,
-                  strong: ({ children }) => <strong className="font-bold">{children}</strong>,
-                  em: ({ children }) => <em className="italic">{children}</em>,
-                  blockquote: ({ children }) => (
-                    <blockquote className="border-r-4 border-gray-300 pr-4 my-3 italic text-gray-600">
-                      {children}
-                    </blockquote>
-                  ),
-                }}
-              >
-                {resultText}
-              </ReactMarkdown>
-            </div>
-          )}
-
-          {/* Fallback message if no result text */}
-          {!resultText && (
-            <div className="text-center">
-              <p 
-                className="text-sm"
-                style={{ color: '#666', fontFamily: "'Rubik', sans-serif" }}
-              >
-                הניתוח יישלח אליך בקרוב
-              </p>
-            </div>
-          )}
+          <img 
+            src={logoKinneret} 
+            alt="Kinneret Academy" 
+            className="h-16 md:h-20 object-contain"
+          />
         </div>
 
-        {/* Disclaimer at bottom */}
-        <div className="mt-6">
-          <Disclaimer className="text-slate-400" />
+        {/* Content */}
+        <div 
+          className="flex flex-col gap-4 animate-fade-in w-full items-center px-4 md:px-8"
+          style={{
+            paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 100px)',
+          }}
+        >
+          {/* Main results card */}
+          <div 
+            className="p-5 md:p-6 rounded-2xl w-full"
+            style={{
+              maxWidth: 'min(500px, 92vw)',
+              background: 'white',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+            }}
+          >
+            <h1 
+              className="text-xl md:text-2xl font-bold mb-4 text-center"
+              style={{ color: '#111', fontFamily: "'Rubik', sans-serif" }}
+            >
+              בנית לעצמך כיוון
+            </h1>
+
+            {/* Result text from Make - rendered as Markdown */}
+            {resultText && (
+              <div 
+                className="text-base leading-relaxed prose prose-base max-w-none"
+                style={{ 
+                  color: '#333', 
+                  fontFamily: "'Rubik', sans-serif",
+                  wordBreak: 'break-word',
+                  whiteSpace: 'pre-wrap',
+                }}
+              >
+                <ReactMarkdown
+                  components={{
+                    h1: ({ children }) => <h1 className="text-xl font-bold mt-4 mb-2">{children}</h1>,
+                    h2: ({ children }) => <h2 className="text-lg font-bold mt-3 mb-2">{children}</h2>,
+                    h3: ({ children }) => <h3 className="text-base font-bold mt-2 mb-1">{children}</h3>,
+                    p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
+                    ul: ({ children }) => <ul className="list-disc list-inside mb-3 space-y-1">{children}</ul>,
+                    ol: ({ children }) => <ol className="list-decimal list-inside mb-3 space-y-1">{children}</ol>,
+                    li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+                    strong: ({ children }) => <strong className="font-bold">{children}</strong>,
+                    em: ({ children }) => <em className="italic">{children}</em>,
+                    blockquote: ({ children }) => (
+                      <blockquote className="border-r-4 border-gray-300 pr-4 my-3 italic text-gray-600">
+                        {children}
+                      </blockquote>
+                    ),
+                  }}
+                >
+                  {resultText}
+                </ReactMarkdown>
+              </div>
+            )}
+
+            {/* Fallback message if no result text */}
+            {!resultText && (
+              <div className="text-center">
+                <p 
+                  className="text-sm"
+                  style={{ color: '#666', fontFamily: "'Rubik', sans-serif" }}
+                >
+                  הניתוח יישלח אליך בקרוב
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Disclaimer at bottom */}
+          <div className="mt-6">
+            <Disclaimer className="text-slate-400" />
+          </div>
         </div>
       </div>
     </div>
