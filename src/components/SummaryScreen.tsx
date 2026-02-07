@@ -81,7 +81,9 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
       <div 
         className="flex flex-col gap-4 animate-fade-in w-full items-center px-4 md:px-8"
         style={{
-          paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 200px)',
+          // Extra bottom space so the last lines can scroll above mobile browser bars.
+          // (Some in-app browsers have taller bottom chrome than Safari/Chrome.)
+          paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 360px)',
         }}
       >
         {/* Main results card */}
@@ -103,7 +105,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
           {/* Result text from Make - rendered as Markdown */}
           {resultText && (
             <div 
-              className="text-sm leading-relaxed prose prose-sm max-w-none"
+              className="text-sm leading-relaxed prose prose-sm max-w-none whitespace-pre-wrap break-words"
               style={{ 
                 color: '#333', 
                 fontFamily: "'Rubik', sans-serif",
@@ -151,6 +153,9 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
         <div className="mt-6">
           <Disclaimer className="text-slate-400" />
         </div>
+
+        {/* Extra spacer (defensive) so the last line can always scroll fully into view */}
+        <div aria-hidden className="h-24 w-full" />
       </div>
       </div>
     </div>
