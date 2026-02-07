@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 import type { GameState, CountsFinal, HollandCode } from '@/types/identity';
 import logoKinneret from '@/assets/logo_kinneret.png';
 import { Disclaimer } from './Disclaimer';
@@ -99,17 +100,37 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
             בנית לעצמך כיוון
           </h1>
 
-          {/* Result text from Make - displayed as-is, FULL TEXT */}
+          {/* Result text from Make - rendered as Markdown */}
           {resultText && (
             <div 
-              className="text-sm leading-relaxed whitespace-pre-wrap break-words"
+              className="text-sm leading-relaxed prose prose-sm max-w-none"
               style={{ 
                 color: '#333', 
                 fontFamily: "'Rubik', sans-serif",
                 wordBreak: 'break-word',
               }}
             >
-              {resultText}
+              <ReactMarkdown
+                components={{
+                  // Custom styling for Markdown elements
+                  h1: ({ children }) => <h1 className="text-xl font-bold mt-4 mb-2">{children}</h1>,
+                  h2: ({ children }) => <h2 className="text-lg font-bold mt-3 mb-2">{children}</h2>,
+                  h3: ({ children }) => <h3 className="text-base font-bold mt-2 mb-1">{children}</h3>,
+                  p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
+                  ul: ({ children }) => <ul className="list-disc list-inside mb-3 space-y-1">{children}</ul>,
+                  ol: ({ children }) => <ol className="list-decimal list-inside mb-3 space-y-1">{children}</ol>,
+                  li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+                  strong: ({ children }) => <strong className="font-bold">{children}</strong>,
+                  em: ({ children }) => <em className="italic">{children}</em>,
+                  blockquote: ({ children }) => (
+                    <blockquote className="border-r-4 border-gray-300 pr-4 my-3 italic text-gray-600">
+                      {children}
+                    </blockquote>
+                  ),
+                }}
+              >
+                {resultText}
+              </ReactMarkdown>
             </div>
           )}
 
