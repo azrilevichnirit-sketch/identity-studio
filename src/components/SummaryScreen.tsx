@@ -22,13 +22,16 @@ const HOLLAND_LABELS: Record<HollandCode, string> = {
 export function SummaryScreen({ state, countsFinal, leaders, resultText }: SummaryScreenProps) {
   return (
     <div
-      className="w-full"
+      className="fixed inset-0 w-full"
       style={{
         background: '#FFFCF5',
-        minHeight: '100dvh',
+        // Fixed viewport height so this container can scroll even if the app locks body scroll
+        height: '100vh',
         overflowY: 'auto',
         overflowX: 'hidden',
         WebkitOverflowScrolling: 'touch',
+        // Ensure touch gestures are allowed to scroll vertically on mobile browsers
+        touchAction: 'pan-y',
       }}
     >
       {/* Logo - top right */}
