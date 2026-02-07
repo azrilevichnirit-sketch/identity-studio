@@ -47,23 +47,12 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
 
   return (
     <div
-      className="fixed inset-0 w-screen"
+      className="min-h-screen w-full"
       style={{
         background: '#FFFCF5',
-        height: viewportHeightPx ? `${viewportHeightPx}px` : '100svh',
-        minHeight: '100vh',
-        zIndex: 1000,
       }}
     >
-      <div
-        className="absolute inset-0 overflow-y-scroll"
-        style={{
-          WebkitOverflowScrolling: 'touch',
-          overscrollBehaviorY: 'contain',
-          touchAction: 'pan-y',
-        }}
-      >
-      {/* Logo - top right, on the background */}
+      {/* Logo - top right */}
       <div 
         className="flex justify-end py-4 px-4 md:px-8"
         style={{
@@ -77,13 +66,11 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
         />
       </div>
 
-      {/* Content */}
+      {/* Content - no height limits, natural document flow */}
       <div 
         className="flex flex-col gap-4 animate-fade-in w-full items-center px-4 md:px-8"
         style={{
-          // Extra bottom space so the last lines can scroll above mobile browser bars.
-          // (Some in-app browsers have taller bottom chrome than Safari/Chrome.)
-          paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 360px)',
+          paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 80px)',
         }}
       >
         {/* Main results card */}
@@ -102,19 +89,19 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
             בנית לעצמך כיוון
           </h1>
 
-          {/* Result text from Make - rendered as Markdown */}
+          {/* Result text from Make - rendered as Markdown, no limits */}
           {resultText && (
             <div 
-              className="text-sm leading-relaxed prose prose-sm max-w-none whitespace-pre-wrap break-words"
+              className="text-sm leading-relaxed prose prose-sm max-w-none"
               style={{ 
                 color: '#333', 
                 fontFamily: "'Rubik', sans-serif",
                 wordBreak: 'break-word',
+                whiteSpace: 'pre-wrap',
               }}
             >
               <ReactMarkdown
                 components={{
-                  // Custom styling for Markdown elements
                   h1: ({ children }) => <h1 className="text-xl font-bold mt-4 mb-2">{children}</h1>,
                   h2: ({ children }) => <h2 className="text-lg font-bold mt-3 mb-2">{children}</h2>,
                   h3: ({ children }) => <h3 className="text-base font-bold mt-2 mb-1">{children}</h3>,
@@ -153,10 +140,6 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
         <div className="mt-6">
           <Disclaimer className="text-slate-400" />
         </div>
-
-        {/* Extra spacer (defensive) so the last line can always scroll fully into view */}
-        <div aria-hidden className="h-24 w-full" />
-      </div>
       </div>
     </div>
   );
