@@ -1660,19 +1660,26 @@ export function VisualPlayScreen({
   }, [taskText, isTabletOrMobile, missionDisplayNumber]);
 
   const speechBubbleElement = (
-    <div className="relative">
+    <div className="mission-bubble-with-avatar">
+      {/* Avatar inside the bubble container */}
+      <div className="mission-bubble-avatar">
+        <img 
+          src={avatarImage} 
+          alt="Guide avatar"
+          className="w-full h-full object-contain"
+          style={{ filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.4))' }}
+        />
+      </div>
       <SpeechBubble 
         tailDirection="right"
         missionKey={mission.mission_id}
       >
         <p 
-          className="font-medium text-sm md:text-base"
+          className="font-medium text-base md:text-lg"
           style={{ 
-            lineHeight: 1.45,
+            lineHeight: 1.5,
             direction: 'rtl',
             textAlign: 'right',
-            maxHeight: 'calc(22vh - 28px)',
-            overflowY: 'auto',
           }}
         >
           {formattedTaskText}

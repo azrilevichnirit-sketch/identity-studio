@@ -911,10 +911,10 @@
   pointer-events: none;
 }
 
-/* Tool tile - fits nicely */
+/* Tool tile - larger for better visibility */
 .tool-tile {
-  width: 112px;
-  height: 112px;
+  width: 140px;
+  height: 140px;
 }
 
 /* Tooltip - speech bubble style matching game bubbles */
@@ -1039,22 +1039,22 @@
 }
 
 .tooltip-text {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
   color: hsl(var(--bubble-fg));
-  line-height: 1.45;
+  line-height: 1.5;
   font-family: 'Rubik', sans-serif;
   margin: 0;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-/* Info button on the tool tile - dark/black style, small */
+/* Info button on the tool tile - larger for better visibility */
 .tool-info-btn {
-  width: 16px;
-  height: 16px;
+  width: 28px;
+  height: 28px;
   border-radius: 999px;
   display: flex;
   align-items: center;
@@ -1082,8 +1082,8 @@
 }
 
 .tool-info-icon {
-  width: 9px;
-  height: 9px;
+  width: 16px;
+  height: 16px;
 }
 
 /* ============================================
@@ -1211,9 +1211,28 @@
   transform: translateX(-50%);
   z-index: 45;
   pointer-events: auto;
-  max-width: min(600px, 70vw);
+  max-width: min(700px, 80vw);
   width: auto;
   direction: rtl;
+}
+
+/* Bubble with avatar container */
+.mission-bubble-with-avatar {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.mission-bubble-avatar {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, hsl(var(--primary) / 0.2), hsl(var(--primary) / 0.05));
+  border: 2px solid hsl(var(--primary) / 0.3);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 /* Legacy styles - kept for backwards compat */
@@ -1322,9 +1341,15 @@
     transform: translateX(-50%);
     z-index: 80;
     pointer-events: auto;
-    max-width: min(90vw, 400px);
+    max-width: min(95vw, 450px);
     width: auto;
     direction: rtl;
+  }
+
+  /* Mobile avatar in bubble - smaller */
+  .mission-bubble-avatar {
+    width: 56px;
+    height: 56px;
   }
 
   /* Legacy: Mission hero row - hidden since no avatar */
@@ -1423,12 +1448,12 @@
     width: 84px;
   }
 
-  /* Mobile tool tiles - compact */
+  /* Mobile tool tiles - larger for better touch */
   .mobile-layout .tool-tile {
-    width: 84px;
-    height: 84px;
-    min-width: 84px;
-    min-height: 84px;
+    width: 110px;
+    height: 110px;
+    min-width: 110px;
+    min-height: 110px;
   }
 
   /* Mobile tooltip - dark compact style like desktop */
@@ -1489,13 +1514,13 @@
   }
 
   .mobile-layout .tool-info-btn {
-    width: 28px;
-    height: 28px;
+    width: 36px;
+    height: 36px;
   }
 
   .mobile-layout .tool-info-icon {
-    width: 14px;
-    height: 14px;
+    width: 20px;
+    height: 20px;
   }
 
   /* Mission undo button */
@@ -1563,10 +1588,10 @@
     width: 104px;
   }
 
-  /* Tablet tool tiles */
+  /* Tablet tool tiles - larger */
   .tool-tile {
-    width: 96px;
-    height: 96px;
+    width: 120px;
+    height: 120px;
   }
 
   /* Tablet tooltip */
@@ -1581,13 +1606,13 @@
   }
 
   .tool-info-btn {
-    width: 22px;
-    height: 22px;
+    width: 32px;
+    height: 32px;
   }
 
   .tool-info-icon {
-    width: 13px;
-    height: 13px;
+    width: 18px;
+    height: 18px;
   }
 }
 
