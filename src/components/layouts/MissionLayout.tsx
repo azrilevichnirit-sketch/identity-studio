@@ -56,7 +56,6 @@ function DesktopMissionLayout({
   targetZone,
   placedProps,
   undoButton,
-  avatar,
   speechBubble,
   toolPanel,
   draggingGhost,
@@ -88,14 +87,9 @@ function DesktopMissionLayout({
         {undoButton}
       </div>
 
-      {/* Hero row: bubble + avatar, like Welcome screen */}
-      <div className="mission-hero-desktop">
-        <div className="mission-bubble-desktop">
-          {speechBubble}
-        </div>
-        <div className="mission-avatar-desktop">
-          {avatar}
-        </div>
+      {/* Mission task - TOP of screen (no avatar) */}
+      <div className="mission-task-top">
+        {speechBubble}
       </div>
 
       {/* Tool panel - bottom LEFT on desktop */}
@@ -124,7 +118,6 @@ function MobileMissionLayout({
   targetZone,
   placedProps,
   undoButton,
-  avatar,
   speechBubble,
   toolPanel,
   draggingGhost,
@@ -189,19 +182,14 @@ function MobileMissionLayout({
         {undoButton}
       </div>
 
+      {/* Mission task - TOP of screen (no avatar) */}
+      <div className="mission-task-top-mobile">
+        {speechBubble}
+      </div>
+
       {/* Tool panel - bottom-left */}
       <div className="mission-tool-panel-mobile">
         {toolPanel}
-      </div>
-
-      {/* Hero row: bubble + avatar (like Welcome screen) */}
-      <div className="mission-hero-mobile">
-        <div className="mission-bubble-mobile">
-          {speechBubble}
-        </div>
-        <div className="mission-avatar-mobile">
-          {avatar}
-        </div>
       </div>
 
       {/* Edge pan indicators (mobile only) */}
