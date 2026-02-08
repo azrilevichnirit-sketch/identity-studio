@@ -1660,22 +1660,23 @@ export function VisualPlayScreen({
   }, [taskText, isTabletOrMobile, missionDisplayNumber]);
 
   const speechBubbleElement = (
-    <div className="mission-bubble-with-avatar">
-      {/* Avatar inside the bubble container */}
-      <div className="mission-bubble-avatar">
-        <img 
-          src={avatarImage} 
-          alt="Guide avatar"
-          className="w-full h-full object-contain"
-          style={{ filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.4))' }}
-        />
-      </div>
-      <SpeechBubble 
-        tailDirection="right"
-        missionKey={mission.mission_id}
-      >
+    <SpeechBubble 
+      tailDirection="right"
+      missionKey={mission.mission_id}
+      className="mission-bubble-full-width"
+    >
+      <div className="mission-bubble-content-with-avatar">
+        {/* Avatar inside the bubble on the right */}
+        <div className="mission-bubble-avatar-inside">
+          <img 
+            src={avatarImage} 
+            alt="Guide avatar"
+            className="w-full h-full object-contain"
+          />
+        </div>
+        {/* Text content */}
         <p 
-          className="font-medium text-base md:text-lg"
+          className="font-medium text-base md:text-lg flex-1"
           style={{ 
             lineHeight: 1.5,
             direction: 'rtl',
@@ -1684,8 +1685,8 @@ export function VisualPlayScreen({
         >
           {formattedTaskText}
         </p>
-      </SpeechBubble>
-    </div>
+      </div>
+    </SpeechBubble>
   );
 
   const toolPanelElement = (
