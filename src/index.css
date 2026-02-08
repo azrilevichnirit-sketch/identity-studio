@@ -1211,28 +1211,37 @@
   transform: translateX(-50%);
   z-index: 45;
   pointer-events: auto;
-  max-width: min(700px, 80vw);
-  width: auto;
+  width: calc(100vw - 40px);
+  max-width: 900px;
   direction: rtl;
 }
 
-/* Bubble with avatar container */
+/* Bubble with avatar container - avatar on right (RTL start) */
 .mission-bubble-with-avatar {
   display: flex;
-  flex-direction: row-reverse;
-  align-items: flex-start;
-  gap: 8px;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
 }
 
+/* Avatar thumbnail inside the bubble row - on the right */
 .mission-bubble-avatar {
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   flex-shrink: 0;
   border-radius: 50%;
   overflow: hidden;
-  background: linear-gradient(135deg, hsl(var(--primary) / 0.2), hsl(var(--primary) / 0.05));
-  border: 2px solid hsl(var(--primary) / 0.3);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  background: linear-gradient(135deg, hsl(var(--primary) / 0.15), hsl(var(--primary) / 0.05));
+  border: 2px solid hsl(var(--primary) / 0.25);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  order: 0; /* Appears first in row = right side in RTL */
+}
+
+/* Speech bubble takes remaining space */
+.mission-bubble-with-avatar .speech-bubble-wrapper {
+  flex: 1;
+  min-width: 0;
 }
 
 /* Legacy styles - kept for backwards compat */
@@ -1341,15 +1350,19 @@
     transform: translateX(-50%);
     z-index: 80;
     pointer-events: auto;
-    max-width: min(95vw, 450px);
-    width: auto;
+    width: calc(100vw - 24px);
+    max-width: 100%;
     direction: rtl;
   }
 
   /* Mobile avatar in bubble - smaller */
   .mission-bubble-avatar {
-    width: 56px;
-    height: 56px;
+    width: 48px;
+    height: 48px;
+  }
+  
+  .mission-bubble-with-avatar {
+    gap: 8px;
   }
 
   /* Legacy: Mission hero row - hidden since no avatar */
