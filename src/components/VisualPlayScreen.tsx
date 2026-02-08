@@ -1,13 +1,13 @@
-import { useMemo, useState, useRef, useCallback, useEffect, forwardRef } from 'react';
+import { useMemo, useState, useRef, useCallback, useEffect } from 'react';
 import type { Mission, HollandCode, AvatarGender, PickRecord, MissionOption, AnchorRef } from '@/types/identity';
 import { getToolImage, getBackgroundForMission, getAvatarImage, getBackgroundKey, getBackgroundByName, getPanoramicBackground, preloadBackground } from '@/lib/assetUtils';
 import { panOffsetToDropCompensation, panOffsetToTranslatePercent } from '@/lib/pan';
 import { getAnchorPosition } from '@/lib/jsonDataLoader';
 import { SpeechBubble } from './SpeechBubble';
-import { Info, Hand, X } from 'lucide-react';
+import { Info } from 'lucide-react';
 import { UndoConfirmPopover } from './UndoConfirmDialog';
 import { ProgressTank } from './ProgressTank';
-import { DragHint } from './DragHint';
+// DragHint removed - click-to-place mode
 import { useSceneExtras } from '@/hooks/useSceneExtras';
 import { MissionLayout } from './layouts/MissionLayout';
 import type { PanningApi } from './PannableBackground';
@@ -758,171 +758,24 @@ export function VisualPlayScreen({
     setCarryModeTool(null);
   }, [mission.mission_id, mission.phase, mission.sequence, optionA, optionB, onSelect, hasDraggedOnce, getTargetBgForOption, PAINTED_WALLS_BG_KEY, currentBg, getTargetAnchor]);
 
-  // Pointer Events for unified mouse/touch handling
-  const handlePointerDown = useCallback((variant: 'a' | 'b', e: React.PointerEvent) => {
+  // Click-to-place: immediately place the selected tool
+  const handleToolClick = useCallback((variant: 'a' | 'b', e: React.PointerEvent | React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
-    // If already in carry mode for a different tool, switch to this one
-    if (carryModeTool && carryModeTool !== variant) {
-      setCarryModeTool(variant);
-      return;
-    }
-    
-    isDraggingRef.current = false;
-    dragStartPosRef.current = { x: e.clientX, y: e.clientY };
-    setDraggingTool(variant);
-    setDragPosition({ x: e.clientX, y: e.clientY });
-    
-    // Capture pointer for reliable tracking
-    // IMPORTANT: capture on the element that owns the handlers (currentTarget),
-    // not the deepest child (target). This is critical on mobile Safari where
-    // capturing on <img> can break subsequent pointermove/pointerup events.
-    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-  }, [carryModeTool]);
+    // Immediately place the tool - no dragging required
+    completePlacement(variant);
+  }, [completePlacement]);
 
-  const handlePointerMove = useCallback((e: React.PointerEvent) => {
-    if (!draggingTool || !dragStartPosRef.current) return;
-    
-    const dx = e.clientX - dragStartPosRef.current.x;
-    const dy = e.clientY - dragStartPosRef.current.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    
-    // Mark as actual drag if moved more than 10px
-    if (distance > 10) {
-      isDraggingRef.current = true;
-    }
-    
-    setDragPosition({ x: e.clientX, y: e.clientY });
-    
-    // Update panning based on pointer position (normalized 0-1)
-    if (stageRef.current && isMobile && isPanoramic) {
-      const rect = stageRef.current.getBoundingClientRect();
-      const normalizedX = (e.clientX - rect.left) / rect.width;
-      panApiRef.current?.updatePanFromDrag(normalizedX);
+  // Keep for backwards compatibility but no longer used for dragging
+  const handlePointerMove = useCallback((_e: React.PointerEvent) => {
+    // No-op: drag-and-drop disabled
+  }, []);
 
-      // Sync pan shift to CSS variable (1 update per animation frame)
-      if (!panSyncRafRef.current) {
-        panSyncRafRef.current = window.requestAnimationFrame(() => {
-          panSyncRafRef.current = null;
-          const offset = panApiRef.current?.getOffsetX() ?? 0;
-          panOffsetXRef.current = offset;
-          if (stageRef.current) {
-            stageRef.current.style.setProperty('--pan-shift-x', panOffsetToTranslatePercent(offset));
-          }
-        });
-      }
-      
-      // Calculate edge proximity for visual indicators (matches panning edge zone)
-      const EDGE_ZONE = 0.18; // 18% from each edge - matches usePanningBackground
-      if (normalizedX < EDGE_ZONE) {
-        // Approaching left edge - use easeOutQuad for natural feel
-        const t = 1 - (normalizedX / EDGE_ZONE);
-        const intensity = t * t;
-        setEdgeProximity({ edge: 'left', intensity });
-      } else if (normalizedX > 1 - EDGE_ZONE) {
-        // Approaching right edge - use easeOutQuad for natural feel
-        const t = (normalizedX - (1 - EDGE_ZONE)) / EDGE_ZONE;
-        const intensity = t * t;
-        setEdgeProximity({ edge: 'right', intensity });
-      } else {
-        // In center zone
-        setEdgeProximity({ edge: null, intensity: 0 });
-      }
-    }
-  }, [draggingTool, isMobile, isPanoramic]);
-
-  const handlePointerUp = useCallback((e: React.PointerEvent) => {
-    // CRITICAL: Stop propagation to prevent stage's onClick from canceling carry mode
-    e.stopPropagation();
-    
-    if (!draggingTool || !stageRef.current) {
-      // Release pointer capture
-      try {
-        (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
-      } catch {}
-      return;
-    }
-
-    const wasActualDrag = isDraggingRef.current;
-    
-    // Release pointer capture
-    try {
-      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
-    } catch {}
-    
-    if (wasActualDrag) {
-      // It was a real drag - check if dropped near the target position
-      const rect = stageRef.current.getBoundingClientRect();
-      let dropX = ((e.clientX - rect.left) / rect.width) * 100;
-      const dropY = ((e.clientY - rect.top) / rect.height) * 100;
-
-      // CRITICAL: When panning is active, adjust dropX to account for the pan offset
-      // panOffsetX is in percentage points: positive = showing left side, negative = showing right side
-      // The background position is `${50 + panOffsetX}%`
-      // So if panOffsetX = 22, we're showing the LEFT part of the image
-      // To convert screen X to image X: imageX = screenX - (panOffsetX * compensationFactor)
-      // The compensation factor depends on how much extra content the panoramic image has
-      // With panRange = 0.22 (22%), the full image is ~144% of viewport width
-      // So each percentage point of pan offset shifts the content by ~1.44 viewport percentages
-      if (isMobile && isPanoramic) {
-        const panOffsetNow = panApiRef.current?.getOffsetX() ?? panOffsetXRef.current;
-        if (panOffsetNow !== 0) {
-          dropX = dropX + panOffsetToDropCompensation(panOffsetNow);
-        }
-      }
-
-      const isMission01 = mission.mission_id === 'studio_01';
-      const isMission01Paint = isMission01 && draggingTool === 'a';
-      
-      // Get target position for current tool
-      const target = getTargetAnchor(draggingTool);
-      if (target) {
-        // Check if within target radius (generous ~20% of screen for mobile)
-        const dx = dropX - target.x;
-        const dy = dropY - target.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        
-        // Mobile with panning: more generous acceptance (25% radius) since precise alignment is harder
-        const acceptRadius = (isMobile && isPanoramic) ? 28 : 20;
-        
-        // Mission 01: accept if user drops on the floor
-        // Other missions: generous zone-based acceptance
-        const accepted = isMission01Paint
-          ? (distance < 28 && dropY > 45 && dropY < 92)
-          : (isMission01 ? (dropY > 55 && dropY < 98) : (distance < acceptRadius || (dropY < 75 && dropY > 5)));
-
-        if (accepted) {
-          completePlacement(draggingTool);
-        }
-        // Otherwise return to tray (no placement)
-      } else {
-        // Fallback: accept if in valid zone
-        if (isMission01Paint ? (dropY > 45 && dropY < 92) : (isMission01 ? (dropY > 55 && dropY < 98) : (dropY < 75 && dropY > 5))) {
-          completePlacement(draggingTool);
-        }
-      }
-    } else {
-      // It was a tap - enter carry mode
-      carryModeJustSetRef.current = true;
-      setCarryModeTool(draggingTool);
-      // Clear the guard after click event would have fired
-      setTimeout(() => { carryModeJustSetRef.current = false; }, 50);
-    }
-    
-    setDraggingTool(null);
-    setDragPosition(null);
-    isDraggingRef.current = false;
-    dragStartPosRef.current = null;
-    
-    // Reset pan and edge indicators when drag ends
-    panApiRef.current?.resetPan();
-    panOffsetXRef.current = 0;
-    if (stageRef.current) {
-      stageRef.current.style.setProperty('--pan-shift-x', '0%');
-    }
-    setEdgeProximity({ edge: null, intensity: 0 });
-  }, [draggingTool, completePlacement, getTargetAnchor, mission.mission_id]);
+  // Keep for backwards compatibility but no longer used for dragging
+  const handlePointerUp = useCallback((_e: React.PointerEvent) => {
+    // No-op: drag-and-drop disabled
+  }, []);
 
   // Handle tap on drop zone in carry mode
   const handleDropZoneTap = useCallback(() => {
@@ -1755,13 +1608,8 @@ export function VisualPlayScreen({
     />
   );
 
-  const avatarElement = avatarImage ? (
-    <img 
-      src={avatarImage} 
-      alt="Guide avatar"
-      className="h-full w-auto object-contain animate-subtle-float"
-    />
-  ) : null;
+  // Avatar removed per user request
+  const avatarElement = null;
 
   // Check if we're on tablet or mobile (< 1024px) for text wrapping
   const [isTabletOrMobile, setIsTabletOrMobile] = useState(false);
@@ -1857,85 +1705,32 @@ export function VisualPlayScreen({
         {/* Tool tiles */}
         <div className="tool-tiles-area">
           <div className="tool-tiles-row">
-            <DraggableToolTile
+            <ClickableToolTile
               image={toolAImage}
-              onPointerDown={(e) => handlePointerDown('a', e)}
-              onPointerMove={handlePointerMove}
-              onPointerUp={handlePointerUp}
+              onClick={(e) => handleToolClick('a', e)}
               onInfoClick={() => setActiveTooltip(activeTooltip === 'a' ? null : 'a')}
-              onInfoClose={() => setActiveTooltip(null)}
               variant="a"
-              isDragging={draggingTool === 'a'}
-              isCarryMode={carryModeTool === 'a'}
               isInfoActive={activeTooltip === 'a'}
               tooltipText={optionA.tooltip_heb || 'MISSING: option_a_tooltip_heb'}
-              isMobile={isMobile}
             />
-            <DraggableToolTile
+            <ClickableToolTile
               image={toolBImage}
-              onPointerDown={(e) => handlePointerDown('b', e)}
-              onPointerMove={handlePointerMove}
-              onPointerUp={handlePointerUp}
+              onClick={(e) => handleToolClick('b', e)}
               onInfoClick={() => setActiveTooltip(activeTooltip === 'b' ? null : 'b')}
-              onInfoClose={() => setActiveTooltip(null)}
               variant="b"
-              isDragging={draggingTool === 'b'}
-              isCarryMode={carryModeTool === 'b'}
               isInfoActive={activeTooltip === 'b'}
               tooltipText={optionB.tooltip_heb || 'MISSING: option_b_tooltip_heb'}
-              isMobile={isMobile}
             />
           </div>
 
-          {/* Animated drag hint */}
-          {!hasDraggedOnce && !draggingTool && !carryModeTool && (
-            <div className="tool-drag-hint">
-              <DragHint />
-            </div>
-          )}
+          {/* Drag hint removed - click to place mode */}
         </div>
       </div>
     </div>
   );
 
-  const draggingGhostElement = draggingTool && dragPosition ? (
-    <div 
-      className="fixed pointer-events-none z-[55]"
-      style={{
-        left: dragPosition.x,
-        top: dragPosition.y,
-        transform: 'translate(-50%, -80%)',
-      }}
-    >
-      {/* Glow behind tool */}
-      <div 
-        className="absolute inset-0 rounded-full"
-        style={{
-          width: '100px',
-          height: '100px',
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-          background: 'radial-gradient(circle, hsl(170 80% 50% / 0.4) 0%, transparent 70%)',
-          filter: 'blur(8px)',
-        }}
-      />
-      <img 
-        src={draggingTool === 'a' ? toolAImage : toolBImage}
-        alt=""
-        className="w-20 h-20 md:w-24 md:h-24 object-contain relative"
-        style={{
-          filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.5))',
-        }}
-      />
-      <div 
-        className="absolute -bottom-2 -right-2"
-        style={{ color: 'hsl(220 20% 20%)' }}
-      >
-        <Hand className="w-7 h-7 md:w-8 md:h-8 drop-shadow-lg" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} />
-      </div>
-    </div>
-  ) : null;
+  // Dragging ghost - disabled since click-to-place mode
+  const draggingGhostElement = null;
 
   // Debug overlay anchors
   const debugAnchors = useMemo(() => [
@@ -2120,47 +1915,29 @@ export function VisualPlayScreen({
   );
 }
 
-interface DraggableToolTileProps {
+interface ClickableToolTileProps {
   image: string | undefined;
-  onPointerDown: (e: React.PointerEvent) => void;
-  onPointerMove: (e: React.PointerEvent) => void;
-  onPointerUp: (e: React.PointerEvent) => void;
+  onClick: (e: React.MouseEvent) => void;
   onInfoClick: () => void;
-  onInfoClose: () => void;
   variant: 'a' | 'b';
-  isDragging: boolean;
-  isCarryMode: boolean;
   isInfoActive: boolean;
   tooltipText: string;
-  isMobile: boolean;
 }
 
-const DraggableToolTile = forwardRef<HTMLDivElement, DraggableToolTileProps>(function DraggableToolTile({ 
+function ClickableToolTile({ 
   image, 
-  onPointerDown, 
-  onPointerMove, 
-  onPointerUp, 
+  onClick, 
   onInfoClick, 
-  onInfoClose,
   variant, 
-  isDragging, 
-  isCarryMode,
   isInfoActive,
   tooltipText,
-  isMobile,
-}: DraggableToolTileProps, ref) {
+}: ClickableToolTileProps) {
   return (
-    <div
-      ref={ref}
-      className={`relative ${isDragging ? 'opacity-40' : ''} ${isCarryMode ? 'carry-mode-active' : ''}`}
-    >
-      {/* Tool tile - transparent PNG, no white card */}
-      <div
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
-        className="draggable-tool group relative overflow-visible transition-all duration-200 hover:scale-110 active:scale-95 cursor-grab active:cursor-grabbing tool-tile"
+    <div className="relative">
+      {/* Tool tile - click to select and place */}
+      <button
+        onClick={onClick}
+        className="clickable-tool group relative overflow-visible transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer tool-tile"
       >
         {/* Tool image - transparent PNG with subtle shadow */}
         <div className="absolute inset-0 flex items-center justify-center">
@@ -2186,13 +1963,14 @@ const DraggableToolTile = forwardRef<HTMLDivElement, DraggableToolTileProps>(fun
             boxShadow: '0 0 20px hsl(170 80% 50% / 0.3)',
           }}
         />
-      </div>
+      </button>
 
       {/* Info button with tooltip - CSS hover for all devices */}
       <div className="tool-info-wrapper">
         <button 
           className={`tool-info-btn ${isInfoActive ? 'is-active' : ''}`}
           aria-label="מידע על הכלי"
+          onClick={(e) => { e.stopPropagation(); onInfoClick(); }}
         >
           <Info className="tool-info-icon" />
         </button>
@@ -2204,4 +1982,4 @@ const DraggableToolTile = forwardRef<HTMLDivElement, DraggableToolTileProps>(fun
       </div>
     </div>
   );
-});
+}

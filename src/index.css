@@ -1200,9 +1200,23 @@
 
 /* ============================================
    MISSION SCREEN - DESKTOP (>=1024px)
-   Hero row with bubble + avatar like Welcome
+   Task at TOP of screen, no avatar
    ============================================ */
 
+/* Mission task container - positioned at TOP */
+.missionScreen .mission-task-top {
+  position: absolute;
+  top: clamp(16px, 3vh, 40px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 45;
+  pointer-events: auto;
+  max-width: min(600px, 70vw);
+  width: auto;
+  direction: rtl;
+}
+
+/* Legacy styles - kept for backwards compat */
 .missionScreen .mission-hero-desktop {
   position: absolute;
   right: clamp(24px, 4vw, 60px);
@@ -1300,26 +1314,25 @@
    ============================================ */
 
 @media (max-width: 1023px) {
-  /* Mission hero row - compact and positioned for real mobile screens */
-  .missionScreen .mission-hero-mobile {
+  /* Mission task - TOP of screen for mobile */
+  .missionScreen .mission-task-top-mobile {
     position: fixed;
-    right: calc(env(safe-area-inset-right, 0px) + 6px);
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 140px);
-    left: auto;
-    top: auto;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-end;
-    justify-content: flex-end;
-    gap: 0;
+    top: calc(env(safe-area-inset-top, 0px) + 12px);
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 80;
-    direction: ltr;
-    pointer-events: none;
-    /* Smooth transition for hide/show */
-    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+    pointer-events: auto;
+    max-width: min(90vw, 400px);
+    width: auto;
+    direction: rtl;
   }
 
-  /* Hide hero row during drag */
+  /* Legacy: Mission hero row - hidden since no avatar */
+  .missionScreen .mission-hero-mobile {
+    display: none;
+  }
+
+  /* Hide during drag (legacy) */
   .missionScreen.is-dragging .mission-hero-mobile {
     opacity: 0;
     transform: translateY(20px);
