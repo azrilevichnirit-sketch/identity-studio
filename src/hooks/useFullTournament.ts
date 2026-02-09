@@ -59,6 +59,61 @@ const OPPOSITE_PAIRS: [HollandCode, HollandCode][] = [
   ['a', 'c'], // Artistic - Conventional
 ];
 
+// Adjacent pairs on the Holland hexagon for Step 2.5 resolution
+const ADJACENT_PAIRS: Record<HollandCode, [HollandCode, HollandCode]> = {
+  r: ['i', 'c'],
+  i: ['r', 'a'],
+  a: ['i', 's'],
+  s: ['a', 'e'],
+  e: ['s', 'c'],
+  c: ['e', 'r'],
+};
+
+/**
+ * Step 2.5: Try to resolve tie using adjacent Holland code sums.
+ * For each tied candidate, sum the base scores of its two adjacent codes.
+ * If one candidate has a higher sum → it wins (no tie-breaker mission needed).
+ * If multiple have the same max sum → return only those (narrowed candidates).
+ * 
+ * @param candidates - The tied Holland codes
+ * @param countsFinal - The base scores from 12 main missions (integers 0-4)
+ * @returns Object with winner (if resolved) OR narrowedCandidates (if still tied)
+ */
+function tryResolveByAdjacentSum(
+  candidates: HollandCode[],
+  countsFinal: CountsFinal
+): { winner: HollandCode } | { narrowedCandidates: HollandCode[] } {
+  if (candidates.length < 2) {
+    return { winner: candidates[0] };
+  }
+  
+  // Calculate adjacent sum for each candidate
+  const adjacentSums: { code: HollandCode; sum: number }[] = candidates.map(code => {
+    const [adj1, adj2] = ADJACENT_PAIRS[code];
+    const sum = countsFinal[adj1] + countsFinal[adj2];
+    return { code, sum };
+  });
+  
+  console.log('[Tournament] Step 2.5 - Adjacent sums:', adjacentSums);
+  
+  // Find the maximum sum
+  const maxSum = Math.max(...adjacentSums.map(x => x.sum));
+  
+  // Find all candidates with the max sum
+  const winners = adjacentSums.filter(x => x.sum === maxSum);
+  
+  if (winners.length === 1) {
+    // Single winner - resolved without tie-breaker mission
+    console.log(`[Tournament] Step 2.5 resolved: ${winners[0].code} wins with adjacent sum ${maxSum}`);
+    return { winner: winners[0].code };
+  }
+  
+  // Still tied - return narrowed candidates
+  const narrowed = winners.map(w => w.code);
+  console.log(`[Tournament] Step 2.5 still tied: ${narrowed.join(',')} all have sum ${maxSum}`);
+  return { narrowedCandidates: narrowed };
+}
+
 // Get the tie-breaker missions from v6 JSON
 const tieMissionsV6 = studioTieV6Data as TieMissionV6[];
 
@@ -331,12 +386,67 @@ export function useFullTournament(countsFinal: CountsFinal) {
             tieTrace: trace,
           });
         } else {
-          // Need Rank 3 tournament
-          startRankTournamentRef.current(3, rank3Candidates, winner, rank2, trace);
+          // Step 2.5: Try adjacent sum resolution for Rank 3
+          const step25Result = tryResolveByAdjacentSum(rank3Candidates, countsFinal);
+          if ('winner' in step25Result) {
+            console.log('[Tournament] Rank 3 resolved by Step 2.5:', step25Result.winner);
+            setState({
+              phase: 'complete',
+              rank1Code: winner,
+              rank2Code: rank2,
+              rank3Code: step25Result.winner,
+              candidateSet: [],
+              currentMission: null,
+              tieTrace: trace,
+            });
+          } else {
+            // Need Rank 3 tournament with narrowed candidates
+            startRankTournamentRef.current(3, step25Result.narrowedCandidates, winner, rank2, trace);
+          }
         }
       } else {
-        // Need Rank 2 tournament
-        startRankTournamentRef.current(2, rank2Candidates, winner, null, trace);
+        // Step 2.5: Try adjacent sum resolution for Rank 2
+        const step25Result = tryResolveByAdjacentSum(rank2Candidates, countsFinal);
+        if ('winner' in step25Result) {
+          console.log('[Tournament] Rank 2 resolved by Step 2.5:', step25Result.winner);
+          // Check Rank 3
+          const rank3Candidates = findCandidates(countsFinal, [winner, step25Result.winner]);
+          if (rank3Candidates.length <= 1) {
+            const rank3 = rank3Candidates[0];
+            if (!rank3) {
+              console.error('[Tournament] No candidates for Rank 3');
+              return;
+            }
+            setState({
+              phase: 'complete',
+              rank1Code: winner,
+              rank2Code: step25Result.winner,
+              rank3Code: rank3,
+              candidateSet: [],
+              currentMission: null,
+              tieTrace: trace,
+            });
+          } else {
+            // Step 2.5 for Rank 3
+            const step25Rank3 = tryResolveByAdjacentSum(rank3Candidates, countsFinal);
+            if ('winner' in step25Rank3) {
+              setState({
+                phase: 'complete',
+                rank1Code: winner,
+                rank2Code: step25Result.winner,
+                rank3Code: step25Rank3.winner,
+                candidateSet: [],
+                currentMission: null,
+                tieTrace: trace,
+              });
+            } else {
+              startRankTournamentRef.current(3, step25Rank3.narrowedCandidates, winner, step25Result.winner, trace);
+            }
+          }
+        } else {
+          // Need Rank 2 tournament with narrowed candidates
+          startRankTournamentRef.current(2, step25Result.narrowedCandidates, winner, null, trace);
+        }
       }
     } else if (resolvedRank === 2) {
       // Rank 2 done, check Rank 3
@@ -361,8 +471,23 @@ export function useFullTournament(countsFinal: CountsFinal) {
           tieTrace: trace,
         });
       } else {
-        // Need Rank 3 tournament
-        startRankTournamentRef.current(3, rank3Candidates, existingRank1, winner, trace);
+        // Step 2.5: Try adjacent sum resolution for Rank 3
+        const step25Result = tryResolveByAdjacentSum(rank3Candidates, countsFinal);
+        if ('winner' in step25Result) {
+          console.log('[Tournament] Rank 3 resolved by Step 2.5:', step25Result.winner);
+          setState({
+            phase: 'complete',
+            rank1Code: existingRank1,
+            rank2Code: winner,
+            rank3Code: step25Result.winner,
+            candidateSet: [],
+            currentMission: null,
+            tieTrace: trace,
+          });
+        } else {
+          // Need Rank 3 tournament with narrowed candidates
+          startRankTournamentRef.current(3, step25Result.narrowedCandidates, existingRank1, winner, trace);
+        }
       }
     } else {
       // Rank 3 done - all complete
@@ -400,9 +525,17 @@ export function useFullTournament(countsFinal: CountsFinal) {
       return;
     }
     
-    // Multiple candidates - start Rank 1 tournament
-    startRankTournamentRef.current(1, rank1Candidates, null, null, []);
-  }, []);
+    // Step 2.5: Try adjacent sum resolution for Rank 1
+    const step25Result = tryResolveByAdjacentSum(rank1Candidates, countsFinal);
+    if ('winner' in step25Result) {
+      console.log('[Tournament] Rank 1 resolved by Step 2.5:', step25Result.winner);
+      handleRankResolvedRef.current(1, step25Result.winner, null, null, []);
+      return;
+    }
+    
+    // Multiple candidates - start Rank 1 tournament with narrowed candidates
+    startRankTournamentRef.current(1, step25Result.narrowedCandidates, null, null, []);
+  }, [countsFinal]);
 
   /**
    * Start tournament from Rank 2 (when Rank 1 is already known)
@@ -440,10 +573,65 @@ export function useFullTournament(countsFinal: CountsFinal) {
           tieTrace: [],
         });
       } else {
-        startRankTournamentRef.current(3, rank3Candidates, rank1, rank2, []);
+        // Step 2.5: Try adjacent sum resolution for Rank 3
+        const step25Result = tryResolveByAdjacentSum(rank3Candidates, countsFinal);
+        if ('winner' in step25Result) {
+          console.log('[Tournament] Rank 3 resolved by Step 2.5:', step25Result.winner);
+          setState({
+            phase: 'complete',
+            rank1Code: rank1,
+            rank2Code: rank2,
+            rank3Code: step25Result.winner,
+            candidateSet: [],
+            currentMission: null,
+            tieTrace: [],
+          });
+        } else {
+          startRankTournamentRef.current(3, step25Result.narrowedCandidates, rank1, rank2, []);
+        }
       }
     } else {
-      startRankTournamentRef.current(2, rank2Candidates, rank1, null, []);
+      // Step 2.5: Try adjacent sum resolution for Rank 2
+      const step25Result = tryResolveByAdjacentSum(rank2Candidates, countsFinal);
+      if ('winner' in step25Result) {
+        console.log('[Tournament] Rank 2 resolved by Step 2.5:', step25Result.winner);
+        // Now check Rank 3
+        const rank3Candidates = findCandidates(countsFinal, [rank1, step25Result.winner]);
+        if (rank3Candidates.length <= 1) {
+          const rank3 = rank3Candidates[0];
+          if (!rank3) {
+            console.error('[Tournament] No candidates for Rank 3');
+            return;
+          }
+          setState({
+            phase: 'complete',
+            rank1Code: rank1,
+            rank2Code: step25Result.winner,
+            rank3Code: rank3,
+            candidateSet: [],
+            currentMission: null,
+            tieTrace: [],
+          });
+        } else {
+          // Step 2.5 for Rank 3
+          const step25Rank3 = tryResolveByAdjacentSum(rank3Candidates, countsFinal);
+          if ('winner' in step25Rank3) {
+            setState({
+              phase: 'complete',
+              rank1Code: rank1,
+              rank2Code: step25Result.winner,
+              rank3Code: step25Rank3.winner,
+              candidateSet: [],
+              currentMission: null,
+              tieTrace: [],
+            });
+          } else {
+            startRankTournamentRef.current(3, step25Rank3.narrowedCandidates, rank1, step25Result.winner, []);
+          }
+        }
+      } else {
+        startRankTournamentRef.current(2, step25Result.narrowedCandidates, rank1, null, []);
+      }
     }
   }, [countsFinal]);
 
