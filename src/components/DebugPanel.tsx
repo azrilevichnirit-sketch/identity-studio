@@ -10,10 +10,12 @@ interface DebugPanelProps {
   historyLength: number;
   onToolEditModeChange?: (enabled: boolean) => void;
   onJumpToMission?: (missionIndex: number) => void;
+  onJumpToTieMission?: (tieIndex: number) => void;
   totalMissions?: number;
+  totalTieMissions?: number;
 }
 
-export function DebugPanel({ state, countsFinal, leaders, historyLength, onToolEditModeChange, onJumpToMission, totalMissions = 12 }: DebugPanelProps) {
+export function DebugPanel({ state, countsFinal, leaders, historyLength, onToolEditModeChange, onJumpToMission, onJumpToTieMission, totalMissions = 12, totalTieMissions = 15 }: DebugPanelProps) {
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(false);
   const [toolEditMode, setToolEditMode] = useState(false);
@@ -90,6 +92,28 @@ export function DebugPanel({ state, countsFinal, leaders, historyLength, onToolE
                     }`}
                   >
                     {i + 1}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Tie-Breaker Mission Jump Buttons */}
+          {onJumpToTieMission && (
+            <div className="mb-3 pb-2 border-b border-border">
+              <div className="text-muted-foreground mb-1.5 font-medium">קפיצה לשובר שוויון:</div>
+              <div className="flex flex-wrap gap-1">
+                {Array.from({ length: totalTieMissions }, (_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => onJumpToTieMission(i)}
+                    className={`w-7 h-7 rounded text-xs font-medium transition-colors ${
+                      state.phase === 'tie' && state.tieMissionUsed?.mission_id === `studio_tie_${String(i + 1).padStart(2, '0')}`
+                        ? 'bg-orange-500 text-white'
+                        : 'bg-muted hover:bg-accent text-foreground'
+                    }`}
+                  >
+                    T{i + 1}
                   </button>
                 ))}
               </div>

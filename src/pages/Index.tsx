@@ -48,6 +48,8 @@ const Index = () => {
     checkAndSetTiePhase,
     setLeadForm,
     jumpToMission,
+    jumpToTieMission,
+    tieMissions,
     setRank1Code,
     setRank2Code,
     setRank3Code,
@@ -526,7 +528,9 @@ const Index = () => {
             historyLength={historyLength}
             onToolEditModeChange={setToolEditMode}
             onJumpToMission={jumpToMission}
+            onJumpToTieMission={jumpToTieMission}
             totalMissions={mainMissions.length}
+            totalTieMissions={tieMissions.length}
           />
           <TieBreakDebugPanel
             state={state}

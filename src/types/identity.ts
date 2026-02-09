@@ -55,6 +55,8 @@ export type AnchorRef =
   | 'm11_tool_b'
   | 'm12_tool_a'
   | 'm12_tool_b'
+  | `tie_${string}_tool_a`
+  | `tie_${string}_tool_b`
   | 'm01_npc_female'
   | 'm02_npc_male_a'
   | 'm02_npc_male_b'
