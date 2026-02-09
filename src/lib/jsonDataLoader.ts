@@ -3,7 +3,7 @@ import type { Mission, MissionOption, HollandCode, PlacementMode, AnchorRef, Sce
 
 // Import JSON files directly
 import studioQuestsData from '@/data/studio_quests_v5.json';
-import studioTieData from '@/data/studio_tie_v5.json';
+import studioTieData from '@/data/studio_tie_v6.json';
 import studioExtrasData from '@/data/studio_scene_extras.json';
 import studioAnchorMapData from '@/data/studio_anchor_map.json';
 
