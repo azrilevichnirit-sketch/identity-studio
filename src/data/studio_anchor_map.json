@@ -1070,7 +1070,7 @@
     "z_layer": "front"
   },
   {
-    "background_asset_key": "studio_in_workshop_bg",
+    "background_asset_key": "gallery_main_stylized_white_v1",
     "anchor_ref": "tie_02_tool_a",
     "x_pct": 0.212,
     "y_pct": 0.783,
@@ -1078,7 +1078,7 @@
     "z_layer": "front"
   },
   {
-    "background_asset_key": "studio_in_workshop_bg",
+    "background_asset_key": "gallery_main_stylized_white_v1",
     "anchor_ref": "tie_02_tool_b",
     "x_pct": 0.092,
     "y_pct": 0.628,
