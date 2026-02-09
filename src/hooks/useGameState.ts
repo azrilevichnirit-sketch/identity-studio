@@ -240,6 +240,19 @@ export function useGameState() {
     }));
   }, [mainMissions]);
 
+  const jumpToTieMission = useCallback((tieIndex: number) => {
+    if (tieIndex < 0 || tieIndex >= tieMissions.length) return;
+    const tieMission = tieMissions[tieIndex];
+    setState((prev) => ({
+      ...prev,
+      phase: 'tie',
+      dimension: 'studio',
+      avatarGender: prev.avatarGender || 'female',
+      tieMissionUsed: tieMission,
+      tieChoiceMade: false,
+    }));
+  }, [tieMissions]);
+
   const canUndo = useMemo(() => {
     if (state.tieChoiceMade) return false;
     if (state.phase === 'tie') return true; // Can go back to mission 12
@@ -294,6 +307,7 @@ export function useGameState() {
     checkAndSetTiePhase,
     setLeadForm,
     jumpToMission,
+    jumpToTieMission,
     setRank1Code,
     setRank2Code,
     setRank3Code,

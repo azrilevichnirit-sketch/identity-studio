@@ -184,8 +184,12 @@ export function VisualPlayScreen({
   const TIE_BREAKER_BG_KEY = 'gallery_main_stylized';
   
   const previousBgOverride = useMemo(() => {
-    // TIE-BREAKER MISSIONS: Lock to the last main game background (gallery from M12)
+    // TIE-BREAKER MISSIONS: In toolEditMode, use the mission's own bg_override for calibration
+    // Otherwise lock to the last main game background (gallery from M12)
     if (mission.phase === 'tb') {
+      if (toolEditMode && mission.bg_override) {
+        return mission.bg_override;
+      }
       return TIE_BREAKER_BG_KEY;
     }
     
@@ -236,7 +240,7 @@ export function VisualPlayScreen({
     }
 
     return undefined;
-  }, [mission.phase, mission.sequence, mission.mission_id, mission.view, hasPaintedWalls]);
+  }, [mission.phase, mission.sequence, mission.mission_id, mission.view, mission.bg_override, hasPaintedWalls, toolEditMode]);
 
   const currentBg = useMemo(() => getBackgroundForMission(mission, previousBgOverride), [mission, previousBgOverride]);
   const currentBgKey = useMemo(() => getBackgroundKey(mission, previousBgOverride), [mission, previousBgOverride]);
@@ -284,7 +288,7 @@ export function VisualPlayScreen({
   // Mission 09 & 12: Gallery (uses bg_override) - NOT workshop locked
   // TIE-BREAKER missions also use gallery (stays on last main game background)
   const isGalleryMission = ((mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12') && mission.bg_override) || mission.phase === 'tb';
-  const isTieBreakerLocked = mission.phase === 'tb';
+  const isTieBreakerLocked = mission.phase === 'tb' && !toolEditMode;
   const isWorkshopLocked =
     mission.phase === 'main' &&
     ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission);
@@ -491,10 +495,10 @@ export function VisualPlayScreen({
   const getTargetAnchor = useCallback((variant: 'a' | 'b') => {
     const option = variant === 'a' ? optionA : optionB;
     
-    // Prefer mission-specific tool anchors (mXX_tool_a/b) so drag target == final placement.
-    // Some quest rows still use generic anchors (e.g. wall_left/ceiling), which should not drive calibrated drop zones.
-    const missionNum = String(mission.mission_id).replace('studio_', '').padStart(2, '0');
-    const preferredAnchorRef = (`m${missionNum}_tool_${variant}`) as AnchorRef;
+    // Prefer mission-specific tool anchors so drag target == final placement.
+    const isTie = mission.mission_id.includes('_tie_');
+    const missionNum = String(mission.mission_id).replace('studio_', '').replace('tie_', '').padStart(2, '0');
+    const preferredAnchorRef = (isTie ? `tie_${missionNum}_tool_${variant}` : `m${missionNum}_tool_${variant}`) as AnchorRef;
     const fallbackAnchorRef = option.anchor_ref as AnchorRef;
     
     // SPECIAL CASE: Mission 07 - tool-specific destination rooms

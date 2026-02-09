@@ -28,7 +28,9 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
   // Single position per tool - same for drag target AND final placement
   const [positions, setPositions] = useState<{ a: ToolPosition; b: ToolPosition }>(() => {
     const getInitialPos = (key: 'a' | 'b'): ToolPosition => {
-      const anchorRef = `m${mission.mission_id.replace('studio_', '').padStart(2, '0')}_tool_${key}` as AnchorRef;
+      const isTie = mission.mission_id.includes('_tie_');
+      const missionNum = mission.mission_id.replace('studio_', '').replace('tie_', '').padStart(2, '0');
+      const anchorRef = (isTie ? `tie_${missionNum}_tool_${key}` : `m${missionNum}_tool_${key}`) as AnchorRef;
       const pos = getAnchorPosition(currentBgKey, anchorRef);
       return {
         x: pos?.x ?? 50,
@@ -61,7 +63,9 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
   // Update positions when mission changes
   useEffect(() => {
     const getInitialPos = (key: 'a' | 'b'): ToolPosition => {
-      const anchorRef = `m${mission.mission_id.replace('studio_', '').padStart(2, '0')}_tool_${key}` as AnchorRef;
+      const isTie = mission.mission_id.includes('_tie_');
+      const missionNum = mission.mission_id.replace('studio_', '').replace('tie_', '').padStart(2, '0');
+      const anchorRef = (isTie ? `tie_${missionNum}_tool_${key}` : `m${missionNum}_tool_${key}`) as AnchorRef;
       const pos = getAnchorPosition(currentBgKey, anchorRef);
       return {
         x: pos?.x ?? 50,
@@ -200,11 +204,13 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
   };
 
   const copyToClipboard = () => {
-    const missionNum = mission.mission_id.replace('studio_', '').padStart(2, '0');
+    const isTie = mission.mission_id.includes('_tie_');
+    const missionNum = mission.mission_id.replace('studio_', '').replace('tie_', '').padStart(2, '0');
+    const prefix = isTie ? 'tie' : 'm';
     const entries = [
       {
         background_asset_key: currentBgKey,
-        anchor_ref: `m${missionNum}_tool_a`,
+        anchor_ref: `${prefix}${missionNum}_tool_a`,
         x_pct: Math.round(positions.a.x * 10) / 1000,
         y_pct: Math.round(positions.a.y * 10) / 1000,
         scale: positions.a.scale,
@@ -213,7 +219,7 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
       },
       {
         background_asset_key: currentBgKey,
-        anchor_ref: `m${missionNum}_tool_b`,
+        anchor_ref: `${prefix}${missionNum}_tool_b`,
         x_pct: Math.round(positions.b.x * 10) / 1000,
         y_pct: Math.round(positions.b.y * 10) / 1000,
         scale: positions.b.scale,
