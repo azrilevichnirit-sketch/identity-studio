@@ -11,6 +11,7 @@ import crate02 from '@/assets/extras/studio_crate_02.webp';
 import extra02 from '@/assets/extras/studio_extra_asset_02.webp';
 import extra03 from '@/assets/extras/studio_extra_asset_03.webp';
 import workDesk01 from '@/assets/extras/studio_work_desk_01.webp';
+import cncMachine01 from '@/assets/extras/studio_cnc_machine_01.webp';
 
 // Map asset keys to actual images
 const extraAssetMap: Record<string, string> = {
@@ -22,6 +23,7 @@ const extraAssetMap: Record<string, string> = {
   studio_extra_asset_02: extra02,
   studio_extra_asset_03: extra03,
   studio_work_desk_01: workDesk01,
+  studio_cnc_machine_01: cncMachine01,
 };
 
 export interface SpawnedExtra {
@@ -119,6 +121,10 @@ function checkShouldSpawn(
   const triggerTools = rule.trigger_tool_ids.split(';').map(s => s.trim());
   
   if (rule.trigger_when === 'before') {
+    // For tie-breaker missions, match by exact mission_id
+    if (rule.mission_id.startsWith('studio_tie_')) {
+      return currentMissionId === rule.mission_id;
+    }
     // Spawn before the mission - show if we're at or past this mission
     const missionOrder = parseInt(rule.mission_id.replace('studio_', ''), 10);
     return currentMissionIndex + 1 >= missionOrder;
