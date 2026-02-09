@@ -1068,5 +1068,21 @@
     "y_pct": 0.847,
     "scale": 1,
     "z_layer": "front"
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "tie_02_tool_a",
+    "x_pct": 0.212,
+    "y_pct": 0.783,
+    "scale": 1.6,
+    "z_layer": "front"
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "tie_02_tool_b",
+    "x_pct": 0.092,
+    "y_pct": 0.628,
+    "scale": 1.9,
+    "z_layer": "front"
   }
 ]
