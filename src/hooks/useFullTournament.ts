@@ -18,6 +18,7 @@ export interface TieMissionV6 {
   option_b_code: HollandCode;
   option_b_asset: string;
   option_b_tooltip_heb: string;
+  bg_override?: string;
 }
 
 export interface TournamentComparison {
@@ -235,6 +236,7 @@ function convertToMission(tieMission: TieMissionV6): Mission {
     mission_id: tieMission.quest_id,
     sequence: 100 + tieMission.pair_sequence,
     view: 'in',
+    bg_override: tieMission.bg_override,
     task_heb: tieMission.task_heb,
     pair_key: tieMission.pair_codes,
     options: [optionA, optionB],
