@@ -1044,5 +1044,13 @@
     "y_pct": 0.906,
     "scale": 2.6,
     "z_layer": "front"
+  },
+  {
+    "background_asset_key": "studio_in_storage_bg",
+    "anchor_ref": "tie_01_extra_cnc",
+    "x_pct": 0.12,
+    "y_pct": 0.85,
+    "scale": 2.5,
+    "z_layer": "front"
   }
 ]
