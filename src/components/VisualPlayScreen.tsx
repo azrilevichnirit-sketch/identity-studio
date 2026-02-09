@@ -412,9 +412,11 @@ export function VisualPlayScreen({
   const lockedBgKey = isCalibrationBgOverrideMode && m7CalibrationBg
     ? m7CalibrationBg.key
     : isBgSwitchingDragActive
-    ? dragPreviewBg.key // M7/M11 drag overrides workshop lock
+    ? dragPreviewBg.key
+    : isTieBreakerLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.key // Tie-breaker per-tool bg switch (T4, T7, T8)
     : isTieBreakerLocked
-    ? TIE_BREAKER_BG_KEY // Tie-breaker stays on last main game background
+    ? (mission.bg_override || TIE_BREAKER_BG_KEY)
     : isWhiteWallsLocked
     ? PAINTED_WALLS_BG_KEY
     : isCrackedWallsLocked
@@ -430,9 +432,11 @@ export function VisualPlayScreen({
   const lockedBg = isCalibrationBgOverrideMode && m7CalibrationBg
     ? m7CalibrationBg.image
     : isBgSwitchingDragActive
-    ? dragPreviewBg.image // M7/M11 drag overrides workshop lock
+    ? dragPreviewBg.image
+    : isTieBreakerLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.image
     : isTieBreakerLocked
-    ? (getBackgroundByName(TIE_BREAKER_BG_KEY) || displayBg)
+    ? (getBackgroundByName(mission.bg_override || TIE_BREAKER_BG_KEY) || displayBg)
     : isWhiteWallsLocked
     ? (getBackgroundByName(PAINTED_WALLS_BG_KEY) || displayBg)
     : isCrackedWallsLocked
@@ -666,6 +670,14 @@ export function VisualPlayScreen({
     if (isMission11) {
       const targetBg = getTargetBgForOption(option);
       setLocalBgOverride({ ...targetBg, missionId: mission.mission_id });
+    }
+
+    // Tie-breaker missions with per-tool bg (T4, T7, T8): switch bg on tool placement
+    if (mission.phase === 'tb' && option.next_bg_override) {
+      const bgImage = getBackgroundByName(option.next_bg_override);
+      if (bgImage) {
+        setLocalBgOverride({ key: option.next_bg_override, image: bgImage, missionId: mission.mission_id });
+      }
     }
     setJustPlaced(null);
     setLockPulseKey(null);
