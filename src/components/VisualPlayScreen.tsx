@@ -184,10 +184,9 @@ export function VisualPlayScreen({
   const TIE_BREAKER_BG_KEY = 'gallery_main_stylized';
   
   const previousBgOverride = useMemo(() => {
-    // TIE-BREAKER MISSIONS: In toolEditMode, use the mission's own bg_override for calibration
-    // Otherwise lock to the last main game background (gallery from M12)
+    // TIE-BREAKER MISSIONS: Use bg_override if defined, otherwise default to gallery
     if (mission.phase === 'tb') {
-      if (toolEditMode && mission.bg_override) {
+      if (mission.bg_override) {
         return mission.bg_override;
       }
       return TIE_BREAKER_BG_KEY;
