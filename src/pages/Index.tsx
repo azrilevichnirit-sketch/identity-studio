@@ -20,7 +20,7 @@ const Index = () => {
   const [toolEditMode, setToolEditMode] = useState(false);
   
   // Debug mode: disabled for production
-  const showDebug = false;
+  const showDebug = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debug') === 'true';
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [resultText, setResultText] = useState<string | null>(null);
   const resultTextRef = useRef<string | null>(null);
