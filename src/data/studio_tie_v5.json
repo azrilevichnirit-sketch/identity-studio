@@ -7,7 +7,7 @@
     "quest_id": "studio_tie_01",
     "sequence": 1,
     "view": "in",
-    "bg_override": "studio_in_workshop_bg",
+    "bg_override": "studio_in_storage_bg",
     "task_heb": "\"בום! המכונה המרכזית הושבתה בדיוק בשיא הלחץ. מה עושים עכשיו?\"",
     "option_a_code": "r",
     "option_a_asset": "studio_tie_01_a",
