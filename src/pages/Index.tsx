@@ -20,7 +20,7 @@ const Index = () => {
   const [toolEditMode, setToolEditMode] = useState(false);
   
   // Debug mode: disabled for production
-  const showDebug = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debug') === 'true';
+  const [showDebug, setShowDebug] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [resultText, setResultText] = useState<string | null>(null);
   const resultTextRef = useRef<string | null>(null);
@@ -545,6 +545,15 @@ const Index = () => {
           />
         </>
       )}
+
+      {/* Small debug toggle button */}
+      <button
+        onClick={() => setShowDebug(prev => !prev)}
+        className="fixed bottom-2 left-2 z-50 w-6 h-6 rounded-full bg-black/30 text-white text-[10px] font-bold opacity-30 hover:opacity-100 transition-opacity"
+        title="Toggle Debug"
+      >
+        🐛
+      </button>
     </>
   );
 };
