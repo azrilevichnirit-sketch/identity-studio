@@ -19,6 +19,8 @@ export interface TieMissionV6 {
   option_b_asset: string;
   option_b_tooltip_heb: string;
   bg_override?: string;
+  next_bg_override_a?: string;
+  next_bg_override_b?: string;
 }
 
 export interface TournamentComparison {
@@ -208,6 +210,7 @@ function convertToMission(tieMission: TieMissionV6): Mission {
     asset: tieMission.option_a_asset,
     tooltip_heb: tieMission.option_a_tooltip_heb,
     view: 'in',
+    next_bg_override: tieMission.next_bg_override_a,
     placement_mode: 'floor',
     anchor_ref: 'floor',
     offset_x: 0,
@@ -222,6 +225,7 @@ function convertToMission(tieMission: TieMissionV6): Mission {
     asset: tieMission.option_b_asset,
     tooltip_heb: tieMission.option_b_tooltip_heb,
     view: 'in',
+    next_bg_override: tieMission.next_bg_override_b,
     placement_mode: 'floor',
     anchor_ref: 'floor',
     offset_x: 0,
