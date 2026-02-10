@@ -357,7 +357,7 @@
     "quest_id": "studio_tie_11",
     "sequence": 11,
     "view": "in",
-    "bg_override": "studio_in_gallery_bg",
+    "bg_override": "gallery_main_stylized",
     "task_heb": "\"לקוח רציני בפתח. איך נראה לו מי אנחנו באמת?\"",
     "option_a_code": "a",
     "option_a_asset": "studio_tie_11_a",
