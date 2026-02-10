@@ -1296,5 +1296,21 @@
     "scale": 1,
     "z_layer": "front",
     "flipX": true
+  },
+  {
+    "background_asset_key": "studio_exterior_bg",
+    "anchor_ref": "tie_13_tool_a",
+    "x_pct": 0.475,
+    "y_pct": 0.759,
+    "scale": 1.6,
+    "z_layer": "front"
+  },
+  {
+    "background_asset_key": "studio_exterior_bg",
+    "anchor_ref": "tie_13_tool_b",
+    "x_pct": 0.489,
+    "y_pct": 0.852,
+    "scale": 1.7,
+    "z_layer": "front"
   }
 ]
