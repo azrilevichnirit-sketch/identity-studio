@@ -12,6 +12,7 @@ import extra02 from '@/assets/extras/studio_extra_asset_02.webp';
 import extra03 from '@/assets/extras/studio_extra_asset_03.webp';
 import workDesk01 from '@/assets/extras/studio_work_desk_01.webp';
 import cncMachine01 from '@/assets/extras/studio_cnc_machine_01.webp';
+import coffeeTable01 from '@/assets/extras/studio_coffee_table_01.webp';
 
 // Map asset keys to actual images
 const extraAssetMap: Record<string, string> = {
@@ -24,6 +25,7 @@ const extraAssetMap: Record<string, string> = {
   studio_extra_asset_03: extra03,
   studio_work_desk_01: workDesk01,
   studio_cnc_machine_01: cncMachine01,
+  studio_coffee_table_01: coffeeTable01,
 };
 
 export interface SpawnedExtra {
