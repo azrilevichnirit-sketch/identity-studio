@@ -123,16 +123,9 @@ function checkShouldSpawn(
   const triggerTools = rule.trigger_tool_ids.split(';').map(s => s.trim());
   
   if (rule.trigger_when === 'before') {
-    // For tie-breaker missions, show if current mission is the same or a later tie-breaker
+    // For tie-breaker missions, match by exact mission_id only (clean scene per tie-breaker)
     if (rule.mission_id.startsWith('studio_tie_')) {
-      if (currentMissionId === rule.mission_id) return true;
-      // Persist across later tie-breaker missions if despawn_mode is 'keep'
-      if (rule.despawn_mode === 'keep' && currentMissionId.startsWith('studio_tie_')) {
-        const ruleNum = parseInt(rule.mission_id.replace('studio_tie_', ''), 10);
-        const currentNum = parseInt(currentMissionId.replace('studio_tie_', ''), 10);
-        return currentNum > ruleNum;
-      }
-      return false;
+      return currentMissionId === rule.mission_id;
     }
     // Spawn before the mission - show if we're at or past this mission
     const missionOrder = parseInt(rule.mission_id.replace('studio_', ''), 10);
