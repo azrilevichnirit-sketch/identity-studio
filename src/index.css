@@ -1220,11 +1220,14 @@
   width: 100%;
 }
 
-/* Progress tank inside the speech bubble */
+/* Progress tank inside the speech bubble - aligned right under text (RTL) */
 .mission-bubble-progress {
   flex-shrink: 0;
-  width: 100%;
+  width: fit-content;
   margin-top: 6px;
+  margin-right: 0;
+  margin-left: auto;
+  direction: rtl;
 }
 
 /* Avatar inside the bubble - circular on the right */
