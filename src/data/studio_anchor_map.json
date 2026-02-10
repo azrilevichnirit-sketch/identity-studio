@@ -1312,5 +1312,13 @@
     "y_pct": 0.852,
     "scale": 1.7,
     "z_layer": "front"
+  },
+  {
+    "background_asset_key": "studio_in_storage_bg",
+    "anchor_ref": "tie_09_extra_table",
+    "x_pct": 0.899,
+    "y_pct": 0.923,
+    "scale": 1,
+    "z_layer": "mid"
   }
 ]
