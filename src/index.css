@@ -1230,6 +1230,12 @@
   direction: rtl;
 }
 
+@media (min-width: 1024px) {
+  .mission-bubble-progress {
+    margin-right: 72px;
+  }
+}
+
 /* Avatar inside the bubble - circular on the right */
 .mission-bubble-avatar-inside {
   width: 64px;
