@@ -74,9 +74,9 @@
   {
     "background_asset_key": "studio_entry_inside_bg",
     "anchor_ref": "m01_tool_a",
-    "x_pct": 0.404,
-    "y_pct": 0.731,
-    "scale": 1.6,
+    "x_pct": 0.542,
+    "y_pct": 0.783,
+    "scale": 1,
     "z_layer": "front"
   },
   {
@@ -132,11 +132,10 @@
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m01_tool_b",
-    "x_pct": 0.524,
-    "y_pct": 0.856,
-    "scale": 1.8,
-    "z_layer": "front",
-    "flipX": true
+    "x_pct": 0.5,
+    "y_pct": 0.6,
+    "scale": 1,
+    "z_layer": "front"
   },
   {
     "background_asset_key": "gallery_main_stylized",
