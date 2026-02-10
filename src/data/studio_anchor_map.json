@@ -591,11 +591,10 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m03_tool_a",
-    "x_pct": 0.274,
-    "y_pct": 0.915,
+    "x_pct": 0.699,
+    "y_pct": 0.907,
     "scale": 2.6,
-    "z_layer": "front",
-    "flipX": true
+    "z_layer": "front"
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
