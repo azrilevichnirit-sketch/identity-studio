@@ -191,7 +191,7 @@
     "pair_codes": "es",
     "pair_sequence": 1,
     "quest_id": "studio_tie_13",
-    "bg_override": "gallery_main_stylized",
+    "bg_override": "studio_exterior_bg",
     "task_heb": "החלטנו להתרחב מעבר לסטודיו! מה יהיה המהלך הבא שלנו?",
     "option_a_code": "s",
     "option_a_asset": "studio_tie_13_a",
