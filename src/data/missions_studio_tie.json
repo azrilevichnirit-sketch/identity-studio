@@ -256,6 +256,7 @@
     "mission_id": "studio_tie_11",
     "sequence": 11,
     "view": "in",
+    "bg_override": "gallery_main_stylized",
     "task_heb": "\"לקוח רציני בפתח. איך נראה לו מי אנחנו באמת?\"",
     "options": [
       {
