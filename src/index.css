@@ -1178,14 +1178,19 @@
   border-top-color: hsl(var(--tooltip-bg, 0 0% 10%));
 }
 
-/* Show on hover */
-.tool-info-wrapper:hover .desktop-hover-tooltip {
-  opacity: 1;
-  visibility: visible;
+/* Show on hover - desktop only */
+@media (min-width: 768px) {
+  .tool-info-wrapper:hover .desktop-hover-tooltip {
+    opacity: 1;
+    visibility: visible;
+  }
 }
-.tool-info-wrapper:hover .desktop-hover-tooltip {
+
+/* Show on click (mobile) - controlled by is-active class */
+.tool-info-btn.is-active ~ .desktop-hover-tooltip {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
 }
 
 /* ============================================
@@ -1467,10 +1472,10 @@
 
   /* Mobile tool tiles - larger for better touch */
   .mobile-layout .tool-tile {
-    width: 110px;
-    height: 110px;
-    min-width: 110px;
-    min-height: 110px;
+    width: 130px;
+    height: 130px;
+    min-width: 130px;
+    min-height: 130px;
   }
 
   /* Mobile tooltip - dark compact style like desktop */
@@ -1663,10 +1668,10 @@
   }
 
   .mobile-layout .tool-tile {
-    width: 76px;
-    height: 76px;
-    min-width: 76px;
-    min-height: 76px;
+    width: 100px;
+    height: 100px;
+    min-width: 100px;
+    min-height: 100px;
   }
 
   .tool-tiles-area {
