@@ -1700,6 +1700,10 @@ export function VisualPlayScreen({
         >
           {formattedTaskText}
         </p>
+        {/* Progress tank inside bubble */}
+        <div className="mission-bubble-progress">
+          <ProgressTank value={(currentIndex + 1) / totalMissions} />
+        </div>
       </div>
     </SpeechBubble>
   );
@@ -1718,12 +1722,8 @@ export function VisualPlayScreen({
           />
         </div>
       )}
-      {/* Main row: Progress tank (horizontal), tools */}
+      {/* Tool tiles only - progress moved to speech bubble */}
       <div className="tool-panel-main-row">
-        {/* Progress tank */}
-        <div className="progress-tank-wrapper">
-          <ProgressTank value={(currentIndex + 1) / totalMissions} />
-        </div>
 
         {/* Tool tiles */}
         <div className="tool-tiles-area">

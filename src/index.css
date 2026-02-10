@@ -848,24 +848,12 @@
     inset 0 1px 0 hsl(0 0% 100% / 0.06);
 }
 
-/* Main row: progress on left (vertical), tools to the right */
+/* Main row: tools only (progress moved to bubble) */
 .tool-panel-main-row {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 12px;
-}
-
-/* Progress tank wrapper - vertical on the left */
-.progress-tank-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  /* Rotate the horizontal tank to be vertical */
-  transform: rotate(-90deg);
-  width: 16px;
-  height: 80px;
 }
 
 /* Tool tiles area */
@@ -1232,6 +1220,13 @@
   width: 100%;
 }
 
+/* Progress tank inside the speech bubble */
+.mission-bubble-progress {
+  flex-shrink: 0;
+  width: 90px;
+  align-self: center;
+}
+
 /* Avatar inside the bubble - circular on the right */
 .mission-bubble-avatar-inside {
   width: 64px;
@@ -1442,18 +1437,14 @@
     gap: 0;
   }
 
-  /* Mobile: row layout with vertical progress on left */
+  /* Mobile: tool panel - just tools */
   .mobile-layout .tool-panel-main-row {
-    flex-direction: row;
-    align-items: center;
     gap: 6px;
   }
 
-  .mobile-layout .progress-tank-wrapper {
-    transform: rotate(-90deg);
-    width: 14px;
-    height: 70px;
-    flex-shrink: 0;
+  /* Mobile: progress inside bubble */
+  .mobile-layout .mission-bubble-progress {
+    width: 70px;
   }
 
   .mobile-layout .tool-tiles-row,
@@ -1674,15 +1665,11 @@
   }
 
   .mobile-layout .tool-panel-main-row {
-    flex-direction: row;
-    align-items: center;
     gap: 4px;
   }
 
-  .mobile-layout .progress-tank-wrapper {
-    transform: rotate(-90deg);
-    width: 12px;
-    height: 55px;
+  .mobile-layout .mission-bubble-progress {
+    width: 55px;
   }
 
   .mobile-layout .tool-tiles-row {
@@ -1941,7 +1928,6 @@
     height: auto;
     display: block;
   }
-
 
   /* Mobile hero layout for Welcome screen */
   .welcomeScreen .welcomeHeroDesktop { display: none !important; }
