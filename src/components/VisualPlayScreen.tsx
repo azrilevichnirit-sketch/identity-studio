@@ -1701,10 +1701,10 @@ export function VisualPlayScreen({
         >
           {formattedTaskText}
         </p>
-        {/* Progress tank inside bubble */}
-        <div className="mission-bubble-progress">
-          <ProgressTank value={(currentIndex + 1) / totalMissions} />
-        </div>
+      </div>
+      {/* Progress tank below text */}
+      <div className="mission-bubble-progress">
+        <ProgressTank value={(currentIndex + 1) / totalMissions} />
       </div>
     </SpeechBubble>
   );

@@ -1223,8 +1223,8 @@
 /* Progress tank inside the speech bubble */
 .mission-bubble-progress {
   flex-shrink: 0;
-  width: 90px;
-  align-self: center;
+  width: 100%;
+  margin-top: 6px;
 }
 
 /* Avatar inside the bubble - circular on the right */
