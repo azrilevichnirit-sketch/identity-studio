@@ -1032,16 +1032,16 @@
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m12_tool_a",
-    "x_pct": 0.522,
-    "y_pct": 0.911,
+    "x_pct": 0.525,
+    "y_pct": 0.783,
     "scale": 2.5,
     "z_layer": "front"
   },
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m12_tool_b",
-    "x_pct": 0.393,
-    "y_pct": 0.906,
+    "x_pct": 0.534,
+    "y_pct": 0.813,
     "scale": 2.6,
     "z_layer": "front"
   },
