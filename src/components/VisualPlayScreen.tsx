@@ -22,6 +22,7 @@ import { ZLayerDebugOverlay, type ZLayerItem, LAYER_ZINDEX } from './ZLayerDebug
 import { ToolCalibrationEditor } from './ToolCalibrationEditor';
 import { Mission7CalibrationEditor } from './Mission7CalibrationEditor';
 import { Mission11CalibrationEditor } from './Mission11CalibrationEditor';
+import { BranchingCalibrationEditor } from './BranchingCalibrationEditor';
 import { WaterLeakEffect } from './WaterLeakEffect';
 // import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter'; // Disabled
 
@@ -1926,14 +1927,30 @@ export function VisualPlayScreen({
           onBackgroundChange={handleM7BackgroundChange}
         />
       )}
-      {toolEditMode && mission.mission_id !== 'studio_07' && mission.mission_id !== 'studio_11' && (
-        <ToolCalibrationEditor
-          mission={mission}
-          currentBgKey={lockedBgKey}
-          onNextMission={onEditorNextMission}
-          sceneExtras={sceneExtras}
-        />
-      )}
+      {/* Branching tie-breakers (T4, T7, T8) - each tool on different background */}
+      {toolEditMode && mission.mission_id !== 'studio_07' && mission.mission_id !== 'studio_11' && (() => {
+        const optA = mission.options.find(o => o.key === 'a');
+        const optB = mission.options.find(o => o.key === 'b');
+        const isBranching = optA?.next_bg_override && optB?.next_bg_override && optA.next_bg_override !== optB.next_bg_override;
+        if (isBranching) {
+          return (
+            <BranchingCalibrationEditor
+              mission={mission}
+              bgKeyA={optA!.next_bg_override!}
+              bgKeyB={optB!.next_bg_override!}
+              onBackgroundChange={handleM7BackgroundChange}
+            />
+          );
+        }
+        return (
+          <ToolCalibrationEditor
+            mission={mission}
+            currentBgKey={lockedBgKey}
+            onNextMission={onEditorNextMission}
+            sceneExtras={sceneExtras}
+          />
+        );
+      })()}
     </>
   );
 }
