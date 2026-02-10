@@ -1,6 +1,6 @@
 import { useMemo, useState, useRef, useCallback, useEffect } from 'react';
 import type { Mission, HollandCode, AvatarGender, PickRecord, MissionOption, AnchorRef } from '@/types/identity';
-import { getToolImage, getBackgroundForMission, getAvatarImage, getBackgroundKey, getBackgroundByName, getPanoramicBackground, preloadBackground } from '@/lib/assetUtils';
+import { getToolImage, getBackgroundForMission, getAvatarImage, getBackgroundKey, getBackgroundByName, getPanoramicBackground, preloadBackground, preloadAllBackgrounds } from '@/lib/assetUtils';
 import { panOffsetToDropCompensation, panOffsetToTranslatePercent } from '@/lib/pan';
 import { getAnchorPosition } from '@/lib/jsonDataLoader';
 import { SpeechBubble } from './SpeechBubble';
@@ -146,9 +146,7 @@ export function VisualPlayScreen({
 
   // Preload the “painted walls” background to avoid a flash/jump on transition.
   useEffect(() => {
-    preloadBackground(PAINTED_WALLS_BG_KEY);
-    preloadBackground('studio_in_workshop_bg'); // Mission 03 workshop
-    preloadBackground('studio_exterior_bg'); // Mission 05 exterior
+    preloadAllBackgrounds();
   }, []);
 
   // Track if we're transitioning from Mission 7 (need to preserve bg during fixation)
