@@ -864,8 +864,8 @@
   flex-shrink: 0;
   /* Rotate the horizontal tank to be vertical */
   transform: rotate(-90deg);
-  width: 18px;
-  height: 100px;
+  width: 16px;
+  height: 80px;
 }
 
 /* Tool tiles area */
@@ -915,8 +915,8 @@
 
 /* Tool tile - larger for better visibility */
 .tool-tile {
-  width: 140px;
-  height: 140px;
+  width: 155px;
+  height: 155px;
 }
 
 /* Tooltip - speech bubble style matching game bubbles */
@@ -1055,8 +1055,8 @@
 
 /* Info button on the tool tile - larger for better visibility */
 .tool-info-btn {
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 34px;
   border-radius: 999px;
   display: flex;
   align-items: center;
@@ -1084,8 +1084,8 @@
 }
 
 .tool-info-icon {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
 }
 
 /* ============================================
