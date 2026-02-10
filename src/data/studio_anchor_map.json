@@ -1206,15 +1206,15 @@
     "anchor_ref": "tie_11_tool_a",
     "x_pct": 0.103,
     "y_pct": 0.64,
-    "scale": 3.8,
+    "scale": 3.9,
     "z_layer": "front"
   },
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "tie_11_tool_b",
-    "x_pct": 0.827,
-    "y_pct": 0.769,
-    "scale": 2.8,
+    "x_pct": 0.878,
+    "y_pct": 0.698,
+    "scale": 3.5,
     "z_layer": "front"
   },
   {
