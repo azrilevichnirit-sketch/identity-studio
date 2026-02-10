@@ -12,5 +12,19 @@
     "anchor_ref": "tie_01_extra_cnc",
     "despawn_mode": "keep",
     "despawn_value": ""
+  },
+  {
+    "world": "studio",
+    "phase": "tb",
+    "order": 2,
+    "mission_id": "studio_tie_14",
+    "trigger_when": "before",
+    "trigger_tool_ids": "",
+    "spawn_asset_key": "studio_coffee_table_01",
+    "spawn_count": 1,
+    "placement_mode": "floor",
+    "anchor_ref": "tie_14_extra_table",
+    "despawn_mode": "keep",
+    "despawn_value": ""
   }
 ]
