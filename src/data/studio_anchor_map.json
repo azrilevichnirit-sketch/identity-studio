@@ -1048,8 +1048,8 @@
   {
     "background_asset_key": "studio_in_storage_bg",
     "anchor_ref": "tie_01_extra_cnc",
-    "x_pct": 0.617,
-    "y_pct": 0.913,
+    "x_pct": 0.676,
+    "y_pct": 0.936,
     "scale": 1,
     "z_layer": "mid"
   },
