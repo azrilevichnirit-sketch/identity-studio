@@ -1442,14 +1442,18 @@
     gap: 0;
   }
 
-  /* Mobile: progress becomes horizontal ABOVE tools */
+  /* Mobile: row layout with vertical progress on left */
   .mobile-layout .tool-panel-main-row {
+    flex-direction: row;
+    align-items: center;
     gap: 6px;
   }
 
   .mobile-layout .progress-tank-wrapper {
-    width: 100%;
-    justify-content: center;
+    transform: rotate(-90deg);
+    width: 14px;
+    height: 70px;
+    flex-shrink: 0;
   }
 
   .mobile-layout .tool-tiles-row,
@@ -1670,7 +1674,15 @@
   }
 
   .mobile-layout .tool-panel-main-row {
-    gap: 5px;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .mobile-layout .progress-tank-wrapper {
+    transform: rotate(-90deg);
+    width: 12px;
+    height: 55px;
   }
 
   .mobile-layout .tool-tiles-row {
