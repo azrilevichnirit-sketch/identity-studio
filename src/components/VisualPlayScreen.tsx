@@ -867,12 +867,13 @@ export function VisualPlayScreen({
     // their background keys both resolve to "gallery" zone
     const currentZone = getZoneForMission(currentSeq);
 
-    // Product/UI rule: Missions 07, 09, 11, 12 and ALL tie-breakers are "clean scene" resets.
+    // Product/UI rule: Missions 07, 09, 11, 12 and ALL tie-breakers are "clean scene" resets
+    // for MAIN mission tools. However, tie-breaker tools DO persist across other tie-breakers.
     // M7: Tool-specific background transition (Storage/Gallery) - no persisted tools
     // M9: Gallery scene - fresh start, no persisted tools
     // M11: Tool-specific background transition - no persisted tools from previous missions
     // M12: Final mission - fresh gallery scene
-    // Tie-breakers: Clean gallery scene - no persisted tools
+    // Tie-breakers: No main-mission tools, but previous tie-breaker tools persist
     // M8: NO old tools from workshop zone
     // Do NOT render persisted tools from previous missions here.
     // (This only affects visibility; it does not modify game state.)
@@ -880,42 +881,54 @@ export function VisualPlayScreen({
     const hidePersistedToolsForThisMission = isTieBreakerMission || mission.mission_id === 'studio_07' || mission.mission_id === 'studio_09' || mission.mission_id === 'studio_11' || mission.mission_id === 'studio_12';
     
     // Add persisted tools from previous missions based on persist flag AND zone
-    if (!hidePersistedToolsForThisMission) {
-      placedProps.forEach((prop) => {
+    placedProps.forEach((prop) => {
+      const isPropTieBreaker = prop.missionId.includes('_tie_');
+      
+      // For tie-breaker missions: show previous tie-breaker tools, hide main tools
+      // For clean-reset main missions: hide everything
+      if (hidePersistedToolsForThisMission) {
+        // In tie-breaker missions, allow previous tie-breaker tools to persist
+        if (!(isTieBreakerMission && isPropTieBreaker)) return;
+      }
+      
+      // Skip if this is the current mission (tool still being placed)
+      if (prop.missionId === mission.mission_id) return;
+      
+      // For main missions, check zone compatibility
+      if (!isPropTieBreaker) {
         const propSeq = parseInt(prop.missionId.replace('studio_', ''), 10);
-        
-        // Skip if this is the current mission (tool still being placed)
         if (propSeq >= currentSeq) return;
-        
-        // Check zone compatibility - tools only persist in the same zone
         const toolZone = getZoneForMission(propSeq);
-        if (toolZone !== currentZone) return; // Different zone = don't show
+        if (toolZone !== currentZone) return;
+      }
+      
+      // Tools with persist: 'keep' - look up from anchor map
+      if (prop.persist === 'keep') {
+        const isTieProp = prop.missionId.includes('_tie_');
+        const anchorRef = isTieProp
+          ? `tie_${prop.missionId.replace('studio_tie_', '').padStart(2, '0')}_tool_${prop.key}` as AnchorRef
+          : `m${prop.missionId.replace('studio_', '').padStart(2, '0')}_tool_${prop.key}` as AnchorRef;
+        const placement = getAnchorPosition(lockedBgKey, anchorRef);
         
-        // Tools with persist: 'keep' - look up from anchor map
-        if (prop.persist === 'keep') {
-          const anchorRef = `m${prop.missionId.replace('studio_', '').padStart(2, '0')}_tool_${prop.key}` as AnchorRef;
-          const placement = getAnchorPosition(lockedBgKey, anchorRef);
-          
-          // Only show if anchor exists in current background
-          if (placement) {
-            placements.push({
-              missionId: prop.missionId,
-              key: prop.key,
-              assetName: prop.assetName || `${prop.missionId}_${prop.key}`,
-              hollandCode: prop.hollandCode,
-              isPersisted: true,
-              fixedPlacement: {
-                x: placement.x,
-                y: placement.y,
-                scale: placement.scale,
-                flipX: placement.flipX,
-                z_layer: placement.z_layer,
-              },
-            });
-          }
+        // Only show if anchor exists in current background
+        if (placement) {
+          placements.push({
+            missionId: prop.missionId,
+            key: prop.key,
+            assetName: prop.assetName || `${prop.missionId}_${prop.key}`,
+            hollandCode: prop.hollandCode,
+            isPersisted: true,
+            fixedPlacement: {
+              x: placement.x,
+              y: placement.y,
+              scale: placement.scale,
+              flipX: placement.flipX,
+              z_layer: placement.z_layer,
+            },
+          });
         }
-      });
-    }
+      }
+    });
     
     // Add current local placement (tool being placed in this mission)
     if (localPlacement) {
