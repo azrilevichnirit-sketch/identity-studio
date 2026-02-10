@@ -1255,5 +1255,21 @@
     "y_pct": 0.88,
     "scale": 2.0,
     "z_layer": "front"
+  },
+  {
+    "background_asset_key": "studio_doorway_park_view_bg",
+    "anchor_ref": "tie_14_tool_a",
+    "x_pct": 0.819,
+    "y_pct": 0.873,
+    "scale": 2.3,
+    "z_layer": "front"
+  },
+  {
+    "background_asset_key": "studio_doorway_park_view_bg",
+    "anchor_ref": "tie_14_tool_b",
+    "x_pct": 0.172,
+    "y_pct": 0.759,
+    "scale": 1,
+    "z_layer": "front"
   }
 ]
