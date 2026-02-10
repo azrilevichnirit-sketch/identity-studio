@@ -655,6 +655,20 @@ export function VisualPlayScreen({
         : undefined,
     });
 
+    // Mobile panoramic: pan background to reveal the placed tool's position
+    if (isMobile && isPanoramic && snapped && panApiRef.current) {
+      panApiRef.current.panToPosition(snapped.x);
+      // Sync the CSS var immediately so the content layer follows
+      const timer = window.setTimeout(() => {
+        const offset = panApiRef.current?.getOffsetX() ?? 0;
+        panOffsetXRef.current = offset;
+        if (stageRef.current) {
+          stageRef.current.style.setProperty('--pan-shift-x', panOffsetToTranslatePercent(offset));
+        }
+      }, 60);
+      timeoutsRef.current.push(timer);
+    }
+
     // Mission 07: Lock the background to the target room IMMEDIATELY on placement
     // This keeps the tool visible on its destination room during the fixation animation
     const isMission07 = mission.mission_id === 'studio_07';
@@ -772,7 +786,7 @@ export function VisualPlayScreen({
     timeoutsRef.current.push(advanceId);
     
     setCarryModeTool(null);
-  }, [mission.mission_id, mission.phase, mission.sequence, optionA, optionB, onSelect, hasDraggedOnce, getTargetBgForOption, PAINTED_WALLS_BG_KEY, currentBg, getTargetAnchor]);
+  }, [mission.mission_id, mission.phase, mission.sequence, optionA, optionB, onSelect, hasDraggedOnce, getTargetBgForOption, PAINTED_WALLS_BG_KEY, currentBg, getTargetAnchor, isMobile, isPanoramic]);
 
   // Click-to-place: immediately place the selected tool
   const handleToolClick = useCallback((variant: 'a' | 'b', e: React.PointerEvent | React.MouseEvent) => {
