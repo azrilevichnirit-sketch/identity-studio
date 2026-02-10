@@ -1166,5 +1166,21 @@
     "y_pct": 0.682,
     "scale": 2.8,
     "z_layer": "front"
+  },
+  {
+    "background_asset_key": "studio_in_storage_bg",
+    "anchor_ref": "tie_07_tool_a",
+    "x_pct": 0.875,
+    "y_pct": 0.892,
+    "scale": 4.2,
+    "z_layer": "front"
+  },
+  {
+    "background_asset_key": "gallery_main_stylized_white_v1",
+    "anchor_ref": "tie_07_tool_b",
+    "x_pct": 0.092,
+    "y_pct": 0.649,
+    "scale": 2.7,
+    "z_layer": "front"
   }
 ]
