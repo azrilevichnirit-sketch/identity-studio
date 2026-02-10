@@ -1251,10 +1251,10 @@
   {
     "background_asset_key": "studio_doorway_park_view_bg",
     "anchor_ref": "tie_14_extra_table",
-    "x_pct": 0.75,
+    "x_pct": 0.163,
     "y_pct": 0.88,
-    "scale": 2.0,
-    "z_layer": "front"
+    "scale": 1,
+    "z_layer": "mid"
   },
   {
     "background_asset_key": "studio_doorway_park_view_bg",
