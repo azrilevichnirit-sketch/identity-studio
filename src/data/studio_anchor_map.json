@@ -1271,5 +1271,13 @@
     "y_pct": 0.759,
     "scale": 1,
     "z_layer": "front"
+  },
+  {
+    "background_asset_key": "gallery_main_stylized_white_v1",
+    "anchor_ref": "tie_15_extra_table",
+    "x_pct": 0.75,
+    "y_pct": 0.88,
+    "scale": 2.0,
+    "z_layer": "front"
   }
 ]
