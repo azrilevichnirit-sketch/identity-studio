@@ -1194,9 +1194,10 @@
   {
     "background_asset_key": "studio_exterior_bg",
     "anchor_ref": "tie_08_tool_b",
-    "x_pct": 0.092,
-    "y_pct": 0.649,
-    "scale": 2.7,
-    "z_layer": "front"
+    "x_pct": 0.529,
+    "y_pct": 0.871,
+    "scale": 2.2,
+    "z_layer": "front",
+    "flipX": true
   }
 ]
