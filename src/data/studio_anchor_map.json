@@ -486,8 +486,8 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m04_tool_a",
-    "x_pct": 0.785,
-    "y_pct": 0.078,
+    "x_pct": 0.95,
+    "y_pct": 0.256,
     "scale": 1.6,
     "z_layer": "front"
   },
