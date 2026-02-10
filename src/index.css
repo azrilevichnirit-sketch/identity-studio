@@ -848,22 +848,24 @@
     inset 0 1px 0 hsl(0 0% 100% / 0.06);
 }
 
-/* Main row: progress first (horizontal), tools under it */
+/* Main row: progress on left (vertical), tools to the right */
 .tool-panel-main-row {
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 10px;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
 }
 
-/* Progress tank wrapper */
+/* Progress tank wrapper - vertical on the left */
 .progress-tank-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
   flex-shrink: 0;
-  padding: 2px 0;
+  /* Rotate the horizontal tank to be vertical */
+  transform: rotate(-90deg);
+  width: 18px;
+  height: 100px;
 }
 
 /* Tool tiles area */
