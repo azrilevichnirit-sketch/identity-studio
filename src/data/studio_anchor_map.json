@@ -1231,5 +1231,21 @@
     "y_pct": 0.769,
     "scale": 2.8,
     "z_layer": "front"
+  },
+  {
+    "background_asset_key": "gallery_main_stylized",
+    "anchor_ref": "tie_12_tool_a",
+    "x_pct": 0.806,
+    "y_pct": 0.798,
+    "scale": 6,
+    "z_layer": "front"
+  },
+  {
+    "background_asset_key": "gallery_main_stylized",
+    "anchor_ref": "tie_12_tool_b",
+    "x_pct": 0.115,
+    "y_pct": 0.641,
+    "scale": 3,
+    "z_layer": "front"
   }
 ]
