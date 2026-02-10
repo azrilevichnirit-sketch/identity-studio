@@ -1199,5 +1199,21 @@
     "scale": 2.2,
     "z_layer": "front",
     "flipX": true
+  },
+  {
+    "background_asset_key": "gallery_main_stylized",
+    "anchor_ref": "tie_10_tool_a",
+    "x_pct": 0.484,
+    "y_pct": 0.906,
+    "scale": 2.3,
+    "z_layer": "front"
+  },
+  {
+    "background_asset_key": "gallery_main_stylized",
+    "anchor_ref": "tie_10_tool_b",
+    "x_pct": 0.782,
+    "y_pct": 0.902,
+    "scale": 2.6,
+    "z_layer": "front"
   }
 ]
