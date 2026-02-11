@@ -343,7 +343,7 @@ const Index = () => {
     pendingLeadFormRef.current = data;
     setLeadForm(data);
     
-    // Show processing screen while we wait
+    // Show processing screen while we wait for result text
     setPhase('processing');
 
     try {
@@ -356,10 +356,28 @@ const Index = () => {
 
     setIsSubmitting(false);
     
-    // Show summary immediately - don't wait for resultText
-    // The SummaryScreen handles the fallback message while text loads
-    console.log("[Index] Showing summary screen immediately, resultText available:", !!resultTextRef.current);
-    setPhase('summary');
+    // Wait for resultText to arrive, then show summary
+    if (resultTextRef.current) {
+      console.log("[Index] Result text already available, showing summary");
+      setPhase('summary');
+    } else {
+      // Poll for result text - stay on ProcessingScreen until it arrives
+      console.log("[Index] Waiting for result text on ProcessingScreen...");
+      const startTime = Date.now();
+      const checkForResult = () => {
+        if (resultTextRef.current) {
+          console.log("[Index] Result text received, showing summary");
+          setPhase('summary');
+        } else if (Date.now() - startTime > 30000) {
+          // 30s timeout - show summary with fallback
+          console.log("[Index] Timeout waiting for result text, showing summary");
+          setPhase('summary');
+        } else {
+          setTimeout(checkForResult, 500);
+        }
+      };
+      setTimeout(checkForResult, 500);
+    }
   };
 
   // Wrapper for selectOption that includes telemetry
