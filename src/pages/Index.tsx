@@ -356,31 +356,10 @@ const Index = () => {
 
     setIsSubmitting(false);
     
-    // Wait for resultText to be available before showing summary
-    // Use ref to check current value in polling loop
-    if (resultTextRef.current) {
-      console.log("[Index] Result text available, showing summary:", resultTextRef.current.length, "chars");
-      setPhase('summary');
-    } else {
-      // If no result text yet, wait a bit and check again
-      console.log("[Index] No result text yet, waiting...");
-      
-      // Poll for result text for up to 15 seconds
-      const startTime = Date.now();
-      const checkForResult = () => {
-        if (resultTextRef.current) {
-          console.log("[Index] Result text received:", resultTextRef.current.length, "chars");
-          setPhase('summary');
-        } else if (Date.now() - startTime > 15000) {
-          // Timeout - show summary anyway
-          console.log("[Index] Timeout waiting for result text, showing summary");
-          setPhase('summary');
-        } else {
-          setTimeout(checkForResult, 500);
-        }
-      };
-      setTimeout(checkForResult, 500);
-    }
+    // Show summary immediately - don't wait for resultText
+    // The SummaryScreen handles the fallback message while text loads
+    console.log("[Index] Showing summary screen immediately, resultText available:", !!resultTextRef.current);
+    setPhase('summary');
   };
 
   // Wrapper for selectOption that includes telemetry
