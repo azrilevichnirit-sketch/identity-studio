@@ -1449,6 +1449,15 @@
     padding: 6px 8px;
     border-radius: 10px;
     gap: 0;
+    transition: opacity 180ms ease, transform 180ms ease;
+    will-change: opacity, transform;
+  }
+
+  /* Mobile: after placement, briefly hide panel to reveal the placed tool */
+  .mobile-layout .layout-tool-panel-inner.tool-panel-suppressed {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+    pointer-events: none;
   }
 
   /* Mobile: tool panel - just tools */

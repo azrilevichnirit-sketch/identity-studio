@@ -87,6 +87,8 @@ export function VisualPlayScreen({
   const [showDebugOverlay, setShowDebugOverlay] = useState(false);
   const [showGridOverlay, setShowGridOverlay] = useState(false);
   const [showZLayerOverlay, setShowZLayerOverlay] = useState(false);
+  // Mobile: temporarily hide tool panel after placement so the placed tool is visible
+  const [suppressToolPanel, setSuppressToolPanel] = useState(false);
   
   // Edge proximity for mobile pan indicators
   const [edgeProximity, setEdgeProximity] = useState<{ edge: 'left' | 'right' | null; intensity: number }>({ edge: null, intensity: 0 });
@@ -156,6 +158,9 @@ export function VisualPlayScreen({
   // (Otherwise, a previous mission's bg beat can leak into the next mission.)
   // EXCEPTION: Mission 7 transition - we preserve the target bg until fixation completes
   useEffect(() => {
+    // Reset mobile UI suppression on mission change
+    setSuppressToolPanel(false);
+
     // If coming from M7 with an active transition, don't clear immediately
     if (m7TransitionRef.current.active) {
       // Clear after a delay to allow the user to see the tool on its target background
@@ -653,6 +658,13 @@ export function VisualPlayScreen({
         : undefined,
     });
 
+    // Mobile: hide tool panel briefly so it doesn't cover the newly placed tool
+    if (isMobile) {
+      setSuppressToolPanel(true);
+      const hideId = window.setTimeout(() => setSuppressToolPanel(false), 1400);
+      timeoutsRef.current.push(hideId);
+    }
+
     // Mobile panoramic: pan background to reveal the placed tool's position
     if (isMobile && isPanoramic && snapped && panApiRef.current) {
       panApiRef.current.panToPosition(snapped.x);
@@ -966,6 +978,7 @@ export function VisualPlayScreen({
       zIndex={0}
       enabled={isMobile && isPanoramic}
       isPanoramic={isMobile && isPanoramic}
+      isMobileView={isMobile}
       initialTargetX={initialPanTargetX}
       panApiRef={panApiRef}
     />
@@ -1722,7 +1735,10 @@ export function VisualPlayScreen({
   );
 
   const toolPanelElement = (
-    <div className="layout-tool-panel-inner tool-panel-responsive relative" style={{ direction: 'ltr' }}>
+    <div
+      className={`layout-tool-panel-inner tool-panel-responsive relative${suppressToolPanel ? ' tool-panel-suppressed' : ''}`}
+      style={{ direction: 'ltr' }}
+    >
       {showToolSwapCue && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 2 }}>
           <div

@@ -22,6 +22,8 @@ type PannableBackgroundProps = {
   enabled: boolean;
   /** Whether this background is panoramic (controls size + position strategy) */
   isPanoramic: boolean;
+  /** Whether viewport is mobile (applies vertical framing even when not panoramic) */
+  isMobileView?: boolean;
   /** Auto-pan target on mount (0-100, percentage from left) */
   initialTargetX?: number;
 
@@ -42,6 +44,7 @@ export function PannableBackground({
   zIndex,
   enabled,
   isPanoramic,
+  isMobileView,
   initialTargetX,
   panApiRef,
 }: PannableBackgroundProps) {
@@ -65,7 +68,9 @@ export function PannableBackground({
 
   // Use 85% vertical on mobile to give a slight top-down angle (less ceiling, more floor)
   // so placed tools on the floor remain visible
-  const effectiveBgPosition = isPanoramic ? backgroundPosition : (enabled ? 'center 85%' : 'center');
+  const effectiveBgPosition = isPanoramic
+    ? backgroundPosition
+    : ((isMobileView ?? enabled) ? 'center 85%' : 'center');
   // IMPORTANT: Use an explicit panoramic width so panning is always visible
   // and matches our compensation math (see src/lib/pan.ts).
   const effectiveBgSize = isPanoramic ? PAN_BG_SIZE : 'cover';
