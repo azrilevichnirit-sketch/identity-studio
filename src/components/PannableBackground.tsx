@@ -63,7 +63,9 @@ export function PannableBackground({
     };
   }, [panApiRef, updatePanFromDrag, resetPan, panToPosition, offsetX]);
 
-  const effectiveBgPosition = isPanoramic ? backgroundPosition : 'center';
+  // Use 85% vertical on mobile to give a slight top-down angle (less ceiling, more floor)
+  // so placed tools on the floor remain visible
+  const effectiveBgPosition = isPanoramic ? backgroundPosition : (enabled ? 'center 85%' : 'center');
   // IMPORTANT: Use an explicit panoramic width so panning is always visible
   // and matches our compensation math (see src/lib/pan.ts).
   const effectiveBgSize = isPanoramic ? PAN_BG_SIZE : 'cover';
