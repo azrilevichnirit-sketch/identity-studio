@@ -50,7 +50,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
           <div 
             className="p-5 md:p-6 rounded-2xl w-full"
             style={{
-              maxWidth: 'min(500px, 92vw)',
+              maxWidth: 'min(700px, 92vw)',
               background: 'white',
               boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
             }}
