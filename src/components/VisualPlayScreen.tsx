@@ -497,60 +497,82 @@ export function VisualPlayScreen({
   }, []);
 
   // Uses anchor_ref from quest data to look up coordinates in anchor map
-  // IMPORTANT: Look up anchor in the CURRENT background (where placement happens),
-  // not in next_bg_override (which is the background AFTER placement)
-  const getTargetAnchor = useCallback((variant: 'a' | 'b') => {
-    const option = variant === 'a' ? optionA : optionB;
-    
-    // Prefer mission-specific tool anchors so drag target == final placement.
-    const isTie = mission.mission_id.includes('_tie_');
-    const missionNum = String(mission.mission_id).replace('studio_', '').replace('tie_', '').padStart(2, '0');
-    const preferredAnchorRef = (isTie ? `tie_${missionNum}_tool_${variant}` : `m${missionNum}_tool_${variant}`) as AnchorRef;
-    const fallbackAnchorRef = option.anchor_ref as AnchorRef;
-    
-    // SPECIAL CASE: Mission 07 - tool-specific destination rooms
-    // Tool A -> studio_in_storage_bg, Tool B -> gallery_main_stylized
-    if (mission.mission_id === 'studio_07') {
-      const targetBgKey = variant === 'a' ? 'studio_in_storage_bg' : 'gallery_main_stylized';
-      let anchorPos = getAnchorPosition(targetBgKey, preferredAnchorRef);
-      if (!anchorPos) {
-        anchorPos = getAnchorPosition(targetBgKey, fallbackAnchorRef);
-      }
-      if (anchorPos) {
-        return anchorPos;
-      }
-    }
-    
-    // CRITICAL: For missions with locked backgrounds (M02 = white/cracked walls, exterior, M03+ = workshop),
-    // we must look up coordinates in the LOCKED background, not current
-    const lookupBgKey = isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY 
-      : isCrackedWallsLocked ? 'studio_entry_inside_bg'
-      : isExteriorLocked ? 'studio_exterior_bg'
-      : isWorkshopLocked ? 'studio_in_workshop_bg' 
-      : currentBgKey;
-    
-    // Try locked/current background first
-    let anchorPos = getAnchorPosition(lookupBgKey, preferredAnchorRef);
-    if (!anchorPos) {
-      anchorPos = getAnchorPosition(lookupBgKey, fallbackAnchorRef);
-    }
-    
-    // If not found, try the next background (fallback)
-    if (!anchorPos) {
-      const nextBgKey = option.next_bg_override || lookupBgKey;
-      anchorPos = getAnchorPosition(nextBgKey, preferredAnchorRef);
-      if (!anchorPos) {
-        anchorPos = getAnchorPosition(nextBgKey, fallbackAnchorRef);
-      }
-    }
-    
-    if (anchorPos) {
-      return anchorPos;
-    }
+   // IMPORTANT: Look up anchor in the CURRENT background (where placement happens),
+   // not in next_bg_override (which is the background AFTER placement)
+   const getTargetAnchor = useCallback((variant: 'a' | 'b') => {
+     const option = variant === 'a' ? optionA : optionB;
+     
+     // Prefer mission-specific tool anchors so drag target == final placement.
+     const isTie = mission.mission_id.includes('_tie_');
+     const missionNum = String(mission.mission_id).replace('studio_', '').replace('tie_', '').padStart(2, '0');
+     const preferredAnchorRef = (isTie ? `tie_${missionNum}_tool_${variant}` : `m${missionNum}_tool_${variant}`) as AnchorRef;
+     const fallbackAnchorRef = option.anchor_ref as AnchorRef;
+     
+     // SPECIAL CASE: Mission 07 - tool-specific destination rooms
+     // Tool A -> studio_in_storage_bg, Tool B -> gallery_main_stylized
+     if (mission.mission_id === 'studio_07') {
+       const targetBgKey = variant === 'a' ? 'studio_in_storage_bg' : 'gallery_main_stylized';
+       let anchorPos = getAnchorPosition(targetBgKey, preferredAnchorRef);
+       if (!anchorPos) {
+         anchorPos = getAnchorPosition(targetBgKey, fallbackAnchorRef);
+       }
+       if (anchorPos) {
+         // Mission 7 on mobile panoramic: adjust x-coord to panoramic viewport space
+         if (isMobile && isPanoramic) {
+           // Panoramic bg is 144% wide. Anchor coords are in 0-100% space (viewport).
+           // Convert to viewport space: ((x - 22) / 144) * 100 = x on the displayed panorama
+           // But we actually need to INVERSE: take the 0-100% anchor and map it to the panoramic image
+           // The panoramic image shows 22% extra on left, then 100% viewport, then 22% extra on right
+           // So: viewport_x -> panorama_x = viewport_x/1.44 + 22
+           // Actually: if x=11.5% in viewport within the 100% center, we need to account for the offset
+           return {
+             ...anchorPos,
+             x: anchorPos.x / 1.44 + 22,
+           };
+         }
+         return anchorPos;
+       }
+     }
+     
+     // CRITICAL: For missions with locked backgrounds (M02 = white/cracked walls, exterior, M03+ = workshop),
+     // we must look up coordinates in the LOCKED background, not current
+     const lookupBgKey = isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY 
+       : isCrackedWallsLocked ? 'studio_entry_inside_bg'
+       : isExteriorLocked ? 'studio_exterior_bg'
+       : isWorkshopLocked ? 'studio_in_workshop_bg' 
+       : currentBgKey;
+     
+     // Try locked/current background first
+     let anchorPos = getAnchorPosition(lookupBgKey, preferredAnchorRef);
+     if (!anchorPos) {
+       anchorPos = getAnchorPosition(lookupBgKey, fallbackAnchorRef);
+     }
+     
+     // If not found, try the next background (fallback)
+     if (!anchorPos) {
+       const nextBgKey = option.next_bg_override || lookupBgKey;
+       anchorPos = getAnchorPosition(nextBgKey, preferredAnchorRef);
+       if (!anchorPos) {
+         anchorPos = getAnchorPosition(nextBgKey, fallbackAnchorRef);
+       }
+     }
+     
+     if (anchorPos) {
+       // If panoramic on mobile, apply coordinate transformation
+       // Anchor map uses 0-100% (viewport space), but panoramic is 144% wide
+       // We need to map viewport coords back to the wider image
+       if (isMobile && isPanoramic) {
+         return {
+           ...anchorPos,
+           x: anchorPos.x / 1.44 + 22,
+         };
+       }
+       return anchorPos;
+     }
 
-    // Default fallback
-    return { x: 50, y: 70, scale: 1, z_layer: 'mid' as const, flipX: false };
-  }, [optionA, optionB, currentBgKey, isWhiteWallsLocked, isCrackedWallsLocked, isExteriorLocked, isWorkshopLocked, PAINTED_WALLS_BG_KEY, mission.mission_id]);
+     // Default fallback
+     return { x: 50, y: 70, scale: 1, z_layer: 'mid' as const, flipX: false };
+   }, [optionA, optionB, currentBgKey, isWhiteWallsLocked, isCrackedWallsLocked, isExteriorLocked, isWorkshopLocked, PAINTED_WALLS_BG_KEY, mission.mission_id, isMobile, isPanoramic]);
 
   // Flash cue when mission changes (helps player notice the transition)
   const [showMissionFlash, setShowMissionFlash] = useState(false);
