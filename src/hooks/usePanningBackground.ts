@@ -199,7 +199,8 @@ export function usePanningBackground(
 
   // Calculate background position
   // Base is 50% (centered), offset shifts left/right
-  const backgroundPosition = `${50 + panState.offsetX}% 100%`;
+  // Use 85% vertical to give a slight top-down angle (less ceiling, more floor)
+  const backgroundPosition = `${50 + panState.offsetX}% 85%`;
 
   return {
     offsetX: panState.offsetX,
