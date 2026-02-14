@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useGameState } from '@/hooks/useGameState';
 import { useTelemetry } from '@/hooks/useTelemetry';
 import { useFullTournament } from '@/hooks/useFullTournament';
@@ -11,6 +11,7 @@ import { VisualPlayScreen } from '@/components/VisualPlayScreen';
 import { LeadForm } from '@/components/LeadForm';
 import { ProcessingScreen } from '@/components/ProcessingScreen';
 import { SummaryScreen } from '@/components/SummaryScreen';
+import { ScoreDisplay } from '@/components/ScoreDisplay';
 import { DebugPanel } from '@/components/DebugPanel';
 import { TieBreakDebugPanel } from '@/components/TieBreakDebugPanel';
 import { toast } from 'sonner';
@@ -90,43 +91,45 @@ const Index = () => {
     }
   }, [currentMission, tournament.currentMission, state.phase, trackMissionShown]);
 
-  // Handle phase transitions after main missions complete
+  // Handle phase transitions after main missions complete — show scores first
   useEffect(() => {
     if (state.phase === 'main' && isMainComplete) {
-      console.log('[Index] Main complete. Leaders:', leaders, 'Count:', leaders.length);
-      
-      // Check what tournament is needed
-      const tournamentNeeds = tournament.checkNeedsTournament(leaders);
-      console.log('[Index] Tournament needs:', tournamentNeeds);
-      
-      if (leaders.length >= 2) {
-        // Need Rank 1 tournament (2+ leaders)
-        console.log('[Index] Starting Rank 1 tournament with leaders:', leaders);
-        tournament.startTournament(leaders);
-        setPhase('tie1');
-      } else if (leaders.length === 1) {
-        // Rank 1 is clear, check Rank 2/3
-        const rank1 = leaders[0];
-        setRank1Code(rank1);
-        
-        if (tournamentNeeds.needsRank2 || tournamentNeeds.needsRank3) {
-          console.log('[Index] Starting Rank 2/3 tournament with rank1:', rank1);
-          tournament.startFromRank2(rank1);
-          setPhase(tournamentNeeds.needsRank2 ? 'tie2' : 'tie3');
-        } else {
-          // No tournament needed - auto-resolve and go to lead form
-          const autoResolved = tournament.getAutoResolvedRankings(rank1);
-          if (autoResolved) {
-            setRank2Code(autoResolved.rank2Code);
-            setRank3Code(autoResolved.rank3Code);
-          }
-          
-          sendAutoResolvedPayload(rank1, autoResolved?.rank2Code || null, autoResolved?.rank3Code || null);
-          setPhase('lead');
+      console.log('[Index] Main complete. Showing scores screen first.');
+      setPhase('scores');
+    }
+  }, [state.phase, isMainComplete, setPhase]);
+
+  // Handle scores phase → trigger tie-breaking logic
+  const handleScoresContinue = useCallback(() => {
+    console.log('[Index] Scores continue. Leaders:', leaders, 'Count:', leaders.length);
+
+    const tournamentNeeds = tournament.checkNeedsTournament(leaders);
+    console.log('[Index] Tournament needs:', tournamentNeeds);
+
+    if (leaders.length >= 2) {
+      console.log('[Index] Starting Rank 1 tournament with leaders:', leaders);
+      tournament.startTournament(leaders);
+      setPhase('tie1');
+    } else if (leaders.length === 1) {
+      const rank1 = leaders[0];
+      setRank1Code(rank1);
+
+      if (tournamentNeeds.needsRank2) {
+        console.log('[Index] Starting Rank 2 tournament with rank1:', rank1);
+        tournament.startFromRank2(rank1);
+        setPhase('tie2');
+      } else {
+        const autoResolved = tournament.getAutoResolvedRankings(rank1);
+        if (autoResolved) {
+          setRank2Code(autoResolved.rank2Code);
+          setRank3Code(autoResolved.rank3Code);
         }
+
+        sendAutoResolvedPayload(rank1, autoResolved?.rank2Code || null, autoResolved?.rank3Code || null);
+        setPhase('lead');
       }
     }
-  }, [state.phase, isMainComplete, leaders, tournament, setPhase, setRank1Code, setRank2Code, setRank3Code]);
+  }, [leaders, tournament, setPhase, setRank1Code, setRank2Code, setRank3Code]);
 
   // Handle 2-way tie for Rank 1 using legacy tie system (phase: 'tie')
   // This is for backward compatibility with existing 2-way tie missions
@@ -139,9 +142,9 @@ const Index = () => {
       // Check if Rank 2/3 needs tournament
       const tournamentNeeds = tournament.checkNeedsTournament([rank1]);
       
-      if (tournamentNeeds.needsRank2 || tournamentNeeds.needsRank3) {
+      if (tournamentNeeds.needsRank2) {
         tournament.startFromRank2(rank1);
-        setPhase(tournamentNeeds.needsRank2 ? 'tie2' : 'tie3');
+        setPhase('tie2');
       } else {
         // No tournament needed - auto-resolve and go to lead form
         const autoResolved = tournament.getAutoResolvedRankings(rank1);
@@ -184,12 +187,10 @@ const Index = () => {
     }
   }, [tournament.isComplete, tournament.state, state.phase, setRank1Code, setRank2Code, setRank3Code, setRank23TieTrace, setPhase]);
 
-  // Update phase when tournament moves between ranks
+  // Update phase when tournament moves between ranks (only rank1 → rank2, no rank3 missions)
   useEffect(() => {
     if (state.phase === 'tie1' && tournament.state.phase === 'rank2') {
       setPhase('tie2');
-    } else if ((state.phase === 'tie1' || state.phase === 'tie2') && tournament.state.phase === 'rank3') {
-      setPhase('tie3');
     }
   }, [state.phase, tournament.state.phase, setPhase]);
 
@@ -454,6 +455,11 @@ const Index = () => {
           />
         )}
 
+        {/* Score Display (internal testing) */}
+        {state.phase === 'scores' && (
+          <ScoreDisplay countsFinal={countsFinal} onContinue={handleScoresContinue} />
+        )}
+
         {/* Legacy 2-way tie phase (for backward compatibility) */}
         {state.phase === 'tie' && currentMission && (
           <VisualPlayScreen
@@ -476,8 +482,8 @@ const Index = () => {
           />
         )}
 
-        {/* Tournament Phases (Rank 1, 2, or 3) */}
-        {(state.phase === 'tie1' || state.phase === 'tie2' || state.phase === 'tie3') && tournamentMission && (
+        {/* Tournament Phases (Rank 1 or 2 only — Rank 3 never needs a mission) */}
+        {(state.phase === 'tie1' || state.phase === 'tie2') && tournamentMission && (
           <VisualPlayScreen
             mission={tournamentMission}
             currentIndex={tournamentMissionNumber - 1}
