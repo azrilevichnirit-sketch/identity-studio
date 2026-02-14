@@ -1,7 +1,7 @@
 import { useMemo, useState, useRef, useCallback, useEffect } from 'react';
 import type { Mission, HollandCode, AvatarGender, PickRecord, MissionOption, AnchorRef } from '@/types/identity';
 import { getToolImage, getBackgroundForMission, getAvatarImage, getBackgroundKey, getBackgroundByName, getPanoramicBackground, preloadBackground, preloadAllBackgrounds } from '@/lib/assetUtils';
-import { panOffsetToDropCompensation, panOffsetToTranslatePercent } from '@/lib/pan';
+import { panOffsetToDropCompensation, panOffsetToTranslatePercent, anchorXToPanoramicLeft } from '@/lib/pan';
 import { getAnchorPosition } from '@/lib/jsonDataLoader';
 import { SpeechBubble } from './SpeechBubble';
 import { Info } from 'lucide-react';
@@ -468,7 +468,9 @@ export function VisualPlayScreen({
 
     const anchorRef = optionA.anchor_ref as AnchorRef;
     const anchorPos = getAnchorPosition(lockedBgKey, anchorRef);
-    return anchorPos?.x ?? 50;
+    // Use panoramic-transformed coordinate so pan targets the correct viewport position
+    const rawX = anchorPos?.x ?? 50;
+    return anchorXToPanoramicLeft(rawX);
   }, [isMobile, isPanoramic, optionA.anchor_ref, lockedBgKey]);
 
   const panApiRef = useRef<PanningApi | null>(null);
@@ -516,22 +518,16 @@ export function VisualPlayScreen({
        if (!anchorPos) {
          anchorPos = getAnchorPosition(targetBgKey, fallbackAnchorRef);
        }
-       if (anchorPos) {
-         // Mission 7 on mobile panoramic: adjust x-coord to panoramic viewport space
-         if (isMobile && isPanoramic) {
-           // Panoramic bg is 144% wide. Anchor coords are in 0-100% space (viewport).
-           // Convert to viewport space: ((x - 22) / 144) * 100 = x on the displayed panorama
-           // But we actually need to INVERSE: take the 0-100% anchor and map it to the panoramic image
-           // The panoramic image shows 22% extra on left, then 100% viewport, then 22% extra on right
-           // So: viewport_x -> panorama_x = viewport_x/1.44 + 22
-           // Actually: if x=11.5% in viewport within the 100% center, we need to account for the offset
-           return {
-             ...anchorPos,
-             x: anchorPos.x / 1.44 + 22,
-           };
-         }
-         return anchorPos;
-       }
+        if (anchorPos) {
+          // Mission 7 on mobile panoramic: transform x-coord to panoramic viewport space
+          if (isMobile && isPanoramic) {
+            return {
+              ...anchorPos,
+              x: anchorXToPanoramicLeft(anchorPos.x),
+            };
+          }
+          return anchorPos;
+        }
      }
      
      // CRITICAL: For missions with locked backgrounds (M02 = white/cracked walls, exterior, M03+ = workshop),
@@ -557,18 +553,16 @@ export function VisualPlayScreen({
        }
      }
      
-     if (anchorPos) {
-       // If panoramic on mobile, apply coordinate transformation
-       // Anchor map uses 0-100% (viewport space), but panoramic is 144% wide
-       // We need to map viewport coords back to the wider image
-       if (isMobile && isPanoramic) {
-         return {
-           ...anchorPos,
-           x: anchorPos.x / 1.44 + 22,
-         };
-       }
-       return anchorPos;
-     }
+      if (anchorPos) {
+        // If panoramic on mobile, transform coordinates to panoramic viewport space
+        if (isMobile && isPanoramic) {
+          return {
+            ...anchorPos,
+            x: anchorXToPanoramicLeft(anchorPos.x),
+          };
+        }
+        return anchorPos;
+      }
 
      // Default fallback
      return { x: 50, y: 70, scale: 1, z_layer: 'mid' as const, flipX: false };
@@ -944,6 +938,7 @@ export function VisualPlayScreen({
           
           // Only show if anchor exists in current background
           if (placement) {
+            const finalX = (isMobile && isPanoramic) ? anchorXToPanoramicLeft(placement.x) : placement.x;
             placements.push({
               missionId: prop.missionId,
               key: prop.key,
@@ -951,7 +946,7 @@ export function VisualPlayScreen({
               hollandCode: prop.hollandCode,
               isPersisted: true,
               fixedPlacement: {
-                x: placement.x,
+                x: finalX,
                 y: placement.y,
                 scale: placement.scale,
                 flipX: placement.flipX,
@@ -1038,7 +1033,8 @@ export function VisualPlayScreen({
           }
           
           const zIndex = zIndexForAnchorLayer(extra.zLayer);
-          const leftPos = anchorPos.x + extra.offsetX;
+          const rawLeftPos = anchorPos.x + extra.offsetX;
+          const leftPos = (isMobile && isPanoramic) ? anchorXToPanoramicLeft(rawLeftPos) : rawLeftPos;
           const topPos = anchorPos.y + extra.offsetY;
           const scale = extra.scale * (anchorPos.scale || 1);
           
