@@ -1257,8 +1257,8 @@
   {
     "background_asset_key": "gallery_main_stylized_white_v1",
     "anchor_ref": "tie_15_extra_table",
-    "x_pct": 0.268,
-    "y_pct": 0.78,
+    "x_pct": 0.205,
+    "y_pct": 0.755,
     "scale": 1,
     "z_layer": "mid"
   },
