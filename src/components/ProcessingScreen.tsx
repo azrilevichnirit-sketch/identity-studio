@@ -21,14 +21,24 @@ export function ProcessingScreen({ estimatedTimeMs = 5000 }: ProcessingScreenPro
     const animate = () => {
       const elapsed = Date.now() - startTime;
       // Faster fill: use shorter estimated time
-      const rawProgress = Math.min(elapsed / estimatedTimeMs, 0.95);
+      // Phase 1: Quick fill to 85% in estimatedTimeMs
+      // Phase 2: Slow crawl from 85% to 98% over next 60 seconds
+      const phase1End = estimatedTimeMs;
+      const phase2Duration = 60000;
+      
+      let rawProgress: number;
+      if (elapsed <= phase1End) {
+        rawProgress = (elapsed / phase1End) * 0.85;
+      } else {
+        const phase2Elapsed = elapsed - phase1End;
+        rawProgress = 0.85 + Math.min(phase2Elapsed / phase2Duration, 1) * 0.13;
+      }
+      
       // Ease-out cubic but starting from 15%
       const easedProgress = 0.15 + (1 - Math.pow(1 - rawProgress, 3)) * 0.80;
       setProgress(easedProgress * 100);
       
-      if (rawProgress < 0.95) {
-        requestAnimationFrame(animate);
-      }
+      requestAnimationFrame(animate);
     };
     
     const animationId = requestAnimationFrame(animate);
