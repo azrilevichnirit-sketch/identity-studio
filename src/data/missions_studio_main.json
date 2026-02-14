@@ -49,7 +49,7 @@
         "key": "b",
         "holland_code": "c",
         "asset": "studio_02_b",
-        "tooltip_heb": "לוח ניהול פרויקטים",
+        "tooltip_heb": "לוח משימות צבעוני",
         "view": "in"
       }
     ]
@@ -169,7 +169,7 @@
         "key": "a",
         "holland_code": "c",
         "asset": "studio_07_a",
-        "tooltip_heb": "חדר ארכיון ואחסון",
+        "tooltip_heb": "ארון תיוק ומגירות אמן",
         "view": "in",
         "calibration_bg": "studio_in_storage_bg",
         "next_bg_override": "studio_in_storage_bg"
@@ -222,7 +222,7 @@
         "key": "a",
         "holland_code": "c",
         "asset": "studio_09_a",
-        "tooltip_heb": "רשימת נזקים וארגון מחדש",
+        "tooltip_heb": "לוח רישום וארגון מחדש",
         "view": "in"
       },
       {
@@ -254,7 +254,7 @@
         "key": "b",
         "holland_code": "e",
         "asset": "studio_10_b",
-        "tooltip_heb": "מסך מחשב עם אתר אי-קומרס",
+        "tooltip_heb": "פיתוח אתר אי-קומרס",
         "view": "in"
       }
     ]
@@ -278,7 +278,7 @@
         "key": "b",
         "holland_code": "c",
         "asset": "studio_11_b",
-        "tooltip_heb": "תכנית פריסה לסניפים חדשים",
+        "tooltip_heb": "פתיחת סניפים חדשים",
         "view": "out"
       }
     ]
