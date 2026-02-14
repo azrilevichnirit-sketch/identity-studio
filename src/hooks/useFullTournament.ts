@@ -88,7 +88,7 @@ function tryResolveByAdjacentSum(
     return { narrowedCandidates: candidates };
   }
 
-  // 3+ candidates: calculate adjacent sums to narrow down
+  // 3+ candidates: calculate adjacent sums, then always narrow to top 2
   const adjacentSums = candidates.map(code => {
     const [adj1, adj2] = ADJACENT_PAIRS[code];
     const sum = countsFinal[adj1] + countsFinal[adj2];
@@ -97,16 +97,15 @@ function tryResolveByAdjacentSum(
 
   console.log('[Tournament] Step 2.5 - Adjacent sums:', adjacentSums);
 
-  const maxSum = Math.max(...adjacentSums.map(x => x.sum));
-  const winners = adjacentSums.filter(x => x.sum === maxSum);
+  // Sort by sum descending, then default order (R>I>A>S>E>C) as tiebreaker
+  adjacentSums.sort((a, b) => {
+    if (b.sum !== a.sum) return b.sum - a.sum;
+    return DEFAULT_ORDER.indexOf(a.code) - DEFAULT_ORDER.indexOf(b.code);
+  });
 
-  if (winners.length === 1) {
-    console.log(`[Tournament] Step 2.5 resolved: ${winners[0].code} wins with adjacent sum ${maxSum}`);
-    return { winner: winners[0].code };
-  }
-
-  const narrowed = winners.map(w => w.code);
-  console.log(`[Tournament] Step 2.5 narrowed to: ${narrowed.join(',')} all with sum ${maxSum}`);
+  // Always return top 2 — never resolve to a single winner
+  const narrowed = [adjacentSums[0].code, adjacentSums[1].code];
+  console.log(`[Tournament] Step 2.5 narrowed to: ${narrowed.join(',')} (from ${candidates.length} candidates)`);
   return { narrowedCandidates: narrowed };
 }
 
