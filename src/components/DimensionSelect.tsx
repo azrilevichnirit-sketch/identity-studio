@@ -122,7 +122,7 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
                       />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom" className="max-w-[220px] text-center bg-slate-800 text-white border-slate-600">
+                  <TooltipContent side="bottom" className="max-w-[220px] text-center bg-blue-600 text-white border-blue-500">
                     <Disclaimer />
                   </TooltipContent>
                 </Tooltip>
