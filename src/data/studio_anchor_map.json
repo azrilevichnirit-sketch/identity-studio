@@ -1265,8 +1265,8 @@
   {
     "background_asset_key": "gallery_main_stylized_white_v1",
     "anchor_ref": "tie_15_tool_a",
-    "x_pct": 0.282,
-    "y_pct": 0.646,
+    "x_pct": 0.213,
+    "y_pct": 0.665,
     "scale": 1.4,
     "z_layer": "front"
   },
