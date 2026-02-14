@@ -4,7 +4,7 @@ export type AvatarGender = 'female' | 'male' | null;
 
 export type Dimension = 'studio' | 'farm' | 'surprise' | null;
 
-export type Phase = 'dimension' | 'avatar' | 'intro' | 'main' | 'tie' | 'tie1' | 'tie2' | 'tie3' | 'lead' | 'processing' | 'summary' | 'coming-soon';
+export type Phase = 'dimension' | 'avatar' | 'intro' | 'main' | 'scores' | 'tie' | 'tie1' | 'tie2' | 'tie3' | 'lead' | 'processing' | 'summary' | 'coming-soon';
 
 // Placement modes for tool rendering
 export type PlacementMode = 
