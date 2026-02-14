@@ -11,7 +11,7 @@ import { VisualPlayScreen } from '@/components/VisualPlayScreen';
 import { LeadForm } from '@/components/LeadForm';
 import { ProcessingScreen } from '@/components/ProcessingScreen';
 import { SummaryScreen } from '@/components/SummaryScreen';
-import { ScoreDisplay } from '@/components/ScoreDisplay';
+
 import { DebugPanel } from '@/components/DebugPanel';
 import { TieBreakDebugPanel } from '@/components/TieBreakDebugPanel';
 import { toast } from 'sonner';
@@ -94,8 +94,8 @@ const Index = () => {
   // Handle phase transitions after main missions complete — show scores first
   useEffect(() => {
     if (state.phase === 'main' && isMainComplete) {
-      console.log('[Index] Main complete. Showing scores screen first.');
-      setPhase('scores');
+      console.log('[Index] Main complete. Proceeding to tie-breaking logic.');
+      handleScoresContinue();
     }
   }, [state.phase, isMainComplete, setPhase]);
 
@@ -455,10 +455,6 @@ const Index = () => {
           />
         )}
 
-        {/* Score Display (internal testing) */}
-        {state.phase === 'scores' && (
-          <ScoreDisplay countsFinal={countsFinal} onContinue={handleScoresContinue} />
-        )}
 
         {/* Legacy 2-way tie phase (for backward compatibility) */}
         {state.phase === 'tie' && currentMission && (
