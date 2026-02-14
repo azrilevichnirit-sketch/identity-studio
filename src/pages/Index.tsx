@@ -382,9 +382,6 @@ const Index = () => {
           } else if (resultTextRef.current) {
             // Result ready but min time not met
             setTimeout(checkForResult, 500);
-          } else if (totalElapsed > 30000) {
-            console.log("[Index] Timeout waiting for result text, showing summary");
-            setPhase('summary');
           } else {
             setTimeout(checkForResult, 500);
           }
