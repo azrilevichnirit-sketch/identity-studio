@@ -346,6 +346,8 @@ const Index = () => {
     
     // Show processing screen while we wait for result text
     setPhase('processing');
+    const processingStartTime = Date.now();
+    const MIN_PROCESSING_MS = 4000; // Show processing screen for at least 4 seconds
 
     try {
       console.log("[Index] About to call sendCompletionPayload...");
@@ -357,28 +359,41 @@ const Index = () => {
 
     setIsSubmitting(false);
     
-    // Wait for resultText to arrive, then show summary
-    if (resultTextRef.current) {
-      console.log("[Index] Result text already available, showing summary");
-      setPhase('summary');
-    } else {
-      // Poll for result text - stay on ProcessingScreen until it arrives
-      console.log("[Index] Waiting for result text on ProcessingScreen...");
-      const startTime = Date.now();
-      const checkForResult = () => {
-        if (resultTextRef.current) {
-          console.log("[Index] Result text received, showing summary");
-          setPhase('summary');
-        } else if (Date.now() - startTime > 30000) {
-          // 30s timeout - show summary with fallback
-          console.log("[Index] Timeout waiting for result text, showing summary");
-          setPhase('summary');
-        } else {
-          setTimeout(checkForResult, 500);
-        }
-      };
-      setTimeout(checkForResult, 500);
-    }
+    // Wait for BOTH: minimum display time AND resultText to arrive
+    const transitionToSummary = () => {
+      const elapsed = Date.now() - processingStartTime;
+      const remaining = Math.max(0, MIN_PROCESSING_MS - elapsed);
+      
+      if (remaining > 0 && resultTextRef.current) {
+        // Result ready but minimum time not met — wait
+        console.log(`[Index] Result ready, waiting ${remaining}ms for min display time`);
+        setTimeout(() => setPhase('summary'), remaining);
+      } else if (resultTextRef.current) {
+        console.log("[Index] Result text available, showing summary");
+        setPhase('summary');
+      } else {
+        // Poll for result text
+        console.log("[Index] Waiting for result text on ProcessingScreen...");
+        const checkForResult = () => {
+          const totalElapsed = Date.now() - processingStartTime;
+          if (resultTextRef.current && totalElapsed >= MIN_PROCESSING_MS) {
+            console.log("[Index] Result text received, showing summary");
+            setPhase('summary');
+          } else if (resultTextRef.current) {
+            // Result ready but min time not met
+            setTimeout(checkForResult, 500);
+          } else if (totalElapsed > 30000) {
+            console.log("[Index] Timeout waiting for result text, showing summary");
+            setPhase('summary');
+          } else {
+            setTimeout(checkForResult, 500);
+          }
+        };
+        setTimeout(checkForResult, 500);
+      }
+    };
+    
+    transitionToSummary();
   };
 
   // Wrapper for selectOption that includes telemetry
