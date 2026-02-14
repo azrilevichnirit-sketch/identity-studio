@@ -1233,8 +1233,8 @@
   {
     "background_asset_key": "studio_doorway_park_view_bg",
     "anchor_ref": "tie_14_extra_table",
-    "x_pct": 0.183,
-    "y_pct": 0.894,
+    "x_pct": 0.167,
+    "y_pct": 0.865,
     "scale": 1,
     "z_layer": "mid"
   },
