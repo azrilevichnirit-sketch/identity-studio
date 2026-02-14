@@ -121,6 +121,7 @@ function getDeviceType(): "mobile" | "tablet" | "desktop" {
 }
 
 const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/l8gqka3bd96cskfglmeaulfm5motsrnu";
+const MAKE_COMPLETION_WEBHOOK_URL = "https://hook.eu1.make.com/gar4d5mve52lhn3mkpm8rmq8siy2tro5";
 const MAX_RETRIES = 3;
 const BASE_DELAY_MS = 1000;
 
@@ -367,7 +368,7 @@ export function useTelemetry() {
       console.log("[Telemetry] Sending completion payload:", JSON.stringify(payload, null, 2));
 
       try {
-        const response = await fetchWithRetry(MAKE_WEBHOOK_URL, {
+        const response = await fetchWithRetry(MAKE_COMPLETION_WEBHOOK_URL, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
