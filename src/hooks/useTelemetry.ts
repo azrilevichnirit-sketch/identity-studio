@@ -94,7 +94,12 @@ export interface CompletionPayload {
   runId: string;
   stage: "completion";
   gameEndedAt: number;
-  leadForm: { fullName: string; email: string; phone: string };
+  // Included in multiple formats for maximum compatibility with Make.com
+  leadForm?: any;
+  lead_form?: any;
+  fullName?: string;
+  email?: string;
+  phone?: string;
   events: TelemetryEvent[];
 }
 
@@ -331,11 +336,23 @@ export function useTelemetry() {
       logEvent("LEAD_SUBMITTED");
       logEvent("RUN_ENDED");
 
-      // Simple payload with only lead form data
-      const payload = {
+      // Redundant payload structure to ensure Make.com catches the fields regardless of mapping
+      const payload: CompletionPayload = {
         runId: runIdRef.current,
         stage: "completion",
         gameEndedAt,
+        // Root level fields (compatibility)
+        fullName: leadForm.fullName,
+        email: leadForm.email,
+        phone: leadForm.phone,
+        // camelCase structure
+        leadForm: {
+          fullName: leadForm.fullName,
+          email: leadForm.email,
+          phone: leadForm.phone,
+          wantsUpdates: leadForm.wantsUpdates
+        },
+        // snake_case structure
         lead_form: {
           full_name: leadForm.fullName,
           first_name: leadForm.fullName.trim().split(/\s+/)[0] || "",
