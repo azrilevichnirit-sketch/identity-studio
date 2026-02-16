@@ -87,18 +87,14 @@ export function useGameState() {
         missionId, 
         key, 
         hollandCode,
-        // Include asset name for rendering
         assetName: option?.asset,
-        // Include next_bg_override for background transitions
         nextBgOverride: option?.next_bg_override,
-        // Include placement info from option if provided
         placementMode: option?.placement_mode,
         anchorRef: option?.anchor_ref,
         offsetX: option?.offset_x,
         offsetY: option?.offset_y,
         scale: option?.scale,
         persist: option?.persist,
-        // Include fixed placement for persisted tools
         fixedPlacement: option?.fixedPlacement,
       };
       const newFirst = { ...prev.firstPicksByMissionId };
@@ -109,6 +105,15 @@ export function useGameState() {
         newFirst[missionId] = pick;
       }
       newFinal[missionId] = pick;
+
+      // Update newTrait on the most recent undo event for this mission
+      const newUndoEvents = [...prev.undoEvents];
+      for (let i = newUndoEvents.length - 1; i >= 0; i--) {
+        if (newUndoEvents[i].missionId === missionId && newUndoEvents[i].newTrait === newUndoEvents[i].prevTrait) {
+          newUndoEvents[i] = { ...newUndoEvents[i], newTrait: hollandCode };
+          break;
+        }
+      }
 
       // Advance index if in main phase
       let newIndex = prev.mainIndex;
@@ -128,6 +133,7 @@ export function useGameState() {
         firstPicksByMissionId: newFirst,
         finalPicksByMissionId: newFinal,
         tieChoiceMade: newTieChoiceMade,
+        undoEvents: newUndoEvents,
       };
     });
   }, [mainMissions.length]);
@@ -140,15 +146,28 @@ export function useGameState() {
       // If in tie phase but haven't chosen, go back to mission 12
       if (prev.phase === 'tie' && !prev.tieChoiceMade) {
         const newFinal = { ...prev.finalPicksByMissionId };
-        if (prev.tieMissionUsed) {
-          delete newFinal[prev.tieMissionUsed.mission_id];
+        const tieMissionId = prev.tieMissionUsed?.mission_id;
+        const tiePick = tieMissionId ? prev.finalPicksByMissionId[tieMissionId] : null;
+        if (tieMissionId) {
+          delete newFinal[tieMissionId];
         }
+
+        // Log undo event for tie phase
+        const undoEvent: UndoEvent = {
+          missionId: tieMissionId || 'unknown',
+          prevTrait: tiePick?.hollandCode || 'r',
+          newTrait: tiePick?.hollandCode || 'r',
+          timestamp: Date.now(),
+          phase: 'tiebreaker',
+        };
+
         return {
           ...prev,
           phase: 'main',
           mainIndex: mainMissions.length - 1,
           tieMissionUsed: null,
           finalPicksByMissionId: newFinal,
+          undoEvents: [...prev.undoEvents, undoEvent],
         };
       }
 
@@ -160,12 +179,13 @@ export function useGameState() {
         
         if (!currentPick) return prev;
 
-        // Log the undo event (even if same trait)
+        // Log the undo event
         const undoEvent: UndoEvent = {
           missionId: targetMission.mission_id,
           prevTrait: currentPick.hollandCode,
-          newTrait: currentPick.hollandCode, // Will be updated when user makes new selection
+          newTrait: currentPick.hollandCode, // Will be updated in selectOption when user re-picks
           timestamp: Date.now(),
+          phase: 'main',
         };
 
         const newFinal = { ...prev.finalPicksByMissionId };

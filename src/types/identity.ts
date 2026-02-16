@@ -111,6 +111,7 @@ export interface UndoEvent {
   prevTrait: HollandCode;
   newTrait: HollandCode;
   timestamp: number;
+  phase: 'main' | 'tiebreaker';
 }
 
 export interface PickRecord {

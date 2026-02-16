@@ -69,6 +69,7 @@ const Index = () => {
     trackUndo,
     sendGameplayPayload,
     sendCompletionPayload,
+    sendBehavioralPayload,
   } = useTelemetry();
 
   // Track run start on mount
@@ -244,6 +245,11 @@ const Index = () => {
       console.log("[Index] Gameplay result text received:", result.resultText.substring(0, 100) + "...");
       setResultText(result.resultText);
     }
+
+    // Send behavioral payload (fire and forget)
+    const identityCode = [rank1, rank2, rank3].filter(Boolean).map(c => c!.toUpperCase()).join('');
+    const tieBreakersPlayed = state.tieMissionUsed ? 1 : 0;
+    sendBehavioralPayload(state.undoEvents, identityCode, tieBreakersPlayed);
   };
 
   // Helper function to send payload after tournament
@@ -313,6 +319,11 @@ const Index = () => {
       console.log("[Index] Tournament gameplay result text received:", result.resultText.substring(0, 100) + "...");
       setResultText(result.resultText);
     }
+
+    // Send behavioral payload (fire and forget)
+    const identityCode = [rank1, rank2, rank3].filter(Boolean).map(c => c!.toUpperCase()).join('');
+    const tieBreakerCount = tieTrace.length > 0 ? tieTrace.length : (state.tieMissionUsed ? 1 : 0);
+    sendBehavioralPayload(state.undoEvents, identityCode, tieBreakerCount);
   };
 
   const handleDimensionSelect = (dimension: Dimension) => {
