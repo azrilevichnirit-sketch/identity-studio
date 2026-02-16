@@ -70,7 +70,7 @@ export interface GameplayPayload {
   missionAnsweredAtById: Record<string, number>;
   firstPicksByMissionId: Record<string, PickRecord>;
   finalPicksByMissionId: Record<string, PickRecord>;
-  undoEvents: Array<{ missionId: string; prevTrait: HollandCode; newTrait: HollandCode; timestampMs: number }>;
+  undoEvents: Array<{ missionId: string; prevTrait: HollandCode; newTrait: HollandCode; timestampMs: number; phase: string }>;
   tie: TieState;
   tie_state: TieState; // Duplicate with snake_case for Make compatibility
   countsFirst: CountsFinal;
@@ -122,6 +122,7 @@ function getDeviceType(): "mobile" | "tablet" | "desktop" {
 
 const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/l8gqka3bd96cskfglmeaulfm5motsrnu";
 const MAKE_COMPLETION_WEBHOOK_URL = "https://hook.eu1.make.com/gar4d5mve52lhn3mkpm8rmq8siy2tro5";
+const MAKE_BEHAVIORAL_WEBHOOK_URL = "https://hook.eu1.make.com/pihalccdvzzknt0igejgtju26kbptrtj";
 const MAX_RETRIES = 3;
 const BASE_DELAY_MS = 1000;
 
@@ -279,6 +280,7 @@ export function useTelemetry() {
           prevTrait: e.prevTrait,
           newTrait: e.newTrait,
           timestampMs: e.timestamp,
+          phase: e.phase || 'main',
         })),
         tie: tieState,
         tie_state: tieState, // Snake_case duplicate for Make
@@ -394,6 +396,51 @@ export function useTelemetry() {
     [logEvent],
   );
 
+  // Send behavioral telemetry payload (separate webhook, sent when transitioning to lead form)
+  const sendBehavioralPayload = useCallback(
+    async (
+      undoEvents: UndoEvent[],
+      identityCode: string,
+      tieBreakersPlayed: number,
+    ): Promise<{ success: boolean }> => {
+      const payload = {
+        runId: runIdRef.current,
+        type: "behavioral",
+        timestamp: new Date().toISOString(),
+        missionShownAtById: { ...missionShownAtByIdRef.current },
+        missionAnsweredAtById: { ...missionAnsweredAtByIdRef.current },
+        undoEvents: undoEvents.map((e) => ({
+          missionId: e.missionId,
+          prevTrait: e.prevTrait,
+          newTrait: e.newTrait,
+          timestampMs: e.timestamp,
+          phase: e.phase || 'main',
+        })),
+        totalMissions: 12,
+        totalUndos: undoEvents.length,
+        identityCode,
+        tieBreakersPlayed,
+      };
+
+      console.log("[Telemetry] Sending behavioral payload:", JSON.stringify(payload, null, 2));
+
+      try {
+        const response = await fetchWithRetry(MAKE_BEHAVIORAL_WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        console.log("[Telemetry] Behavioral payload sent, status:", response.status);
+        return { success: response.ok };
+      } catch (error) {
+        console.error("[Telemetry] Failed to send behavioral payload:", error);
+        return { success: false };
+      }
+    },
+    [],
+  );
+
   return {
     trackRunStarted,
     trackAvatarSelected,
@@ -402,5 +449,6 @@ export function useTelemetry() {
     trackUndo,
     sendGameplayPayload,
     sendCompletionPayload,
+    sendBehavioralPayload,
   };
 }
