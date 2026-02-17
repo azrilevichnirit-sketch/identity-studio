@@ -17,12 +17,12 @@ export function ProcessingScreen({ estimatedTimeMs = 5000 }: ProcessingScreenPro
 
   useEffect(() => {
     const startTime = Date.now();
+    let rafId: number;
+    let cancelled = false;
     
     const animate = () => {
+      if (cancelled) return;
       const elapsed = Date.now() - startTime;
-      // Faster fill: use shorter estimated time
-      // Phase 1: Quick fill to 85% in estimatedTimeMs
-      // Phase 2: Slow crawl from 85% to 98% over next 60 seconds
       const phase1End = estimatedTimeMs;
       const phase2Duration = 60000;
       
@@ -34,15 +34,17 @@ export function ProcessingScreen({ estimatedTimeMs = 5000 }: ProcessingScreenPro
         rawProgress = 0.85 + Math.min(phase2Elapsed / phase2Duration, 1) * 0.13;
       }
       
-      // Ease-out cubic but starting from 15%
       const easedProgress = 0.15 + (1 - Math.pow(1 - rawProgress, 3)) * 0.80;
       setProgress(easedProgress * 100);
       
-      requestAnimationFrame(animate);
+      rafId = requestAnimationFrame(animate);
     };
     
-    const animationId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationId);
+    rafId = requestAnimationFrame(animate);
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(rafId);
+    };
   }, [estimatedTimeMs]);
 
   return (
