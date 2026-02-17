@@ -1554,12 +1554,13 @@
     height: 20px;
   }
 
-  /* Mission undo button */
+  /* Mission undo button - positioned below the speech bubble on mobile */
   .missionScreen .mission-undo-btn {
-    position: absolute;
+    position: fixed;
     z-index: 90;
-    top: max(env(safe-area-inset-top, 10px), 12px);
-    right: max(env(safe-area-inset-right, 10px), 12px);
+    /* Below the bubble: bubble top ~12px + safe-area + bubble height (~120-140px) */
+    top: calc(env(safe-area-inset-top, 0px) + 140px);
+    right: 12px;
   }
 }
 
