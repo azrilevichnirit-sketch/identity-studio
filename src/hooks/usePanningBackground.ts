@@ -67,18 +67,22 @@ export function usePanningBackground(
   const calculateTargetOffset = useCallback((normalizedX: number): number => {
     if (!enabled) return 0;
     
-    // Left edge zone (0 to edgeZone) -> show left side of panorama (positive offset)
+    const maxOffset = panRange * 100;
+    
+    // Left edge zone (0 to edgeZone) -> show left side of panorama (negative offset)
+    // Negative offset → bg-position < 50% → reveals left part of image
     if (normalizedX < edgeZone) {
       const t = 1 - (normalizedX / edgeZone); // 1 at edge, 0 at zone boundary
       const intensity = t * t;
-      return panRange * 100 * intensity; // Positive = show left side
+      return Math.max(-maxOffset, -maxOffset * intensity);
     }
     
-    // Right edge zone (1-edgeZone to 1) -> show right side of panorama (negative offset)
+    // Right edge zone (1-edgeZone to 1) -> show right side of panorama (positive offset)
+    // Positive offset → bg-position > 50% → reveals right part of image
     if (normalizedX > 1 - edgeZone) {
       const t = (normalizedX - (1 - edgeZone)) / edgeZone; // 0 at zone boundary, 1 at edge
       const intensity = t * t;
-      return -panRange * 100 * intensity; // Negative = show right side
+      return Math.min(maxOffset, maxOffset * intensity);
     }
     
     // Center zone -> gradually return to center
@@ -89,16 +93,20 @@ export function usePanningBackground(
   const calculateOffsetForPosition = useCallback((targetXPercent: number): number => {
     if (!enabled) return 0;
     
+    const maxOffset = panRange * 100;
+    
     // If target is on the left side (< 35%), pan to show left
+    // Negative offset → bg-position < 50% → reveals left part of image
     if (targetXPercent < 35) {
       const intensity = (35 - targetXPercent) / 35; // 1 at 0%, 0 at 35%
-      return panRange * 100 * intensity;
+      return Math.max(-maxOffset, -maxOffset * intensity);
     }
     
     // If target is on the right side (> 65%), pan to show right
+    // Positive offset → bg-position > 50% → reveals right part of image
     if (targetXPercent > 65) {
       const intensity = (targetXPercent - 65) / 35; // 0 at 65%, 1 at 100%
-      return -panRange * 100 * intensity;
+      return Math.min(maxOffset, maxOffset * intensity);
     }
     
     // Center area - no pan needed
