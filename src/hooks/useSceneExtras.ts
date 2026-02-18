@@ -13,9 +13,11 @@ import extra03 from '@/assets/extras/studio_extra_asset_03.webp';
 import workDesk01 from '@/assets/extras/studio_work_desk_01.webp';
 import cncMachine01 from '@/assets/extras/studio_cnc_machine_01.webp';
 import coffeeTable01 from '@/assets/extras/studio_coffee_table_01.webp';
+import receptionDesk01 from '@/assets/extras/studio_reception_desk_01.webp';
 
 // Map asset keys to actual images
 const extraAssetMap: Record<string, string> = {
+  studio_reception_desk_01: receptionDesk01,
   studio_floor_artworks_01: floorArtworks01,
   studio_floor_artworks_02: floorArtworks02,
   studio_floor_artworks_03: floorArtworks03,
