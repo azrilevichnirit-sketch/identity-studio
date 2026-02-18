@@ -729,6 +729,38 @@
     "z_layer": "mid"
   },
   {
+    "background_asset_key": "studio_in_storage_bg",
+    "anchor_ref": "m09_extra_desk",
+    "x_pct": 0.839,
+    "y_pct": 1,
+    "scale": 1.5,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m09_extra_desk",
+    "x_pct": 0.839,
+    "y_pct": 1,
+    "scale": 1.5,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_front_bg",
+    "anchor_ref": "m09_extra_desk",
+    "x_pct": 0.839,
+    "y_pct": 1,
+    "scale": 1.5,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "gallery_main_stylized",
+    "anchor_ref": "m09_extra_desk",
+    "x_pct": 0.839,
+    "y_pct": 1,
+    "scale": 1.5,
+    "z_layer": "mid"
+  },
+  {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m06_npc_male",
     "x_pct": 0.179,
