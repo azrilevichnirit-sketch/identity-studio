@@ -296,14 +296,14 @@
         "key": "a",
         "holland_code": "i",
         "asset": "studio_12_a",
-        "tooltip_heb": "הדמיה תלת-ממדית",
+        "tooltip_heb": "תוכנית אדריכלות",
         "view": "in"
       },
       {
         "key": "b",
         "holland_code": "a",
         "asset": "studio_12_b",
-        "tooltip_heb": "יצירת מופת במרכז החלל",
+        "tooltip_heb": "במה להופעות",
         "view": "in"
       }
     ]
