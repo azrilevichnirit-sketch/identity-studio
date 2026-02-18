@@ -502,8 +502,8 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m04_desk",
-    "x_pct": 0.216,
-    "y_pct": 0.794,
+    "x_pct": 0.209,
+    "y_pct": 0.793,
     "scale": 1,
     "z_layer": "mid"
   },
