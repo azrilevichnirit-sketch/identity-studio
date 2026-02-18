@@ -274,8 +274,10 @@ export function useGameState() {
   }, [tieMissions]);
 
   const canUndo = useMemo(() => {
-    if (state.tieChoiceMade) return false;
-    if (state.phase === 'tie') return true; // Can go back to mission 12
+    // Can't undo at lead form or later
+    if (state.phase === 'lead' || state.phase === 'processing' || state.phase === 'summary') return false;
+    if (state.phase === 'tie' && !state.tieChoiceMade) return true; // Can go back to mission 12
+    if (state.phase === 'tie1' || state.phase === 'tie2') return true; // Can go back from tournament
     if (state.phase === 'main' && state.mainIndex > 0) return true;
     return false;
   }, [state.phase, state.mainIndex, state.tieChoiceMade]);
