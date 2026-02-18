@@ -270,7 +270,7 @@
     "view": "in",
     "bg_override": "studio_doorway_park_view_bg",
     "zone_id": null,
-    "task_heb": "שמנו לב שחלק מהעבודות שלנו לא שורדות לאורך זמן - צבעים דוהים, חומרים מתפוררים. מה עושים?",
+    "task_heb": "בשעות הערב יש לנו עומס בכניסה לסטודיו. מה נוסיף שם?",
     "option_a_code": "s",
     "option_a_asset": "studio_09_a",
     "option_a_tooltip_heb": "אזור ישיבה ומנוחה",
