@@ -9,7 +9,7 @@
     "spawn_asset_key": "studio_coffee_table_01",
     "spawn_count": 1,
     "placement_mode": "floor",
-    "anchor_ref": "m04_extra_table",
+    "anchor_ref": "m04_desk",
     "despawn_mode": "keep",
     "despawn_value": ""
   },
