@@ -42,15 +42,16 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
     return { a: getInitialPos('a'), b: getInitialPos('b') };
   });
 
-  // Extra positions state
+  // Extra positions state - use anchor map for initial position
   const [extraPositions, setExtraPositions] = useState<Record<string, ToolPosition>>(() => {
     const initial: Record<string, ToolPosition> = {};
     for (const extra of sceneExtras) {
+      const anchorPos = getAnchorPosition(currentBgKey, extra.anchorRef);
       initial[extra.id] = {
-        x: 50 + extra.offsetX,
-        y: 75 + extra.offsetY,
-        scale: extra.scale,
-        flipX: false,
+        x: anchorPos?.x ?? (50 + extra.offsetX),
+        y: anchorPos?.y ?? (75 + extra.offsetY),
+        scale: anchorPos?.scale ?? extra.scale,
+        flipX: anchorPos?.flipX ?? false,
       };
     }
     return initial;
@@ -83,15 +84,20 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
   useEffect(() => {
     const initial: Record<string, ToolPosition> = {};
     for (const extra of sceneExtras) {
-      initial[extra.id] = extraPositions[extra.id] ?? {
-        x: 50 + extra.offsetX,
-        y: 75 + extra.offsetY,
-        scale: extra.scale,
-        flipX: false,
-      };
+      if (extraPositions[extra.id]) {
+        initial[extra.id] = extraPositions[extra.id];
+      } else {
+        const anchorPos = getAnchorPosition(currentBgKey, extra.anchorRef);
+        initial[extra.id] = {
+          x: anchorPos?.x ?? (50 + extra.offsetX),
+          y: anchorPos?.y ?? (75 + extra.offsetY),
+          scale: anchorPos?.scale ?? extra.scale,
+          flipX: anchorPos?.flipX ?? false,
+        };
+      }
     }
     setExtraPositions(initial);
-  }, [sceneExtras]);
+  }, [sceneExtras, currentBgKey]);
 
   const optionA = mission.options.find(o => o.key === 'a');
   const optionB = mission.options.find(o => o.key === 'b');
