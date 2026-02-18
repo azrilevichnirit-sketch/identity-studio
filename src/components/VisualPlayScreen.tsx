@@ -182,7 +182,7 @@ export function VisualPlayScreen({
   // - Mission 02: Uses result from Mission 01 (white or main studio)
   // - Mission 03+: Workshop (studio_in_workshop_v3)
   // - Mission 05: Exterior
-  // - Mission 09, 12: Main studio (gallery_main_stylized)
+  // - Mission 09: Doorway park view (like M06)
   // TIE-BREAKER BACKGROUND: Always use the LAST main game background (gallery_main_stylized)
   // This is the background from Mission 12 - the final stylized gallery scene
   const TIE_BREAKER_BG_KEY = 'gallery_main_stylized';
@@ -227,13 +227,13 @@ export function VisualPlayScreen({
       return 'studio_in_workshop_bg';
     }
     
-    // Mission 06: Doorway park view
-    if (mission.phase === 'main' && mission.mission_id === 'studio_06') {
+    // Mission 06 & 09: Doorway park view
+    if (mission.phase === 'main' && (mission.mission_id === 'studio_06' || mission.mission_id === 'studio_09')) {
       return 'studio_doorway_park_view_bg';
     }
     
-    // Mission 09 & 12: Use main studio (gallery_main_stylized)
-    if (mission.phase === 'main' && (mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12')) {
+    // Mission 12: Use main studio (gallery_main_stylized)
+    if (mission.phase === 'main' && mission.mission_id === 'studio_12') {
       return 'gallery_main_stylized';
     }
     
@@ -1379,7 +1379,7 @@ export function VisualPlayScreen({
 
     // Mission 09 Tool A: single placement using anchor map coordinates
     if (prop.missionId === 'studio_09' && prop.key === 'a') {
-      const anchorPos = getAnchorPosition('gallery_main_stylized', 'm09_tool_a');
+      const anchorPos = getAnchorPosition('studio_doorway_park_view_bg', 'm09_tool_a');
       if (anchorPos) {
         return [{ 
           anchor: 'm09_tool_a' as AnchorRef, 
@@ -1395,7 +1395,7 @@ export function VisualPlayScreen({
 
     // Mission 09 Tool B: single placement using anchor map coordinates
     if (prop.missionId === 'studio_09' && prop.key === 'b') {
-      const anchorPos = getAnchorPosition('gallery_main_stylized', 'm09_tool_b');
+      const anchorPos = getAnchorPosition('studio_doorway_park_view_bg', 'm09_tool_b');
       if (anchorPos) {
         return [{ 
           anchor: 'm09_tool_b' as AnchorRef, 
@@ -1963,8 +1963,7 @@ export function VisualPlayScreen({
         isPanoramic={isPanoramic}
       />
       
-      {/* Water leak effect for Mission 9 */}
-      {mission.mission_id === 'studio_09' && <WaterLeakEffect />}
+      {/* Water leak effect removed - no longer needed for Mission 9 */}
       
       {/* Tool Calibration Editor */}
       {toolEditMode && mission.mission_id === 'studio_07' && (
