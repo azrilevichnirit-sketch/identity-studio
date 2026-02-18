@@ -398,15 +398,17 @@ export function VisualPlayScreen({
 
   const scopedLocalBgOverride = localBgOverride?.missionId === mission.mission_id ? localBgOverride : null;
 
-  // Priority: M7 calibration > local beat > drag preview > current
-  const displayBg = m7CalibrationBg?.image || scopedLocalBgOverride?.image || dragPreviewBg?.image || currentBg;
-  const displayBgKey = m7CalibrationBg?.key || scopedLocalBgOverride?.key || dragPreviewBg?.key || currentBgKey;
-
   // In calibration mode, bypass the normal background locking
   // M07 and M11 have specialized calibration editors that must be able to switch backgrounds.
   const isM7CalibrationMode = toolEditMode && mission.mission_id === 'studio_07';
   const isM11CalibrationMode = toolEditMode && mission.mission_id === 'studio_11';
   const isCalibrationBgOverrideMode = isM7CalibrationMode || isM11CalibrationMode;
+
+  // Priority: M7/M11 calibration > local beat > drag preview > current
+  // IMPORTANT: m7CalibrationBg is ONLY used during calibration mode to prevent leaking into subsequent missions
+  const scopedCalibrationBg = isCalibrationBgOverrideMode ? m7CalibrationBg : null;
+  const displayBg = scopedCalibrationBg?.image || scopedLocalBgOverride?.image || dragPreviewBg?.image || currentBg;
+  const displayBgKey = scopedCalibrationBg?.key || scopedLocalBgOverride?.key || dragPreviewBg?.key || currentBgKey;
 
   // Final guardrail: Mission 02 = white walls OR cracked walls (based on M01 choice), exterior = park, M03+ = workshop
   // BUT: M7/M11 calibration mode FULLY overrides all locks - uses m7CalibrationBg directly
