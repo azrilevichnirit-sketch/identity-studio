@@ -573,7 +573,7 @@ const Index = () => {
       {isPreviewEnv && (
         <button
           onClick={() => setShowDebug(prev => !prev)}
-          className="fixed top-2 left-2 z-[9999] w-8 h-8 rounded-full bg-black/50 text-white text-sm font-bold opacity-60 hover:opacity-100 transition-opacity"
+          className="fixed bottom-2 left-2 z-[9999] w-8 h-8 rounded-full bg-black/50 text-white text-sm font-bold opacity-60 hover:opacity-100 transition-opacity"
           title="Toggle Debug"
         >
           🐛
