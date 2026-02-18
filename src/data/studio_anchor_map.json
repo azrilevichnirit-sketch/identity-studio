@@ -799,18 +799,19 @@
   {
     "background_asset_key": "studio_doorway_park_view_bg",
     "anchor_ref": "m09_tool_a",
-    "x_pct": 0.5,
-    "y_pct": 0.85,
+    "x_pct": 0.756,
+    "y_pct": 0.822,
     "scale": 2.5,
     "z_layer": "front"
   },
   {
     "background_asset_key": "studio_doorway_park_view_bg",
     "anchor_ref": "m09_tool_b",
-    "x_pct": 0.4,
-    "y_pct": 0.8,
-    "scale": 1.8,
-    "z_layer": "front"
+    "x_pct": 0.513,
+    "y_pct": 0.923,
+    "scale": 2.7,
+    "z_layer": "front",
+    "flipX": true
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
@@ -1041,18 +1042,19 @@
   {
     "background_asset_key": "studio_doorway_park_view_bg",
     "anchor_ref": "m09_tool_a",
-    "x_pct": 0.5,
-    "y_pct": 0.85,
+    "x_pct": 0.756,
+    "y_pct": 0.822,
     "scale": 2.5,
     "z_layer": "front"
   },
   {
     "background_asset_key": "studio_doorway_park_view_bg",
     "anchor_ref": "m09_tool_b",
-    "x_pct": 0.4,
-    "y_pct": 0.8,
-    "scale": 1.8,
-    "z_layer": "front"
+    "x_pct": 0.513,
+    "y_pct": 0.923,
+    "scale": 2.7,
+    "z_layer": "front",
+    "flipX": true
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
