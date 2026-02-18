@@ -5,13 +5,13 @@
     "mission_id": "studio_01",
     "sequence": 1,
     "view": "in",
-    "task_heb": "המקום ענקי ויש לנו המון עבודה, אז עם מה נתחיל?",
+    "task_heb": "וואו, המקום הזה ענקי אבל הכל פה מפורק. מה עושים?",
     "options": [
       {
         "key": "a",
         "holland_code": "r",
         "asset": "studio_01_a",
-        "tooltip_heb": "דליי צבע ומברשות",
+        "tooltip_heb": "ארגז כלים מקצועי",
         "view": "in",
         "next_bg_override": "studio_in_gallery_wall_bg",
         "anchor_ref": "floor",
@@ -21,7 +21,7 @@
         "key": "b",
         "holland_code": "i",
         "asset": "studio_01_b",
-        "tooltip_heb": "ערכת שרטוט",
+        "tooltip_heb": "אפליקציית מדידה",
         "view": "in",
         "next_bg_override": "studio_entry_inside_bg",
         "anchor_ref": "floor",
@@ -60,13 +60,13 @@
     "mission_id": "studio_03",
     "sequence": 3,
     "view": "in",
-    "task_heb": "בלאגן אטומי פה. חייבים לארגן את המקום כדי שנתחיל ליצור. איך נעצב את הלב של הסטודיו?",
+    "task_heb": "תכננו הכל, עכשיו מתחילים לרהט. מה נכניס ראשון?",
     "options": [
       {
         "key": "a",
         "holland_code": "s",
         "asset": "studio_03_a",
-        "tooltip_heb": "שולחן יצירה קבוצתי",
+        "tooltip_heb": "פינת ישיבה",
         "view": "in",
         "persist": "keep"
       },
@@ -74,7 +74,7 @@
         "key": "b",
         "holland_code": "r",
         "asset": "studio_03_b",
-        "tooltip_heb": "עמדת סאונד עם אוזניות",
+        "tooltip_heb": "שולחן עבודה מקצועי",
         "view": "in",
         "persist": "keep"
       }
@@ -86,13 +86,13 @@
     "mission_id": "studio_04",
     "sequence": 4,
     "view": "in",
-    "task_heb": "וואו, אנחנו תלויים רק באור מבחוץ ועוד מעט מחשיך. מה נעשה?",
+    "task_heb": "הגיע הרגע! מתחילים לעבוד. איך נתחיל?",
     "options": [
       {
         "key": "a",
         "holland_code": "r",
         "asset": "studio_04_a",
-        "tooltip_heb": "גופי תאורה תעשייתיים",
+        "tooltip_heb": "מסור חשמלי",
         "view": "in",
         "persist": "keep"
       },
@@ -100,7 +100,7 @@
         "key": "b",
         "holland_code": "a",
         "asset": "studio_04_b",
-        "tooltip_heb": "פסלי תאורה מעוצבים",
+        "tooltip_heb": "מחברת שרטוטים ועפרונות",
         "view": "in",
         "persist": "keep"
       }
@@ -136,13 +136,13 @@
     "mission_id": "studio_06",
     "sequence": 6,
     "view": "in",
-    "task_heb": "התקרה פה ממש גבוהה ויש הד מטורף שקשה לי להתרכז. איך מטפלים בזה?",
+    "task_heb": "הלקוחות הראשונים מגיעים! מה יחכה להם כשייכנסו?",
     "options": [
       {
         "key": "a",
         "holland_code": "a",
         "asset": "studio_06_a",
-        "tooltip_heb": "פאנלים אקוסטיים גיאומטריים",
+        "tooltip_heb": "פטיפון עם תקליטים",
         "view": "in",
         "persist": "keep"
       },
@@ -150,7 +150,7 @@
         "key": "b",
         "holland_code": "s",
         "asset": "studio_06_b",
-        "tooltip_heb": "פינת לאונג' וספות",
+        "tooltip_heb": "שולחנות בר",
         "view": "in",
         "persist": "keep"
       }
@@ -191,20 +191,20 @@
     "mission_id": "studio_08",
     "sequence": 8,
     "view": "in",
-    "task_heb": "הסטודיו כבר מרגיש כמו הבית השני שלנו. איך נשמור על הוייב של הצוות?",
+    "task_heb": "אחרי יום עבודה ארוך הצוות צריך לפרוק. מה נשים בפינת ההפסקה?",
     "options": [
       {
         "key": "a",
         "holland_code": "s",
         "asset": "studio_08_a",
-        "tooltip_heb": "פינת זולה ושולחן סנוקר",
+        "tooltip_heb": "שולחן פינג פונג",
         "view": "in"
       },
       {
         "key": "b",
         "holland_code": "a",
         "asset": "studio_08_b",
-        "tooltip_heb": "קיר השראה ענקי",
+        "tooltip_heb": "פינת ציור וצבעים",
         "view": "in"
       }
     ]
@@ -241,20 +241,20 @@
     "sequence": 10,
     "view": "in",
     "bg_override": "studio_in_workshop_bg",
-    "task_heb": "יש המון התעניינות בסטודיו והביקוש לעבודות גדל בטירוף. איך נעמוד בקצב?",
+    "task_heb": "יש לנו יותר הזמנות ממה שאנחנו יכולים לספק. איך נגדל?",
     "options": [
       {
         "key": "a",
         "holland_code": "r",
         "asset": "studio_10_a",
-        "tooltip_heb": "מכונת חיתוך לייזר תעשייתית",
+        "tooltip_heb": "מכונת חיתוך לייזר",
         "view": "in"
       },
       {
         "key": "b",
         "holland_code": "e",
         "asset": "studio_10_b",
-        "tooltip_heb": "פיתוח אתר אי-קומרס",
+        "tooltip_heb": "אתר מכירות אונליין",
         "view": "in"
       }
     ]
