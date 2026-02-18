@@ -162,7 +162,15 @@ export function getAnchorPosition(bgKey: string, anchorRef: AnchorRef): { x: num
     };
   }
   
-  // Fallback defaults
+  // Fallback defaults - ONLY for generic/structural anchors, NOT mission-specific tool anchors.
+  // Mission-specific anchors (m##_tool_*, tie_##_tool_*, *_extra_*) must be explicitly
+  // defined in the anchor map. Returning a fallback for them causes tools to appear
+  // at wrong positions on backgrounds where they aren't calibrated.
+  const isMissionSpecificAnchor = /^(m\d|tie_\d|.*_extra_|.*_desk)/.test(anchorRef);
+  if (isMissionSpecificAnchor) {
+    return null;
+  }
+
   const fallbacks: Record<string, { x: number; y: number }> = {
     wall_back: { x: 50, y: 40 },
     wall_left: { x: 22, y: 43 },
