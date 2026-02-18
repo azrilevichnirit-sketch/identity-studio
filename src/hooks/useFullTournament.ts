@@ -713,11 +713,24 @@ export function useFullTournament(countsFinal: CountsFinal) {
     return { rank1Candidates, rank2Candidates, rank3Candidates };
   }, [countsFinal, state.rank2Code]);
 
+  const reset = useCallback(() => {
+    setState({
+      phase: 'idle',
+      rank1Code: null,
+      rank2Code: null,
+      rank3Code: null,
+      candidateSet: [],
+      currentMission: null,
+      tieTrace: [],
+    });
+  }, []);
+
   return {
     state,
     startTournament,
     startFromRank2,
     processChoice,
+    reset,
     checkNeedsTournament,
     getAutoResolvedRankings,
     getCandidatesForDebug,

@@ -426,6 +426,15 @@ const Index = () => {
     undo();
   };
 
+  // Undo from tournament tie-breaker: go back to mission 12
+  const handleTournamentUndo = () => {
+    if (tournamentMission) {
+      trackUndo(tournamentMission.mission_id);
+    }
+    tournament.reset();
+    jumpToMission(mainMissions.length - 1); // Back to last main mission (mission 12)
+  };
+
   // Convert finalPicksByMissionId to array for placed props display
   const placedProps = useMemo(() => {
     return Object.values(state.finalPicksByMissionId);
@@ -509,11 +518,11 @@ const Index = () => {
             currentIndex={tournamentMissionNumber - 1}
             totalMissions={mainMissions.length + 3}
             isTieBreaker={true}
-            canUndo={false}
+            canUndo={canUndo}
             avatarGender={state.avatarGender}
             placedProps={placedProps}
             onSelect={handleTournamentSelect}
-            onUndo={() => {}}
+            onUndo={handleTournamentUndo}
             toolEditMode={toolEditMode}
             onEditorNextMission={() => {
               const optionA = tournamentMission.options.find(o => o.key === 'a');
