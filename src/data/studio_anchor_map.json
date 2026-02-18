@@ -706,8 +706,8 @@
   {
     "background_asset_key": "studio_doorway_park_view_bg",
     "anchor_ref": "m06_tool_a",
-    "x_pct": 0.105,
-    "y_pct": 0.58,
+    "x_pct": 0.828,
+    "y_pct": 0.882,
     "scale": 3,
     "z_layer": "front",
     "flipX": true
@@ -715,8 +715,8 @@
   {
     "background_asset_key": "studio_doorway_park_view_bg",
     "anchor_ref": "m06_tool_b",
-    "x_pct": 0.808,
-    "y_pct": 0.813,
+    "x_pct": 0.779,
+    "y_pct": 0.962,
     "scale": 3.5,
     "z_layer": "front"
   },
