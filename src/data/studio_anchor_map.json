@@ -501,11 +501,11 @@
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
-    "anchor_ref": "m04_extra_table",
-    "x_pct": 0.75,
-    "y_pct": 0.85,
-    "scale": 2.0,
-    "z_layer": "front"
+    "anchor_ref": "m04_desk",
+    "x_pct": 0.216,
+    "y_pct": 0.794,
+    "scale": 1,
+    "z_layer": "mid"
   },
   {
     "background_asset_key": "studio_in_gallery_wall_bg",
