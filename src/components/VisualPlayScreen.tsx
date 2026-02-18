@@ -288,9 +288,8 @@ export function VisualPlayScreen({
     mission.phase === 'main' && (mission.mission_id === 'studio_02' || mission.sequence === 2) && !hasPaintedWalls;
   const isExteriorLocked =
     mission.phase === 'main' && mission.view === 'out' && mission.mission_id !== 'studio_11';
-  // Mission 09 & 12: Gallery (uses bg_override) - NOT workshop locked
-  // TIE-BREAKER missions also use gallery (stays on last main game background)
-  const isGalleryMission = ((mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12') && mission.bg_override) || mission.phase === 'tb';
+  // Missions with explicit bg_override that are NOT workshop: M06 (doorway), M09/M12 (gallery), tie-breakers
+  const isGalleryMission = ((mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12' || mission.mission_id === 'studio_06') && mission.bg_override) || mission.phase === 'tb';
   const isTieBreakerLocked = mission.phase === 'tb' && !toolEditMode;
   const isWorkshopLocked =
     mission.phase === 'main' &&

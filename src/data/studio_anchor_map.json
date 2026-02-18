@@ -704,6 +704,23 @@
     "z_layer": "front"
   },
   {
+    "background_asset_key": "studio_doorway_park_view_bg",
+    "anchor_ref": "m06_tool_a",
+    "x_pct": 0.105,
+    "y_pct": 0.58,
+    "scale": 3,
+    "z_layer": "front",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "studio_doorway_park_view_bg",
+    "anchor_ref": "m06_tool_b",
+    "x_pct": 0.808,
+    "y_pct": 0.813,
+    "scale": 3.5,
+    "z_layer": "front"
+  },
+  {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m06_npc_male",
     "x_pct": 0.179,
