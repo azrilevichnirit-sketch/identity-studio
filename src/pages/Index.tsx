@@ -20,8 +20,8 @@ import type { Dimension, HollandCode, MissionOption, LeadFormData } from '@/type
 const Index = () => {
   const [toolEditMode, setToolEditMode] = useState(false);
   
-  // Debug mode: only available in Lovable preview/editor (hostname contains 'id-preview--')
-  const isPreviewEnv = typeof window !== 'undefined' && window.location.hostname.includes('id-preview--');
+  // Debug mode: only available in Lovable preview/editor (not on published domain)
+  const isPreviewEnv = typeof window !== 'undefined' && !window.location.hostname.includes('identitygame.lovable.app');
   const [showDebug, setShowDebug] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [resultText, setResultText] = useState<string | null>(null);
