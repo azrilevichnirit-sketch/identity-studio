@@ -1974,10 +1974,12 @@ export function VisualPlayScreen({
         />
       )}
       {/* Branching tie-breakers (T4, T7, T8) - each tool on different background */}
+      {/* IMPORTANT: Only tie-breaker missions use branching editor. Main missions place tools */}
+      {/* on the CURRENT background; next_bg_override only switches AFTER placement. */}
       {toolEditMode && mission.mission_id !== 'studio_07' && mission.mission_id !== 'studio_11' && (() => {
         const optA = mission.options.find(o => o.key === 'a');
         const optB = mission.options.find(o => o.key === 'b');
-        const isBranching = optA?.next_bg_override && optB?.next_bg_override && optA.next_bg_override !== optB.next_bg_override;
+        const isBranching = mission.phase === 'tb' && optA?.next_bg_override && optB?.next_bg_override && optA.next_bg_override !== optB.next_bg_override;
         if (isBranching) {
           return (
             <BranchingCalibrationEditor
