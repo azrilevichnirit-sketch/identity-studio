@@ -10,8 +10,8 @@
     "spawn_count": 1,
     "placement_mode": "floor",
     "anchor_ref": "m04_desk",
-    "despawn_mode": "keep",
-    "despawn_value": ""
+    "despawn_mode": "remove_after_mission_id",
+    "despawn_value": "studio_04"
   },
   {
     "world": "studio",
