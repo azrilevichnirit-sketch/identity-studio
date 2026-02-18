@@ -227,6 +227,11 @@ export function VisualPlayScreen({
       return 'studio_in_workshop_bg';
     }
     
+    // Mission 06: Doorway park view
+    if (mission.phase === 'main' && mission.mission_id === 'studio_06') {
+      return 'studio_doorway_park_view_bg';
+    }
+    
     // Mission 09 & 12: Use main studio (gallery_main_stylized)
     if (mission.phase === 'main' && (mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12')) {
       return 'gallery_main_stylized';
