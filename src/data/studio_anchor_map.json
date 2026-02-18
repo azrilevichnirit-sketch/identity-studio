@@ -485,16 +485,16 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m04_tool_a",
-    "x_pct": 0.199,
-    "y_pct": 0.376,
+    "x_pct": 0.47,
+    "y_pct": 0.847,
     "scale": 1.9,
     "z_layer": "front"
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m04_tool_b",
-    "x_pct": 0.583,
-    "y_pct": 0.693,
+    "x_pct": 0.223,
+    "y_pct": 0.67,
     "scale": 1.4,
     "z_layer": "front",
     "flipX": true
