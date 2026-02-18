@@ -220,16 +220,16 @@
     "options": [
       {
         "key": "a",
-        "holland_code": "c",
+        "holland_code": "s",
         "asset": "studio_09_a",
         "tooltip_heb": "אזור ישיבה ומנוחה",
         "view": "in"
       },
       {
         "key": "b",
-        "holland_code": "i",
+        "holland_code": "c",
         "asset": "studio_09_b",
-        "tooltip_heb": "ערכת בדיקת חומרים",
+        "tooltip_heb": "חיצי הכוונה",
         "view": "in"
       }
     ]
