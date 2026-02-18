@@ -215,14 +215,14 @@
     "mission_id": "studio_09",
     "sequence": 9,
     "view": "in",
-    "bg_override": "gallery_main_stylized",
+    "bg_override": "studio_doorway_park_view_bg",
     "task_heb": "שמנו לב שחלק מהעבודות שלנו לא שורדות לאורך זמן - צבעים דוהים, חומרים מתפוררים. מה עושים?",
     "options": [
       {
         "key": "a",
         "holland_code": "c",
         "asset": "studio_09_a",
-        "tooltip_heb": "לוח מעקב ותיעוד",
+        "tooltip_heb": "אזור ישיבה ומנוחה",
         "view": "in"
       },
       {

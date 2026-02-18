@@ -2,6 +2,20 @@
   {
     "world": "studio",
     "phase": "main",
+    "order": 0,
+    "mission_id": "studio_09",
+    "trigger_when": "before",
+    "trigger_tool_ids": "",
+    "spawn_asset_key": "studio_reception_desk_01",
+    "spawn_count": 1,
+    "placement_mode": "floor",
+    "anchor_ref": "m09_extra_desk",
+    "despawn_mode": "keep",
+    "despawn_value": ""
+  },
+  {
+    "world": "studio",
+    "phase": "main",
     "order": 4,
     "mission_id": "studio_04",
     "trigger_when": "before",

@@ -721,6 +721,14 @@
     "z_layer": "front"
   },
   {
+    "background_asset_key": "studio_doorway_park_view_bg",
+    "anchor_ref": "m09_extra_desk",
+    "x_pct": 0.2,
+    "y_pct": 0.85,
+    "scale": 1.5,
+    "z_layer": "mid"
+  },
+  {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m06_npc_male",
     "x_pct": 0.179,
@@ -789,18 +797,18 @@
     "flipX": true
   },
   {
-    "background_asset_key": "gallery_main_stylized",
+    "background_asset_key": "studio_doorway_park_view_bg",
     "anchor_ref": "m09_tool_a",
-    "x_pct": 0.518,
-    "y_pct": 0.788,
-    "scale": 1.8,
+    "x_pct": 0.5,
+    "y_pct": 0.85,
+    "scale": 2.5,
     "z_layer": "front"
   },
   {
-    "background_asset_key": "gallery_main_stylized",
+    "background_asset_key": "studio_doorway_park_view_bg",
     "anchor_ref": "m09_tool_b",
-    "x_pct": 0.404,
-    "y_pct": 0.813,
+    "x_pct": 0.4,
+    "y_pct": 0.8,
     "scale": 1.8,
     "z_layer": "front"
   },
@@ -1031,19 +1039,18 @@
     "z_layer": "front"
   },
   {
-    "background_asset_key": "gallery_main_stylized",
+    "background_asset_key": "studio_doorway_park_view_bg",
     "anchor_ref": "m09_tool_a",
-    "x_pct": 0.604,
-    "y_pct": 0.765,
-    "scale": 1.8,
-    "z_layer": "front",
-    "flipX": true
+    "x_pct": 0.5,
+    "y_pct": 0.85,
+    "scale": 2.5,
+    "z_layer": "front"
   },
   {
-    "background_asset_key": "gallery_main_stylized",
+    "background_asset_key": "studio_doorway_park_view_bg",
     "anchor_ref": "m09_tool_b",
-    "x_pct": 0.357,
-    "y_pct": 0.799,
+    "x_pct": 0.4,
+    "y_pct": 0.8,
     "scale": 1.8,
     "z_layer": "front"
   },
