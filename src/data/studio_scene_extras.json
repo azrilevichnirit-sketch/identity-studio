@@ -2,20 +2,6 @@
   {
     "world": "studio",
     "phase": "main",
-    "order": 0,
-    "mission_id": "studio_09",
-    "trigger_when": "before",
-    "trigger_tool_ids": "",
-    "spawn_asset_key": "studio_reception_desk_01",
-    "spawn_count": 1,
-    "placement_mode": "floor",
-    "anchor_ref": "m09_extra_desk",
-    "despawn_mode": "remove_after_mission_id",
-    "despawn_value": "studio_14"
-  },
-  {
-    "world": "studio",
-    "phase": "main",
     "order": 6,
     "mission_id": "studio_06",
     "trigger_when": "before",
@@ -38,8 +24,8 @@
     "spawn_count": 1,
     "placement_mode": "floor",
     "anchor_ref": "m10_extra_desk",
-    "despawn_mode": "keep",
-    "despawn_value": ""
+    "despawn_mode": "remove_after_mission_id",
+    "despawn_value": "studio_10"
   },
   {
     "world": "studio",
@@ -52,8 +38,8 @@
     "spawn_count": 1,
     "placement_mode": "floor",
     "anchor_ref": "m13_extra_table",
-    "despawn_mode": "keep",
-    "despawn_value": ""
+    "despawn_mode": "remove_after_mission_id",
+    "despawn_value": "studio_13"
   },
   {
     "world": "studio",
