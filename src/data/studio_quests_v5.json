@@ -70,7 +70,7 @@
     "quest_id": "studio_03",
     "order": 3,
     "view": "in",
-    "bg_override": "studio_entry_inside_bg",
+    "bg_override": "gallery_main_stylized",
     "zone_id": null,
     "task_heb": "המקום מוכן ומחר הפתיחה הגדולה. הערב אנחנו חייבים להחליט מה ייצור את הרושם הראשוני החזק ביותר. מה נחליט?",
     "option_a_code": "a",
