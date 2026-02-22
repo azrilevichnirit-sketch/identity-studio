@@ -306,7 +306,8 @@ export function VisualPlayScreen({
   const isTieBreakerLocked = mission.phase === 'tb' && !toolEditMode;
   const isWorkshopLocked =
     mission.phase === 'main' &&
-    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission);
+    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission) &&
+    (!mission.bg_override || mission.bg_override === 'studio_in_workshop_bg');
 
   const taskText = mission.task_heb || `MISSING: task_heb`;
 
@@ -346,9 +347,15 @@ export function VisualPlayScreen({
       const targetBgImage = getBackgroundByName(targetBgKey) || currentBg;
       return { key: targetBgKey, image: targetBgImage };
     }
-    // Workshop missions (M03+, except M07, exterior, M09, M12)
-    if (mission.phase === 'main' && (mission.mission_id === 'studio_03' || mission.sequence >= 3) && mission.mission_id !== 'studio_07' && !isGalleryMission) {
+    // Workshop missions (M03+, except M07, exterior, M09, M12, or missions with non-workshop bg_override)
+    if (mission.phase === 'main' && (mission.mission_id === 'studio_03' || mission.sequence >= 3) && mission.mission_id !== 'studio_07' && !isGalleryMission && (!mission.bg_override || mission.bg_override === 'studio_in_workshop_bg')) {
       const lockedKey = 'studio_in_workshop_bg';
+      const lockedImage = getBackgroundByName(lockedKey) || currentBg;
+      return { key: lockedKey, image: lockedImage };
+    }
+    // Missions with explicit bg_override: use it
+    if (mission.phase === 'main' && mission.bg_override) {
+      const lockedKey = mission.bg_override;
       const lockedImage = getBackgroundByName(lockedKey) || currentBg;
       return { key: lockedKey, image: lockedImage };
     }
