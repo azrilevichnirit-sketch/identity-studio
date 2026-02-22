@@ -1,51 +1,74 @@
 
 
-# Fix: Step 2.5 Must Always Narrow to Exactly 2 Candidates
+## Plan: Expand from 12 to 15 Main Missions
 
-## The Bug
+### Overview
+Update all mission data files from 12 to 15 main missions, add new tool images, and update hardcoded references throughout the codebase. The game logic stays the same -- just more missions before the tie-breaker phase.
 
-When 4 codes tie for Rank 2 (I=2, A=2, S=2, E=2 with R=3, C=1), the adjacent sum calculation produces a single winner (I with sum 5), silently assigning Rank 2 without showing the player a tie-breaker mission.
+---
 
-## The Rule
+### Step 1: Copy New Tool Images
+Copy the 10 uploaded tool images to `src/assets/tools/`:
+- `studio_11_a.webp` (replaces existing - blueprint table)
+- `studio_11_b.webp` (replaces existing - stage)
+- `studio_12_a.webp` (replaces existing - art kit)
+- `studio_12_b.webp` (replaces existing - craft table)
+- `studio_13_a.webp` (new - tablet with gallery)
+- `studio_13_b.webp` (new - price quote folder)
+- `studio_14_a.webp` (new - barcode scanner)
+- `studio_14_b.webp` (new - packing station)
+- `studio_15_a.webp` (new - sculpture)
+- `studio_15_b.webp` (new - trophy)
 
-Step 2.5 exists ONLY to narrow 3+ candidates down to exactly 2. It should NEVER resolve to a single winner. The player must always make the final choice via a mission.
+### Step 2: Update `missions_studio_main.json`
+Replace all 12 entries with 15, using the new JSON data:
+- Missions 1-10: Update task texts, Holland codes, and tooltips per the uploaded JSON
+- Missions 11-12: Update with new content (texts, codes, tooltips, assets)
+- Missions 13-15: Add 3 new entries
 
-## The Fix
+### Step 3: Update `studio_quests_v5.json` (Source of Truth)
+Update the flat-format quest data with all 15 missions. Each entry keeps its existing structure (`quest_id`, `order`, `view`, `bg_override`, `option_a_code`, etc.). New missions 13-15 will use placeholder backgrounds and anchor refs (to be calibrated later).
 
-**File: `src/hooks/useFullTournament.ts`** -- `tryResolveByAdjacentSum` function (lines 77-111)
+### Step 4: Update `assetUtils.ts`
+- Add imports for `studio_13_a`, `studio_13_b`, `studio_14_a`, `studio_14_b`, `studio_15_a`, `studio_15_b`
+- Add these 6 entries to the `toolAssets` map
 
-Change the logic so that when 3+ candidates enter Step 2.5:
-1. Calculate adjacent sums for all candidates
-2. Sort by adjacent sum (descending), then by default order (R>I>A>S>E>C) as tiebreaker
-3. Always return the top 2 as `{ narrowedCandidates: [first, second] }`
-4. Never return `{ winner }` from this function when starting with 3+ candidates
+### Step 5: Update `useGameState.ts`
+- Change mission range validation from `<= 12` to `<= 15` in `getInitialMissionIndex()`
 
-The callers in `startTournament` and `startFromRank2` that currently handle the `'winner' in step25Result` branch for 3+ candidates can be simplified since Step 2.5 will always return exactly 2 narrowed candidates. But keeping those branches as fallback safety is fine -- they just won't be reached.
+### Step 6: Update `VisualPlayScreen.tsx`
+Update hardcoded mission references:
+- The "clean scene reset" rule for `studio_12` should now apply to the last mission (`studio_15`)
+- Zone mapping (`getZoneForMission`): extend to cover missions 13-15
+- `hidePersistedToolsForThisMission`: update `studio_12` reference to `studio_15` (final mission gets clean scene)
+- Background logic for mission 12: remove the special case (it is no longer the final mission using `gallery_main_stylized`)
 
-Additionally, track the eliminated candidates (those not in the top 2) so they can be considered for Rank 3 assignment.
+### Step 7: Update `useSceneExtras.ts`
+The `checkShouldSpawn` function parses mission order from `studio_XX` -- this will naturally work for missions 13-15 without changes.
 
-### Technical Detail
+---
 
-Current code (lines 100-106):
-```typescript
-const maxSum = Math.max(...adjacentSums.map(x => x.sum));
-const winners = adjacentSums.filter(x => x.sum === maxSum);
-if (winners.length === 1) {
-  return { winner: winners[0].code };  // BUG: silently decides
-}
-```
+### Technical Details
 
-New logic:
-```typescript
-// Sort by sum descending, then default order as tiebreaker
-adjacentSums.sort((a, b) => {
-  if (b.sum !== a.sum) return b.sum - a.sum;
-  return DEFAULT_ORDER.indexOf(a.code) - DEFAULT_ORDER.indexOf(b.code);
-});
-// Always return top 2
-const narrowed = [adjacentSums[0].code, adjacentSums[1].code];
-return { narrowedCandidates: narrowed };
-```
+**Holland Code Distribution (new 15 missions):**
+| Code | Missions |
+|------|----------|
+| R | M2a, M6a, M10a, M14a |
+| I | M1a, M8a, M11a, M12a |
+| A | M3a, M6b(?), M13a, M15a |
+| S | M3b(?), M4a, M5b, M9a, M12b |
+| E | M5a, M7b, M8b, M10b, M15b |
+| C | M1b, M7a, M9b, M13b, M14b |
 
-This ensures a mission is always shown when there are ties for Rank 1 or Rank 2.
+**New Mission Backgrounds (initial, to be calibrated):**
+- M13: `gallery_main_stylized` (indoor gallery)
+- M14: `studio_in_storage_bg` (storage/packing area)
+- M15: `gallery_main_stylized` (final indoor gallery)
+
+**Anchor refs for new missions (placeholder, need calibration):**
+- M13: `m13_tool_a`, `m13_tool_b`
+- M14: `m14_tool_a`, `m14_tool_b`
+- M15: `m15_tool_a`, `m15_tool_b`
+
+Placeholder anchors will be added to `studio_anchor_map.json` with center positions so the tools are visible. You will calibrate exact positions later using the visual editor.
 
