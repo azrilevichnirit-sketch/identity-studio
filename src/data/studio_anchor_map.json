@@ -203,9 +203,9 @@
   {
     "background_asset_key": "studio_doorway_park_view_v5",
     "anchor_ref": "m03_tool_b",
-    "x_pct": 0.793,
-    "y_pct": 0.933,
-    "scale": 2.9,
+    "x_pct": 0.759,
+    "y_pct": 1,
+    "scale": 4.7,
     "z_layer": "front",
     "flipX": true
   },
