@@ -201,8 +201,11 @@ export function VisualPlayScreen({
       return 'gallery_main_stylized_v3'; // Cracked walls
     }
     
-    // Mission 02: depends on Mission 01 choice
+    // Mission 02: Use bg_override from quest data
     if (mission.phase === 'main' && (mission.mission_id === 'studio_02' || mission.sequence === 2)) {
+      if (mission.bg_override) {
+        return mission.bg_override;
+      }
       if (hasPaintedWalls) {
         return PAINTED_WALLS_BG_KEY; // White walls (Tool A chosen)
       }
@@ -247,9 +250,9 @@ export function VisualPlayScreen({
       return 'studio_in_workshop_bg';
     }
     
-    // Mission 03+ (except exterior, M07, M09, M10): use the workshop background
+    // Mission 03+ (except exterior, M07, M09, M10): use bg_override from quest data or fallback to workshop
     if (mission.phase === 'main' && (mission.mission_id === 'studio_03' || mission.sequence >= 3)) {
-      return 'studio_in_workshop_bg';
+      return mission.bg_override || 'studio_in_workshop_bg';
     }
 
     return undefined;
