@@ -227,8 +227,8 @@ export function VisualPlayScreen({
       return 'studio_in_workshop_bg';
     }
     
-    // Mission 06 & 09: Doorway park view
-    if (mission.phase === 'main' && (mission.mission_id === 'studio_06' || mission.mission_id === 'studio_09')) {
+    // Mission 09: Doorway park view
+    if (mission.phase === 'main' && mission.mission_id === 'studio_09') {
       return 'studio_doorway_park_view_bg';
     }
     

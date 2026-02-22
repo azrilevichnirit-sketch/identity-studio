@@ -704,6 +704,14 @@
     "z_layer": "front"
   },
   {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m06_extra_desk",
+    "x_pct": 0.5,
+    "y_pct": 0.85,
+    "scale": 1.0,
+    "z_layer": "mid"
+  },
+  {
     "background_asset_key": "studio_doorway_park_view_bg",
     "anchor_ref": "m06_tool_a",
     "x_pct": 0.828,
