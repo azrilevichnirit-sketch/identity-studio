@@ -5,13 +5,13 @@
     "mission_id": "studio_01",
     "sequence": 1,
     "view": "in",
-    "task_heb": "וואו, המקום הזה ענקי אבל הכל פה מפורק. מה עושים?",
+    "task_heb": "אנחנו אמורים לפתוח את הסטודיו בעוד שבוע, והמקום הזה ענקי ומפורק. איפה נתחיל?",
     "options": [
       {
         "key": "a",
-        "holland_code": "r",
+        "holland_code": "i",
         "asset": "studio_01_a",
-        "tooltip_heb": "ארגז כלים מקצועי",
+        "tooltip_heb": "סורק לייזר טכנולוגי",
         "view": "in",
         "next_bg_override": "studio_in_gallery_wall_bg",
         "anchor_ref": "floor",
@@ -19,9 +19,9 @@
       },
       {
         "key": "b",
-        "holland_code": "i",
+        "holland_code": "c",
         "asset": "studio_01_b",
-        "tooltip_heb": "אפליקציית מדידה",
+        "tooltip_heb": "לוח משימות צבעוני",
         "view": "in",
         "next_bg_override": "studio_entry_inside_bg",
         "anchor_ref": "floor",
@@ -36,20 +36,20 @@
     "mission_id": "studio_02",
     "sequence": 2,
     "view": "in",
-    "task_heb": "הבסיס מאחורינו. מה הדרך הכי טובה לקבוע איפה כל דבר יעמוד פה?",
+    "task_heb": "עוד יומיים הפתיחה הגדולה. יש לנו עוד הרבה דברים להרכיב, לתלות ולהחליט איפה יהיו. מה עושים קודם?",
     "options": [
       {
         "key": "a",
-        "holland_code": "i",
+        "holland_code": "r",
         "asset": "studio_02_a",
-        "tooltip_heb": "סורק לייזר טכנולוגי",
+        "tooltip_heb": "ארגז כלים מקצועי",
         "view": "in"
       },
       {
         "key": "b",
-        "holland_code": "c",
+        "holland_code": "i",
         "asset": "studio_02_b",
-        "tooltip_heb": "לוח משימות צבעוני",
+        "tooltip_heb": "אפליקציית מדידה",
         "view": "in"
       }
     ]
@@ -60,21 +60,21 @@
     "mission_id": "studio_03",
     "sequence": 3,
     "view": "in",
-    "task_heb": "תכננו הכל, עכשיו מתחילים לרהט. מה נכניס ראשון?",
+    "task_heb": "המקום מוכן ומחר הפתיחה הגדולה. הערב אנחנו חייבים להחליט מה ייצור את הרושם הראשוני החזק ביותר. מה נחליט?",
     "options": [
       {
         "key": "a",
-        "holland_code": "s",
+        "holland_code": "a",
         "asset": "studio_03_a",
-        "tooltip_heb": "פינת ישיבה",
+        "tooltip_heb": "פטיפון עם תקליטים",
         "view": "in",
         "persist": "keep"
       },
       {
         "key": "b",
-        "holland_code": "r",
+        "holland_code": "s",
         "asset": "studio_03_b",
-        "tooltip_heb": "שולחן עבודה מקצועי",
+        "tooltip_heb": "שולחנות בר",
         "view": "in",
         "persist": "keep"
       }
@@ -86,21 +86,21 @@
     "mission_id": "studio_04",
     "sequence": 4,
     "view": "in",
-    "task_heb": "הגיע הרגע! מתחילים לעבוד. איך נתחיל?",
+    "task_heb": "אנחנו 3 שעות לפני פתיחה ורק עכשיו מגיעה המשאית עם הציוד האחרון. מה נוריד ראשון?",
     "options": [
       {
         "key": "a",
-        "holland_code": "r",
+        "holland_code": "s",
         "asset": "studio_04_a",
-        "tooltip_heb": "מסור חשמלי",
+        "tooltip_heb": "פינת ישיבה",
         "view": "in",
         "persist": "keep"
       },
       {
         "key": "b",
-        "holland_code": "a",
+        "holland_code": "r",
         "asset": "studio_04_b",
-        "tooltip_heb": "מחברת שרטוטים ועפרונות",
+        "tooltip_heb": "שולחן עבודה מקצועי",
         "view": "in",
         "persist": "keep"
       }
@@ -112,13 +112,13 @@
     "mission_id": "studio_05",
     "sequence": 5,
     "view": "out",
-    "task_heb": "הסטודיו מתחיל לקבל צורה, אבל אף אחד לא יודע שאנחנו קיימים. איך נראה להם?",
+    "task_heb": "שבוע אחרי הפתיחה. יש אנשים ברחוב, אבל הם עוברים ולא עוצרים. מה נוסיף בחוץ כדי למשוך אותם?",
     "options": [
       {
         "key": "a",
         "holland_code": "e",
         "asset": "studio_05_a",
-        "tooltip_heb": "שלט ניאון ממותג",
+        "tooltip_heb": "בובה מתנפחת בכניסה",
         "view": "out"
       },
       {
@@ -136,21 +136,21 @@
     "mission_id": "studio_06",
     "sequence": 6,
     "view": "in",
-    "task_heb": "הלקוחות הראשונים מגיעים! מה יחכה להם כשייכנסו?",
+    "task_heb": "יש לנו לקוח ראשון, והוא רוצה שלט עץ מותאם אישית. אני לבד היום בסטודיו, מה הדבר הראשון לעשות?",
     "options": [
       {
         "key": "a",
-        "holland_code": "a",
+        "holland_code": "r",
         "asset": "studio_06_a",
-        "tooltip_heb": "פטיפון עם תקליטים",
+        "tooltip_heb": "מסור חשמלי",
         "view": "in",
         "persist": "keep"
       },
       {
         "key": "b",
-        "holland_code": "s",
+        "holland_code": "a",
         "asset": "studio_06_b",
-        "tooltip_heb": "שולחנות בר",
+        "tooltip_heb": "מחברת שרטוטים ועפרונות",
         "view": "in",
         "persist": "keep"
       }
@@ -163,7 +163,7 @@
     "sequence": 7,
     "view": "in",
     "bg_override": "studio_in_workshop_bg",
-    "task_heb": "אוקיי, הסטודיו מפוצץ בעבודות גמורות וזה מתחיל להיערם בכל פינה. מה עושים?",
+    "task_heb": "הסטודיו מפוצץ בעבודות גמורות ואנחנו לא מוצאים כלום. מה עושים?",
     "options": [
       {
         "key": "a",
@@ -191,20 +191,20 @@
     "mission_id": "studio_08",
     "sequence": 8,
     "view": "in",
-    "task_heb": "אחרי יום עבודה ארוך הצוות צריך לפרוק. מה נשים בפינת ההפסקה?",
+    "task_heb": "הבוקר הגיעה הודעה - קרן גדולה מעבירה תרומה משמעותית להקמת מיזם חדש. הכסף מגיע בשבוע הבא. מה הצעד הראשון שלנו עכשיו?",
     "options": [
       {
         "key": "a",
-        "holland_code": "s",
+        "holland_code": "i",
         "asset": "studio_08_a",
-        "tooltip_heb": "שולחן פינג פונג",
+        "tooltip_heb": "מערכת לניהול תקציב",
         "view": "in"
       },
       {
         "key": "b",
-        "holland_code": "a",
+        "holland_code": "e",
         "asset": "studio_08_b",
-        "tooltip_heb": "פינת ציור וצבעים",
+        "tooltip_heb": "מסיבת עיתונאים",
         "view": "in"
       }
     ]
@@ -216,20 +216,20 @@
     "sequence": 9,
     "view": "in",
     "bg_override": "studio_doorway_park_view_bg",
-    "task_heb": "בשעות הערב יש לנו עומס בכניסה לסטודיו. מה נוסיף שם?",
+    "task_heb": "ביום ראשון אנחנו פותחים תערוכה חדשה. כבר הבנו שהולך להיות עמוס במבקרים ובלגן בכניסה. איך נמנע את זה?",
     "options": [
       {
         "key": "a",
         "holland_code": "s",
         "asset": "studio_09_a",
-        "tooltip_heb": "אזור ישיבה ומנוחה",
+        "tooltip_heb": "אזור ישיבה בדלפק",
         "view": "in"
       },
       {
         "key": "b",
         "holland_code": "c",
         "asset": "studio_09_b",
-        "tooltip_heb": "חיצי הכוונה",
+        "tooltip_heb": "חצים על הרצפה",
         "view": "in"
       }
     ]
@@ -241,20 +241,20 @@
     "sequence": 10,
     "view": "in",
     "bg_override": "studio_in_workshop_bg",
-    "task_heb": "יש לנו יותר הזמנות ממה שאנחנו יכולים לספק. איך נגדל?",
+    "task_heb": "מישהו התקשר אלי עכשיו, הוא מצא בעליית הגג של סבתו חמישה ציורים ישנים ובלויים - ולפי מה שתיאר, ייתכן שמדובר במשהו נדיר. הוא בדרך אלינו. מה נכין עד שהוא יגיע?",
     "options": [
       {
         "key": "a",
         "holland_code": "r",
         "asset": "studio_10_a",
-        "tooltip_heb": "מכונת חיתוך לייזר",
+        "tooltip_heb": "ערכה לשימור יצירות",
         "view": "in"
       },
       {
         "key": "b",
         "holland_code": "e",
         "asset": "studio_10_b",
-        "tooltip_heb": "אתר מכירות אונליין",
+        "tooltip_heb": "ציוד ליצירת תוכן לסושייאל",
         "view": "in"
       }
     ]
@@ -265,21 +265,21 @@
     "mission_id": "studio_11",
     "sequence": 11,
     "view": "out",
-    "task_heb": "וואו, המהלך הזה הצליח לנו ובגדול, אנחנו יכולים להיות הדבר הבא. איך נעשה?",
+    "task_heb": "התמזל מזלנו! המקום ליד הסטודיו התפנה, וזה בדיוק מה שאנחנו צריכים. מה הדבר הראשון שנעשה?",
     "options": [
       {
         "key": "a",
-        "holland_code": "e",
+        "holland_code": "i",
         "asset": "studio_11_a",
-        "tooltip_heb": "פסטיבל רחוב",
+        "tooltip_heb": "תוכנית אדריכלית",
         "view": "out"
       },
       {
         "key": "b",
-        "holland_code": "c",
+        "holland_code": "a",
         "asset": "studio_11_b",
-        "tooltip_heb": "פתיחת סניפים חדשים",
-        "view": "out"
+        "tooltip_heb": "במה להצגות והופעות",
+        "view": "in"
       }
     ]
   },
@@ -290,20 +290,95 @@
     "sequence": 12,
     "view": "in",
     "bg_override": "gallery_main_stylized",
-    "task_heb": "התמזל מזלנו! המקום ליד הסטודיו התפנה. מה השלב הבא?",
+    "task_heb": "מחר אנחנו מארחים כיתה מבית הספר לידינו, הם לא יודעים מה זה סטודיו ליצירה. איך נדגים להם ב-60 דקות מה עושים פה?",
     "options": [
       {
         "key": "a",
         "holland_code": "i",
         "asset": "studio_12_a",
-        "tooltip_heb": "תוכנית אדריכלות",
+        "tooltip_heb": "ערכה אישית לניסוי בצבעים",
         "view": "in"
       },
       {
         "key": "b",
-        "holland_code": "a",
+        "holland_code": "s",
         "asset": "studio_12_b",
-        "tooltip_heb": "במה להופעות",
+        "tooltip_heb": "שולחן ליצירה משותפת",
+        "view": "in"
+      }
+    ]
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "mission_id": "studio_13",
+    "sequence": 13,
+    "view": "in",
+    "bg_override": "gallery_main_stylized",
+    "task_heb": "התקשרו מחברה גדולה. רוצים לרכוש פריטים שלנו לכל הסניפים שלהם. יש לנו פגישה ראשונה איתם ביום חמישי. מה הכי חשוב שנביא?",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "a",
+        "asset": "studio_13_a",
+        "tooltip_heb": "טאבלט עם יצירות",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "c",
+        "asset": "studio_13_b",
+        "tooltip_heb": "פולדר עם הצעת מחיר",
+        "view": "in"
+      }
+    ]
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "mission_id": "studio_14",
+    "sequence": 14,
+    "view": "in",
+    "bg_override": "studio_in_storage_bg",
+    "task_heb": "יש לנו המון חבילות לשלוח היום, ועוד שעה השליח מגיע לאסוף. חייבים לוודא שהכל יגיע ליעד בשלמותו. מה נעשה קודם?",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "r",
+        "asset": "studio_14_a",
+        "tooltip_heb": "סורק ברקוד",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "c",
+        "asset": "studio_14_b",
+        "tooltip_heb": "אזור אריזה עם קופסאות ופצפצים",
+        "view": "in"
+      }
+    ]
+  },
+  {
+    "world": "studio",
+    "phase": "main",
+    "mission_id": "studio_15",
+    "sequence": 15,
+    "view": "in",
+    "bg_override": "gallery_main_stylized",
+    "task_heb": "עיתונאית ממגזין עיצוב מגיעה מחר. היא מחפשת את הדבר שיפתח את הכתבה. מה נראה לה קודם?",
+    "options": [
+      {
+        "key": "a",
+        "holland_code": "a",
+        "asset": "studio_15_a",
+        "tooltip_heb": "פסל",
+        "view": "in"
+      },
+      {
+        "key": "b",
+        "holland_code": "e",
+        "asset": "studio_15_b",
+        "tooltip_heb": "גביע",
         "view": "in"
       }
     ]

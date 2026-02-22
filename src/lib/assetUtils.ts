@@ -50,6 +50,12 @@ import studio11a from '@/assets/tools/studio_11_a.webp';
 import studio11b from '@/assets/tools/studio_11_b.webp';
 import studio12a from '@/assets/tools/studio_12_a.webp';
 import studio12b from '@/assets/tools/studio_12_b.webp';
+import studio13a from '@/assets/tools/studio_13_a.webp';
+import studio13b from '@/assets/tools/studio_13_b.webp';
+import studio14a from '@/assets/tools/studio_14_a.webp';
+import studio14b from '@/assets/tools/studio_14_b.webp';
+import studio15a from '@/assets/tools/studio_15_a.webp';
+import studio15b from '@/assets/tools/studio_15_b.webp';
 
 // Tool imports - Tie-breaker missions
 import studioTie01a from '@/assets/tools/studio_tie_01_a.webp';
@@ -109,6 +115,12 @@ const toolAssets: Record<string, string> = {
   studio_11_b: studio11b,
   studio_12_a: studio12a,
   studio_12_b: studio12b,
+  studio_13_a: studio13a,
+  studio_13_b: studio13b,
+  studio_14_a: studio14a,
+  studio_14_b: studio14b,
+  studio_15_a: studio15a,
+  studio_15_b: studio15b,
   studio_tie_01_a: studioTie01a,
   studio_tie_01_b: studioTie01b,
   studio_tie_02_a: studioTie02a,
