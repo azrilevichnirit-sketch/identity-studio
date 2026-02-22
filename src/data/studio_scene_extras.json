@@ -15,6 +15,20 @@
   },
   {
     "world": "studio",
+    "phase": "main",
+    "order": 6,
+    "mission_id": "studio_06",
+    "trigger_when": "before",
+    "trigger_tool_ids": "",
+    "spawn_asset_key": "studio_work_desk_01",
+    "spawn_count": 1,
+    "placement_mode": "floor",
+    "anchor_ref": "m06_extra_desk",
+    "despawn_mode": "remove_after_mission_id",
+    "despawn_value": "studio_06"
+  },
+  {
+    "world": "studio",
     "phase": "tb",
     "order": 1,
     "mission_id": "studio_tie_01",
