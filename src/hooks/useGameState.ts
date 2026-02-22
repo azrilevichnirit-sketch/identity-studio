@@ -9,7 +9,7 @@ const getInitialMissionIndex = (): number => {
     const missionParam = params.get('mission');
     if (missionParam) {
       const missionNum = parseInt(missionParam, 10);
-      if (!isNaN(missionNum) && missionNum >= 1 && missionNum <= 12) {
+      if (!isNaN(missionNum) && missionNum >= 1 && missionNum <= 15) {
         return missionNum - 1; // Convert to 0-indexed
       }
     }

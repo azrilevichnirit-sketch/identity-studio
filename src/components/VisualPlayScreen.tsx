@@ -232,9 +232,14 @@ export function VisualPlayScreen({
       return 'studio_doorway_park_view_bg';
     }
     
-    // Mission 12: Use main studio (gallery_main_stylized)
-    if (mission.phase === 'main' && mission.mission_id === 'studio_12') {
+    // Missions 12, 13, 15: Use main studio (gallery_main_stylized)
+    if (mission.phase === 'main' && (mission.mission_id === 'studio_12' || mission.mission_id === 'studio_13' || mission.mission_id === 'studio_15')) {
       return 'gallery_main_stylized';
+    }
+    
+    // Mission 14: Storage room
+    if (mission.phase === 'main' && mission.mission_id === 'studio_14') {
+      return 'studio_in_storage_bg';
     }
     
     // Mission 10: Back to workshop (like M08)
@@ -294,7 +299,7 @@ export function VisualPlayScreen({
   const isExteriorLocked =
     mission.phase === 'main' && mission.view === 'out' && mission.mission_id !== 'studio_11';
   // Missions with explicit bg_override that are NOT workshop: M06 (doorway), M09/M12 (gallery), tie-breakers
-  const isGalleryMission = ((mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12' || mission.mission_id === 'studio_06') && mission.bg_override) || mission.phase === 'tb';
+  const isGalleryMission = ((mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12' || mission.mission_id === 'studio_13' || mission.mission_id === 'studio_15' || mission.mission_id === 'studio_06') && mission.bg_override) || mission.mission_id === 'studio_14' || mission.phase === 'tb';
   const isTieBreakerLocked = mission.phase === 'tb' && !toolEditMode;
   const isWorkshopLocked =
     mission.phase === 'main' &&
@@ -876,17 +881,19 @@ export function VisualPlayScreen({
     return 'gallery'; // gallery, storage, entry are all "gallery" zone
   };
   
-  const getZoneForMission = (missionSeq: number): 'gallery' | 'workshop' | 'exterior' | 'workshop2' => {
+  const getZoneForMission = (missionSeq: number): 'gallery' | 'workshop' | 'exterior' | 'workshop2' | 'gallery2' | 'storage' => {
     // Zones per product spec (used ONLY for persisted tool visibility)
     // Gallery: Missions 1-2 (gallery scenes)
     // Workshop: Missions 3, 4, 6, 7 (original workshop - M7 CONTINUES workshop!)
     // Exterior: Mission 5 only
     // Workshop2: Missions 8, 10, 11 (workshop continuation - M11 shows M8+M10)
-    // M9 and M12 are clean gallery resets - no persisted tools
+    // M9, M12, M13, M15 are clean gallery resets - no persisted tools
+    // M14: Storage room - clean reset
     if (missionSeq <= 2) return 'gallery';
     if (missionSeq === 5) return 'exterior';
-    if (missionSeq === 9 || missionSeq === 12) return 'gallery'; // Clean reset
-    if (missionSeq >= 8) return 'workshop2';
+    if (missionSeq === 9 || missionSeq === 12 || missionSeq === 13 || missionSeq === 15) return 'gallery'; // Clean reset
+    if (missionSeq === 14) return 'storage'; // Clean reset - storage room
+    if (missionSeq >= 8 && missionSeq <= 11) return 'workshop2';
     return 'workshop'; // M3, 4, 6, 7
   };
 
@@ -913,17 +920,17 @@ export function VisualPlayScreen({
     // their background keys both resolve to "gallery" zone
     const currentZone = getZoneForMission(currentSeq);
 
-    // Product/UI rule: Missions 07, 09, 11, 12 and ALL tie-breakers are "clean scene" resets.
+    // Product/UI rule: Missions 07, 09, 11, 12, 13, 14, 15 and ALL tie-breakers are "clean scene" resets.
     // M7: Tool-specific background transition (Storage/Gallery) - no persisted tools
     // M9: Gallery scene - fresh start, no persisted tools
     // M11: Tool-specific background transition - no persisted tools from previous missions
-    // M12: Final mission - fresh gallery scene
-    // Tie-breakers: Clean scene - no persisted tools from any previous mission
+    // M12, M13, M15: Gallery scenes - clean start
+    // M14: Storage room - clean start
     // M8: NO old tools from workshop zone
     // Do NOT render persisted tools from previous missions here.
     // (This only affects visibility; it does not modify game state.)
     const isTieBreakerMission = mission.mission_id.includes('_tie_');
-    const hidePersistedToolsForThisMission = isTieBreakerMission || mission.mission_id === 'studio_07' || mission.mission_id === 'studio_09' || mission.mission_id === 'studio_11' || mission.mission_id === 'studio_12';
+    const hidePersistedToolsForThisMission = isTieBreakerMission || mission.mission_id === 'studio_07' || mission.mission_id === 'studio_09' || mission.mission_id === 'studio_11' || mission.mission_id === 'studio_12' || mission.mission_id === 'studio_13' || mission.mission_id === 'studio_14' || mission.mission_id === 'studio_15';
     
     // Add persisted tools from previous missions based on persist flag AND zone
     if (!hidePersistedToolsForThisMission) {
