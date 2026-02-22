@@ -13,6 +13,7 @@ import { ProcessingScreen } from '@/components/ProcessingScreen';
 import { SummaryScreen } from '@/components/SummaryScreen';
 
 import { DebugPanel } from '@/components/DebugPanel';
+import { AudioManager } from '@/components/AudioManager';
 import { TieBreakDebugPanel } from '@/components/TieBreakDebugPanel';
 import { toast } from 'sonner';
 import type { Dimension, HollandCode, MissionOption, LeadFormData } from '@/types/identity';
@@ -450,6 +451,7 @@ const Index = () => {
 
   return (
     <>
+      <AudioManager />
       <GameStage>
         {state.phase === 'dimension' && (
           <DimensionSelect onSelect={handleDimensionSelect} />
