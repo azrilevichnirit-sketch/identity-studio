@@ -1,23 +1,23 @@
 
 
-## Replace Tool Images for Missions 1-5
+## Replace Tool Images for Missions 6-10
 
 ### Overview
-Copy the 10 uploaded tool images to replace the existing ones for missions 1 through 5. No code changes needed -- only file replacements.
+Copy the 10 uploaded tool images to replace the existing ones for missions 6 through 10. No code changes needed -- file names match the existing imports in `assetUtils.ts`.
 
 ### Files to Replace
 | File | Upload Source | Description |
 |------|-------------|-------------|
-| `src/assets/tools/studio_01_a.webp` | `studio_01_a-3.webp` | Laser scanner on tripod |
-| `src/assets/tools/studio_01_b.webp` | `studio_01_b-3.webp` | Kanban task board |
-| `src/assets/tools/studio_02_a.webp` | `studio_02_a-2.webp` | Red toolbox |
-| `src/assets/tools/studio_02_b.webp` | `studio_02_b-2.webp` | Measurement tablet app |
-| `src/assets/tools/studio_03_a.webp` | `studio_03_a-3.webp` | Turntable with speakers |
-| `src/assets/tools/studio_03_b.webp` | `studio_03_b-3.webp` | Bar tables |
-| `src/assets/tools/studio_04_a.webp` | `studio_04_a-3.webp` | Seating area (sofa + chairs) |
-| `src/assets/tools/studio_04_b.webp` | `studio_04_b-3.webp` | Woodworking table |
-| `src/assets/tools/studio_05_a.webp` | `studio_05_a-2.webp` | Inflatable tube man |
-| `src/assets/tools/studio_05_b.webp` | `studio_05_b-2.webp` | Coffee station |
+| `src/assets/tools/studio_06_a.webp` | `studio_06_a-3.webp` | Circular saw |
+| `src/assets/tools/studio_06_b.webp` | `studio_06_b-3.webp` | Sketchbook with pencils |
+| `src/assets/tools/studio_07_a.webp` | `studio_07_a-2.webp` | Art storage shelving |
+| `src/assets/tools/studio_07_b.webp` | `studio_07_b-2.webp` | Glass display shelves |
+| `src/assets/tools/studio_08_a.webp` | `studio_08_a-3.webp` | Financial dashboard screen |
+| `src/assets/tools/studio_08_b.webp` | `studio_08_b-3.webp` | Press conference podium |
+| `src/assets/tools/studio_09_a.webp` | `studio_09_a-3.webp` | Colorful seating area |
+| `src/assets/tools/studio_09_b.webp` | `studio_09_b-2.webp` | Direction arrows |
+| `src/assets/tools/studio_10_a.webp` | `studio_10_a-4.webp` | Art restoration kit |
+| `src/assets/tools/studio_10_b.webp` | `studio_10_b-3.webp` | Content creation setup |
 
 ### What stays the same
 - All imports in `assetUtils.ts` remain unchanged (same file names)
