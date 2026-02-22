@@ -891,20 +891,22 @@ export function VisualPlayScreen({
     return 'gallery'; // gallery, storage, entry are all "gallery" zone
   };
   
-  const getZoneForMission = (missionSeq: number): 'gallery' | 'workshop' | 'exterior' | 'workshop2' | 'gallery2' | 'storage' => {
+  const getZoneForMission = (missionSeq: number): 'gallery' | 'workshop' | 'exterior' | 'workshop2' | 'gallery2' | 'storage' | 'doorway' => {
     // Zones per product spec (used ONLY for persisted tool visibility)
     // Gallery: Missions 1-2 (gallery scenes)
-    // Workshop: Missions 3, 4, 6, 7 (original workshop - M7 CONTINUES workshop!)
+    // Doorway: Mission 3 (doorway park view - separate zone, tools don't persist)
+    // Workshop: Missions 4, 6, 7 (original workshop - M7 CONTINUES workshop!)
     // Exterior: Mission 5 only
     // Workshop2: Missions 8, 10, 11 (workshop continuation - M11 shows M8+M10)
     // M9, M12, M13, M15 are clean gallery resets - no persisted tools
     // M14: Storage room - clean reset
     if (missionSeq <= 2) return 'gallery';
+    if (missionSeq === 3) return 'doorway';
     if (missionSeq === 5) return 'exterior';
     if (missionSeq === 9 || missionSeq === 12 || missionSeq === 13 || missionSeq === 15) return 'gallery'; // Clean reset
     if (missionSeq === 14) return 'storage'; // Clean reset - storage room
     if (missionSeq >= 8 && missionSeq <= 11) return 'workshop2';
-    return 'workshop'; // M3, 4, 6, 7
+    return 'workshop'; // M4, 6, 7
   };
 
   const displayedPlacement = useMemo(() => {
@@ -940,7 +942,7 @@ export function VisualPlayScreen({
     // Do NOT render persisted tools from previous missions here.
     // (This only affects visibility; it does not modify game state.)
     const isTieBreakerMission = mission.mission_id.includes('_tie_');
-    const hidePersistedToolsForThisMission = isTieBreakerMission || mission.mission_id === 'studio_07' || mission.mission_id === 'studio_09' || mission.mission_id === 'studio_11' || mission.mission_id === 'studio_12' || mission.mission_id === 'studio_13' || mission.mission_id === 'studio_14' || mission.mission_id === 'studio_15';
+    const hidePersistedToolsForThisMission = isTieBreakerMission || mission.mission_id === 'studio_03' || mission.mission_id === 'studio_07' || mission.mission_id === 'studio_09' || mission.mission_id === 'studio_11' || mission.mission_id === 'studio_12' || mission.mission_id === 'studio_13' || mission.mission_id === 'studio_14' || mission.mission_id === 'studio_15';
     
     // Add persisted tools from previous missions based on persist flag AND zone
     if (!hidePersistedToolsForThisMission) {
