@@ -192,6 +192,24 @@
     "z_layer": "front"
   },
   {
+    "background_asset_key": "studio_doorway_park_view_v5",
+    "anchor_ref": "m03_tool_a",
+    "x_pct": 0.724,
+    "y_pct": 0.869,
+    "scale": 3.3,
+    "z_layer": "front",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "studio_doorway_park_view_v5",
+    "anchor_ref": "m03_tool_b",
+    "x_pct": 0.48,
+    "y_pct": 0.905,
+    "scale": 2.9,
+    "z_layer": "front",
+    "flipX": true
+  },
+  {
     "background_asset_key": "studio_front_bg",
     "anchor_ref": "wall_back",
     "x_pct": 0.5,
