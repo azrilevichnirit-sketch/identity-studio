@@ -157,18 +157,20 @@
   {
     "background_asset_key": "studio_entry_inside_bg",
     "anchor_ref": "m02_tool_a",
-    "x_pct": 0.301,
-    "y_pct": 0.767,
-    "scale": 1.2,
-    "z_layer": "front"
+    "x_pct": 0.861,
+    "y_pct": 0.832,
+    "scale": 1.8,
+    "z_layer": "front",
+    "flipX": true
   },
   {
     "background_asset_key": "studio_entry_inside_bg",
     "anchor_ref": "m02_tool_b",
-    "x_pct": 0.117,
-    "y_pct": 0.677,
+    "x_pct": 0.764,
+    "y_pct": 0.868,
     "scale": 2,
-    "z_layer": "front"
+    "z_layer": "front",
+    "flipX": true
   },
   {
     "background_asset_key": "studio_entry_inside_bg",
