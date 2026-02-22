@@ -1423,6 +1423,14 @@
     "z_layer": "front"
   },
   {
+    "background_asset_key": "gallery_main_stylized",
+    "anchor_ref": "m13_extra_table",
+    "x_pct": 0.5,
+    "y_pct": 0.85,
+    "scale": 1.0,
+    "z_layer": "mid"
+  },
+  {
     "background_asset_key": "studio_in_storage_bg",
     "anchor_ref": "m14_tool_a",
     "x_pct": 0.4,

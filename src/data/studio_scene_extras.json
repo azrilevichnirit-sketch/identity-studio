@@ -43,6 +43,20 @@
   },
   {
     "world": "studio",
+    "phase": "main",
+    "order": 13,
+    "mission_id": "studio_13",
+    "trigger_when": "before",
+    "trigger_tool_ids": "",
+    "spawn_asset_key": "studio_coffee_table_01",
+    "spawn_count": 1,
+    "placement_mode": "floor",
+    "anchor_ref": "m13_extra_table",
+    "despawn_mode": "keep",
+    "despawn_value": ""
+  },
+  {
+    "world": "studio",
     "phase": "tb",
     "order": 1,
     "mission_id": "studio_tie_01",
