@@ -1,1 +1,4 @@
 project_id = "uehrfwwsiatqmcfmdioq"
+
+[functions.elevenlabs-music]
+verify_jwt = false
