@@ -189,8 +189,9 @@ const backgroundAssets: Record<string, string> = {
   studio_exterior_park_bg: studioExteriorBg,
   studio_exterior: studioExteriorBg,
   
-  // Doorway park view (Tie-breaker T14)
+  // Doorway park view (Mission 03, Tie-breaker T14)
   studio_doorway_park_view_bg: studioDoorwayParkBg,
+  studio_doorway_park_view_v5: studioDoorwayParkBg,
 };
 
 // Wide panoramic backgrounds for mobile panning (key -> asset)
@@ -213,6 +214,7 @@ const panoramicBackgrounds: Record<string, string> = {
   studio_exterior_bg: studioExteriorBg,
   studio_exterior_park_bg: studioExteriorBg,
   studio_doorway_park_view_bg: studioDoorwayParkBg,
+  studio_doorway_park_view_v5: studioDoorwayParkBg,
 };
 
 export function getPanoramicBackground(bgKey: string): string | null {
