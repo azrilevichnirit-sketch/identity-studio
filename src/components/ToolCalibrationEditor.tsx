@@ -209,6 +209,16 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
     }));
   };
 
+  const toggleExtraFlip = (extraId: string) => {
+    setExtraPositions(prev => ({
+      ...prev,
+      [extraId]: {
+        ...prev[extraId],
+        flipX: !(prev[extraId]?.flipX ?? false),
+      },
+    }));
+  };
+
   const copyToClipboard = () => {
     const isTie = mission.mission_id.includes('_tie_');
     const missionNum = mission.mission_id.replace('studio_', '').replace('tie_', '').padStart(2, '0');
@@ -242,11 +252,13 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
     if (!selectedExtra) return;
     const pos = extraPositions[selectedExtra];
     const entry = {
+      background_asset_key: currentBgKey,
       anchor_ref: `m${mission.mission_id.replace('studio_', '')}_desk`,
       x_pct: Math.round((pos?.x ?? 50) * 10) / 10 / 100,
       y_pct: Math.round((pos?.y ?? 75) * 10) / 10 / 100,
       scale: pos?.scale ?? 1,
       z_layer: "mid",
+      ...(pos?.flipX && { flipX: true }),
     };
     navigator.clipboard.writeText(JSON.stringify(entry, null, 2));
     alert('Extra JSON copied!');
@@ -342,12 +354,12 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
             onPointerUp={handlePointerUp}
           >
             {/* Extra image */}
-            <img 
+             <img 
               src={extra.image} 
               alt="Scene Extra" 
               className="w-32 h-32 object-contain pointer-events-none"
               style={{
-                transform: `scale(${pos.scale})`,
+                transform: `scale(${pos.scale})${pos.flipX ? ' scaleX(-1)' : ''}`,
                 filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.5))',
               }}
             />
@@ -381,16 +393,18 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
             </div>
             
             {/* Tool A controls */}
-            <div className="space-y-1 p-2 bg-yellow-500/10 rounded border border-yellow-500/30">
-              <div className="font-medium text-yellow-500">Tool A</div>
+            <div className={`space-y-1 p-2 rounded border cursor-pointer ${selectedTool === 'a' ? 'bg-yellow-500/20 border-yellow-400' : 'bg-yellow-500/10 border-yellow-500/30'}`}
+              onClick={() => { setSelectedTool('a'); setSelectedExtra(null); }}
+            >
+              <div className="font-medium text-yellow-500">Tool A {selectedTool === 'a' ? '✓' : ''}</div>
               <div className="flex items-center gap-2">
                 <span className="text-muted-foreground">Scale:</span>
-                <button onClick={() => adjustScale('a', -0.1)} className="px-2 py-1 bg-muted rounded hover:bg-accent">-</button>
+                <button onClick={(e) => { e.stopPropagation(); adjustScale('a', -0.1); }} className="px-2 py-1 bg-muted rounded hover:bg-accent">-</button>
                 <span>{positions.a.scale.toFixed(1)}</span>
-                <button onClick={() => adjustScale('a', 0.1)} className="px-2 py-1 bg-muted rounded hover:bg-accent">+</button>
+                <button onClick={(e) => { e.stopPropagation(); adjustScale('a', 0.1); }} className="px-2 py-1 bg-muted rounded hover:bg-accent">+</button>
               </div>
               <button
-                onClick={() => toggleFlip('a')}
+                onClick={(e) => { e.stopPropagation(); toggleFlip('a'); }}
                 className={`px-2 py-1 rounded text-xs ${positions.a.flipX ? 'bg-yellow-500 text-black' : 'bg-muted'}`}
               >
                 FlipX: {positions.a.flipX ? 'ON' : 'OFF'}
@@ -398,16 +412,18 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
             </div>
             
             {/* Tool B controls */}
-            <div className="space-y-1 p-2 bg-blue-500/10 rounded border border-blue-500/30">
-              <div className="font-medium text-blue-400">Tool B</div>
+            <div className={`space-y-1 p-2 rounded border cursor-pointer ${selectedTool === 'b' ? 'bg-blue-500/20 border-blue-400' : 'bg-blue-500/10 border-blue-500/30'}`}
+              onClick={() => { setSelectedTool('b'); setSelectedExtra(null); }}
+            >
+              <div className="font-medium text-blue-400">Tool B {selectedTool === 'b' ? '✓' : ''}</div>
               <div className="flex items-center gap-2">
                 <span className="text-muted-foreground">Scale:</span>
-                <button onClick={() => adjustScale('b', -0.1)} className="px-2 py-1 bg-muted rounded hover:bg-accent">-</button>
+                <button onClick={(e) => { e.stopPropagation(); adjustScale('b', -0.1); }} className="px-2 py-1 bg-muted rounded hover:bg-accent">-</button>
                 <span>{positions.b.scale.toFixed(1)}</span>
-                <button onClick={() => adjustScale('b', 0.1)} className="px-2 py-1 bg-muted rounded hover:bg-accent">+</button>
+                <button onClick={(e) => { e.stopPropagation(); adjustScale('b', 0.1); }} className="px-2 py-1 bg-muted rounded hover:bg-accent">+</button>
               </div>
               <button
-                onClick={() => toggleFlip('b')}
+                onClick={(e) => { e.stopPropagation(); toggleFlip('b'); }}
                 className={`px-2 py-1 rounded text-xs ${positions.b.flipX ? 'bg-blue-500 text-white' : 'bg-muted'}`}
               >
                 FlipX: {positions.b.flipX ? 'ON' : 'OFF'}
@@ -442,6 +458,12 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
                             <span className="text-[10px]">{pos.scale.toFixed(1)}</span>
                             <button onClick={() => adjustExtraScale(extra.id, 0.1)} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">+</button>
                           </div>
+                          <button
+                            onClick={() => toggleExtraFlip(extra.id)}
+                            className={`px-2 py-1 rounded text-[10px] ${pos.flipX ? 'bg-orange-500 text-white' : 'bg-muted'}`}
+                          >
+                            FlipX: {pos.flipX ? 'ON' : 'OFF'}
+                          </button>
                           <button
                             onClick={copyExtraToClipboard}
                             className="w-full px-2 py-1 bg-orange-600 text-white rounded text-[10px] hover:bg-orange-500"
