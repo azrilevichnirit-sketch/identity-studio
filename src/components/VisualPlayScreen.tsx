@@ -1070,7 +1070,7 @@ export function VisualPlayScreen({
               style={{
                 left: `${leftPos}%`,
                 top: `${topPos}%`,
-                transform: `translate(-50%, -100%) scale(${scale})`,
+                transform: `translate(-50%, -100%) scale(${scale})${anchorPos.flipX ? ' scaleX(-1)' : ''}`,
                 zIndex,
               }}
             >
