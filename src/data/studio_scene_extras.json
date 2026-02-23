@@ -37,7 +37,7 @@
     "spawn_asset_key": "studio_coffee_table_01",
     "spawn_count": 1,
     "placement_mode": "floor",
-    "anchor_ref": "m13_extra_table",
+    "anchor_ref": "m13_desk",
     "despawn_mode": "remove_after_mission_id",
     "despawn_value": "studio_13"
   },
