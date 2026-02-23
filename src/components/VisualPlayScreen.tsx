@@ -152,7 +152,13 @@ export function VisualPlayScreen({
   // Preload the “painted walls” background to avoid a flash/jump on transition.
   useEffect(() => {
     preloadAllBackgrounds();
-  }, []);
+    // Preload all avatar images so they appear instantly in the speech bubble
+    const avatarImg = getAvatarImage(avatarGender, 'idle');
+    if (avatarImg) {
+      const img = new Image();
+      img.src = avatarImg;
+    }
+  }, [avatarGender]);
 
   // Track if we're transitioning from Mission 7 (need to preserve bg during fixation)
   const m7TransitionRef = useRef<{ active: boolean; bgKey: string | null }>({ active: false, bgKey: null });
@@ -754,11 +760,12 @@ export function VisualPlayScreen({
     
     // ===== TIMING SEQUENCE =====
     // Tool -> Lock pulse -> Advance to next mission
-    // Mission 01 Paint:  600ms lock -> 1000ms beat -> 2000ms advance
-    // Mission 01 Tool B: 200ms lock -> 1400ms advance
-    // Mission 02:        80ms lock -> 1400ms advance 
-    // Mission 07/11:     80ms lock -> 2000ms advance (bg fixation)
-    // Regular:           80ms lock -> 1000ms advance (snappy!)
+    // The player MUST see the tool placed for ~1s before advancing.
+    // Mission 01 Paint:  600ms lock -> 1000ms beat -> 2200ms advance
+    // Mission 01 Tool B: 200ms lock -> 1600ms advance
+    // Mission 02:        80ms lock -> 1600ms advance 
+    // Mission 07/11:     80ms lock -> 2200ms advance (bg fixation)
+    // Regular:           80ms lock -> 1400ms advance (visible ~1.3s)
     // ===============================================
     
     const lockDelayMs = isMission01Paint ? 600 : (isMission01ToolB ? 200 : 80);
@@ -776,8 +783,6 @@ export function VisualPlayScreen({
     timeoutsRef.current.push(lockOffId);
 
     // Step 2: "Painted walls" beat before transitioning (only for Tool A paint scenario, NOT for Tool B)
-    // Product rule: from mission 02 onwards, walls are ALWAYS white.
-    // So we only allow background beats during mission 01 (paint scenario).
     const allowBgBeat = mission.phase === 'main' && mission.sequence < 2;
     const hasBgBeat = allowBgBeat && (!!option.next_bg_override || isMission01Paint);
     if (hasBgBeat && !isMission01ToolB) {
@@ -800,11 +805,11 @@ export function VisualPlayScreen({
     
     // Step 3: Advance to next mission
     const isMission02 = mission.mission_id === 'studio_02';
-    const advanceDelay = isMission01Paint ? 2000 
-      : isMission01ToolB ? 1400 
-      : isMission02 ? 1400 
-      : (isMission07 || isMission11) ? 2000
-      : 1000;
+    const advanceDelay = isMission01Paint ? 2200 
+      : isMission01ToolB ? 1600 
+      : isMission02 ? 1600 
+      : (isMission07 || isMission11) ? 2200
+      : 1400;
     const advanceId = window.setTimeout(() => {
       // For Mission 01 Tool B: DON'T clear localPlacement before onSelect
       // This prevents the tool from disappearing before it's added to placedProps
@@ -940,7 +945,7 @@ export function VisualPlayScreen({
     // Do NOT render persisted tools from previous missions here.
     // (This only affects visibility; it does not modify game state.)
     const isTieBreakerMission = mission.mission_id.includes('_tie_');
-    const hidePersistedToolsForThisMission = isTieBreakerMission || mission.mission_id === 'studio_03' || mission.mission_id === 'studio_07' || mission.mission_id === 'studio_09' || mission.mission_id === 'studio_11' || mission.mission_id === 'studio_12' || mission.mission_id === 'studio_13' || mission.mission_id === 'studio_14' || mission.mission_id === 'studio_15';
+    const hidePersistedToolsForThisMission = isTieBreakerMission || mission.mission_id === 'studio_03' || mission.mission_id === 'studio_06' || mission.mission_id === 'studio_07' || mission.mission_id === 'studio_08' || mission.mission_id === 'studio_09' || mission.mission_id === 'studio_10' || mission.mission_id === 'studio_11' || mission.mission_id === 'studio_12' || mission.mission_id === 'studio_13' || mission.mission_id === 'studio_14' || mission.mission_id === 'studio_15';
     
     // Add persisted tools from previous missions based on persist flag AND zone
     if (!hidePersistedToolsForThisMission) {
