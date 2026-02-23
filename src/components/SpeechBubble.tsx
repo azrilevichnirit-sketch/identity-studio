@@ -50,7 +50,7 @@ export function SpeechBubble({
       // Remove animation class after it completes
       const timer = setTimeout(() => {
         setIsNewMission(false);
-      }, 800);
+      }, 1200);
       
       return () => clearTimeout(timer);
     }
