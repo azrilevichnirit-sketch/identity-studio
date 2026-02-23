@@ -1058,8 +1058,10 @@ export function VisualPlayScreen({
           // Get anchor position from the current background
           const anchorPos = getAnchorPosition(lockedBgKey, extra.anchorRef);
           if (!anchorPos) {
+            console.warn(`[EXTRAS] No anchor found for ${extra.anchorRef} on bg=${lockedBgKey}`);
             return null;
           }
+          console.log(`[EXTRAS] ${extra.anchorRef}: bg=${lockedBgKey}, x=${anchorPos.x.toFixed(1)}%, y=${anchorPos.y.toFixed(1)}%, scale=${anchorPos.scale}, flipX=${anchorPos.flipX}`);
           
           const zIndex = zIndexForAnchorLayer(extra.zLayer);
           const rawLeftPos = anchorPos.x + extra.offsetX;
