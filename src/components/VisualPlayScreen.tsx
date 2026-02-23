@@ -97,6 +97,9 @@ export function VisualPlayScreen({
   const [isBackgroundTransitioning, setIsBackgroundTransitioning] = useState(false);
   const previousBgKeyRef = useRef<string | null>(null);
   
+  // Calibration editor overrides for scene extras (position/scale)
+  const [extraOverrides, setExtraOverrides] = useState<Record<string, { x: number; y: number; scale: number }>>({});
+  
   // Local placement state - shows tool BEFORE it's added to global placedProps
   const [localPlacement, setLocalPlacement] = useState<{
     missionId: string;
@@ -1061,7 +1064,8 @@ export function VisualPlayScreen({
           const rawLeftPos = anchorPos.x + extra.offsetX;
           const leftPos = (isMobile && isPanoramic) ? anchorXToPanoramicLeft(rawLeftPos) : rawLeftPos;
           const topPos = anchorPos.y + extra.offsetY;
-          const scale = extra.scale * (anchorPos.scale || 1);
+          const override = extraOverrides[extra.id];
+          const scale = override ? override.scale : extra.scale * (anchorPos.scale || 1);
           
           return (
             <div
@@ -1087,7 +1091,7 @@ export function VisualPlayScreen({
         })}
       </div>
     );
-  }, [sceneExtras, lockedBgKey]);
+  }, [sceneExtras, lockedBgKey, extraOverrides]);
 
   const targetZoneElement = activeToolVariant && targetPosition ? (
     <div
@@ -2020,6 +2024,9 @@ export function VisualPlayScreen({
             currentBgKey={lockedBgKey}
             onNextMission={onEditorNextMission}
             sceneExtras={sceneExtras}
+            onExtraPositionChange={(extraId, x, y, scale) => {
+              setExtraOverrides(prev => ({ ...prev, [extraId]: { x, y, scale } }));
+            }}
           />
         );
       })()}
