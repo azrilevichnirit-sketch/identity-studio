@@ -1540,8 +1540,8 @@
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m15_tool_b",
-    "x_pct": 0.241,
-    "y_pct": 0.62,
+    "x_pct": 0.184,
+    "y_pct": 0.609,
     "scale": 1.4,
     "z_layer": "front",
     "flipX": true
