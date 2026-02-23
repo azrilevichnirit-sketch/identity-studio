@@ -128,6 +128,7 @@ function MobileMissionLayout({
   toolPanel,
   draggingGhost,
   edgePanIndicators,
+  calibrationOverlay,
   stageRef,
   onCancelCarry,
   isCarryMode,
