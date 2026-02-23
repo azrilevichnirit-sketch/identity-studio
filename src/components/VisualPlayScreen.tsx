@@ -1049,8 +1049,8 @@ export function VisualPlayScreen({
   const sceneExtras = useSceneExtras(mission.mission_id, currentIndex, placedProps);
   
   const sceneExtrasElement = useMemo(() => {
-    // Only render extras for missions that define them
-    if (sceneExtras.length === 0) return null;
+    // Hide actual extras when calibration editor is active (it renders its own copies)
+    if (sceneExtras.length === 0 || toolEditMode) return null;
     
     return (
       <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 5 }}>
@@ -1092,7 +1092,7 @@ export function VisualPlayScreen({
         })}
       </div>
     );
-  }, [sceneExtras, lockedBgKey, extraOverrides]);
+  }, [sceneExtras, lockedBgKey, extraOverrides, toolEditMode]);
 
   const targetZoneElement = activeToolVariant && targetPosition ? (
     <div
