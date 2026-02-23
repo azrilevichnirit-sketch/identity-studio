@@ -397,18 +397,33 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
               onClick={() => { setSelectedTool('a'); setSelectedExtra(null); }}
             >
               <div className="font-medium text-yellow-500">Tool A {selectedTool === 'a' ? '✓' : ''}</div>
-              <div className="flex items-center gap-2">
-                <span className="text-muted-foreground">Scale:</span>
-                <button onClick={(e) => { e.stopPropagation(); adjustScale('a', -0.1); }} className="px-2 py-1 bg-muted rounded hover:bg-accent">-</button>
-                <span>{positions.a.scale.toFixed(1)}</span>
-                <button onClick={(e) => { e.stopPropagation(); adjustScale('a', 0.1); }} className="px-2 py-1 bg-muted rounded hover:bg-accent">+</button>
+              <div className="text-[10px] text-muted-foreground">
+                X: {positions.a.x.toFixed(1)}% | Y: {positions.a.y.toFixed(1)}%
               </div>
-              <button
-                onClick={(e) => { e.stopPropagation(); toggleFlip('a'); }}
-                className={`px-2 py-1 rounded text-xs ${positions.a.flipX ? 'bg-yellow-500 text-black' : 'bg-muted'}`}
-              >
-                FlipX: {positions.a.flipX ? 'ON' : 'OFF'}
-              </button>
+              {selectedTool === 'a' && (
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1">
+                    <span className="text-muted-foreground text-[10px] w-6">X:</span>
+                    <button onClick={(e) => { e.stopPropagation(); setPositions(p => ({ ...p, a: { ...p.a, x: Math.max(0, p.a.x - 1) } })); }} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">-</button>
+                    <button onClick={(e) => { e.stopPropagation(); setPositions(p => ({ ...p, a: { ...p.a, x: Math.min(100, p.a.x + 1) } })); }} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">+</button>
+                    <span className="text-muted-foreground text-[10px] w-6 ml-2">Y:</span>
+                    <button onClick={(e) => { e.stopPropagation(); setPositions(p => ({ ...p, a: { ...p.a, y: Math.max(0, p.a.y - 1) } })); }} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">-</button>
+                    <button onClick={(e) => { e.stopPropagation(); setPositions(p => ({ ...p, a: { ...p.a, y: Math.min(100, p.a.y + 1) } })); }} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">+</button>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground">Scale:</span>
+                    <button onClick={(e) => { e.stopPropagation(); adjustScale('a', -0.1); }} className="px-2 py-1 bg-muted rounded hover:bg-accent">-</button>
+                    <span>{positions.a.scale.toFixed(1)}</span>
+                    <button onClick={(e) => { e.stopPropagation(); adjustScale('a', 0.1); }} className="px-2 py-1 bg-muted rounded hover:bg-accent">+</button>
+                  </div>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); toggleFlip('a'); }}
+                    className={`px-2 py-1 rounded text-xs ${positions.a.flipX ? 'bg-yellow-500 text-black' : 'bg-muted'}`}
+                  >
+                    FlipX: {positions.a.flipX ? 'ON' : 'OFF'}
+                  </button>
+                </div>
+              )}
             </div>
             
             {/* Tool B controls */}
@@ -416,18 +431,33 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
               onClick={() => { setSelectedTool('b'); setSelectedExtra(null); }}
             >
               <div className="font-medium text-blue-400">Tool B {selectedTool === 'b' ? '✓' : ''}</div>
-              <div className="flex items-center gap-2">
-                <span className="text-muted-foreground">Scale:</span>
-                <button onClick={(e) => { e.stopPropagation(); adjustScale('b', -0.1); }} className="px-2 py-1 bg-muted rounded hover:bg-accent">-</button>
-                <span>{positions.b.scale.toFixed(1)}</span>
-                <button onClick={(e) => { e.stopPropagation(); adjustScale('b', 0.1); }} className="px-2 py-1 bg-muted rounded hover:bg-accent">+</button>
+              <div className="text-[10px] text-muted-foreground">
+                X: {positions.b.x.toFixed(1)}% | Y: {positions.b.y.toFixed(1)}%
               </div>
-              <button
-                onClick={(e) => { e.stopPropagation(); toggleFlip('b'); }}
-                className={`px-2 py-1 rounded text-xs ${positions.b.flipX ? 'bg-blue-500 text-white' : 'bg-muted'}`}
-              >
-                FlipX: {positions.b.flipX ? 'ON' : 'OFF'}
-              </button>
+              {selectedTool === 'b' && (
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1">
+                    <span className="text-muted-foreground text-[10px] w-6">X:</span>
+                    <button onClick={(e) => { e.stopPropagation(); setPositions(p => ({ ...p, b: { ...p.b, x: Math.max(0, p.b.x - 1) } })); }} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">-</button>
+                    <button onClick={(e) => { e.stopPropagation(); setPositions(p => ({ ...p, b: { ...p.b, x: Math.min(100, p.b.x + 1) } })); }} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">+</button>
+                    <span className="text-muted-foreground text-[10px] w-6 ml-2">Y:</span>
+                    <button onClick={(e) => { e.stopPropagation(); setPositions(p => ({ ...p, b: { ...p.b, y: Math.max(0, p.b.y - 1) } })); }} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">-</button>
+                    <button onClick={(e) => { e.stopPropagation(); setPositions(p => ({ ...p, b: { ...p.b, y: Math.min(100, p.b.y + 1) } })); }} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">+</button>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground">Scale:</span>
+                    <button onClick={(e) => { e.stopPropagation(); adjustScale('b', -0.1); }} className="px-2 py-1 bg-muted rounded hover:bg-accent">-</button>
+                    <span>{positions.b.scale.toFixed(1)}</span>
+                    <button onClick={(e) => { e.stopPropagation(); adjustScale('b', 0.1); }} className="px-2 py-1 bg-muted rounded hover:bg-accent">+</button>
+                  </div>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); toggleFlip('b'); }}
+                    className={`px-2 py-1 rounded text-xs ${positions.b.flipX ? 'bg-blue-500 text-white' : 'bg-muted'}`}
+                  >
+                    FlipX: {positions.b.flipX ? 'ON' : 'OFF'}
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Scene Extras controls */}
