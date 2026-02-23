@@ -731,8 +731,8 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m06_extra_desk",
-    "x_pct": 0.841,
-    "y_pct": 0.886,
+    "x_pct": 0.859,
+    "y_pct": 0.873,
     "scale": 1.8,
     "z_layer": "mid",
     "flipX": true
