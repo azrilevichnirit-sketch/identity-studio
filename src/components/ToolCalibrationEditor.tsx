@@ -286,8 +286,8 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
 
   return (
     <>
-      {/* Draggable elements container - must match game-stage coordinate space */}
-      <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 90 }}>
+      {/* Draggable elements container - positioned inside game-stage coordinate space */}
+      <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 90 }}>
       {/* Tool A - anchored at bottom-center like real placement */}
       <div
         className={`absolute cursor-move touch-none pointer-events-auto ${selectedTool === 'a' ? 'z-[110]' : 'z-[100]'}`}

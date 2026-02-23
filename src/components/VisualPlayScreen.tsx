@@ -1964,6 +1964,41 @@ export function VisualPlayScreen({
     return items;
   }, [displayedPlacement, lockedBgKey, isMobile]);
 
+  // Calibration overlay - rendered inside game-stage for coordinate alignment
+  const calibrationOverlayElement = useMemo(() => {
+    if (!toolEditMode) return null;
+    if (mission.mission_id === 'studio_07') {
+      return <Mission7CalibrationEditor mission={mission} onBackgroundChange={handleM7BackgroundChange} />;
+    }
+    if (mission.mission_id === 'studio_11') {
+      return <Mission11CalibrationEditor mission={mission} onBackgroundChange={handleM7BackgroundChange} />;
+    }
+    const optA = mission.options.find(o => o.key === 'a');
+    const optB = mission.options.find(o => o.key === 'b');
+    const isBranching = mission.phase === 'tb' && optA?.next_bg_override && optB?.next_bg_override && optA.next_bg_override !== optB.next_bg_override;
+    if (isBranching) {
+      return (
+        <BranchingCalibrationEditor
+          mission={mission}
+          bgKeyA={optA!.next_bg_override!}
+          bgKeyB={optB!.next_bg_override!}
+          onBackgroundChange={handleM7BackgroundChange}
+        />
+      );
+    }
+    return (
+      <ToolCalibrationEditor
+        mission={mission}
+        currentBgKey={lockedBgKey}
+        onNextMission={onEditorNextMission}
+        sceneExtras={sceneExtras}
+        onExtraPositionChange={(extraId, x, y, scale) => {
+          setExtraOverrides(prev => ({ ...prev, [extraId]: { x, y, scale } }));
+        }}
+      />
+    );
+  }, [toolEditMode, mission, lockedBgKey, sceneExtras, onEditorNextMission, handleM7BackgroundChange]);
+
   return (
     <>
       <MissionLayout
@@ -1990,52 +2025,8 @@ export function VisualPlayScreen({
         isDragging={!!draggingTool}
         onCancelCarry={handleCancelCarry}
         isPanoramic={isPanoramic}
+        calibrationOverlay={calibrationOverlayElement}
       />
-      
-      {/* Water leak effect removed - no longer needed for Mission 9 */}
-      
-      {/* Tool Calibration Editor */}
-      {toolEditMode && mission.mission_id === 'studio_07' && (
-        <Mission7CalibrationEditor
-          mission={mission}
-          onBackgroundChange={handleM7BackgroundChange}
-        />
-      )}
-      {toolEditMode && mission.mission_id === 'studio_11' && (
-        <Mission11CalibrationEditor
-          mission={mission}
-          onBackgroundChange={handleM7BackgroundChange}
-        />
-      )}
-      {/* Branching tie-breakers (T4, T7, T8) - each tool on different background */}
-      {/* IMPORTANT: Only tie-breaker missions use branching editor. Main missions place tools */}
-      {/* on the CURRENT background; next_bg_override only switches AFTER placement. */}
-      {toolEditMode && mission.mission_id !== 'studio_07' && mission.mission_id !== 'studio_11' && (() => {
-        const optA = mission.options.find(o => o.key === 'a');
-        const optB = mission.options.find(o => o.key === 'b');
-        const isBranching = mission.phase === 'tb' && optA?.next_bg_override && optB?.next_bg_override && optA.next_bg_override !== optB.next_bg_override;
-        if (isBranching) {
-          return (
-            <BranchingCalibrationEditor
-              mission={mission}
-              bgKeyA={optA!.next_bg_override!}
-              bgKeyB={optB!.next_bg_override!}
-              onBackgroundChange={handleM7BackgroundChange}
-            />
-          );
-        }
-        return (
-          <ToolCalibrationEditor
-            mission={mission}
-            currentBgKey={lockedBgKey}
-            onNextMission={onEditorNextMission}
-            sceneExtras={sceneExtras}
-            onExtraPositionChange={(extraId, x, y, scale) => {
-              setExtraOverrides(prev => ({ ...prev, [extraId]: { x, y, scale } }));
-            }}
-          />
-        );
-      })()}
     </>
   );
 }

@@ -41,6 +41,8 @@ export interface MissionLayoutProps {
   panOffsetX?: number;
   /** Whether panoramic panning is active */
   isPanoramic?: boolean;
+  /** Calibration overlay (rendered inside game-stage for coordinate alignment) */
+  calibrationOverlay?: React.ReactNode;
 }
 
 /**
@@ -59,6 +61,7 @@ function DesktopMissionLayout({
   speechBubble,
   toolPanel,
   draggingGhost,
+  calibrationOverlay,
   stageRef,
   onCancelCarry,
   isCarryMode,
@@ -97,6 +100,9 @@ function DesktopMissionLayout({
         {toolPanel}
       </div>
 
+      {/* Calibration overlay (inside game-stage for coordinate alignment) */}
+      {calibrationOverlay}
+
       {/* Dragging ghost */}
       {draggingGhost}
     </div>
@@ -122,6 +128,7 @@ function MobileMissionLayout({
   toolPanel,
   draggingGhost,
   edgePanIndicators,
+  calibrationOverlay,
   stageRef,
   onCancelCarry,
   isCarryMode,
@@ -194,6 +201,9 @@ function MobileMissionLayout({
 
       {/* Edge pan indicators (mobile only) */}
       {edgePanIndicators}
+
+      {/* Calibration overlay (inside game-stage for coordinate alignment) */}
+      {calibrationOverlay}
 
       {/* Dragging ghost */}
       {draggingGhost}
