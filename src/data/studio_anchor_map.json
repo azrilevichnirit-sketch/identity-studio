@@ -1474,9 +1474,10 @@
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m15_tool_b",
-    "x_pct": 0.793,
-    "y_pct": 0.775,
-    "scale": 1.2,
-    "z_layer": "front"
+    "x_pct": 0.241,
+    "y_pct": 0.62,
+    "scale": 1.4,
+    "z_layer": "front",
+    "flipX": true
   }
 ]
