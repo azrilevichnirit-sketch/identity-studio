@@ -1990,6 +1990,7 @@ export function VisualPlayScreen({
         isDragging={!!draggingTool}
         onCancelCarry={handleCancelCarry}
         isPanoramic={isPanoramic}
+        calibrationOverlay={calibrationOverlayElement}
       />
       
       {/* Water leak effect removed - no longer needed for Mission 9 */}
