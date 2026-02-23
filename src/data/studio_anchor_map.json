@@ -847,17 +847,16 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m08_tool_a",
-    "x_pct": 0.545,
-    "y_pct": 0.949,
+    "x_pct": 0.113,
+    "y_pct": 0.615,
     "scale": 3.9,
-    "z_layer": "front",
-    "flipX": true
+    "z_layer": "front"
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m08_tool_b",
-    "x_pct": 0.903,
-    "y_pct": 0.806,
+    "x_pct": 0.759,
+    "y_pct": 0.839,
     "scale": 2.9,
     "z_layer": "front",
     "flipX": true
