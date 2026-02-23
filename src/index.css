@@ -793,6 +793,7 @@
   overflow: hidden;
   margin: 0;
   padding: 0;
+  direction: ltr; /* Neutralize RTL for absolute positioning of tools/props */
 }
 
 /* Background layer - covers entire stage */
