@@ -37,7 +37,6 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
         className="game-stage flex flex-col items-start justify-start lg:items-center lg:justify-center"
         style={{
           background: '#FFFFFF',
-          direction: 'rtl',
         }}
       >
         {/* Content - positioned at top on mobile, centered on desktop */}
@@ -47,8 +46,8 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
             paddingTop: 'max(env(safe-area-inset-top, 16px), 24px)',
           }}
         >
-          {/* Logo - above title, aligned right (RTL) */}
-          <div className="w-full flex justify-start px-4 -mb-8 md:-mb-0">
+          {/* Logo - above title, aligned right */}
+          <div className="w-full flex px-4 -mb-8 md:-mb-0" style={{ justifyContent: 'flex-end' }}>
             <img 
               src={kinneretLogo} 
               alt="האקדמית כנרת" 
@@ -63,7 +62,7 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
           </div>
           
           {/* Dimension cards - stacked on mobile, row on tablet+ */}
-          <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 md:gap-6 w-full px-2">
+          <div className="flex flex-col sm:flex-row-reverse flex-wrap justify-center gap-3 md:gap-6 w-full px-2">
             {DIMENSIONS.map((dim) => {
               const isSelected = selectedDimension === dim.key;
               
