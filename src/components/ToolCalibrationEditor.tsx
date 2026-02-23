@@ -286,9 +286,11 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
 
   return (
     <>
+      {/* Draggable elements container - must match game-stage coordinate space */}
+      <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 90 }}>
       {/* Tool A - anchored at bottom-center like real placement */}
       <div
-        className={`absolute cursor-move touch-none ${selectedTool === 'a' ? 'z-[110]' : 'z-[100]'}`}
+        className={`absolute cursor-move touch-none pointer-events-auto ${selectedTool === 'a' ? 'z-[110]' : 'z-[100]'}`}
         style={{
           left: `${positions.a.x}%`,
           top: `${positions.a.y}%`,
@@ -323,7 +325,7 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
       
       {/* Tool B - anchored at bottom-center like real placement */}
       <div
-        className={`absolute cursor-move touch-none ${selectedTool === 'b' ? 'z-[110]' : 'z-[100]'}`}
+        className={`absolute cursor-move touch-none pointer-events-auto ${selectedTool === 'b' ? 'z-[110]' : 'z-[100]'}`}
         style={{
           left: `${positions.b.x}%`,
           top: `${positions.b.y}%`,
@@ -363,7 +365,7 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
         return (
           <div
             key={extra.id}
-            className={`absolute cursor-move touch-none ${selectedExtra === extra.id ? 'z-[115]' : 'z-[95]'}`}
+            className={`absolute cursor-move touch-none pointer-events-auto ${selectedExtra === extra.id ? 'z-[115]' : 'z-[95]'}`}
             style={{
               left: `${pos.x}%`,
               top: `${pos.y}%`,
@@ -389,6 +391,7 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
           </div>
         );
       })}
+      </div>
 
       {/* Control panel */}
       <div className="fixed top-4 right-4 z-[200] bg-card border border-border rounded-lg shadow-xl text-xs max-w-[220px] max-h-[80vh] overflow-y-auto">
