@@ -18,6 +18,7 @@ import studioExteriorBg from '@/assets/backgrounds/studio_exterior_park_stylized
 import studioEntranceViewBg from '@/assets/backgrounds/studio_entrance_view_stylized_v7.webp';
 import studioStorageBg from '@/assets/backgrounds/studio_in_storage_v2.webp';
 import studioDoorwayParkBg from '@/assets/backgrounds/studio_doorway_park_view_v5.webp';
+import galleryMobileWideBg from '@/assets/backgrounds/gallery_main_mobile_wide.webp';
 
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
@@ -192,6 +193,9 @@ const backgroundAssets: Record<string, string> = {
   // Doorway park view (Mission 03, Tie-breaker T14)
   studio_doorway_park_view_bg: studioDoorwayParkBg,
   studio_doorway_park_view_v5: studioDoorwayParkBg,
+  
+  // Gallery mobile wide (Mission 11 Tool B destination)
+  gallery_main_mobile_wide: galleryMobileWideBg,
 };
 
 // Wide panoramic backgrounds for mobile panning (key -> asset)
@@ -215,6 +219,7 @@ const panoramicBackgrounds: Record<string, string> = {
   studio_exterior_park_bg: studioExteriorBg,
   studio_doorway_park_view_bg: studioDoorwayParkBg,
   studio_doorway_park_view_v5: studioDoorwayParkBg,
+  gallery_main_mobile_wide: galleryMobileWideBg,
 };
 
 export function getPanoramicBackground(bgKey: string): string | null {

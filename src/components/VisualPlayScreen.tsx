@@ -346,7 +346,7 @@ export function VisualPlayScreen({
     // Mission 11: Tool-specific destination rooms
     // Tool A -> Exterior (festival), Tool B -> Gallery (expansion plan)
     if (mission.mission_id === 'studio_11') {
-      const targetBgKey = option.key === 'a' ? 'studio_exterior_bg' : 'gallery_main_stylized';
+      const targetBgKey = option.key === 'a' ? 'studio_in_workshop_bg' : 'gallery_main_mobile_wide';
       const targetBgImage = getBackgroundByName(targetBgKey) || currentBg;
       return { key: targetBgKey, image: targetBgImage };
     }
