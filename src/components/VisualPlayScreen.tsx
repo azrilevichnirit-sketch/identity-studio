@@ -552,12 +552,24 @@ export function VisualPlayScreen({
          anchorPos = getAnchorPosition(targetBgKey, fallbackAnchorRef);
        }
         if (anchorPos) {
-          // Mission 7 on mobile panoramic: transform x-coord to panoramic viewport space
           if (isMobile && isPanoramic) {
-            return {
-              ...anchorPos,
-              x: anchorXToPanoramicLeft(anchorPos.x),
-            };
+            return { ...anchorPos, x: anchorXToPanoramicLeft(anchorPos.x) };
+          }
+          return anchorPos;
+        }
+     }
+
+     // SPECIAL CASE: Mission 11 - tool-specific destination rooms
+     // Tool A -> studio_in_workshop_bg, Tool B -> gallery_main_mobile_wide
+     if (mission.mission_id === 'studio_11') {
+       const targetBgKey = variant === 'a' ? 'studio_in_workshop_bg' : 'gallery_main_mobile_wide';
+       let anchorPos = getAnchorPosition(targetBgKey, preferredAnchorRef);
+       if (!anchorPos) {
+         anchorPos = getAnchorPosition(targetBgKey, fallbackAnchorRef);
+       }
+        if (anchorPos) {
+          if (isMobile && isPanoramic) {
+            return { ...anchorPos, x: anchorXToPanoramicLeft(anchorPos.x) };
           }
           return anchorPos;
         }
@@ -1479,9 +1491,9 @@ export function VisualPlayScreen({
       }
     }
 
-    // Mission 11 Tool B: single placement using anchor map coordinates
+    // Mission 11 Tool B: placed in Gallery Wide (different background!)
     if (prop.missionId === 'studio_11' && prop.key === 'b') {
-      const anchorPos = getAnchorPosition('studio_in_workshop_bg', 'm11_tool_b');
+      const anchorPos = getAnchorPosition('gallery_main_mobile_wide', 'm11_tool_b');
       if (anchorPos) {
         return [{ 
           anchor: 'm11_tool_b' as AnchorRef, 
@@ -1510,6 +1522,7 @@ export function VisualPlayScreen({
           absoluteY: anchorPos.y,
           absoluteX: startX + i * spacing,
           flipX: anchorPos.flipX,
+          noStagger: true, // All duplicates appear simultaneously
         }));
       }
     }
@@ -1628,8 +1641,8 @@ export function VisualPlayScreen({
           const anchorPos = getAnchorPosition(anchorKeyForPlacement, anchorInfo.anchor);
           if (!anchorPos) return null;
           
-          // Stagger animation for duplicates - longer delay for better visibility
-          const animationDelay = idx * 300;
+          // Stagger animation for duplicates - skip stagger if noStagger flag is set
+          const animationDelay = (anchorInfo as any).noStagger ? 0 : idx * 300;
           // Use custom scale if provided, otherwise default
           const finalScale = anchorInfo.customScale || (anchorPos.scale * 2.2);
           
