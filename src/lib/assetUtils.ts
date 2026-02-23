@@ -19,6 +19,7 @@ import studioEntranceViewBg from '@/assets/backgrounds/studio_entrance_view_styl
 import studioStorageBg from '@/assets/backgrounds/studio_in_storage_v2.webp';
 import studioDoorwayParkBg from '@/assets/backgrounds/studio_doorway_park_view_v5.webp';
 import galleryMobileWideBg from '@/assets/backgrounds/gallery_main_mobile_wide.webp';
+import galleryMainDesktopBg from '@/assets/backgrounds/gallery_main_desktop.webp';
 
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
@@ -196,6 +197,9 @@ const backgroundAssets: Record<string, string> = {
   
   // Gallery mobile wide (Mission 11 Tool B destination)
   gallery_main_mobile_wide: galleryMobileWideBg,
+  
+  // Gallery main desktop (Mission 12)
+  gallery_main_desktop: galleryMainDesktopBg,
 };
 
 // Wide panoramic backgrounds for mobile panning (key -> asset)
@@ -220,6 +224,7 @@ const panoramicBackgrounds: Record<string, string> = {
   studio_doorway_park_view_bg: studioDoorwayParkBg,
   studio_doorway_park_view_v5: studioDoorwayParkBg,
   gallery_main_mobile_wide: galleryMobileWideBg,
+  gallery_main_desktop: galleryMainDesktopBg,
 };
 
 export function getPanoramicBackground(bgKey: string): string | null {

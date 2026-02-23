@@ -239,7 +239,10 @@ export function VisualPlayScreen({
     }
     
     // Missions 12, 13, 15: Use main studio (gallery_main_stylized)
-    if (mission.phase === 'main' && (mission.mission_id === 'studio_12' || mission.mission_id === 'studio_13' || mission.mission_id === 'studio_15')) {
+    if (mission.phase === 'main' && mission.mission_id === 'studio_12') {
+      return 'gallery_main_desktop';
+    }
+    if (mission.phase === 'main' && (mission.mission_id === 'studio_13' || mission.mission_id === 'studio_15')) {
       return 'gallery_main_stylized';
     }
     
@@ -1498,7 +1501,7 @@ export function VisualPlayScreen({
 
     // Mission 12 Tool A: single placement using anchor map coordinates
     if (prop.missionId === 'studio_12' && prop.key === 'a') {
-      const anchorPos = getAnchorPosition('gallery_main_stylized', 'm12_tool_a');
+      const anchorPos = getAnchorPosition('gallery_main_desktop', 'm12_tool_a');
       if (anchorPos) {
         return [{ 
           anchor: 'm12_tool_a' as AnchorRef, 
@@ -1514,7 +1517,7 @@ export function VisualPlayScreen({
 
     // Mission 12 Tool B: single placement using anchor map coordinates
     if (prop.missionId === 'studio_12' && prop.key === 'b') {
-      const anchorPos = getAnchorPosition('gallery_main_stylized', 'm12_tool_b');
+      const anchorPos = getAnchorPosition('gallery_main_desktop', 'm12_tool_b');
       if (anchorPos) {
         return [{ 
           anchor: 'm12_tool_b' as AnchorRef, 
