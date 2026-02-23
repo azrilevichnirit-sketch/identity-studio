@@ -1072,15 +1072,16 @@ export function VisualPlayScreen({
               style={{
                 left: `${leftPos}%`,
                 top: `${topPos}%`,
-                transform: `translate(-50%, -100%) scale(${scale})${anchorPos.flipX ? ' scaleX(-1)' : ''}`,
+                transform: `translate(-50%, -100%)`,
                 zIndex,
               }}
             >
               <img 
                 src={extra.image}
                 alt=""
-                className="w-32 h-32 md:w-48 md:h-48 object-contain"
+                className="w-32 h-32 object-contain"
                 style={{
+                  transform: `scale(${scale})${anchorPos.flipX ? ' scaleX(-1)' : ''}`,
                   filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                 }}
               />
