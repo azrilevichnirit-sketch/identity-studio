@@ -1545,5 +1545,30 @@
     "scale": 1.4,
     "z_layer": "front",
     "flipX": true
+  },
+  {
+    "background_asset_key": "studio_in_entrance_view_bg",
+    "anchor_ref": "m08_visitor_01",
+    "x_pct": 0.25,
+    "y_pct": 0.78,
+    "scale": 1.2,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_in_entrance_view_bg",
+    "anchor_ref": "m08_visitor_02",
+    "x_pct": 0.50,
+    "y_pct": 0.75,
+    "scale": 1.1,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_in_entrance_view_bg",
+    "anchor_ref": "m08_visitor_03",
+    "x_pct": 0.72,
+    "y_pct": 0.80,
+    "scale": 1.15,
+    "z_layer": "mid",
+    "flipX": true
   }
 ]

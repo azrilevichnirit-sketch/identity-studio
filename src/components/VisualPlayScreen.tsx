@@ -24,6 +24,11 @@ import { Mission7CalibrationEditor } from './Mission7CalibrationEditor';
 import { Mission11CalibrationEditor } from './Mission11CalibrationEditor';
 import { BranchingCalibrationEditor } from './BranchingCalibrationEditor';
 import { WaterLeakEffect } from './WaterLeakEffect';
+
+// Mission 8 visitor imports
+import visitorM08_01 from '@/assets/avatars/studio_visitor_m08_01.png';
+import visitorM08_02 from '@/assets/avatars/studio_visitor_m08_02.png';
+import visitorM08_03 from '@/assets/avatars/studio_visitor_m08_03.png';
 // import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter'; // Disabled
 
 const DRAG_HINT_STORAGE_KEY = 'ie_hasDraggedOnce';
@@ -1693,6 +1698,53 @@ export function VisualPlayScreen({
           );
         });
       })}
+
+      {/* Mission 8 Tool B visitors - appear with fade-in when tool B is placed */}
+      {(() => {
+        // Show visitors only when mission 8 tool B has been placed (locally or persisted)
+        const m08ToolBPlaced = localPlacement?.missionId === 'studio_08' && localPlacement?.key === 'b'
+          || displayedPlacement.some(p => p.missionId === 'studio_08' && p.key === 'b');
+        const isOnM08 = mission.mission_id === 'studio_08';
+        
+        if (!m08ToolBPlaced || !isOnM08) return null;
+        
+        const visitors = [
+          { img: visitorM08_01, anchor: 'm08_visitor_01' },
+          { img: visitorM08_02, anchor: 'm08_visitor_02' },
+          { img: visitorM08_03, anchor: 'm08_visitor_03' },
+        ];
+        
+        return visitors.map((v, i) => {
+          const pos = getAnchorPosition(lockedBgKey, v.anchor as AnchorRef);
+          if (!pos) return null;
+          const zIdx = zIndexForAnchorLayer(pos.z_layer);
+          return (
+            <div
+              key={`m08-visitor-${i}`}
+              className="absolute pointer-events-none"
+              style={{
+                left: `${pos.x}%`,
+                top: `${pos.y}%`,
+                transform: 'translate(-50%, -100%)',
+                zIndex: zIdx,
+                animation: 'fade-in 0.6s ease-out forwards',
+                animationDelay: `${i * 150}ms`,
+                opacity: 0,
+              }}
+            >
+              <img
+                src={v.img}
+                alt=""
+                className="h-24 md:h-32 object-contain"
+                style={{
+                  filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
+                  transform: `scale(${pos.scale})${pos.flipX ? ' scaleX(-1)' : ''}`,
+                }}
+              />
+            </div>
+          );
+        });
+      })()}
     </>
   );
 
