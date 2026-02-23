@@ -99,6 +99,9 @@ function DesktopMissionLayout({
         {toolPanel}
       </div>
 
+      {/* Calibration overlay (inside game-stage for coordinate alignment) */}
+      {props.calibrationOverlay}
+
       {/* Dragging ghost */}
       {draggingGhost}
     </div>
@@ -196,6 +199,9 @@ function MobileMissionLayout({
 
       {/* Edge pan indicators (mobile only) */}
       {edgePanIndicators}
+
+      {/* Calibration overlay (inside game-stage for coordinate alignment) */}
+      {props.calibrationOverlay}
 
       {/* Dragging ghost */}
       {draggingGhost}
