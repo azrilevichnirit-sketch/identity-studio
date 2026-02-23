@@ -1964,6 +1964,41 @@ export function VisualPlayScreen({
     return items;
   }, [displayedPlacement, lockedBgKey, isMobile]);
 
+  // Calibration overlay - rendered inside game-stage for coordinate alignment
+  const calibrationOverlayElement = useMemo(() => {
+    if (!toolEditMode) return null;
+    if (mission.mission_id === 'studio_07') {
+      return <Mission7CalibrationEditor mission={mission} onBackgroundChange={handleM7BackgroundChange} />;
+    }
+    if (mission.mission_id === 'studio_11') {
+      return <Mission11CalibrationEditor mission={mission} onBackgroundChange={handleM7BackgroundChange} />;
+    }
+    const optA = mission.options.find(o => o.key === 'a');
+    const optB = mission.options.find(o => o.key === 'b');
+    const isBranching = mission.phase === 'tb' && optA?.next_bg_override && optB?.next_bg_override && optA.next_bg_override !== optB.next_bg_override;
+    if (isBranching) {
+      return (
+        <BranchingCalibrationEditor
+          mission={mission}
+          bgKeyA={optA!.next_bg_override!}
+          bgKeyB={optB!.next_bg_override!}
+          onBackgroundChange={handleM7BackgroundChange}
+        />
+      );
+    }
+    return (
+      <ToolCalibrationEditor
+        mission={mission}
+        currentBgKey={lockedBgKey}
+        onNextMission={onEditorNextMission}
+        sceneExtras={sceneExtras}
+        onExtraPositionChange={(extraId, x, y, scale) => {
+          setExtraOverrides(prev => ({ ...prev, [extraId]: { x, y, scale } }));
+        }}
+      />
+    );
+  }, [toolEditMode, mission, lockedBgKey, sceneExtras, onEditorNextMission, handleM7BackgroundChange]);
+
   return (
     <>
       <MissionLayout
@@ -1992,7 +2027,6 @@ export function VisualPlayScreen({
         isPanoramic={isPanoramic}
         calibrationOverlay={calibrationOverlayElement}
       />
-      
     </>
   );
 }
