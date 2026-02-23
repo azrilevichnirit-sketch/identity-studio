@@ -48,7 +48,7 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
           }}
         >
           {/* Logo - above title, aligned right (RTL) */}
-          <div className="w-full flex justify-end px-4 -mb-8 md:-mb-0">
+          <div className="w-full flex justify-start px-4 -mb-8 md:-mb-0">
             <img 
               src={kinneretLogo} 
               alt="האקדמית כנרת" 
