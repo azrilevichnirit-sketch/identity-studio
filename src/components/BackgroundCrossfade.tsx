@@ -94,16 +94,22 @@ export function BackgroundCrossfade({
     // Track the pending source to handle rapid changes
     pendingSrcRef.current = src;
 
-    // Preload the new image before transitioning
-    preloadImage(src).then(() => {
-      // Only transition if this is still the latest requested src
+    let didTransition = false;
+    const doTransition = () => {
+      if (didTransition) return;
+      didTransition = true;
       if (pendingSrcRef.current === src) {
         startTransition(src);
         pendingSrcRef.current = null;
       }
-    });
+    };
+
+    // Preload the new image before transitioning, but cap wait at 2s
+    const timeout = window.setTimeout(doTransition, 2000);
+    preloadImage(src).then(doTransition);
 
     return () => {
+      window.clearTimeout(timeout);
       if (cleanupRef.current) window.clearTimeout(cleanupRef.current);
       cleanupRef.current = null;
     };
