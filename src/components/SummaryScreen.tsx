@@ -22,7 +22,7 @@ const HOLLAND_LABELS: Record<HollandCode, string> = {
 export function SummaryScreen({ state, countsFinal, leaders, resultText }: SummaryScreenProps) {
   return (
     // Full-screen fixed overlay with internal scrolling - uses CSS class for cross-browser support
-    <div className="summary-screen-overlay">
+    <div className="summary-screen-overlay" style={{ direction: 'rtl' }}>
       {/* Scrollable inner container with cross-browser support */}
       <div className="summary-screen-scroller">
         {/* Logo - top right */}
@@ -71,6 +71,8 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
                   fontFamily: "'Rubik', sans-serif",
                   wordBreak: 'break-word',
                   whiteSpace: 'pre-wrap',
+                  direction: 'rtl',
+                  textAlign: 'right',
                 }}
               >
                 <ReactMarkdown
