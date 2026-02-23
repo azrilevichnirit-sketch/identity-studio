@@ -371,7 +371,7 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
       })}
 
       {/* Control panel */}
-      <div className="fixed top-4 left-4 z-[200] bg-card border border-border rounded-lg shadow-xl text-xs max-w-[220px] max-h-[80vh] overflow-y-auto">
+      <div className="fixed top-4 right-4 z-[200] bg-card border border-border rounded-lg shadow-xl text-xs max-w-[220px] max-h-[80vh] overflow-y-auto">
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="w-full flex items-center justify-between px-3 py-2 font-medium text-foreground hover:bg-accent"
