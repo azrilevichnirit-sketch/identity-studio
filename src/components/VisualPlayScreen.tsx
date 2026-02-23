@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef, useCallback, useEffect } from 'react';
+import React, { useMemo, useState, useRef, useCallback, useEffect } from 'react';
 import type { Mission, HollandCode, AvatarGender, PickRecord, MissionOption, AnchorRef } from '@/types/identity';
 import { getToolImage, getBackgroundForMission, getAvatarImage, getBackgroundKey, getBackgroundByName, getPanoramicBackground, preloadBackground, preloadAllBackgrounds } from '@/lib/assetUtils';
 import { panOffsetToDropCompensation, panOffsetToTranslatePercent, anchorXToPanoramicLeft } from '@/lib/pan';
@@ -1048,17 +1048,8 @@ export function VisualPlayScreen({
   // ========== SCENE EXTRAS (Floor artworks, wall art for M07) ==========
   const sceneExtras = useSceneExtras(mission.mission_id, currentIndex, placedProps);
   
-  // Debug: log scene extras resolution
-  if (sceneExtras.length > 0) {
-    console.log(`[SCENE EXTRAS] Mission=${mission.mission_id} idx=${currentIndex} bgKey=${lockedBgKey} extras=${sceneExtras.length}`);
-    sceneExtras.forEach(e => {
-      const pos = getAnchorPosition(lockedBgKey, e.anchorRef);
-      console.log(`  [EXTRA] ${e.anchorRef} → ${pos ? `x=${pos.x}% y=${pos.y}% scale=${pos.scale}` : 'NULL (not found in anchor map)'}`);
-    });
-  }
-  
   const sceneExtrasElement = useMemo(() => {
-    // Only render extras for missions that define them (currently Mission 7)
+    // Only render extras for missions that define them
     if (sceneExtras.length === 0) return null;
     
     return (
@@ -2058,16 +2049,16 @@ interface ClickableToolTileProps {
   tooltipText: string;
 }
 
-function ClickableToolTile({ 
+const ClickableToolTile = React.forwardRef<HTMLDivElement, ClickableToolTileProps>(function ClickableToolTile({ 
   image, 
   onClick, 
   onInfoClick, 
   variant, 
   isInfoActive,
   tooltipText,
-}: ClickableToolTileProps) {
+}, ref) {
   return (
-    <div className="relative">
+    <div ref={ref} className="relative">
       {/* Tool tile - click to select and place */}
       <button
         onClick={onClick}
@@ -2116,4 +2107,4 @@ function ClickableToolTile({
       </div>
     </div>
   );
-}
+});
