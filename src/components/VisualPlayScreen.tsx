@@ -1753,10 +1753,7 @@ export function VisualPlayScreen({
 
   const speechBubbleElement = (
     <div 
-      style={{ 
-        opacity: isBackgroundTransitioning ? 0 : 1, 
-        transition: 'opacity 0.3s ease-in-out',
-      }}
+      style={{}}
     >
       <SpeechBubble 
         tailDirection="right"
@@ -1797,8 +1794,6 @@ export function VisualPlayScreen({
       className={`layout-tool-panel-inner tool-panel-responsive relative${suppressToolPanel ? ' tool-panel-suppressed' : ''}`}
       style={{ 
         direction: 'ltr',
-        opacity: isBackgroundTransitioning ? 0 : 1,
-        transition: 'opacity 0.3s ease-in-out',
       }}
     >
       {showToolSwapCue && (
