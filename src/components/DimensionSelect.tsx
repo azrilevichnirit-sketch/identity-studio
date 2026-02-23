@@ -37,6 +37,7 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
         className="game-stage flex flex-col items-start justify-start lg:items-center lg:justify-center"
         style={{
           background: '#FFFFFF',
+          direction: 'rtl',
         }}
       >
         {/* Content - positioned at top on mobile, centered on desktop */}
