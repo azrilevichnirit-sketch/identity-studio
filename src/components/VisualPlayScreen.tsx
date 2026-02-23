@@ -616,8 +616,8 @@ export function VisualPlayScreen({
   }, [mission.mission_id]);
 
   // Track background changes and trigger transition state
-  // This hides persisted tools during the crossfade to prevent them appearing before bg changes
-  const CROSSFADE_DURATION = 1500; // Must match BackgroundCrossfade durationMs
+  // This hides persisted tools AND mission UI during the crossfade
+  const CROSSFADE_DURATION = 800; // Must match BackgroundCrossfade durationMs
   useEffect(() => {
     // Skip if this is the first render or bg hasn't changed
     if (previousBgKeyRef.current === null) {
@@ -626,11 +626,11 @@ export function VisualPlayScreen({
     }
     
     if (previousBgKeyRef.current !== lockedBgKey) {
-      // Background is changing - hide persisted tools during transition
+      // Background is changing - hide UI during transition
       setIsBackgroundTransitioning(true);
       previousBgKeyRef.current = lockedBgKey;
       
-      // After crossfade completes, show the tools
+      // After crossfade completes, show the UI
       const fadeTimer = window.setTimeout(() => {
         setIsBackgroundTransitioning(false);
       }, CROSSFADE_DURATION);
@@ -1057,10 +1057,7 @@ export function VisualPlayScreen({
         {sceneExtras.map((extra) => {
           // Get anchor position from the current background
           const anchorPos = getAnchorPosition(lockedBgKey, extra.anchorRef);
-          console.log(`[EXTRA DEBUG] ${extra.anchorRef} on bg=${lockedBgKey} → `, anchorPos ? `x=${anchorPos.x}% y=${anchorPos.y}% scale=${anchorPos.scale} flipX=${anchorPos.flipX}` : 'NULL');
           if (!anchorPos) {
-            // Fallback position if anchor not found
-            console.warn(`Anchor ${extra.anchorRef} not found for background ${lockedBgKey}`);
             return null;
           }
           
@@ -1755,43 +1752,54 @@ export function VisualPlayScreen({
   }, [taskText, isTabletOrMobile, missionDisplayNumber]);
 
   const speechBubbleElement = (
-    <SpeechBubble 
-      tailDirection="right"
-      missionKey={mission.mission_id}
-      className="mission-bubble-full-width"
+    <div 
+      style={{ 
+        opacity: isBackgroundTransitioning ? 0 : 1, 
+        transition: 'opacity 0.3s ease-in-out',
+      }}
     >
-      <div className="mission-bubble-content-with-avatar">
-        {/* Avatar inside the bubble on the right */}
-        <div className="mission-bubble-avatar-inside">
-          <img 
-            src={avatarImage} 
-            alt="Guide avatar"
-            className="w-full h-full object-contain"
-          />
+      <SpeechBubble 
+        tailDirection="right"
+        missionKey={mission.mission_id}
+        className="mission-bubble-full-width"
+      >
+        <div className="mission-bubble-content-with-avatar">
+          {/* Avatar inside the bubble on the right */}
+          <div className="mission-bubble-avatar-inside">
+            <img 
+              src={avatarImage} 
+              alt="Guide avatar"
+              className="w-full h-full object-contain"
+            />
+          </div>
+          {/* Text content */}
+          <p 
+            className="font-medium text-base md:text-lg flex-1"
+            style={{ 
+              lineHeight: 1.5,
+              direction: 'rtl',
+              textAlign: 'right',
+            }}
+          >
+            {formattedTaskText}
+          </p>
         </div>
-        {/* Text content */}
-        <p 
-          className="font-medium text-base md:text-lg flex-1"
-          style={{ 
-            lineHeight: 1.5,
-            direction: 'rtl',
-            textAlign: 'right',
-          }}
-        >
-          {formattedTaskText}
-        </p>
-      </div>
-      {/* Progress tank below text */}
-      <div className="mission-bubble-progress">
-        <ProgressTank value={(currentIndex + 1) / totalMissions} />
-      </div>
-    </SpeechBubble>
+        {/* Progress tank below text */}
+        <div className="mission-bubble-progress">
+          <ProgressTank value={(currentIndex + 1) / totalMissions} />
+        </div>
+      </SpeechBubble>
+    </div>
   );
 
   const toolPanelElement = (
     <div
       className={`layout-tool-panel-inner tool-panel-responsive relative${suppressToolPanel ? ' tool-panel-suppressed' : ''}`}
-      style={{ direction: 'ltr' }}
+      style={{ 
+        direction: 'ltr',
+        opacity: isBackgroundTransitioning ? 0 : 1,
+        transition: 'opacity 0.3s ease-in-out',
+      }}
     >
       {showToolSwapCue && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 2 }}>
