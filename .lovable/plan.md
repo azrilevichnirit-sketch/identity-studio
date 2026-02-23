@@ -1,26 +1,37 @@
 
 
-## Replace Mission 5 Tool A Placed Prop with Animated GIF
+## הוספת 3 דמויות מבקרים במשימה 8 - כלי B
 
-### What will change
-When playing Mission 5, the tool selection tray will continue showing the static image of the inflatable tube man. However, once a player selects tool "a" and it gets placed on the scene, the placed version will display the animated GIF (wiggling tube man) instead of the static image.
+### סקירה
+כשהשחקן בוחר בכלי B (מסיבת עיתונאים) במשימה 8, שלוש דמויות מבקרים יופיעו על המסך מיד לאחר הנחת הכלי. הדמויות יוצגו רק במשימה 8 ויעלמו כשעוברים למשימה 9.
 
-### Technical Steps
+### הדמויות
+1. גבר בשנות ה-40 עם ז'קט כחול (man_late_40s_tailored_sporty.png)
+2. אשה בשנות ה-30 עם משקפיים (professional_visitor_woman_30_glasses.png)
+3. אשה בשנות ה-40 עם עגילי חישוק (woman_late_40s_hoop_earrings.png)
 
-1. **Copy the uploaded GIF** to `src/assets/tools/studio_05_a_animated.gif`
+### שלבים טכניים
 
-2. **Update `src/lib/assetUtils.ts`**
-   - Import the GIF as a new asset (e.g., `studio_05_a_animated`)
-   - Add it to the `toolAssets` map under the key `studio_05_a_animated`
-   - The original `studio_05_a` static entry stays unchanged (used by the tray)
+1. **העתקת קבצי התמונות לפרויקט**
+   - העתקת שלוש התמונות לתיקייה `src/assets/avatars/`:
+     - `studio_visitor_m08_01.png`
+     - `studio_visitor_m08_02.png`
+     - `studio_visitor_m08_03.png`
 
-3. **Update `src/components/VisualPlayScreen.tsx`** (placed props rendering)
-   - In the `placedPropsElement` section (~line 1553), after resolving `toolImg`, add a check:
-     - If `assetName === 'studio_05_a'`, override `toolImg` with the animated GIF asset (`getToolImage('studio_05_a_animated')`)
-   - This ensures only the placed prop uses the GIF; the tray continues using the static image
+2. **עדכון `src/components/VisualPlayScreen.tsx`**
+   - ייבוא שלוש תמונות המבקרים
+   - הוספת לוגיקה שבודקת: האם אנחנו במשימה 8 (או אחריה באותו רקע) והאם כלי B נבחר
+   - רינדור שלוש הדמויות במיקומים קבועים על המסך עם fade-in
+   - כל דמות תקבל מיקום שונה (x,y) כדי להיראות כאילו עומדות מפוזרות בסצנה
+   - הדמויות יוצגו רק במהלך שלב ה-fixation (בין הנחת הכלי להתקדמות למשימה הבאה)
 
-### What stays the same
-- Tool tray shows the original static image for both options
-- All other missions are unaffected
-- No changes to anchor positions or layout
+3. **הוספת עוגנים (anchor points) ב-`src/data/studio_anchor_map.json`**
+   - הוספת 3 עוגנים חדשים עבור הדמויות: `m08_visitor_01`, `m08_visitor_02`, `m08_visitor_03`
+   - על רקע `studio_in_entrance_view_bg` (הרקע של משימה 8)
+   - מיקומים ראשוניים שניתנים לכיול מאוחר יותר
+
+### מה לא משתנה
+- תצוגת כלי A במשימה 8 נשארת כמות שהיא
+- כל שאר המשימות לא מושפעות
+- הדמויות לא נשמרות כ-props קבועים - הן חלק מהאפקט הוויזואלי של בחירת כלי B
 
