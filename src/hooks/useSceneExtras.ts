@@ -10,6 +10,8 @@ import crate01 from '@/assets/extras/studio_crate_01.webp';
 import crate02 from '@/assets/extras/studio_crate_02.webp';
 import extra02 from '@/assets/extras/studio_extra_asset_02.webp';
 import extra03 from '@/assets/extras/studio_extra_asset_03.webp';
+import extra01 from '@/assets/extras/studio_extra_asset_01.webp';
+import extra04 from '@/assets/extras/studio_extra_asset_04.webp';
 import workDesk01 from '@/assets/extras/studio_work_desk_01.webp';
 import cncMachine01 from '@/assets/extras/studio_cnc_machine_01.webp';
 import coffeeTable01 from '@/assets/extras/studio_coffee_table_01.webp';
@@ -23,8 +25,10 @@ const extraAssetMap: Record<string, string> = {
   studio_floor_artworks_03: floorArtworks03,
   studio_crate_01: crate01,
   studio_crate_02: crate02,
+  studio_extra_asset_01: extra01,
   studio_extra_asset_02: extra02,
   studio_extra_asset_03: extra03,
+  studio_extra_asset_04: extra04,
   studio_work_desk_01: workDesk01,
   studio_cnc_machine_01: cncMachine01,
   studio_coffee_table_01: coffeeTable01,
