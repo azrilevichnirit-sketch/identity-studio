@@ -1571,7 +1571,6 @@ export function VisualPlayScreen({
         if (!isPersisted && isLocalCurrentMissionPlacement && prop.fixedPlacement && !hasDuplicationPattern) {
           const fixed = prop.fixedPlacement;
           const zIndex = zIndexForAnchorLayer(fixed.z_layer);
-          const transformStyle = `translate(-50%, -100%) scale(${fixed.scale})`;
 
           return [(
             <div
@@ -1584,7 +1583,7 @@ export function VisualPlayScreen({
               style={{
                 left: `${fixed.x}%`,
                 top: `${fixed.y}%`,
-                transform: transformStyle,
+                transform: 'translate(-50%, -100%)',
                 zIndex,
               }}
             >
@@ -1594,7 +1593,7 @@ export function VisualPlayScreen({
                 className={`${isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32'} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
                 style={{
                   filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
-                  transform: fixed.flipX ? 'scaleX(-1)' : undefined,
+                  transform: `scale(${fixed.scale})${fixed.flipX ? ' scaleX(-1)' : ''}`,
                 }}
               />
             </div>
@@ -1603,9 +1602,7 @@ export function VisualPlayScreen({
         
         if (isPersisted && prop.fixedPlacement && !hasDuplicationPattern) {
           const fixed = prop.fixedPlacement;
-          // SIMPLIFIED: Use z_layer from anchor map for proper z-indexing
           const zIndex = zIndexForAnchorLayer(fixed.z_layer);
-          const transformStyle = `translate(-50%, -100%) scale(${fixed.scale})`;
           
           return [(
             <div
@@ -1614,9 +1611,8 @@ export function VisualPlayScreen({
               style={{
                 left: `${fixed.x}%`,
                 top: `${fixed.y}%`,
-                transform: transformStyle,
+                transform: 'translate(-50%, -100%)',
                 zIndex,
-                // Persisted tools should always be visible - no fade effect
               }}
             >
               <img 
@@ -1625,7 +1621,7 @@ export function VisualPlayScreen({
                 className={`${isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32'} object-contain`}
                 style={{
                   filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
-                  transform: fixed.flipX ? 'scaleX(-1)' : undefined,
+                  transform: `scale(${fixed.scale})${fixed.flipX ? ' scaleX(-1)' : ''}`,
                 }}
               />
             </div>
@@ -1658,8 +1654,8 @@ export function VisualPlayScreen({
           
           // Wall-mounted tools use center transform, floor tools use bottom-anchored
           const transformStyle = anchorInfo.wallMount
-            ? `translate(-50%, -50%) scale(${finalScale})`
-            : `translate(-50%, -100%) scale(${finalScale})`;
+            ? 'translate(-50%, -50%)'
+            : 'translate(-50%, -100%)';
           
           return (
               <div
@@ -1668,7 +1664,6 @@ export function VisualPlayScreen({
                   isPersisted
                     ? ''
                     : (isMission01ToolB
-                        // Tool B: simple fade-in, lock glow handled on img element
                         ? 'animate-tool-appear'
                         : (isMission01Buckets
                             ? 'animate-snap-place'
@@ -1677,12 +1672,9 @@ export function VisualPlayScreen({
                 style={{
                 left: `${leftValue}%`,
                 top: `${topValue}%`,
-                // Use calculated scale
                 transform: transformStyle,
-                // Ensure tools near walls are visible above floor elements
                 zIndex: 15 + idx,
                 animationDelay: isPersisted ? '0ms' : `${animationDelay}ms`,
-                // Persisted tools should always be visible - no fade effect
               }}
             >
               <img 
@@ -1691,8 +1683,7 @@ export function VisualPlayScreen({
                 className={`${isMission01Buckets ? 'w-28 h-28 md:w-36 md:h-36' : (isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32')} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
                    style={{
                    filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
-                   // Only apply flipX from anchor map - no rotation
-                   transform: anchorInfo.flipX ? 'scaleX(-1)' : undefined,
+                   transform: `scale(${finalScale})${anchorInfo.flipX ? ' scaleX(-1)' : ''}`,
                  }}
               />
             </div>
