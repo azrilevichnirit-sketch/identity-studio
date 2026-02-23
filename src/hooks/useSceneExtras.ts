@@ -104,7 +104,7 @@ export function useSceneExtras(
           // Use scale from anchor map (will be applied in render) - just pass 1.0 here
           // The actual scale comes from getAnchorPosition in the renderer
           extras.push({
-            id: `${rule.mission_id}-${rule.order}-${i}`,
+            id: `${rule.mission_id}-${rule.anchor_ref}-${i}`,
             image,
             anchorRef: rule.anchor_ref as AnchorRef,
             offsetX: 0,
