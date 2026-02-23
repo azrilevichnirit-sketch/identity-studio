@@ -1551,7 +1551,10 @@ export function VisualPlayScreen({
     <>
       {displayedPlacement.flatMap((prop, propIdx) => {
         const assetName = prop.assetName || `${prop.missionId.replace('studio_', 'studio_')}_${prop.key}`;
-        const toolImg = getToolImage(assetName);
+        // Mission 5 tool A: use animated GIF for placed prop
+        const toolImg = assetName === 'studio_05_a'
+          ? getToolImage('studio_05_a_animated') || getToolImage(assetName)
+          : getToolImage(assetName);
         
         if (!toolImg) return null;
         
