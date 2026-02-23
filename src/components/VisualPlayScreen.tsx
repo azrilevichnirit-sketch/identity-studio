@@ -1499,19 +1499,22 @@ export function VisualPlayScreen({
       }
     }
 
-    // Mission 12 Tool A: single placement using anchor map coordinates
+    // Mission 12 Tool A: duplicate 5 times horizontally from anchor position
     if (prop.missionId === 'studio_12' && prop.key === 'a') {
       const anchorPos = getAnchorPosition('gallery_main_desktop', 'm12_tool_a');
       if (anchorPos) {
-        return [{ 
-          anchor: 'm12_tool_a' as AnchorRef, 
-          offsetX: 0, 
-          offsetY: 0, 
-          customScale: anchorPos.scale, 
-          absoluteY: anchorPos.y, 
-          absoluteX: anchorPos.x,
-          flipX: anchorPos.flipX
-        }];
+        const spacing = 5; // % spacing between duplicates
+        const count = 5;
+        const startX = anchorPos.x - ((count - 1) * spacing) / 2;
+        return Array.from({ length: count }, (_, i) => ({
+          anchor: 'm12_tool_a' as AnchorRef,
+          offsetX: 0,
+          offsetY: 0,
+          customScale: anchorPos.scale,
+          absoluteY: anchorPos.y,
+          absoluteX: startX + i * spacing,
+          flipX: anchorPos.flipX,
+        }));
       }
     }
 
@@ -1553,7 +1556,7 @@ export function VisualPlayScreen({
         // USE FIXED PLACEMENT FOR PERSISTED TOOLS
         // This ensures tools stay exactly where they were placed, not recalculated
         // No more duplication patterns - all missions use single placement from anchor map
-        const hasDuplicationPattern = false;
+        const hasDuplicationPattern = (prop.missionId === 'studio_12' && prop.key === 'a');
 
         // Mission 10: LOCAL placement should use fixedPlacement immediately (snap-now)
         if (!isPersisted && isLocalCurrentMissionPlacement && prop.fixedPlacement && !hasDuplicationPattern) {
