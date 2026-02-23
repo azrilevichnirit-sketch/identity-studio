@@ -1727,20 +1727,24 @@ export function VisualPlayScreen({
                 top: `${pos.y}%`,
                 transform: 'translate(-50%, -100%)',
                 zIndex: zIdx,
-                animation: 'fade-in 0.6s ease-out forwards',
-                animationDelay: `${i * 150}ms`,
-                opacity: 0,
               }}
             >
-              <img
-                src={v.img}
-                alt=""
-                className="h-24 md:h-32 object-contain"
+              <div
                 style={{
-                  filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-                  transform: `scale(${pos.scale})${pos.flipX ? ' scaleX(-1)' : ''}`,
+                  opacity: 0,
+                  animation: `scale-in 0.6s ease-out ${i * 150}ms forwards`,
                 }}
-              />
+              >
+                <img
+                  src={v.img}
+                  alt=""
+                  className="h-24 md:h-32 object-contain"
+                  style={{
+                    filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
+                    transform: `scale(${pos.scale})${pos.flipX ? ' scaleX(-1)' : ''}`,
+                  }}
+                />
+              </div>
             </div>
           );
         });
