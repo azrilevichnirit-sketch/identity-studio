@@ -1744,9 +1744,7 @@ export function VisualPlayScreen({
   }, [taskText, isTabletOrMobile, missionDisplayNumber]);
 
   const speechBubbleElement = (
-    <div 
-      style={{}}
-    >
+    <div key={`bubble-${mission.mission_id}`}>
       <SpeechBubble 
         tailDirection="right"
         missionKey={mission.mission_id}
@@ -1805,8 +1803,9 @@ export function VisualPlayScreen({
 
         {/* Tool tiles */}
         <div className="tool-tiles-area">
-          <div className="tool-tiles-row">
+          <div className="tool-tiles-row" key={`tools-${mission.mission_id}`}>
             <ClickableToolTile
+              key={`a-${mission.mission_id}`}
               image={toolAImage}
               onClick={(e) => handleToolClick('a', e)}
               onInfoClick={() => setActiveTooltip(activeTooltip === 'a' ? null : 'a')}
@@ -1815,6 +1814,7 @@ export function VisualPlayScreen({
               tooltipText={optionA.tooltip_heb || 'MISSING: option_a_tooltip_heb'}
             />
             <ClickableToolTile
+              key={`b-${mission.mission_id}`}
               image={toolBImage}
               onClick={(e) => handleToolClick('b', e)}
               onInfoClick={() => setActiveTooltip(activeTooltip === 'b' ? null : 'b')}
