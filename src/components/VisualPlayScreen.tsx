@@ -1048,6 +1048,15 @@ export function VisualPlayScreen({
   // ========== SCENE EXTRAS (Floor artworks, wall art for M07) ==========
   const sceneExtras = useSceneExtras(mission.mission_id, currentIndex, placedProps);
   
+  // Debug: log scene extras resolution
+  if (sceneExtras.length > 0) {
+    console.log(`[SCENE EXTRAS] Mission=${mission.mission_id} idx=${currentIndex} bgKey=${lockedBgKey} extras=${sceneExtras.length}`);
+    sceneExtras.forEach(e => {
+      const pos = getAnchorPosition(lockedBgKey, e.anchorRef);
+      console.log(`  [EXTRA] ${e.anchorRef} → ${pos ? `x=${pos.x}% y=${pos.y}% scale=${pos.scale}` : 'NULL (not found in anchor map)'}`);
+    });
+  }
+  
   const sceneExtrasElement = useMemo(() => {
     // Only render extras for missions that define them (currently Mission 7)
     if (sceneExtras.length === 0) return null;
