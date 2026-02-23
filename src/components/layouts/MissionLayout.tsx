@@ -41,6 +41,8 @@ export interface MissionLayoutProps {
   panOffsetX?: number;
   /** Whether panoramic panning is active */
   isPanoramic?: boolean;
+  /** Calibration overlay (rendered inside game-stage for coordinate alignment) */
+  calibrationOverlay?: React.ReactNode;
 }
 
 /**
