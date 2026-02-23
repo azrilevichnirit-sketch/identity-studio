@@ -1080,7 +1080,7 @@ export function VisualPlayScreen({
           return (
             <div
               key={extra.id}
-              className="absolute animate-fade-in"
+              className="absolute"
               style={{
                 left: `${leftPos}%`,
                 top: `${topPos}%`,
