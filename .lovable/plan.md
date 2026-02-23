@@ -1,27 +1,26 @@
 
 
-## Replace Tool Images for Missions 6-10
+## Replace Mission 5 Tool A Placed Prop with Animated GIF
 
-### Overview
-Copy the 10 uploaded tool images to replace the existing ones for missions 6 through 10. No code changes needed -- file names match the existing imports in `assetUtils.ts`.
+### What will change
+When playing Mission 5, the tool selection tray will continue showing the static image of the inflatable tube man. However, once a player selects tool "a" and it gets placed on the scene, the placed version will display the animated GIF (wiggling tube man) instead of the static image.
 
-### Files to Replace
-| File | Upload Source | Description |
-|------|-------------|-------------|
-| `src/assets/tools/studio_06_a.webp` | `studio_06_a-3.webp` | Circular saw |
-| `src/assets/tools/studio_06_b.webp` | `studio_06_b-3.webp` | Sketchbook with pencils |
-| `src/assets/tools/studio_07_a.webp` | `studio_07_a-2.webp` | Art storage shelving |
-| `src/assets/tools/studio_07_b.webp` | `studio_07_b-2.webp` | Glass display shelves |
-| `src/assets/tools/studio_08_a.webp` | `studio_08_a-3.webp` | Financial dashboard screen |
-| `src/assets/tools/studio_08_b.webp` | `studio_08_b-3.webp` | Press conference podium |
-| `src/assets/tools/studio_09_a.webp` | `studio_09_a-3.webp` | Colorful seating area |
-| `src/assets/tools/studio_09_b.webp` | `studio_09_b-2.webp` | Direction arrows |
-| `src/assets/tools/studio_10_a.webp` | `studio_10_a-4.webp` | Art restoration kit |
-| `src/assets/tools/studio_10_b.webp` | `studio_10_b-3.webp` | Content creation setup |
+### Technical Steps
+
+1. **Copy the uploaded GIF** to `src/assets/tools/studio_05_a_animated.gif`
+
+2. **Update `src/lib/assetUtils.ts`**
+   - Import the GIF as a new asset (e.g., `studio_05_a_animated`)
+   - Add it to the `toolAssets` map under the key `studio_05_a_animated`
+   - The original `studio_05_a` static entry stays unchanged (used by the tray)
+
+3. **Update `src/components/VisualPlayScreen.tsx`** (placed props rendering)
+   - In the `placedPropsElement` section (~line 1553), after resolving `toolImg`, add a check:
+     - If `assetName === 'studio_05_a'`, override `toolImg` with the animated GIF asset (`getToolImage('studio_05_a_animated')`)
+   - This ensures only the placed prop uses the GIF; the tray continues using the static image
 
 ### What stays the same
-- All imports in `assetUtils.ts` remain unchanged (same file names)
-- All anchor positions remain unchanged
-- All mission data (texts, Holland codes, tooltips) remains unchanged
-- No code modifications needed
+- Tool tray shows the original static image for both options
+- All other missions are unaffected
+- No changes to anchor positions or layout
 
