@@ -1,6 +1,5 @@
 import React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
-// Force rebuild
 
 /**
  * Props for the mission layout wrapper.

@@ -27,11 +27,20 @@ function preloadImage(src: string): Promise<void> {
     };
     img.onerror = () => {
       console.warn(`BackgroundCrossfade: Failed to preload ${src}`);
-      // Still resolve to avoid blocking
       resolve();
     };
     img.src = src;
+    // If the image is already in browser cache, complete is true synchronously
+    if (img.complete) {
+      preloadedImages.add(src);
+      resolve();
+    }
   });
+}
+
+/** Register a URL as already preloaded (e.g. from preloadAllBackgrounds) */
+export function markPreloaded(src: string) {
+  preloadedImages.add(src);
 }
 
 /**

@@ -309,8 +309,19 @@ export function preloadBackground(bgName: string): void {
 }
 
 export function preloadAllBackgrounds(): void {
-  Object.values(backgroundAssets).forEach(src => {
-    const img = new Image();
-    img.src = src;
+  // Dynamically import markPreloaded to register with BackgroundCrossfade's cache
+  import('@/components/BackgroundCrossfade').then(({ markPreloaded }) => {
+    Object.entries(backgroundAssets).forEach(([_key, src]) => {
+      const img = new Image();
+      img.onload = () => markPreloaded(src);
+      img.src = src;
+      if (img.complete) markPreloaded(src);
+    });
+  }).catch(() => {
+    // Fallback: just preload into browser cache
+    Object.values(backgroundAssets).forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
   });
 }
