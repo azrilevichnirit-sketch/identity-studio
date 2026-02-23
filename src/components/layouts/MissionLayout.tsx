@@ -101,7 +101,7 @@ function DesktopMissionLayout({
       </div>
 
       {/* Calibration overlay (inside game-stage for coordinate alignment) */}
-      {props.calibrationOverlay}
+      {calibrationOverlay}
 
       {/* Dragging ghost */}
       {draggingGhost}
