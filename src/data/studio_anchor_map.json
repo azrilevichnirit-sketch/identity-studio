@@ -1466,17 +1466,17 @@
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m15_tool_a",
-    "x_pct": 0.4,
-    "y_pct": 0.7,
-    "scale": 1.5,
+    "x_pct": 0.557,
+    "y_pct": 0.833,
+    "scale": 3.3,
     "z_layer": "front"
   },
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m15_tool_b",
-    "x_pct": 0.6,
-    "y_pct": 0.7,
-    "scale": 1.5,
+    "x_pct": 0.793,
+    "y_pct": 0.775,
+    "scale": 1.2,
     "z_layer": "front"
   }
 ]
