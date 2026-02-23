@@ -251,9 +251,12 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
   const copyExtraToClipboard = () => {
     if (!selectedExtra) return;
     const pos = extraPositions[selectedExtra];
+    // Find the actual extra to get its anchorRef
+    const extra = sceneExtras.find(e => e.id === selectedExtra);
+    const anchorRef = extra?.anchorRef ?? `m${mission.mission_id.replace('studio_', '')}_desk`;
     const entry = {
       background_asset_key: currentBgKey,
-      anchor_ref: `m${mission.mission_id.replace('studio_', '')}_desk`,
+      anchor_ref: anchorRef,
       x_pct: Math.round((pos?.x ?? 50) * 10) / 10 / 100,
       y_pct: Math.round((pos?.y ?? 75) * 10) / 10 / 100,
       scale: pos?.scale ?? 1,
@@ -262,6 +265,23 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
     };
     navigator.clipboard.writeText(JSON.stringify(entry, null, 2));
     alert('Extra JSON copied!');
+  };
+
+  const copyAllExtrasToClipboard = () => {
+    const entries = sceneExtras.map(extra => {
+      const pos = extraPositions[extra.id];
+      return {
+        background_asset_key: currentBgKey,
+        anchor_ref: extra.anchorRef,
+        x_pct: Math.round((pos?.x ?? 50) * 10) / 10 / 100,
+        y_pct: Math.round((pos?.y ?? 75) * 10) / 10 / 100,
+        scale: pos?.scale ?? 1,
+        z_layer: "mid",
+        ...(pos?.flipX && { flipX: true }),
+      };
+    });
+    navigator.clipboard.writeText(JSON.stringify(entries, null, 2));
+    alert(`All ${entries.length} extras copied!`);
   };
 
   return (
@@ -488,6 +508,14 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
                             <span className="text-[10px]">{pos.scale.toFixed(1)}</span>
                             <button onClick={() => adjustExtraScale(extra.id, 0.1)} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">+</button>
                           </div>
+                          <div className="flex items-center gap-1">
+                            <span className="text-muted-foreground text-[10px] w-6">X:</span>
+                            <button onClick={(e) => { e.stopPropagation(); setExtraPositions(p => ({ ...p, [extra.id]: { ...p[extra.id], x: Math.max(0, (p[extra.id]?.x ?? 50) - 1) } })); }} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">-</button>
+                            <button onClick={(e) => { e.stopPropagation(); setExtraPositions(p => ({ ...p, [extra.id]: { ...p[extra.id], x: Math.min(100, (p[extra.id]?.x ?? 50) + 1) } })); }} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">+</button>
+                            <span className="text-muted-foreground text-[10px] w-6 ml-2">Y:</span>
+                            <button onClick={(e) => { e.stopPropagation(); setExtraPositions(p => ({ ...p, [extra.id]: { ...p[extra.id], y: Math.max(0, (p[extra.id]?.y ?? 75) - 1) } })); }} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">-</button>
+                            <button onClick={(e) => { e.stopPropagation(); setExtraPositions(p => ({ ...p, [extra.id]: { ...p[extra.id], y: Math.min(100, (p[extra.id]?.y ?? 75) + 1) } })); }} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">+</button>
+                          </div>
                           <button
                             onClick={() => toggleExtraFlip(extra.id)}
                             className={`px-2 py-1 rounded text-[10px] ${pos.flipX ? 'bg-orange-500 text-white' : 'bg-muted'}`}
@@ -505,6 +533,14 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
                     </div>
                   );
                 })}
+                {sceneExtras.length > 1 && (
+                  <button
+                    onClick={copyAllExtrasToClipboard}
+                    className="w-full px-2 py-1 mt-1 bg-orange-700 text-white rounded text-[10px] hover:bg-orange-600"
+                  >
+                    📋 Copy All Extras JSON
+                  </button>
+                )}
               </div>
             )}
             
