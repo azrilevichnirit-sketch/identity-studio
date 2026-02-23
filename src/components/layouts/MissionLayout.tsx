@@ -61,6 +61,7 @@ function DesktopMissionLayout({
   speechBubble,
   toolPanel,
   draggingGhost,
+  calibrationOverlay,
   stageRef,
   onCancelCarry,
   isCarryMode,
