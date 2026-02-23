@@ -1058,16 +1058,14 @@ export function VisualPlayScreen({
           // Get anchor position from the current background
           const anchorPos = getAnchorPosition(lockedBgKey, extra.anchorRef);
           if (!anchorPos) {
-            console.warn(`[EXTRAS] No anchor found for ${extra.anchorRef} on bg=${lockedBgKey}`);
             return null;
           }
-          console.log(`[EXTRAS] ${extra.anchorRef}: bg=${lockedBgKey}, x=${anchorPos.x.toFixed(1)}%, y=${anchorPos.y.toFixed(1)}%, scale=${anchorPos.scale}, flipX=${anchorPos.flipX}`);
           
           const zIndex = zIndexForAnchorLayer(extra.zLayer);
-          const rawLeftPos = anchorPos.x + extra.offsetX;
-          const leftPos = (isMobile && isPanoramic) ? anchorXToPanoramicLeft(rawLeftPos) : rawLeftPos;
-          const topPos = anchorPos.y + extra.offsetY;
           const override = extraOverrides[extra.id];
+          const rawLeftPos = override ? override.x : (anchorPos.x + extra.offsetX);
+          const leftPos = (isMobile && isPanoramic) ? anchorXToPanoramicLeft(rawLeftPos) : rawLeftPos;
+          const topPos = override ? override.y : (anchorPos.y + extra.offsetY);
           const scale = override ? override.scale : extra.scale * (anchorPos.scale || 1);
           
           return (
