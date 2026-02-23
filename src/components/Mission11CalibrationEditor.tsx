@@ -5,9 +5,9 @@ import { getToolImage } from '@/lib/assetUtils';
 import type { AnchorRef, Mission } from '@/types/identity';
 
 // Import backgrounds for calibration
-// Tool A = Exterior park, Tool B = Main gallery (finished studio)
-import studioExteriorBg from '@/assets/backgrounds/studio_exterior_park_stylized_v3.webp';
-import galleryMainStylized from '@/assets/backgrounds/gallery_main_stylized.webp';
+// Tool A = Workshop (same as M10), Tool B = Gallery mobile wide
+import studioWorkshopBg from '@/assets/backgrounds/studio_in_workshop_v3.webp';
+import galleryMobileWideBg from '@/assets/backgrounds/gallery_main_mobile_wide.webp';
 interface Mission11CalibrationEditorProps {
   mission: Mission;
   onBackgroundChange?: (bgUrl: string, bgKey: string) => void;
@@ -25,9 +25,9 @@ export function Mission11CalibrationEditor({ mission, onBackgroundChange }: Miss
   const [isOpen, setIsOpen] = useState(true);
   const [selectedTool, setSelectedTool] = useState<'a' | 'b'>('a');
   
-  // Tool A = Exterior park, Tool B = Main gallery (finished studio)
-  const bgKeyA = 'studio_exterior_bg';
-  const bgKeyB = 'gallery_main_stylized';
+  // Tool A = Workshop (same as M10), Tool B = Gallery mobile wide
+  const bgKeyA = 'studio_in_workshop_bg';
+  const bgKeyB = 'gallery_main_mobile_wide';
   
   const [positions, setPositions] = useState<{ a: ToolPosition; b: ToolPosition }>(() => {
     const getInitialPos = (key: 'a' | 'b'): ToolPosition => {
@@ -52,9 +52,9 @@ export function Mission11CalibrationEditor({ mission, onBackgroundChange }: Miss
   // Update background when selected tool changes
   useEffect(() => {
     if (selectedTool === 'a') {
-      onBackgroundChange?.(studioExteriorBg, bgKeyA);
+      onBackgroundChange?.(studioWorkshopBg, bgKeyA);
     } else {
-      onBackgroundChange?.(galleryMainStylized, bgKeyB);
+      onBackgroundChange?.(galleryMobileWideBg, bgKeyB);
     }
   }, [selectedTool, onBackgroundChange]);
 
@@ -222,7 +222,7 @@ export function Mission11CalibrationEditor({ mission, onBackgroundChange }: Miss
                     : 'bg-muted hover:bg-accent'
                 }`}
               >
-                A (Exterior)
+                A (Workshop)
               </button>
               <button
                 onClick={() => setSelectedTool('b')}
@@ -232,7 +232,7 @@ export function Mission11CalibrationEditor({ mission, onBackgroundChange }: Miss
                     : 'bg-muted hover:bg-accent'
                 }`}
               >
-                B (Gallery)
+                B (Gallery Wide)
               </button>
             </div>
             
