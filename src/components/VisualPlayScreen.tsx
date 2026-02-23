@@ -1057,6 +1057,7 @@ export function VisualPlayScreen({
         {sceneExtras.map((extra) => {
           // Get anchor position from the current background
           const anchorPos = getAnchorPosition(lockedBgKey, extra.anchorRef);
+          console.log(`[EXTRA DEBUG] ${extra.anchorRef} on bg=${lockedBgKey} → `, anchorPos ? `x=${anchorPos.x}% y=${anchorPos.y}% scale=${anchorPos.scale} flipX=${anchorPos.flipX}` : 'NULL');
           if (!anchorPos) {
             // Fallback position if anchor not found
             console.warn(`Anchor ${extra.anchorRef} not found for background ${lockedBgKey}`);
