@@ -716,16 +716,16 @@
     "anchor_ref": "m06_tool_a",
     "x_pct": 0.663,
     "y_pct": 0.84,
-    "scale": 2.1,
+    "scale": 1.9,
     "z_layer": "front",
     "flipX": true
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m06_tool_b",
-    "x_pct": 0.842,
-    "y_pct": 0.742,
-    "scale": 2,
+    "x_pct": 0.829,
+    "y_pct": 0.761,
+    "scale": 1.1,
     "z_layer": "front"
   },
   {
