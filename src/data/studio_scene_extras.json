@@ -52,8 +52,8 @@
     "spawn_count": 1,
     "placement_mode": "wall",
     "anchor_ref": "m14_extra_01a",
-    "despawn_mode": "keep",
-    "despawn_value": ""
+    "despawn_mode": "remove_after_mission_id",
+    "despawn_value": "studio_14"
   },
   {
     "world": "studio",
@@ -66,8 +66,8 @@
     "spawn_count": 1,
     "placement_mode": "wall",
     "anchor_ref": "m14_extra_01b",
-    "despawn_mode": "keep",
-    "despawn_value": ""
+    "despawn_mode": "remove_after_mission_id",
+    "despawn_value": "studio_14"
   },
   {
     "world": "studio",
@@ -80,8 +80,8 @@
     "spawn_count": 1,
     "placement_mode": "floor",
     "anchor_ref": "m14_extra_02a",
-    "despawn_mode": "keep",
-    "despawn_value": ""
+    "despawn_mode": "remove_after_mission_id",
+    "despawn_value": "studio_14"
   },
   {
     "world": "studio",
@@ -94,8 +94,8 @@
     "spawn_count": 1,
     "placement_mode": "floor",
     "anchor_ref": "m14_extra_02b",
-    "despawn_mode": "keep",
-    "despawn_value": ""
+    "despawn_mode": "remove_after_mission_id",
+    "despawn_value": "studio_14"
   },
   {
     "world": "studio",
@@ -108,8 +108,8 @@
     "spawn_count": 1,
     "placement_mode": "wall",
     "anchor_ref": "m14_extra_03a",
-    "despawn_mode": "keep",
-    "despawn_value": ""
+    "despawn_mode": "remove_after_mission_id",
+    "despawn_value": "studio_14"
   },
   {
     "world": "studio",
@@ -122,8 +122,8 @@
     "spawn_count": 1,
     "placement_mode": "wall",
     "anchor_ref": "m14_extra_03b",
-    "despawn_mode": "keep",
-    "despawn_value": ""
+    "despawn_mode": "remove_after_mission_id",
+    "despawn_value": "studio_14"
   },
   {
     "world": "studio",
@@ -136,8 +136,8 @@
     "spawn_count": 1,
     "placement_mode": "wall",
     "anchor_ref": "m14_extra_04a",
-    "despawn_mode": "keep",
-    "despawn_value": ""
+    "despawn_mode": "remove_after_mission_id",
+    "despawn_value": "studio_14"
   },
   {
     "world": "studio",
@@ -150,8 +150,8 @@
     "spawn_count": 1,
     "placement_mode": "wall",
     "anchor_ref": "m14_extra_04b",
-    "despawn_mode": "keep",
-    "despawn_value": ""
+    "despawn_mode": "remove_after_mission_id",
+    "despawn_value": "studio_14"
   },
   {
     "world": "studio",
