@@ -187,7 +187,7 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
 
   const adjustExtraScale = (extraId: string, delta: number) => {
     setExtraPositions(prev => {
-      const newScale = Math.max(0.1, Math.round((prev[extraId]?.scale ?? 1 + delta) * 10) / 10);
+      const newScale = Math.max(0.1, Math.round(((prev[extraId]?.scale ?? 1) + delta) * 10) / 10);
       onExtraPositionChange?.(extraId, prev[extraId]?.x ?? 50, prev[extraId]?.y ?? 75, newScale);
       return {
         ...prev,
