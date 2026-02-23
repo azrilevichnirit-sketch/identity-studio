@@ -1547,7 +1547,7 @@
     "flipX": true
   },
   {
-    "background_asset_key": "studio_in_entrance_view_bg",
+    "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m08_visitor_01",
     "x_pct": 0.25,
     "y_pct": 0.78,
@@ -1555,7 +1555,7 @@
     "z_layer": "mid"
   },
   {
-    "background_asset_key": "studio_in_entrance_view_bg",
+    "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m08_visitor_02",
     "x_pct": 0.50,
     "y_pct": 0.75,
@@ -1563,7 +1563,7 @@
     "z_layer": "mid"
   },
   {
-    "background_asset_key": "studio_in_entrance_view_bg",
+    "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m08_visitor_03",
     "x_pct": 0.72,
     "y_pct": 0.80,
