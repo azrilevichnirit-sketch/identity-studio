@@ -37,6 +37,7 @@ import studio03b from '@/assets/tools/studio_03_b.webp';
 import studio04a from '@/assets/tools/studio_04_a.webp';
 import studio04b from '@/assets/tools/studio_04_b.webp';
 import studio05a from '@/assets/tools/studio_05_a.webp';
+import studio05aAnimated from '@/assets/tools/studio_05_a_animated.gif';
 import studio05b from '@/assets/tools/studio_05_b.webp';
 import studio06a from '@/assets/tools/studio_06_a.webp';
 import studio06b from '@/assets/tools/studio_06_b.webp';
@@ -102,6 +103,7 @@ const toolAssets: Record<string, string> = {
   studio_04_a: studio04a,
   studio_04_b: studio04b,
   studio_05_a: studio05a,
+  studio_05_a_animated: studio05aAnimated,
   studio_05_b: studio05b,
   studio_06_a: studio06a,
   studio_06_b: studio06b,
