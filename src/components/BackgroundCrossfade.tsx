@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 type BackgroundCrossfadeProps = {
@@ -46,7 +46,7 @@ export function markPreloaded(src: string) {
 /**
  * Crossfades between background images using opacity.
  * IMPORTANT: Preloads new background before transitioning to prevent black screen flash.
- * (CSS can't smoothly animate background-image changes.)
+ * Uses refs to avoid stale closure issues during rapid transitions.
  */
 export function BackgroundCrossfade({
   src,
@@ -61,35 +61,19 @@ export function BackgroundCrossfade({
   const [current, setCurrent] = useState(src);
   const [previous, setPrevious] = useState<string | null>(null);
   const [fadeOutPrev, setFadeOutPrev] = useState(false);
-  const [isReady, setIsReady] = useState(true);
   const cleanupRef = useRef<number | null>(null);
   const pendingSrcRef = useRef<string | null>(null);
+  // Use a ref to always have the latest `current` value, avoiding stale closures
+  const currentRef = useRef(current);
+  currentRef.current = current;
 
   // Preload initial image on mount
   useEffect(() => {
     preloadImage(src);
   }, []);
 
-  const startTransition = useCallback((newSrc: string) => {
-    setPrevious(current);
-    setCurrent(newSrc);
-    setFadeOutPrev(false);
-    setIsReady(true);
-
-    const raf = window.requestAnimationFrame(() => setFadeOutPrev(true));
-
-    if (cleanupRef.current) window.clearTimeout(cleanupRef.current);
-    cleanupRef.current = window.setTimeout(() => {
-      setPrevious(null);
-    }, durationMs + 30);
-
-    return () => {
-      window.cancelAnimationFrame(raf);
-    };
-  }, [current, durationMs]);
-
   useEffect(() => {
-    if (src === current) return;
+    if (src === currentRef.current) return;
 
     // Track the pending source to handle rapid changes
     pendingSrcRef.current = src;
@@ -98,10 +82,24 @@ export function BackgroundCrossfade({
     const doTransition = () => {
       if (didTransition) return;
       didTransition = true;
-      if (pendingSrcRef.current === src) {
-        startTransition(src);
-        pendingSrcRef.current = null;
-      }
+      // Only proceed if this src is still the one we want
+      if (pendingSrcRef.current !== src) return;
+
+      // Use ref to get the LATEST current value (not a stale closure)
+      setPrevious(currentRef.current);
+      setCurrent(src);
+      currentRef.current = src;
+      setFadeOutPrev(false);
+      pendingSrcRef.current = null;
+
+      // Next frame: start fading out previous
+      requestAnimationFrame(() => setFadeOutPrev(true));
+
+      // Clean up previous layer after fade completes
+      if (cleanupRef.current) window.clearTimeout(cleanupRef.current);
+      cleanupRef.current = window.setTimeout(() => {
+        setPrevious(null);
+      }, durationMs + 50);
     };
 
     // Preload the new image before transitioning, but cap wait at 2s
@@ -110,11 +108,10 @@ export function BackgroundCrossfade({
 
     return () => {
       window.clearTimeout(timeout);
-      if (cleanupRef.current) window.clearTimeout(cleanupRef.current);
-      cleanupRef.current = null;
+      // Don't clear cleanupRef here - let the fade-out complete even if src changes again
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [src]);
+  }, [src, durationMs]);
 
   const baseStyle = {
     backgroundSize,
