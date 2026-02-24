@@ -1549,26 +1549,26 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m08_visitor_01",
-    "x_pct": 0.25,
-    "y_pct": 0.78,
-    "scale": 1.2,
-    "z_layer": "mid"
+    "x_pct": 0.597,
+    "y_pct": 0.761,
+    "scale": 1.7,
+    "z_layer": "front",
+    "flipX": true
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m08_visitor_02",
-    "x_pct": 0.50,
-    "y_pct": 0.75,
-    "scale": 1.1,
-    "z_layer": "mid"
+    "x_pct": 0.563,
+    "y_pct": 0.84,
+    "scale": 2.8,
+    "z_layer": "front"
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m08_visitor_03",
-    "x_pct": 0.72,
-    "y_pct": 0.80,
-    "scale": 1.15,
-    "z_layer": "mid",
-    "flipX": true
+    "x_pct": 0.514,
+    "y_pct": 0.884,
+    "scale": 3,
+    "z_layer": "front"
   }
 ]
