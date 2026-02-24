@@ -3,15 +3,11 @@ import { Move, Copy, ChevronDown, ChevronUp } from 'lucide-react';
 import { getAnchorPosition } from '@/lib/jsonDataLoader';
 import type { AnchorRef } from '@/types/identity';
 
-import visitorM08_01 from '@/assets/avatars/studio_visitor_m08_01.png';
-import visitorM08_02 from '@/assets/avatars/studio_visitor_m08_02.png';
-import visitorM08_03 from '@/assets/avatars/studio_visitor_m08_03.png';
-
-const VISITORS = [
-  { id: 'm08_visitor_01', img: visitorM08_01, label: 'מבקר 1' },
-  { id: 'm08_visitor_02', img: visitorM08_02, label: 'מבקרת 2' },
-  { id: 'm08_visitor_03', img: visitorM08_03, label: 'מבקרת 3' },
-];
+interface VisitorDef {
+  id: string;
+  img: string;
+  label: string;
+}
 
 interface VisitorPosition {
   x: number;
@@ -22,14 +18,16 @@ interface VisitorPosition {
 
 interface Props {
   bgKey: string;
+  visitors: VisitorDef[];
+  title: string;
 }
 
-export function Mission8VisitorCalibrationEditor({ bgKey }: Props) {
+export function VisitorCalibrationEditor({ bgKey, visitors, title }: Props) {
   const [isOpen, setIsOpen] = useState(true);
   const [selectedIdx, setSelectedIdx] = useState(0);
 
   const [positions, setPositions] = useState<VisitorPosition[]>(() =>
-    VISITORS.map(v => {
+    visitors.map(v => {
       const pos = getAnchorPosition(bgKey, v.id as AnchorRef);
       return {
         x: pos?.x ?? 50,
@@ -94,7 +92,7 @@ export function Mission8VisitorCalibrationEditor({ bgKey }: Props) {
   };
 
   const copyToClipboard = () => {
-    const entries = VISITORS.map((v, i) => ({
+    const entries = visitors.map((v, i) => ({
       background_asset_key: bgKey,
       anchor_ref: v.id,
       x_pct: Math.round(positions[i].x * 10) / 1000,
@@ -109,10 +107,10 @@ export function Mission8VisitorCalibrationEditor({ bgKey }: Props) {
 
   return (
     <>
-      {/* Render all 3 visitors */}
+      {/* Render all visitors */}
       {positions.map((pos, i) => (
         <div
-          key={VISITORS[i].id}
+          key={visitors[i].id}
           className={`absolute ${i === selectedIdx ? 'cursor-move touch-none z-[100]' : 'pointer-events-none z-[99]'}`}
           style={{
             left: `${pos.x}%`,
@@ -127,16 +125,17 @@ export function Mission8VisitorCalibrationEditor({ bgKey }: Props) {
             <div className="absolute w-16 h-16 rounded-full border-4 border-dashed border-green-400 bg-green-400/20 left-1/2 -translate-x-1/2 top-full -translate-y-1/2" />
           )}
           <img
-            src={VISITORS[i].img}
+            src={visitors[i].img}
             alt=""
             className="h-24 md:h-32 object-contain pointer-events-none"
             style={{
-              filter: `drop-shadow(0 6px 12px rgba(0,0,0,0.4)) ${i !== selectedIdx ? 'opacity(0.5)' : ''}`,
+              filter: `drop-shadow(0 6px 12px rgba(0,0,0,0.4))`,
+              opacity: i !== selectedIdx ? 0.5 : 1,
               transform: `scale(${pos.scale})${pos.flipX ? ' scaleX(-1)' : ''}`,
             }}
           />
           <div className={`absolute -top-6 left-1/2 -translate-x-1/2 ${i === selectedIdx ? 'bg-green-500 text-black' : 'bg-muted text-muted-foreground'} text-[9px] font-bold px-2 py-0.5 rounded whitespace-nowrap`}>
-            {VISITORS[i].label}: {pos.x.toFixed(1)}%, {pos.y.toFixed(1)}%
+            {visitors[i].label}: {pos.x.toFixed(1)}%, {pos.y.toFixed(1)}%
           </div>
         </div>
       ))}
@@ -149,16 +148,15 @@ export function Mission8VisitorCalibrationEditor({ bgKey }: Props) {
         >
           <span className="flex items-center gap-2">
             <Move className="w-4 h-4" />
-            M08 Visitors
+            {title}
           </span>
           {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </button>
 
         {isOpen && (
           <div className="p-3 space-y-3 border-t border-border">
-            {/* Visitor selector */}
             <div className="flex flex-col gap-1">
-              {VISITORS.map((v, i) => (
+              {visitors.map((v, i) => (
                 <button
                   key={v.id}
                   onClick={() => setSelectedIdx(i)}
@@ -171,7 +169,6 @@ export function Mission8VisitorCalibrationEditor({ bgKey }: Props) {
               ))}
             </div>
 
-            {/* Scale & Flip */}
             <div className="space-y-1 p-2 rounded border bg-green-500/10 border-green-500/30">
               <div className="flex items-center gap-2">
                 <span className="text-muted-foreground">Scale:</span>
