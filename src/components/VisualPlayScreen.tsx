@@ -23,6 +23,7 @@ import { ToolCalibrationEditor } from './ToolCalibrationEditor';
 import { Mission7CalibrationEditor } from './Mission7CalibrationEditor';
 import { Mission11CalibrationEditor } from './Mission11CalibrationEditor';
 import { BranchingCalibrationEditor } from './BranchingCalibrationEditor';
+import { Mission8VisitorCalibrationEditor } from './Mission8VisitorCalibrationEditor';
 import { WaterLeakEffect } from './WaterLeakEffect';
 
 // Mission 8 visitor imports
@@ -782,6 +783,7 @@ export function VisualPlayScreen({
     // Mission 01 Tool B: 200ms lock -> 1600ms advance
     // Mission 02:        80ms lock -> 1600ms advance 
     // Mission 07/11:     80ms lock -> 2200ms advance (bg fixation)
+    // Mission 08 B:     80ms lock -> 2900ms advance (visitors appear + viewing)
     // Regular:           80ms lock -> 1400ms advance (visible ~1.3s)
     // ===============================================
     
@@ -822,10 +824,12 @@ export function VisualPlayScreen({
     
     // Step 3: Advance to next mission
     const isMission02 = mission.mission_id === 'studio_02';
+    const isMission08ToolB = mission.mission_id === 'studio_08' && variant === 'b';
     const advanceDelay = isMission01Paint ? 2200 
       : isMission01ToolB ? 1600 
       : isMission02 ? 1600 
       : (isMission07 || isMission11) ? 2200
+      : isMission08ToolB ? 2900  // visitors fade-in (~600ms) + 1.5s viewing time
       : 1400;
     const advanceId = window.setTimeout(() => {
       // For Mission 01 Tool B: DON'T clear localPlacement before onSelect
@@ -2037,6 +2041,22 @@ export function VisualPlayScreen({
     }
     if (mission.mission_id === 'studio_11') {
       return <Mission11CalibrationEditor mission={mission} onBackgroundChange={handleM7BackgroundChange} />;
+    }
+    if (mission.mission_id === 'studio_08') {
+      return (
+        <>
+          <ToolCalibrationEditor
+            mission={mission}
+            currentBgKey={lockedBgKey}
+            onNextMission={onEditorNextMission}
+            sceneExtras={sceneExtras}
+            onExtraPositionChange={(extraId, x, y, scale) => {
+              setExtraOverrides(prev => ({ ...prev, [extraId]: { x, y, scale } }));
+            }}
+          />
+          <Mission8VisitorCalibrationEditor bgKey={lockedBgKey} />
+        </>
+      );
     }
     const optA = mission.options.find(o => o.key === 'a');
     const optB = mission.options.find(o => o.key === 'b');
