@@ -56,9 +56,9 @@ export function DimensionSelect({ onSelect }: DimensionSelectProps) {
           </div>
 
           {/* Title */}
-          <div className="w-full text-right px-4 mb-2">
+          <div className="text-center px-4 mb-2">
             <h1 className="text-xl md:text-4xl font-bold text-slate-900 mb-1">נקודת הזינוק שלך</h1>
-            <p className="text-sm md:text-xl text-slate-600">לאיזה עולם קופצים?</p>
+            <p className="text-sm md:text-xl text-slate-600" dir="rtl">לאיזה עולם קופצים?</p>
           </div>
           
           {/* Dimension cards - stacked on mobile, row on tablet+ */}
