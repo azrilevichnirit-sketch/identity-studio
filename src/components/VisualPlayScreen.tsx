@@ -23,13 +23,17 @@ import { ToolCalibrationEditor } from './ToolCalibrationEditor';
 import { Mission7CalibrationEditor } from './Mission7CalibrationEditor';
 import { Mission11CalibrationEditor } from './Mission11CalibrationEditor';
 import { BranchingCalibrationEditor } from './BranchingCalibrationEditor';
-import { Mission8VisitorCalibrationEditor } from './Mission8VisitorCalibrationEditor';
+import { VisitorCalibrationEditor } from './VisitorCalibrationEditor';
 import { WaterLeakEffect } from './WaterLeakEffect';
 
 // Mission 8 visitor imports
 import visitorM08_01 from '@/assets/avatars/studio_visitor_m08_01.png';
 import visitorM08_02 from '@/assets/avatars/studio_visitor_m08_02.png';
 import visitorM08_03 from '@/assets/avatars/studio_visitor_m08_03.png';
+// Mission 5 visitor imports
+import visitorM05_01 from '@/assets/avatars/studio_visitor_m05_01.png';
+import visitorM05_02 from '@/assets/avatars/studio_visitor_m05_02.png';
+import visitorM05_03 from '@/assets/avatars/studio_visitor_m05_03.png';
 // import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter'; // Disabled
 
 const DRAG_HINT_STORAGE_KEY = 'ie_hasDraggedOnce';
@@ -825,13 +829,15 @@ export function VisualPlayScreen({
     // Step 3: Advance to next mission
     const isMission02 = mission.mission_id === 'studio_02';
     const isMission05ToolA = mission.mission_id === 'studio_05' && variant === 'a';
+    const isMission05ToolB = mission.mission_id === 'studio_05' && variant === 'b';
     const isMission08ToolB = mission.mission_id === 'studio_08' && variant === 'b';
     const advanceDelay = isMission01Paint ? 2200 
       : isMission01ToolB ? 1600 
       : isMission02 ? 1600 
       : (isMission07 || isMission11) ? 2200
       : isMission05ToolA ? 2400  // extra 1s viewing time for M05 tool A
-      : isMission08ToolB ? 2900  // visitors fade-in (~600ms) + 1.5s viewing time
+      : isMission05ToolB ? 2900  // visitors fade-in + 1.5s viewing time
+      : isMission08ToolB ? 2900  // visitors fade-in + 1.5s viewing time
       : 1400;
     const advanceId = window.setTimeout(() => {
       // For Mission 01 Tool B: DON'T clear localPlacement before onSelect
@@ -1755,6 +1761,56 @@ export function VisualPlayScreen({
           );
         });
       })()}
+
+      {/* Mission 5 Tool B visitors - appear with fade-in when tool B is placed */}
+      {(() => {
+        const m05ToolBPlaced = localPlacement?.missionId === 'studio_05' && localPlacement?.key === 'b'
+          || displayedPlacement.some(p => p.missionId === 'studio_05' && p.key === 'b');
+        const isOnM05 = mission.mission_id === 'studio_05';
+        
+        if (!m05ToolBPlaced || !isOnM05) return null;
+        
+        const visitors = [
+          { img: visitorM05_01, anchor: 'm05_visitor_01' },
+          { img: visitorM05_02, anchor: 'm05_visitor_02' },
+          { img: visitorM05_03, anchor: 'm05_visitor_03' },
+        ];
+        
+        return visitors.map((v, i) => {
+          const pos = getAnchorPosition(lockedBgKey, v.anchor as AnchorRef);
+          if (!pos) return null;
+          const zIdx = zIndexForAnchorLayer(pos.z_layer);
+          return (
+            <div
+              key={`m05-visitor-${i}`}
+              className="absolute pointer-events-none"
+              style={{
+                left: `${pos.x}%`,
+                top: `${pos.y}%`,
+                transform: 'translate(-50%, -100%)',
+                zIndex: zIdx,
+              }}
+            >
+              <div
+                style={{
+                  opacity: 0,
+                  animation: `scale-in 0.6s ease-out ${i * 150}ms forwards`,
+                }}
+              >
+                <img
+                  src={v.img}
+                  alt=""
+                  className="h-24 md:h-32 object-contain"
+                  style={{
+                    filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
+                    transform: `scale(${pos.scale})${pos.flipX ? ' scaleX(-1)' : ''}`,
+                  }}
+                />
+              </div>
+            </div>
+          );
+        });
+      })()}
     </>
   );
 
@@ -2056,7 +2112,31 @@ export function VisualPlayScreen({
               setExtraOverrides(prev => ({ ...prev, [extraId]: { x, y, scale } }));
             }}
           />
-          <Mission8VisitorCalibrationEditor bgKey={lockedBgKey} />
+          <VisitorCalibrationEditor bgKey={lockedBgKey} title="M08 Visitors" visitors={[
+            { id: 'm08_visitor_01', img: visitorM08_01, label: 'מבקר 1' },
+            { id: 'm08_visitor_02', img: visitorM08_02, label: 'מבקרת 2' },
+            { id: 'm08_visitor_03', img: visitorM08_03, label: 'מבקרת 3' },
+          ]} />
+        </>
+      );
+    }
+    if (mission.mission_id === 'studio_05') {
+      return (
+        <>
+          <ToolCalibrationEditor
+            mission={mission}
+            currentBgKey={lockedBgKey}
+            onNextMission={onEditorNextMission}
+            sceneExtras={sceneExtras}
+            onExtraPositionChange={(extraId, x, y, scale) => {
+              setExtraOverrides(prev => ({ ...prev, [extraId]: { x, y, scale } }));
+            }}
+          />
+          <VisitorCalibrationEditor bgKey={lockedBgKey} title="M05 Visitors" visitors={[
+            { id: 'm05_visitor_01', img: visitorM05_01, label: 'עובדת 1' },
+            { id: 'm05_visitor_02', img: visitorM05_02, label: 'עובד 2' },
+            { id: 'm05_visitor_03', img: visitorM05_03, label: 'מבקר 3' },
+          ]} />
         </>
       );
     }

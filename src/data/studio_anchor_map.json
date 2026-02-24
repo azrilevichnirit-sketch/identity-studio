@@ -1570,5 +1570,29 @@
     "y_pct": 0.884,
     "scale": 3,
     "z_layer": "front"
+  },
+  {
+    "background_asset_key": "studio_front_bg",
+    "anchor_ref": "m05_visitor_01",
+    "x_pct": 0.30,
+    "y_pct": 0.80,
+    "scale": 1.5,
+    "z_layer": "front"
+  },
+  {
+    "background_asset_key": "studio_front_bg",
+    "anchor_ref": "m05_visitor_02",
+    "x_pct": 0.50,
+    "y_pct": 0.78,
+    "scale": 1.4,
+    "z_layer": "front"
+  },
+  {
+    "background_asset_key": "studio_front_bg",
+    "anchor_ref": "m05_visitor_03",
+    "x_pct": 0.70,
+    "y_pct": 0.82,
+    "scale": 1.5,
+    "z_layer": "front"
   }
 ]
