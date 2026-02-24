@@ -824,11 +824,13 @@ export function VisualPlayScreen({
     
     // Step 3: Advance to next mission
     const isMission02 = mission.mission_id === 'studio_02';
+    const isMission05ToolA = mission.mission_id === 'studio_05' && variant === 'a';
     const isMission08ToolB = mission.mission_id === 'studio_08' && variant === 'b';
     const advanceDelay = isMission01Paint ? 2200 
       : isMission01ToolB ? 1600 
       : isMission02 ? 1600 
       : (isMission07 || isMission11) ? 2200
+      : isMission05ToolA ? 2400  // extra 1s viewing time for M05 tool A
       : isMission08ToolB ? 2900  // visitors fade-in (~600ms) + 1.5s viewing time
       : 1400;
     const advanceId = window.setTimeout(() => {
