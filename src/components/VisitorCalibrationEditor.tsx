@@ -76,12 +76,14 @@ export function VisitorCalibrationEditor({ bgKey, visitors, title }: Props) {
     if (!isDragging.current || !dragStart.current || !dragStartPos.current) return;
     const dx = ((e.clientX - dragStart.current.x) / window.innerWidth) * 100;
     const dy = ((e.clientY - dragStart.current.y) / window.innerHeight) * 100;
+    const startX = dragStartPos.current.x;
+    const startY = dragStartPos.current.y;
     setPositions(prev => {
       const next = [...prev];
       next[selectedIdx] = {
         ...next[selectedIdx],
-        x: Math.max(0, Math.min(100, dragStartPos.current!.x + dx)),
-        y: Math.max(0, Math.min(100, dragStartPos.current!.y + dy)),
+        x: Math.max(0, Math.min(100, startX + dx)),
+        y: Math.max(0, Math.min(100, startY + dy)),
       };
       return next;
     });
