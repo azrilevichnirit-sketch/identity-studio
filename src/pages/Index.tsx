@@ -444,10 +444,10 @@ const Index = () => {
   // Determine which mission to show for tournament phases
   const tournamentMission = tournament.currentMission;
   const tournamentMissionNumber = useMemo(() => {
-    // Base number is 12 (main missions) + rank number
+    // Base number is main missions count + rank number
     const rankNum = tournament.currentRankBeingResolved || 1;
-    return 12 + rankNum;
-  }, [tournament.currentRankBeingResolved]);
+    return mainMissions.length + rankNum;
+  }, [tournament.currentRankBeingResolved, mainMissions.length]);
 
   return (
     <>
