@@ -177,7 +177,7 @@ export function BranchingCalibrationEditor({ mission, bgKeyA, bgKeyB, onBackgrou
           <img
             src={currentToolImage}
             alt={`Tool ${selectedTool.toUpperCase()}`}
-            className="w-24 h-24 object-contain pointer-events-none"
+            className="w-24 h-24 md:w-32 md:h-32 object-contain pointer-events-none"
             style={{
               transform: `scale(${currentPosition.scale}) ${currentPosition.flipX ? 'scaleX(-1)' : ''}`,
               filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.5))',

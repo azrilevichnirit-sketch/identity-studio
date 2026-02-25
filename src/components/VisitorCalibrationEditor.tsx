@@ -171,7 +171,7 @@ export function VisitorCalibrationEditor({ bgKey, visitors, title, panelClassNam
           <img
             src={visitor.img}
             alt=""
-            className="h-24 md:h-32 object-contain pointer-events-none"
+            className="w-32 h-32 object-contain pointer-events-none"
             style={{
               filter: `drop-shadow(0 6px 12px rgba(0,0,0,0.4))`,
               opacity: i !== selectedIdx ? 0.5 : 1,
