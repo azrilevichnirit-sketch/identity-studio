@@ -337,7 +337,7 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
             <img 
               src={toolAImage} 
               alt="Tool A" 
-              className="w-24 h-24 object-contain pointer-events-none"
+               className="w-24 h-24 md:w-32 md:h-32 object-contain pointer-events-none"
               style={{
                 transform: `scale(${positions.a.scale}) ${positions.a.flipX ? 'scaleX(-1)' : ''}`,
                 filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.5))',
@@ -374,7 +374,7 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
             <img 
               src={toolBImage} 
               alt="Tool B" 
-              className="w-24 h-24 object-contain pointer-events-none"
+               className="w-24 h-24 md:w-32 md:h-32 object-contain pointer-events-none"
               style={{
                 transform: `scale(${positions.b.scale}) ${positions.b.flipX ? 'scaleX(-1)' : ''}`,
                 filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.5))',
