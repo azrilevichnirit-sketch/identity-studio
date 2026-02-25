@@ -939,8 +939,8 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m11_tool_a",
-    "x_pct": 0.782,
-    "y_pct": 0.924,
+    "x_pct": 0.523,
+    "y_pct": 0.872,
     "scale": 3.8,
     "z_layer": "front",
     "flipX": true
@@ -956,18 +956,18 @@
   {
     "background_asset_key": "gallery_main_mobile_wide",
     "anchor_ref": "m11_tool_b",
-    "x_pct": 0.74,
-    "y_pct": 0.73,
-    "scale": 5.8,
+    "x_pct": 0.757,
+    "y_pct": 0.704,
+    "scale": 6.2,
     "z_layer": "front",
     "flipX": true
   },
   {
     "background_asset_key": "gallery_main_mobile_wide",
     "anchor_ref": "m11_crowd",
-    "x_pct": 0.5,
-    "y_pct": 0.8,
-    "scale": 2.0,
+    "x_pct": 0.35,
+    "y_pct": 0.774,
+    "scale": 2.5,
     "z_layer": "back"
   },
   {
