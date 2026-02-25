@@ -981,6 +981,51 @@
   },
   {
     "background_asset_key": "gallery_main_desktop",
+    "anchor_ref": "m12_tool_a_1",
+    "x_pct": 0.805,
+    "y_pct": 0.903,
+    "scale": 1.3,
+    "z_layer": "front",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "gallery_main_desktop",
+    "anchor_ref": "m12_tool_a_2",
+    "x_pct": 0.855,
+    "y_pct": 0.903,
+    "scale": 1.3,
+    "z_layer": "front",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "gallery_main_desktop",
+    "anchor_ref": "m12_tool_a_3",
+    "x_pct": 0.905,
+    "y_pct": 0.903,
+    "scale": 1.3,
+    "z_layer": "front",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "gallery_main_desktop",
+    "anchor_ref": "m12_tool_a_4",
+    "x_pct": 0.955,
+    "y_pct": 0.903,
+    "scale": 1.3,
+    "z_layer": "front",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "gallery_main_desktop",
+    "anchor_ref": "m12_tool_a_5",
+    "x_pct": 1.005,
+    "y_pct": 0.903,
+    "scale": 1.3,
+    "z_layer": "front",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "gallery_main_desktop",
     "anchor_ref": "m12_tool_b",
     "x_pct": 0.549,
     "y_pct": 0.965,
