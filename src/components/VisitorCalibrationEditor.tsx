@@ -14,6 +14,7 @@ interface VisitorPosition {
   y: number;
   scale: number;
   flipX: boolean;
+  zLayer: 'back' | 'mid' | 'front';
 }
 
 interface Props {
@@ -30,8 +31,15 @@ function initPositions(visitors: VisitorDef[], bgKey: string): VisitorPosition[]
       y: pos?.y ?? 70,
       scale: pos?.scale ?? 1,
       flipX: pos?.flipX ?? false,
+      zLayer: (pos?.z_layer as 'back' | 'mid' | 'front') ?? 'front',
     };
   });
+}
+
+function zIndexForLayer(zLayer: 'back' | 'mid' | 'front'): number {
+  if (zLayer === 'back') return 6;
+  if (zLayer === 'mid') return 10;
+  return 14;
 }
 
 export function VisitorCalibrationEditor({ bgKey, visitors, title }: Props) {
@@ -53,7 +61,7 @@ export function VisitorCalibrationEditor({ bgKey, visitors, title }: Props) {
   const dragStart = useRef<{ x: number; y: number } | null>(null);
   const dragStartPos = useRef<{ x: number; y: number } | null>(null);
 
-  const current = positions[selectedIdx] || { x: 50, y: 70, scale: 1, flipX: false };
+  const current = positions[selectedIdx] || { x: 50, y: 70, scale: 1, flipX: false, zLayer: 'front' as const };
 
   const handlePointerDown = (e: React.PointerEvent) => {
     e.preventDefault();
@@ -102,16 +110,27 @@ export function VisitorCalibrationEditor({ bgKey, visitors, title }: Props) {
     });
   };
 
+  const setZLayer = (zLayer: 'back' | 'mid' | 'front') => {
+    setPositions(prev => {
+      const next = [...prev];
+      next[selectedIdx] = { ...next[selectedIdx], zLayer };
+      return next;
+    });
+  };
+
   const copyToClipboard = () => {
-    const entries = visitors.map((v, i) => ({
-      background_asset_key: bgKey,
-      anchor_ref: v.id,
-      x_pct: Math.round(positions[i].x * 10) / 1000,
-      y_pct: Math.round(positions[i].y * 10) / 1000,
-      scale: positions[i].scale,
-      z_layer: 'front',
-      ...(positions[i].flipX && { flipX: true }),
-    }));
+    const entries = visitors.map((v, i) => {
+      const pos = positions[i] || { x: 50, y: 70, scale: 1, flipX: false, zLayer: 'front' as const };
+      return {
+        background_asset_key: bgKey,
+        anchor_ref: v.id,
+        x_pct: Math.round(pos.x * 10) / 1000,
+        y_pct: Math.round(pos.y * 10) / 1000,
+        scale: pos.scale,
+        z_layer: pos.zLayer,
+        ...(pos.flipX && { flipX: true }),
+      };
+    });
     navigator.clipboard.writeText(JSON.stringify(entries, null, 2));
     alert('Copied visitors JSON!');
   };
@@ -119,14 +138,20 @@ export function VisitorCalibrationEditor({ bgKey, visitors, title }: Props) {
   return (
     <>
       {/* Render all visitors */}
-      {positions.map((pos, i) => (
+      {positions.map((pos, i) => {
+        const visitor = visitors[i];
+        if (!visitor) return null;
+
+        const baseZ = zIndexForLayer(pos.zLayer);
+        return (
         <div
-          key={visitors[i].id}
-          className={`absolute ${i === selectedIdx ? 'cursor-move touch-none z-[100]' : 'pointer-events-none z-[99]'}`}
+          key={visitor.id}
+          className={`absolute ${i === selectedIdx ? 'cursor-move touch-none' : 'pointer-events-none'}`}
           style={{
             left: `${pos.x}%`,
             top: `${pos.y}%`,
             transform: 'translate(-50%, -100%)',
+            zIndex: i === selectedIdx ? baseZ + 1 : baseZ,
           }}
           onPointerDown={i === selectedIdx ? handlePointerDown : undefined}
           onPointerMove={i === selectedIdx ? handlePointerMove : undefined}
@@ -136,7 +161,7 @@ export function VisitorCalibrationEditor({ bgKey, visitors, title }: Props) {
             <div className="absolute w-16 h-16 rounded-full border-4 border-dashed border-green-400 bg-green-400/20 left-1/2 -translate-x-1/2 top-full -translate-y-1/2" />
           )}
           <img
-            src={visitors[i].img}
+            src={visitor.img}
             alt=""
             className="h-24 md:h-32 object-contain pointer-events-none"
             style={{
@@ -146,10 +171,11 @@ export function VisitorCalibrationEditor({ bgKey, visitors, title }: Props) {
             }}
           />
           <div className={`absolute -top-6 left-1/2 -translate-x-1/2 ${i === selectedIdx ? 'bg-green-500 text-black' : 'bg-muted text-muted-foreground'} text-[9px] font-bold px-2 py-0.5 rounded whitespace-nowrap`}>
-            {visitors[i].label}: {pos.x.toFixed(1)}%, {pos.y.toFixed(1)}%
+            {visitor.label}: {pos.x.toFixed(1)}%, {pos.y.toFixed(1)}%
           </div>
         </div>
-      ))}
+      );
+      })}
 
       {/* Control panel */}
       <div className="fixed top-4 right-4 z-[200] bg-card border border-border rounded-lg shadow-xl text-xs max-w-[220px]">
@@ -175,7 +201,7 @@ export function VisitorCalibrationEditor({ bgKey, visitors, title }: Props) {
                     i === selectedIdx ? 'bg-green-500 text-black' : 'bg-muted hover:bg-accent'
                   }`}
                 >
-                  {v.label} ({positions[i].x.toFixed(1)}%, {positions[i].y.toFixed(1)}%)
+                  {v.label} ({(positions[i]?.x ?? 50).toFixed(1)}%, {(positions[i]?.y ?? 70).toFixed(1)}%)
                 </button>
               ))}
             </div>
@@ -193,6 +219,27 @@ export function VisitorCalibrationEditor({ bgKey, visitors, title }: Props) {
               >
                 FlipX: {current.flipX ? 'ON' : 'OFF'}
               </button>
+              <div className="flex items-center gap-1">
+                <span className="text-muted-foreground text-xs">Layer:</span>
+                <button
+                  onClick={() => setZLayer('back')}
+                  className={`px-2 py-1 rounded text-[10px] ${current.zLayer === 'back' ? 'bg-green-500 text-black' : 'bg-muted'}`}
+                >
+                  Back
+                </button>
+                <button
+                  onClick={() => setZLayer('mid')}
+                  className={`px-2 py-1 rounded text-[10px] ${current.zLayer === 'mid' ? 'bg-green-500 text-black' : 'bg-muted'}`}
+                >
+                  Mid
+                </button>
+                <button
+                  onClick={() => setZLayer('front')}
+                  className={`px-2 py-1 rounded text-[10px] ${current.zLayer === 'front' ? 'bg-green-500 text-black' : 'bg-muted'}`}
+                >
+                  Front
+                </button>
+              </div>
             </div>
 
             <button
