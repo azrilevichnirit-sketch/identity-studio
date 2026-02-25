@@ -991,8 +991,8 @@
   {
     "background_asset_key": "gallery_main_desktop",
     "anchor_ref": "m12_tool_a_2",
-    "x_pct": 0.628,
-    "y_pct": 0.917,
+    "x_pct": 0.622,
+    "y_pct": 0.929,
     "scale": 1,
     "z_layer": "front",
     "flipX": true
@@ -1018,11 +1018,10 @@
   {
     "background_asset_key": "gallery_main_desktop",
     "anchor_ref": "m12_tool_a_5",
-    "x_pct": 1.005,
-    "y_pct": 0.903,
-    "scale": 1.1,
-    "z_layer": "front",
-    "flipX": true
+    "x_pct": 0.502,
+    "y_pct": 0.919,
+    "scale": 1,
+    "z_layer": "front"
   },
   {
     "background_asset_key": "gallery_main_desktop",
