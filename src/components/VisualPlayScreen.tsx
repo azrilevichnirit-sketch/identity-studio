@@ -856,9 +856,11 @@ export function VisualPlayScreen({
     const isMission05ToolA = mission.mission_id === 'studio_05' && variant === 'a';
     const isMission05ToolB = mission.mission_id === 'studio_05' && variant === 'b';
     const isMission08ToolB = mission.mission_id === 'studio_08' && variant === 'b';
+    const isMission11ToolA = mission.mission_id === 'studio_11' && variant === 'a';
     const advanceDelay = isMission01Paint ? 2200 
       : isMission01ToolB ? 1600 
       : isMission02 ? 1600 
+      : isMission11ToolA ? 2600  // extra time for avatar appear after tool
       : (isMission07 || isMission11) ? 2200
       : isMission06ToolA ? 2400  // extra time for prop spawn + tool appear
       : (isMission10ToolA || isMission10ToolB) ? 2400  // extra time for tool + staff character appear
@@ -1888,6 +1890,51 @@ export function VisualPlayScreen({
           );
         });
       })()}
+
+      {/* Mission 11 Tool A avatar - appears with fade-in when tool A is placed */}
+      {(() => {
+        const m11ToolAPlaced = localPlacement?.missionId === 'studio_11' && localPlacement?.key === 'a'
+          || displayedPlacement.some(p => p.missionId === 'studio_11' && p.key === 'a');
+        const isOnM11 = mission.mission_id === 'studio_11';
+        
+        if (!m11ToolAPlaced || !isOnM11) return null;
+        
+        const avatarImg = getAvatarImage(avatarGender, 'idle');
+        if (!avatarImg) return null;
+        
+        const avatarAnchor = getAnchorPosition(lockedBgKey, 'm11_avatar' as AnchorRef);
+        const avatarPos = avatarAnchor || { x: 50, y: 85, scale: 2.0, z_layer: 'front', flipX: false };
+        
+        return (
+          <div
+            key="m11-avatar"
+            className="absolute pointer-events-none"
+            style={{
+              left: `${avatarPos.x}%`,
+              top: `${avatarPos.y}%`,
+              transform: 'translate(-50%, -100%)',
+              zIndex: zIndexForAnchorLayer(avatarPos.z_layer),
+            }}
+          >
+            <div
+              style={{
+                opacity: 0,
+                animation: `scale-in 0.6s ease-out 600ms forwards`,
+              }}
+            >
+              <img
+                src={avatarImg}
+                alt=""
+                className="h-24 md:h-32 object-contain"
+                style={{
+                  filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
+                  transform: `scale(${avatarPos.scale})${avatarPos.flipX ? ' scaleX(-1)' : ''}`,
+                }}
+              />
+            </div>
+          </div>
+        );
+      })()}
     </>
   );
 
@@ -2175,7 +2222,16 @@ export function VisualPlayScreen({
       return <Mission7CalibrationEditor mission={mission} onBackgroundChange={handleM7BackgroundChange} />;
     }
     if (mission.mission_id === 'studio_11') {
-      return <Mission11CalibrationEditor mission={mission} onBackgroundChange={handleM7BackgroundChange} />;
+      return (
+        <>
+          <Mission11CalibrationEditor mission={mission} onBackgroundChange={handleM7BackgroundChange} />
+          {avatarImage && (
+            <VisitorCalibrationEditor bgKey="studio_in_workshop_bg" title="M11 Avatar" visitors={[
+              { id: 'm11_avatar', img: avatarImage, label: 'אווטר' },
+            ]} />
+          )}
+        </>
+      );
     }
     if (mission.mission_id === 'studio_08') {
       return (
