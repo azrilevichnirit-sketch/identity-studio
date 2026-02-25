@@ -24,6 +24,10 @@ import businessCouple01 from '@/assets/extras/studio_business_couple_01.webp';
 import femaleStaffSitting from '@/assets/extras/studio_female_staff_sitting.webp';
 import femaleStaffStanding from '@/assets/extras/studio_female_staff_standing.webp';
 import crowdOutside01 from '@/assets/extras/studio_crowd_outside_01.webp';
+import extra11 from '@/assets/extras/studio_extra_asset_11.webp';
+import extra12 from '@/assets/extras/studio_extra_asset_12.webp';
+import extra13 from '@/assets/extras/studio_extra_asset_13.webp';
+import extra14 from '@/assets/extras/studio_extra_asset_14.webp';
 
 // Map asset keys to actual images
 const extraAssetMap: Record<string, string> = {
@@ -48,6 +52,10 @@ const extraAssetMap: Record<string, string> = {
   studio_female_staff_sitting: femaleStaffSitting,
   studio_female_staff_standing: femaleStaffStanding,
   studio_crowd_outside_01: crowdOutside01,
+  studio_extra_asset_11: extra11,
+  studio_extra_asset_12: extra12,
+  studio_extra_asset_13: extra13,
+  studio_extra_asset_14: extra14,
 };
 
 export interface SpawnedExtra {
