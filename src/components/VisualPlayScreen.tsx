@@ -1898,9 +1898,11 @@ export function VisualPlayScreen({
       {(() => {
         const m11ToolAPlaced = localPlacement?.missionId === 'studio_11' && localPlacement?.key === 'a'
           || displayedPlacement.some(p => p.missionId === 'studio_11' && p.key === 'a');
+        const m11ToolBPlaced = localPlacement?.missionId === 'studio_11' && localPlacement?.key === 'b'
+          || displayedPlacement.some(p => p.missionId === 'studio_11' && p.key === 'b');
         const isOnM11 = mission.mission_id === 'studio_11';
         
-        if (!m11ToolAPlaced || !isOnM11) return null;
+        if (!m11ToolAPlaced || m11ToolBPlaced || !isOnM11) return null;
         
         const avatarImg = getAvatarImage(avatarGender, 'idle');
         if (!avatarImg) return null;
@@ -1943,9 +1945,11 @@ export function VisualPlayScreen({
       {(() => {
         const m11ToolBPlaced = localPlacement?.missionId === 'studio_11' && localPlacement?.key === 'b'
           || displayedPlacement.some(p => p.missionId === 'studio_11' && p.key === 'b');
+        const m11ToolAPlaced = localPlacement?.missionId === 'studio_11' && localPlacement?.key === 'a'
+          || displayedPlacement.some(p => p.missionId === 'studio_11' && p.key === 'a');
         const isOnM11 = mission.mission_id === 'studio_11';
         
-        if (!m11ToolBPlaced || !isOnM11) return null;
+        if (!m11ToolBPlaced || m11ToolAPlaced || !isOnM11) return null;
         
         const crowdAnchor = getAnchorPosition(lockedBgKey, 'm11_crowd' as AnchorRef);
         const crowdPos = crowdAnchor || { x: 50, y: 80, scale: 2.0, z_layer: 'back', flipX: false };
@@ -2270,14 +2274,16 @@ export function VisualPlayScreen({
       return (
         <>
           <Mission11CalibrationEditor mission={mission} onBackgroundChange={handleM7BackgroundChange} />
-          {avatarImage && (
+          {avatarImage && lockedBgKey === 'studio_in_workshop_bg' && (
             <VisitorCalibrationEditor bgKey="studio_in_workshop_bg" title="M11 Avatar (Tool A)" panelClassName="top-[290px] right-4" visitors={[
               { id: 'm11_avatar', img: avatarImage, label: 'אווטר' },
             ]} />
           )}
-          <VisitorCalibrationEditor bgKey="gallery_main_mobile_wide" title="M11 Crowd (Tool B)" panelClassName="top-[500px] right-4" visitors={[
-            { id: 'm11_crowd', img: m11CrowdAsset, label: 'קהל' },
-          ]} />
+          {lockedBgKey === 'gallery_main_mobile_wide' && (
+            <VisitorCalibrationEditor bgKey="gallery_main_mobile_wide" title="M11 Crowd (Tool B)" panelClassName="top-[290px] right-4" visitors={[
+              { id: 'm11_crowd', img: m11CrowdAsset, label: 'קהל' },
+            ]} />
+          )}
         </>
       );
     }
