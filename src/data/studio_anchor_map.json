@@ -1574,16 +1574,16 @@
   {
     "background_asset_key": "studio_in_storage_bg",
     "anchor_ref": "m14_tool_a",
-    "x_pct": 0.549,
-    "y_pct": 0.869,
+    "x_pct": 0.504,
+    "y_pct": 0.877,
     "scale": 1.5,
     "z_layer": "front"
   },
   {
     "background_asset_key": "studio_in_storage_bg",
     "anchor_ref": "m14_tool_b",
-    "x_pct": 0.766,
-    "y_pct": 0.904,
+    "x_pct": 0.629,
+    "y_pct": 0.871,
     "scale": 3.3,
     "z_layer": "front",
     "flipX": true
