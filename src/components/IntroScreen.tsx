@@ -46,7 +46,7 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
                 <p className="text-xs leading-snug">
                   כאן ניצור ביחד את ה{arenaName} שלך, צעד אחרי צעד - עם בחירות קטנות שמרכיבות עולם שלם.
                 </p>
-                <p className="text-xs leading-snug">בכל שלב מחכה לך משימה ושתי אפשרויות. בוחרים, גוררים, וממשיכים.</p>
+                <p className="text-xs leading-snug">בכל שלב מחכה לך משימה ושתי אפשרויות, כל שעליך לעשות זה לבחור את הכלי שהכי מתאים לך.</p>
                 <p className="text-xs leading-snug">בסוף נראה יחד את התמונה שנוצרה מהבחירות שלך.</p>
               </div>
             </SpeechBubble>
@@ -78,7 +78,7 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
               <p className="text-sm leading-snug">
                 כאן ניצור ביחד את ה{arenaName} שלך, צעד אחרי צעד - עם בחירות קטנות שמרכיבות עולם שלם.
               </p>
-              <p className="text-sm leading-snug">בכל שלב מחכה לך משימה ושתי אפשרויות. בוחרים, גוררים, וממשיכים.</p>
+              <p className="text-sm leading-snug">בכל שלב מחכה לך משימה ושתי אפשרויות, כל שעליך לעשות זה לבחור את הכלי שהכי מתאים לך.</p>
               <p className="text-sm leading-snug">בסוף נראה יחד את התמונה שנוצרה מהבחירות שלך.</p>
             </div>
           </SpeechBubble>

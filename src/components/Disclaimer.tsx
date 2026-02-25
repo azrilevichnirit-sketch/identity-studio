@@ -21,7 +21,7 @@ export function Disclaimer({ className }: DisclaimerProps) {
         direction: 'rtl',
       }}
     >
-      התוצאות מיועדות להכוונה ראשונית ואינן מהוות תחליף לייעוץ מקצועי.
+      המשחק ותוצאותיו אינן מחליפות ייעוץ מעמיק
     </p>
   );
 }
