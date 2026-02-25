@@ -11,6 +11,9 @@ export const PAN_IMAGE_WIDTH_FACTOR = 1 + DEFAULT_PAN_RANGE * 2; // 1.44
 /** CSS background-size for panoramic backgrounds (width x height). */
 export const PAN_BG_SIZE = `${PAN_IMAGE_WIDTH_FACTOR * 100}% 100%`;
 
+/** Shared vertical anchor (%) for mobile background framing. */
+export const MOBILE_BG_VERTICAL_ANCHOR = 72;
+
 /**
  * Convert an anchor-map X coordinate (0-100, calibrated on desktop where image = viewport)
  * to the CSS `left` percentage for panoramic mobile.

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { BackgroundCrossfade } from './BackgroundCrossfade';
 import { usePanningBackground } from '@/hooks/usePanningBackground';
-import { PAN_BG_SIZE } from '@/lib/pan';
+import { PAN_BG_SIZE, MOBILE_BG_VERTICAL_ANCHOR } from '@/lib/pan';
 
 export type PanningApi = {
   updatePanFromDrag: (normalizedX: number) => void;
@@ -66,11 +66,11 @@ export function PannableBackground({
     };
   }, [panApiRef, updatePanFromDrag, resetPan, panToPosition, offsetX]);
 
-  // Use 85% vertical on mobile to give a slight top-down angle (less ceiling, more floor)
-  // so placed tools on the floor remain visible
+  // Keep one shared vertical anchor for all mobile backgrounds so
+  // tool anchors remain visually aligned across missions.
   const effectiveBgPosition = isPanoramic
     ? backgroundPosition
-    : ((isMobileView ?? enabled) ? 'center 85%' : 'center');
+    : ((isMobileView ?? enabled) ? `center ${MOBILE_BG_VERTICAL_ANCHOR}%` : 'center');
   // IMPORTANT: Use an explicit panoramic width so panning is always visible
   // and matches our compensation math (see src/lib/pan.ts).
   const effectiveBgSize = isPanoramic ? PAN_BG_SIZE : 'cover';
