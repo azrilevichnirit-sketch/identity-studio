@@ -33,7 +33,7 @@ import studio01b from '@/assets/tools/studio_01_b.webp';
 import studio02a from '@/assets/tools/studio_02_a.webp';
 import studio02b from '@/assets/tools/studio_02_b.webp';
 import studio03a from '@/assets/tools/studio_03_a.webp';
-import studio03b from '@/assets/tools/studio_03_b.webp';
+import studio03b from '@/assets/tools/studio_03_b_v2.webp';
 import studio04a from '@/assets/tools/studio_04_a.webp';
 import studio04b from '@/assets/tools/studio_04_b.webp';
 import studio05a from '@/assets/tools/studio_05_a.webp';
