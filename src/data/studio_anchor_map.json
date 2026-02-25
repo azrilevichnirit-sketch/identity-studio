@@ -1574,17 +1574,17 @@
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m13_tool_a",
-    "x_pct": 0.517,
-    "y_pct": 0.738,
-    "scale": 1.7,
+    "x_pct": 0.519,
+    "y_pct": 0.756,
+    "scale": 1.3,
     "z_layer": "front"
   },
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m13_tool_b",
-    "x_pct": 0.527,
-    "y_pct": 0.743,
-    "scale": 2.1,
+    "x_pct": 0.53,
+    "y_pct": 0.772,
+    "scale": 1.6,
     "z_layer": "front",
     "flipX": true
   },
