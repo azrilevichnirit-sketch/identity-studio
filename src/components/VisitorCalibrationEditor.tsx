@@ -75,8 +75,13 @@ export function VisitorCalibrationEditor({ bgKey, visitors, title, panelClassNam
 
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!isDragging.current || !dragStart.current || !dragStartPos.current) return;
-    const dx = ((e.clientX - dragStart.current.x) / window.innerWidth) * 100;
-    const dy = ((e.clientY - dragStart.current.y) / window.innerHeight) * 100;
+    // Use game-stage container dimensions for accurate percentage conversion
+    const stage = document.querySelector('.game-stage');
+    const rect = stage?.getBoundingClientRect();
+    const stageW = rect?.width || window.innerWidth;
+    const stageH = rect?.height || window.innerHeight;
+    const dx = ((e.clientX - dragStart.current.x) / stageW) * 100;
+    const dy = ((e.clientY - dragStart.current.y) / stageH) * 100;
     const startX = dragStartPos.current.x;
     const startY = dragStartPos.current.y;
     setPositions(prev => {

@@ -81,8 +81,11 @@ export function Mission7CalibrationEditor({ mission, onBackgroundChange }: Missi
     const dx = e.clientX - dragStartPos.current.x;
     const dy = e.clientY - dragStartPos.current.y;
     
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
+    // Use game-stage container dimensions for accurate percentage conversion
+    const stage = document.querySelector('.game-stage');
+    const rect = stage?.getBoundingClientRect();
+    const vw = rect?.width || window.innerWidth;
+    const vh = rect?.height || window.innerHeight;
     const dxPct = (dx / vw) * 100;
     const dyPct = (dy / vh) * 100;
     
