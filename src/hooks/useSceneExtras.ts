@@ -20,6 +20,7 @@ import extra05 from '@/assets/extras/studio_extra_asset_05.webp';
 import extra08 from '@/assets/extras/studio_extra_asset_08.webp';
 import extra09 from '@/assets/extras/studio_extra_asset_09.webp';
 import extra10 from '@/assets/extras/studio_extra_asset_10.webp';
+import businessCouple01 from '@/assets/extras/studio_business_couple_01.webp';
 import femaleStaffSitting from '@/assets/extras/studio_female_staff_sitting.webp';
 import femaleStaffStanding from '@/assets/extras/studio_female_staff_standing.webp';
 import crowdOutside01 from '@/assets/extras/studio_crowd_outside_01.webp';
@@ -40,6 +41,7 @@ const extraAssetMap: Record<string, string> = {
   studio_extra_asset_08: extra08,
   studio_extra_asset_09: extra09,
   studio_extra_asset_10: extra10,
+  studio_business_couple_01: businessCouple01,
   studio_work_desk_01: workDesk01,
   studio_cnc_machine_01: cncMachine01,
   studio_coffee_table_01: coffeeTable01,
