@@ -922,6 +922,14 @@
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m10_extra_staff_b",
+    "x_pct": 0.55,
+    "y_pct": 0.85,
+    "scale": 1.5,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m11_tool_a",
     "x_pct": 0.782,
     "y_pct": 0.924,

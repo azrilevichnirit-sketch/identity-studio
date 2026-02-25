@@ -58,6 +58,20 @@
   {
     "world": "studio",
     "phase": "main",
+    "order": 10,
+    "mission_id": "studio_10",
+    "trigger_when": "before",
+    "trigger_tool_ids": "",
+    "spawn_asset_key": "studio_female_staff_standing",
+    "spawn_count": 1,
+    "placement_mode": "floor",
+    "anchor_ref": "m10_extra_staff_b",
+    "despawn_mode": "remove_after_mission_id",
+    "despawn_value": "studio_10"
+  },
+  {
+    "world": "studio",
+    "phase": "main",
     "order": 13,
     "mission_id": "studio_13",
     "trigger_when": "before",
