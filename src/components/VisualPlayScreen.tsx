@@ -34,6 +34,11 @@ import visitorM08_03 from '@/assets/avatars/studio_visitor_m08_03.png';
 import visitorM05_01 from '@/assets/avatars/studio_visitor_m05_01.png';
 import visitorM05_02 from '@/assets/avatars/studio_visitor_m05_02.png';
 import visitorM05_03 from '@/assets/avatars/studio_visitor_m05_03.png';
+// Mission 3 visitor imports
+import visitorM03_01 from '@/assets/extras/m03_visitor_01.webp';
+import visitorM03_02 from '@/assets/extras/m03_visitor_02.webp';
+import visitorM03_03 from '@/assets/extras/m03_visitor_03.webp';
+import visitorM03_04 from '@/assets/extras/m03_visitor_04.webp';
 // Mission 10 staff character imports
 import femaleStaffSittingImg from '@/assets/extras/studio_female_staff_sitting.webp';
 import femaleStaffStandingImg from '@/assets/extras/studio_female_staff_standing.webp';
@@ -858,6 +863,7 @@ export function VisualPlayScreen({
     
     // Step 3: Advance to next mission
     const isMission02 = mission.mission_id === 'studio_02';
+    const isMission03ToolB = mission.mission_id === 'studio_03' && variant === 'b';
     const isMission05ToolA = mission.mission_id === 'studio_05' && variant === 'a';
     const isMission05ToolB = mission.mission_id === 'studio_05' && variant === 'b';
     const isMission08ToolB = mission.mission_id === 'studio_08' && variant === 'b';
@@ -865,8 +871,9 @@ export function VisualPlayScreen({
     const isMission11ToolB = mission.mission_id === 'studio_11' && variant === 'b';
     const advanceDelay = isMission01Paint ? 2200 
       : isMission01ToolB ? 1600 
-      : isMission02 ? 1600 
-      : (isMission11ToolA || isMission11ToolB) ? 10000  // extended for avatar/crowd calibration verification
+      : isMission02 ? 1600
+      : isMission03ToolB ? 2900  // visitors fade-in + viewing time
+      : (isMission11ToolA || isMission11ToolB) ? 2600  // extra time for avatar/crowd appear after tool
       : (isMission07 || isMission11) ? 2200
       : isMission06ToolA ? 2400  // extra time for prop spawn + tool appear
       : (isMission10ToolA || isMission10ToolB) ? 2400  // extra time for tool + staff character appear
@@ -1280,22 +1287,23 @@ export function VisualPlayScreen({
       return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 3.0, absoluteY: 70, absoluteX: 60 }];
     }
     
-    // Mission 03 Tool B (sound desk): use anchor map coordinates
+    // Mission 03 Tool B (bar tables): duplicate 3 times using individual anchors
     if (prop.missionId === 'studio_03' && prop.key === 'b') {
-      const anchorPos = getAnchorPosition(lockedBgKey, 'm03_tool_b');
-      if (anchorPos) {
-        return [{ 
-          anchor: 'm03_tool_b' as AnchorRef, 
-          offsetX: 0, 
-          offsetY: 0, 
-          customScale: anchorPos.scale, 
-          absoluteY: anchorPos.y, 
-          absoluteX: anchorPos.x,
-          flipX: anchorPos.flipX
-        }];
-      }
-      // Fallback
-      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.2, absoluteY: 71, absoluteX: 18 }];
+      const anchors = ['m03_tool_b_1', 'm03_tool_b_2', 'm03_tool_b_3'] as AnchorRef[];
+      const results = anchors.map(anchorRef => {
+        const anchorPos = getAnchorPosition(lockedBgKey, anchorRef);
+        return {
+          anchor: anchorRef,
+          offsetX: 0,
+          offsetY: 0,
+          customScale: anchorPos?.scale ?? 2.5,
+          absoluteY: anchorPos?.y ?? 80,
+          absoluteX: anchorPos?.x ?? 50,
+          flipX: anchorPos?.flipX,
+          noStagger: true,
+        };
+      });
+      return results;
     }
 
     // Mission 04 Tool A: single placement using anchor map coordinates
@@ -1846,6 +1854,57 @@ export function VisualPlayScreen({
         );
       })()}
 
+      {/* Mission 3 Tool B visitors - appear with fade-in when tool B is placed */}
+      {(() => {
+        const m03ToolBPlaced = localPlacement?.missionId === 'studio_03' && localPlacement?.key === 'b'
+          || displayedPlacement.some(p => p.missionId === 'studio_03' && p.key === 'b');
+        const isOnM03 = mission.mission_id === 'studio_03';
+        
+        if (!m03ToolBPlaced || !isOnM03) return null;
+        
+        const visitors = [
+          { img: visitorM03_01, anchor: 'm03_visitor_01' },
+          { img: visitorM03_02, anchor: 'm03_visitor_02' },
+          { img: visitorM03_03, anchor: 'm03_visitor_03' },
+          { img: visitorM03_04, anchor: 'm03_visitor_04' },
+        ];
+        
+        return visitors.map((v, i) => {
+          const pos = getAnchorPosition(lockedBgKey, v.anchor as AnchorRef);
+          if (!pos) return null;
+          const zIdx = zIndexForAnchorLayer(pos.z_layer);
+          return (
+            <div
+              key={`m03-visitor-${i}`}
+              className="absolute pointer-events-none"
+              style={{
+                left: `${pos.x}%`,
+                top: `${pos.y}%`,
+                transform: 'translate(-50%, -100%)',
+                zIndex: zIdx,
+              }}
+            >
+              <div
+                style={{
+                  opacity: 0,
+                  animation: `scale-in 0.6s ease-out ${600 + i * 150}ms forwards`,
+                }}
+              >
+                <img
+                  src={v.img}
+                  alt=""
+                  className="h-24 md:h-32 object-contain"
+                  style={{
+                    filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
+                    transform: `scale(${pos.scale})${pos.flipX ? ' scaleX(-1)' : ''}`,
+                  }}
+                />
+              </div>
+            </div>
+          );
+        });
+      })()}
+
       {/* Mission 5 Tool B visitors - appear with fade-in when tool B is placed */}
       {(() => {
         const m05ToolBPlaced = localPlacement?.missionId === 'studio_05' && localPlacement?.key === 'b'
@@ -1910,7 +1969,6 @@ export function VisualPlayScreen({
         if (!avatarImg) return null;
         
         const avatarAnchor = getAnchorPosition(lockedBgKey, 'm11_avatar' as AnchorRef);
-        console.log('[M11 Avatar] lockedBgKey:', lockedBgKey, 'anchor:', avatarAnchor);
         const avatarPos = avatarAnchor || { x: 50, y: 85, scale: 2.0, z_layer: 'front', flipX: false };
         
         return (
@@ -2350,6 +2408,35 @@ export function VisualPlayScreen({
             { id: 'm08_visitor_02', img: visitorM08_02, label: 'מבקרת 2' },
             { id: 'm08_visitor_03', img: visitorM08_03, label: 'מבקרת 3' },
             ...(avatarImage ? [{ id: 'm08_avatar', img: avatarImage, label: 'אווטר' }] : []),
+          ]} />
+        </>
+      );
+    }
+    if (mission.mission_id === 'studio_03') {
+      const toolBImg = getToolImage('studio_03_b');
+      return (
+        <>
+          <ToolCalibrationEditor
+            mission={mission}
+            currentBgKey={lockedBgKey}
+            onNextMission={onEditorNextMission}
+            sceneExtras={sceneExtras}
+            onExtraPositionChange={(extraId, x, y, scale) => {
+              setExtraOverrides(prev => ({ ...prev, [extraId]: { x, y, scale } }));
+            }}
+          />
+          {toolBImg && (
+            <VisitorCalibrationEditor bgKey={lockedBgKey} title="M03 Bar Tables (B)" panelClassName="top-[290px] right-4" visitors={[
+              { id: 'm03_tool_b_1', img: toolBImg, label: 'שולחן 1' },
+              { id: 'm03_tool_b_2', img: toolBImg, label: 'שולחן 2' },
+              { id: 'm03_tool_b_3', img: toolBImg, label: 'שולחן 3' },
+            ]} />
+          )}
+          <VisitorCalibrationEditor bgKey={lockedBgKey} title="M03 Visitors (B)" panelClassName="top-[520px] right-4" visitors={[
+            { id: 'm03_visitor_01', img: visitorM03_01, label: 'מבקר 1' },
+            { id: 'm03_visitor_02', img: visitorM03_02, label: 'מבקרת 2' },
+            { id: 'm03_visitor_03', img: visitorM03_03, label: 'מבקר 3' },
+            { id: 'm03_visitor_04', img: visitorM03_04, label: 'מבקרת 4' },
           ]} />
         </>
       );

@@ -210,6 +210,65 @@
     "flipX": true
   },
   {
+    "background_asset_key": "studio_doorway_park_view_v5",
+    "anchor_ref": "m03_tool_b_1",
+    "x_pct": 0.25,
+    "y_pct": 0.92,
+    "scale": 2.5,
+    "z_layer": "front"
+  },
+  {
+    "background_asset_key": "studio_doorway_park_view_v5",
+    "anchor_ref": "m03_tool_b_2",
+    "x_pct": 0.50,
+    "y_pct": 0.95,
+    "scale": 2.8,
+    "z_layer": "front"
+  },
+  {
+    "background_asset_key": "studio_doorway_park_view_v5",
+    "anchor_ref": "m03_tool_b_3",
+    "x_pct": 0.75,
+    "y_pct": 0.92,
+    "scale": 2.5,
+    "z_layer": "front",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "studio_doorway_park_view_v5",
+    "anchor_ref": "m03_visitor_01",
+    "x_pct": 0.15,
+    "y_pct": 0.88,
+    "scale": 2.0,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_doorway_park_view_v5",
+    "anchor_ref": "m03_visitor_02",
+    "x_pct": 0.38,
+    "y_pct": 0.90,
+    "scale": 2.2,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_doorway_park_view_v5",
+    "anchor_ref": "m03_visitor_03",
+    "x_pct": 0.62,
+    "y_pct": 0.90,
+    "scale": 2.2,
+    "z_layer": "mid",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "studio_doorway_park_view_v5",
+    "anchor_ref": "m03_visitor_04",
+    "x_pct": 0.85,
+    "y_pct": 0.88,
+    "scale": 2.0,
+    "z_layer": "mid",
+    "flipX": true
+  },
+  {
     "background_asset_key": "studio_front_bg",
     "anchor_ref": "wall_back",
     "x_pct": 0.5,
