@@ -717,8 +717,9 @@ export function VisualPlayScreen({
     
     // Mission 06 Tool A: spawn the prop (wood rack) FIRST, then show tool after a delay
     const isMission06ToolA = mission.mission_id === 'studio_06' && variant === 'a';
-    // Mission 10 Tool A: show tool first, then the staff character appears after a delay
+    // Mission 10: show tool first, then the staff character appears after a delay (both A and B)
     const isMission10ToolA = mission.mission_id === 'studio_10' && variant === 'a';
+    const isMission10ToolB = mission.mission_id === 'studio_10' && variant === 'b';
     const toolAppearDelay = isMission06ToolA ? 600 : 0;
     
     // For M06 Tool A, first set a "marker" localPlacement (no visual) to trigger the prop spawn
@@ -860,7 +861,7 @@ export function VisualPlayScreen({
       : isMission02 ? 1600 
       : (isMission07 || isMission11) ? 2200
       : isMission06ToolA ? 2400  // extra time for prop spawn + tool appear
-      : isMission10ToolA ? 2400  // extra time for tool + staff character appear
+      : (isMission10ToolA || isMission10ToolB) ? 2400  // extra time for tool + staff character appear
       : isMission05ToolA ? 2400  // extra 1s viewing time for M05 tool A
       : isMission05ToolB ? 2900  // visitors fade-in + 1.5s viewing time
       : isMission08ToolB ? 2900  // visitors fade-in + 1.5s viewing time
@@ -1126,7 +1127,7 @@ export function VisualPlayScreen({
           const scale = override ? override.scale : extra.scale * (anchorPos.scale || 1);
           
           // Delayed fade-in for M10 staff character (appears after tool)
-          const isDelayedExtra = extra.anchorRef === ('m10_extra_staff' as AnchorRef);
+          const isDelayedExtra = extra.anchorRef === ('m10_extra_staff' as AnchorRef) || extra.anchorRef === ('m10_extra_staff_b' as AnchorRef);
           
           return (
             <div
