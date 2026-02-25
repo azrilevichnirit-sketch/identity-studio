@@ -714,20 +714,42 @@ export function VisualPlayScreen({
     // (otherwise the user sees it "stick" where they released, until the next mission renders the persisted version)
     const shouldSnapLocalToAnchorNow = true;
     const snapped = shouldSnapLocalToAnchorNow ? getTargetAnchor(variant) : null;
-    setLocalPlacement({
-      missionId: mission.mission_id,
-      key: variant,
-      assetName: option.asset,
-      fixedPlacement: snapped
-        ? {
-            x: snapped.x,
-            y: snapped.y,
-            scale: snapped.scale,
-            flipX: snapped.flipX,
-            z_layer: snapped.z_layer,
-          }
-        : undefined,
-    });
+    
+    // Mission 06 Tool A: spawn the prop (wood rack) FIRST, then show tool after a delay
+    const isMission06ToolA = mission.mission_id === 'studio_06' && variant === 'a';
+    const toolAppearDelay = isMission06ToolA ? 600 : 0;
+    
+    // For M06 Tool A, first set a "marker" localPlacement (no visual) to trigger the prop spawn
+    // then replace it with the real placement after the delay
+    if (isMission06ToolA) {
+      // Set localPlacement with asset name only (for prop trigger) but hidden position
+      setLocalPlacement({
+        missionId: mission.mission_id,
+        key: variant,
+        assetName: option.asset,
+        fixedPlacement: { x: -100, y: -100, scale: 0, flipX: false, z_layer: 'mid' },
+      });
+      const showToolId = window.setTimeout(() => {
+        setLocalPlacement({
+          missionId: mission.mission_id,
+          key: variant,
+          assetName: option.asset,
+          fixedPlacement: snapped
+            ? { x: snapped.x, y: snapped.y, scale: snapped.scale, flipX: snapped.flipX, z_layer: snapped.z_layer }
+            : undefined,
+        });
+      }, toolAppearDelay);
+      timeoutsRef.current.push(showToolId);
+    } else {
+      setLocalPlacement({
+        missionId: mission.mission_id,
+        key: variant,
+        assetName: option.asset,
+        fixedPlacement: snapped
+          ? { x: snapped.x, y: snapped.y, scale: snapped.scale, flipX: snapped.flipX, z_layer: snapped.z_layer }
+          : undefined,
+      });
+    }
 
     // Mobile: hide tool panel briefly so it doesn't cover the newly placed tool
     // This timer is cleared when the mission advances (line ~165)
@@ -835,6 +857,7 @@ export function VisualPlayScreen({
       : isMission01ToolB ? 1600 
       : isMission02 ? 1600 
       : (isMission07 || isMission11) ? 2200
+      : isMission06ToolA ? 2400  // extra time for prop spawn + tool appear
       : isMission05ToolA ? 2400  // extra 1s viewing time for M05 tool A
       : isMission05ToolB ? 2900  // visitors fade-in + 1.5s viewing time
       : isMission08ToolB ? 2900  // visitors fade-in + 1.5s viewing time
@@ -1072,7 +1095,12 @@ export function VisualPlayScreen({
   );
 
   // ========== SCENE EXTRAS (Floor artworks, wall art for M07) ==========
-  const sceneExtras = useSceneExtras(mission.mission_id, currentIndex, placedProps);
+  // Pass localPlacement so "after" trigger props can appear before the tool is added to placedProps
+  const localSelectedTool = useMemo(() => {
+    if (!localPlacement) return null;
+    return { missionId: localPlacement.missionId, assetName: localPlacement.assetName };
+  }, [localPlacement]);
+  const sceneExtras = useSceneExtras(mission.mission_id, currentIndex, placedProps, localSelectedTool);
   
   const sceneExtrasElement = useMemo(() => {
     // Hide actual extras when calibration editor is active (it renders its own copies)
