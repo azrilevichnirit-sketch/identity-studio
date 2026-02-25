@@ -881,7 +881,7 @@
     "background_asset_key": "studio_doorway_park_view_bg",
     "anchor_ref": "m09_tool_b",
     "x_pct": 0.513,
-    "y_pct": 0.923,
+    "y_pct": 0.948,
     "scale": 2.8,
     "z_layer": "front",
     "flipX": true

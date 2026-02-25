@@ -222,14 +222,14 @@
         "key": "a",
         "holland_code": "s",
         "asset": "studio_09_a",
-        "tooltip_heb": "אזור ישיבה בדלפק",
+        "tooltip_heb": "אזור המתנה בכניסה",
         "view": "in"
       },
       {
         "key": "b",
         "holland_code": "c",
         "asset": "studio_09_b",
-        "tooltip_heb": "חצים על הרצפה",
+        "tooltip_heb": "מדבקות רצפה להכוונה",
         "view": "in"
       }
     ]
