@@ -72,6 +72,20 @@
   {
     "world": "studio",
     "phase": "main",
+    "order": 9,
+    "mission_id": "studio_09",
+    "trigger_when": "before",
+    "trigger_tool_ids": "",
+    "spawn_asset_key": "studio_crowd_outside_01",
+    "spawn_count": 1,
+    "placement_mode": "wall",
+    "anchor_ref": "m09_extra_crowd",
+    "despawn_mode": "remove_after_mission_id",
+    "despawn_value": "studio_09"
+  },
+  {
+    "world": "studio",
+    "phase": "main",
     "order": 13,
     "mission_id": "studio_13",
     "trigger_when": "before",

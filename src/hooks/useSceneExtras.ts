@@ -19,6 +19,7 @@ import receptionDesk01 from '@/assets/extras/studio_reception_desk_01.webp';
 import extra05 from '@/assets/extras/studio_extra_asset_05.webp';
 import femaleStaffSitting from '@/assets/extras/studio_female_staff_sitting.webp';
 import femaleStaffStanding from '@/assets/extras/studio_female_staff_standing.webp';
+import crowdOutside01 from '@/assets/extras/studio_crowd_outside_01.webp';
 
 // Map asset keys to actual images
 const extraAssetMap: Record<string, string> = {
@@ -38,6 +39,7 @@ const extraAssetMap: Record<string, string> = {
   studio_coffee_table_01: coffeeTable01,
   studio_female_staff_sitting: femaleStaffSitting,
   studio_female_staff_standing: femaleStaffStanding,
+  studio_crowd_outside_01: crowdOutside01,
 };
 
 export interface SpawnedExtra {
