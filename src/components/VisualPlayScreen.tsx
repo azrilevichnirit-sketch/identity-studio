@@ -1638,7 +1638,9 @@ export function VisualPlayScreen({
         // USE FIXED PLACEMENT FOR PERSISTED TOOLS
         // This ensures tools stay exactly where they were placed, not recalculated
         // No more duplication patterns - all missions use single placement from anchor map
-        const hasDuplicationPattern = (prop.missionId === 'studio_12' && prop.key === 'a');
+        const hasDuplicationPattern = (prop.missionId === 'studio_01' && prop.key === 'a')
+          || (prop.missionId === 'studio_03' && prop.key === 'b')
+          || (prop.missionId === 'studio_12' && prop.key === 'a');
 
         // Mission 10: LOCAL placement should use fixedPlacement immediately (snap-now)
         if (!isPersisted && isLocalCurrentMissionPlacement && prop.fixedPlacement && !hasDuplicationPattern) {
