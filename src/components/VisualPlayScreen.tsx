@@ -1133,6 +1133,9 @@ export function VisualPlayScreen({
     return (
       <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 5 }}>
         {sceneExtras.map((extra) => {
+          // Hide M07 extras once a tool has been selected (background switches away from entrance view)
+          if (extra.anchorRef.startsWith('m07_extra') && localPlacement) return null;
+          
           // Pin extras to their calibrated background regardless of visual overrides.
           const calibratedBgKey = extra.anchorRef.startsWith('m10_') ? 'studio_in_workshop_bg'
             : extra.anchorRef.startsWith('m07_extra') ? 'studio_in_entrance_view_bg'
