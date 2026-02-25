@@ -1599,9 +1599,9 @@
   {
     "background_asset_key": "studio_in_storage_bg",
     "anchor_ref": "m14_extra_01b",
-    "x_pct": 0.85,
-    "y_pct": 0.3,
-    "scale": 1.0,
+    "x_pct": 0.351,
+    "y_pct": 0.832,
+    "scale": 1,
     "z_layer": "mid"
   },
   {
