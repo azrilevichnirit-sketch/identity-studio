@@ -372,7 +372,7 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
                left: `${pos.x}%`,
                top: `${pos.y}%`,
                transform: 'translate(-50%, -100%)',
-               zIndex: selectedExtra === extra.id ? 115 : baseZ,
+               zIndex: selectedExtra === extra.id ? baseZ + 1 : baseZ,
              }}
             onPointerDown={(e) => handleExtraPointerDown(extra.id, e)}
             onPointerMove={handlePointerMove}
