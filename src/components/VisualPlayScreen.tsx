@@ -1755,7 +1755,7 @@ export function VisualPlayScreen({
               <img 
                 src={toolImg}
                 alt=""
-                className={`${isMission01Buckets ? 'w-28 h-28 md:w-36 md:h-36' : (isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32')} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
+                className={`${isMission01Buckets ? 'w-28 h-28 md:w-36 md:h-36' : (isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : (prop.missionId === 'studio_03' && prop.key === 'b' ? 'h-24 md:h-32' : 'w-24 h-24 md:w-32 md:h-32'))} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
                    style={{
                    filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
                    transform: `scale(${finalScale})${anchorInfo.flipX ? ' scaleX(-1)' : ''}`,
@@ -2423,6 +2423,7 @@ export function VisualPlayScreen({
             currentBgKey={lockedBgKey}
             onNextMission={onEditorNextMission}
             sceneExtras={sceneExtras}
+            enabledTools={['a']}
             onExtraPositionChange={(extraId, x, y, scale) => {
               setExtraOverrides(prev => ({ ...prev, [extraId]: { x, y, scale } }));
             }}

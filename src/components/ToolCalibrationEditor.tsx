@@ -11,6 +11,7 @@ interface ToolCalibrationEditorProps {
   onNextMission?: () => void;
   sceneExtras?: SpawnedExtra[];
   onExtraPositionChange?: (extraId: string, x: number, y: number, scale: number) => void;
+  enabledTools?: ('a' | 'b')[];
 }
 
 interface ToolPosition {
@@ -20,7 +21,7 @@ interface ToolPosition {
   flipX: boolean;
 }
 
-export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sceneExtras = [], onExtraPositionChange }: ToolCalibrationEditorProps) {
+export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sceneExtras = [], onExtraPositionChange, enabledTools = ['a', 'b'] }: ToolCalibrationEditorProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [selectedTool, setSelectedTool] = useState<'a' | 'b' | null>(null);
   const [selectedExtra, setSelectedExtra] = useState<string | null>(null);
@@ -103,6 +104,14 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
   const optionB = mission.options.find(o => o.key === 'b');
   const toolAImage = optionA ? getToolImage(optionA.asset) : null;
   const toolBImage = optionB ? getToolImage(optionB.asset) : null;
+  const isToolAEnabled = enabledTools.includes('a');
+  const isToolBEnabled = enabledTools.includes('b');
+
+  useEffect(() => {
+    if ((selectedTool === 'a' && !isToolAEnabled) || (selectedTool === 'b' && !isToolBEnabled)) {
+      setSelectedTool(null);
+    }
+  }, [selectedTool, isToolAEnabled, isToolBEnabled]);
 
   const handlePointerDown = (tool: 'a' | 'b', e: React.PointerEvent) => {
     e.preventDefault();
@@ -226,8 +235,18 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
     const isTie = mission.mission_id.includes('_tie_');
     const missionNum = mission.mission_id.replace('studio_', '').replace('tie_', '').padStart(2, '0');
     const prefix = isTie ? 'tie' : 'm';
-    const entries = [
-      {
+    const entries = [] as Array<{
+      background_asset_key: string;
+      anchor_ref: string;
+      x_pct: number;
+      y_pct: number;
+      scale: number;
+      z_layer: "front";
+      flipX?: boolean;
+    }>;
+
+    if (isToolAEnabled) {
+      entries.push({
         background_asset_key: currentBgKey,
         anchor_ref: `${prefix}${missionNum}_tool_a`,
         x_pct: Math.round(positions.a.x * 10) / 1000,
@@ -235,8 +254,11 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
         scale: positions.a.scale,
         z_layer: "front",
         ...(positions.a.flipX && { flipX: true }),
-      },
-      {
+      });
+    }
+
+    if (isToolBEnabled) {
+      entries.push({
         background_asset_key: currentBgKey,
         anchor_ref: `${prefix}${missionNum}_tool_b`,
         x_pct: Math.round(positions.b.x * 10) / 1000,
@@ -244,8 +266,8 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
         scale: positions.b.scale,
         z_layer: "front",
         ...(positions.b.flipX && { flipX: true }),
-      },
-    ];
+      });
+    }
     
     navigator.clipboard.writeText(JSON.stringify(entries, null, 2));
     alert('Copied to clipboard!');
@@ -292,74 +314,78 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
       {/* Draggable elements container - positioned inside game-stage coordinate space */}
       <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 90 }}>
       {/* Tool A - anchored at bottom-center like real placement */}
-      <div
-        className={`absolute cursor-move touch-none pointer-events-auto ${selectedTool === 'a' ? 'z-[110]' : 'z-[100]'}`}
-        style={{
-          left: `${positions.a.x}%`,
-          top: `${positions.a.y}%`,
-          // Same transform as actual game placement: bottom-center anchor
-          transform: 'translate(-50%, -100%)',
-        }}
-        onPointerDown={(e) => handlePointerDown('a', e)}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-      >
-        {/* Drop zone indicator - centered on anchor point */}
-        <div className={`absolute w-20 h-20 rounded-full border-4 border-dashed transition-all
-          left-1/2 -translate-x-1/2 top-full -translate-y-1/2
-          ${selectedTool === 'a' ? 'border-yellow-400 bg-yellow-400/20' : 'border-yellow-500/40 bg-yellow-500/10'}`}
-        />
-        {/* Tool image */}
-        {toolAImage && (
-          <img 
-            src={toolAImage} 
-            alt="Tool A" 
-            className="w-24 h-24 object-contain pointer-events-none"
-            style={{
-              transform: `scale(${positions.a.scale}) ${positions.a.flipX ? 'scaleX(-1)' : ''}`,
-              filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.5))',
-            }}
+      {isToolAEnabled && (
+        <div
+          className={`absolute cursor-move touch-none pointer-events-auto ${selectedTool === 'a' ? 'z-[110]' : 'z-[100]'}`}
+          style={{
+            left: `${positions.a.x}%`,
+            top: `${positions.a.y}%`,
+            // Same transform as actual game placement: bottom-center anchor
+            transform: 'translate(-50%, -100%)',
+          }}
+          onPointerDown={(e) => handlePointerDown('a', e)}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+        >
+          {/* Drop zone indicator - centered on anchor point */}
+          <div className={`absolute w-20 h-20 rounded-full border-4 border-dashed transition-all
+            left-1/2 -translate-x-1/2 top-full -translate-y-1/2
+            ${selectedTool === 'a' ? 'border-yellow-400 bg-yellow-400/20' : 'border-yellow-500/40 bg-yellow-500/10'}`}
           />
-        )}
-        <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-yellow-500 text-black text-xs font-bold px-2 py-0.5 rounded whitespace-nowrap">
-          A: {positions.a.x.toFixed(1)}%, {positions.a.y.toFixed(1)}%
+          {/* Tool image */}
+          {toolAImage && (
+            <img 
+              src={toolAImage} 
+              alt="Tool A" 
+              className="w-24 h-24 object-contain pointer-events-none"
+              style={{
+                transform: `scale(${positions.a.scale}) ${positions.a.flipX ? 'scaleX(-1)' : ''}`,
+                filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.5))',
+              }}
+            />
+          )}
+          <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-yellow-500 text-black text-xs font-bold px-2 py-0.5 rounded whitespace-nowrap">
+            A: {positions.a.x.toFixed(1)}%, {positions.a.y.toFixed(1)}%
+          </div>
         </div>
-      </div>
+      )}
       
       {/* Tool B - anchored at bottom-center like real placement */}
-      <div
-        className={`absolute cursor-move touch-none pointer-events-auto ${selectedTool === 'b' ? 'z-[110]' : 'z-[100]'}`}
-        style={{
-          left: `${positions.b.x}%`,
-          top: `${positions.b.y}%`,
-          // Same transform as actual game placement: bottom-center anchor
-          transform: 'translate(-50%, -100%)',
-        }}
-        onPointerDown={(e) => handlePointerDown('b', e)}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-      >
-        {/* Drop zone indicator - centered on anchor point */}
-        <div className={`absolute w-20 h-20 rounded-full border-4 border-dashed transition-all
-          left-1/2 -translate-x-1/2 top-full -translate-y-1/2
-          ${selectedTool === 'b' ? 'border-blue-400 bg-blue-400/20' : 'border-blue-500/40 bg-blue-500/10'}`}
-        />
-        {/* Tool image */}
-        {toolBImage && (
-          <img 
-            src={toolBImage} 
-            alt="Tool B" 
-            className="w-24 h-24 object-contain pointer-events-none"
-            style={{
-              transform: `scale(${positions.b.scale}) ${positions.b.flipX ? 'scaleX(-1)' : ''}`,
-              filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.5))',
-            }}
+      {isToolBEnabled && (
+        <div
+          className={`absolute cursor-move touch-none pointer-events-auto ${selectedTool === 'b' ? 'z-[110]' : 'z-[100]'}`}
+          style={{
+            left: `${positions.b.x}%`,
+            top: `${positions.b.y}%`,
+            // Same transform as actual game placement: bottom-center anchor
+            transform: 'translate(-50%, -100%)',
+          }}
+          onPointerDown={(e) => handlePointerDown('b', e)}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+        >
+          {/* Drop zone indicator - centered on anchor point */}
+          <div className={`absolute w-20 h-20 rounded-full border-4 border-dashed transition-all
+            left-1/2 -translate-x-1/2 top-full -translate-y-1/2
+            ${selectedTool === 'b' ? 'border-blue-400 bg-blue-400/20' : 'border-blue-500/40 bg-blue-500/10'}`}
           />
-        )}
-        <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded whitespace-nowrap">
-          B: {positions.b.x.toFixed(1)}%, {positions.b.y.toFixed(1)}%
+          {/* Tool image */}
+          {toolBImage && (
+            <img 
+              src={toolBImage} 
+              alt="Tool B" 
+              className="w-24 h-24 object-contain pointer-events-none"
+              style={{
+                transform: `scale(${positions.b.scale}) ${positions.b.flipX ? 'scaleX(-1)' : ''}`,
+                filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.5))',
+              }}
+            />
+          )}
+          <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded whitespace-nowrap">
+            B: {positions.b.x.toFixed(1)}%, {positions.b.y.toFixed(1)}%
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Scene Extras (props like desks) */}
       {sceneExtras.map(extra => {
@@ -456,38 +482,40 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
             </div>
             
             {/* Tool B controls */}
-            <div className={`space-y-1 p-2 rounded border cursor-pointer ${selectedTool === 'b' ? 'bg-blue-500/20 border-blue-400' : 'bg-blue-500/10 border-blue-500/30'}`}
-              onClick={() => { setSelectedTool('b'); setSelectedExtra(null); }}
-            >
-              <div className="font-medium text-blue-400">Tool B {selectedTool === 'b' ? '✓' : ''}</div>
-              <div className="text-[10px] text-muted-foreground">
-                X: {positions.b.x.toFixed(1)}% | Y: {positions.b.y.toFixed(1)}%
-              </div>
-              {selectedTool === 'b' && (
-                <div className="space-y-1">
-                  <div className="flex items-center gap-1">
-                    <span className="text-muted-foreground text-[10px] w-6">X:</span>
-                    <button onClick={(e) => { e.stopPropagation(); setPositions(p => ({ ...p, b: { ...p.b, x: Math.max(0, p.b.x - 1) } })); }} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">-</button>
-                    <button onClick={(e) => { e.stopPropagation(); setPositions(p => ({ ...p, b: { ...p.b, x: Math.min(100, p.b.x + 1) } })); }} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">+</button>
-                    <span className="text-muted-foreground text-[10px] w-6 ml-2">Y:</span>
-                    <button onClick={(e) => { e.stopPropagation(); setPositions(p => ({ ...p, b: { ...p.b, y: Math.max(0, p.b.y - 1) } })); }} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">-</button>
-                    <button onClick={(e) => { e.stopPropagation(); setPositions(p => ({ ...p, b: { ...p.b, y: Math.min(100, p.b.y + 1) } })); }} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">+</button>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground">Scale:</span>
-                    <button onClick={(e) => { e.stopPropagation(); adjustScale('b', -0.1); }} className="px-2 py-1 bg-muted rounded hover:bg-accent">-</button>
-                    <span>{positions.b.scale.toFixed(1)}</span>
-                    <button onClick={(e) => { e.stopPropagation(); adjustScale('b', 0.1); }} className="px-2 py-1 bg-muted rounded hover:bg-accent">+</button>
-                  </div>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); toggleFlip('b'); }}
-                    className={`px-2 py-1 rounded text-xs ${positions.b.flipX ? 'bg-blue-500 text-white' : 'bg-muted'}`}
-                  >
-                    FlipX: {positions.b.flipX ? 'ON' : 'OFF'}
-                  </button>
+            {isToolBEnabled && (
+              <div className={`space-y-1 p-2 rounded border cursor-pointer ${selectedTool === 'b' ? 'bg-blue-500/20 border-blue-400' : 'bg-blue-500/10 border-blue-500/30'}`}
+                onClick={() => { setSelectedTool('b'); setSelectedExtra(null); }}
+              >
+                <div className="font-medium text-blue-400">Tool B {selectedTool === 'b' ? '✓' : ''}</div>
+                <div className="text-[10px] text-muted-foreground">
+                  X: {positions.b.x.toFixed(1)}% | Y: {positions.b.y.toFixed(1)}%
                 </div>
-              )}
-            </div>
+                {selectedTool === 'b' && (
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-1">
+                      <span className="text-muted-foreground text-[10px] w-6">X:</span>
+                      <button onClick={(e) => { e.stopPropagation(); setPositions(p => ({ ...p, b: { ...p.b, x: Math.max(0, p.b.x - 1) } })); }} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">-</button>
+                      <button onClick={(e) => { e.stopPropagation(); setPositions(p => ({ ...p, b: { ...p.b, x: Math.min(100, p.b.x + 1) } })); }} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">+</button>
+                      <span className="text-muted-foreground text-[10px] w-6 ml-2">Y:</span>
+                      <button onClick={(e) => { e.stopPropagation(); setPositions(p => ({ ...p, b: { ...p.b, y: Math.max(0, p.b.y - 1) } })); }} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">-</button>
+                      <button onClick={(e) => { e.stopPropagation(); setPositions(p => ({ ...p, b: { ...p.b, y: Math.min(100, p.b.y + 1) } })); }} className="px-1.5 py-0.5 bg-muted rounded hover:bg-accent text-[10px]">+</button>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground">Scale:</span>
+                      <button onClick={(e) => { e.stopPropagation(); adjustScale('b', -0.1); }} className="px-2 py-1 bg-muted rounded hover:bg-accent">-</button>
+                      <span>{positions.b.scale.toFixed(1)}</span>
+                      <button onClick={(e) => { e.stopPropagation(); adjustScale('b', 0.1); }} className="px-2 py-1 bg-muted rounded hover:bg-accent">+</button>
+                    </div>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); toggleFlip('b'); }}
+                      className={`px-2 py-1 rounded text-xs ${positions.b.flipX ? 'bg-blue-500 text-white' : 'bg-muted'}`}
+                    >
+                      FlipX: {positions.b.flipX ? 'ON' : 'OFF'}
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Scene Extras controls */}
             {sceneExtras.length > 0 && (
