@@ -872,9 +872,9 @@
   {
     "background_asset_key": "studio_doorway_park_view_bg",
     "anchor_ref": "m09_tool_a",
-    "x_pct": 0.756,
-    "y_pct": 0.822,
-    "scale": 2.5,
+    "x_pct": 0.794,
+    "y_pct": 0.877,
+    "scale": 3.2,
     "z_layer": "front"
   },
   {
@@ -882,16 +882,16 @@
     "anchor_ref": "m09_tool_b",
     "x_pct": 0.513,
     "y_pct": 0.923,
-    "scale": 2.7,
+    "scale": 2.8,
     "z_layer": "front",
     "flipX": true
   },
   {
     "background_asset_key": "studio_doorway_park_view_bg",
     "anchor_ref": "m09_extra_crowd",
-    "x_pct": 0.5,
-    "y_pct": 0.65,
-    "scale": 1.5,
+    "x_pct": 0.51,
+    "y_pct": 0.759,
+    "scale": 4.1,
     "z_layer": "back"
   },
   {
