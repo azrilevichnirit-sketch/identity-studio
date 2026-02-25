@@ -416,7 +416,7 @@ export function useTelemetry() {
           timestampMs: e.timestamp,
           phase: e.phase || 'main',
         })),
-        totalMissions: 12,
+        totalMissions: 15,
         totalUndos: undoEvents.length,
         identityCode,
         tieBreakersPlayed,
