@@ -1567,24 +1567,23 @@ export function VisualPlayScreen({
       }
     }
 
-    // Mission 12 Tool A: duplicate 5 times horizontally from anchor position
+    // Mission 12 Tool A: duplicate 5 times using individual anchors
     if (prop.missionId === 'studio_12' && prop.key === 'a') {
-      const anchorPos = getAnchorPosition('gallery_main_desktop', 'm12_tool_a');
-      if (anchorPos) {
-        const spacing = 5; // % spacing between duplicates
-        const count = 5;
-        const startX = anchorPos.x - ((count - 1) * spacing) / 2;
-        return Array.from({ length: count }, (_, i) => ({
-          anchor: 'm12_tool_a' as AnchorRef,
+      const anchors = ['m12_tool_a_1', 'm12_tool_a_2', 'm12_tool_a_3', 'm12_tool_a_4', 'm12_tool_a_5'] as AnchorRef[];
+      const results = anchors.map(anchorRef => {
+        const anchorPos = getAnchorPosition('gallery_main_desktop', anchorRef);
+        return {
+          anchor: anchorRef,
           offsetX: 0,
           offsetY: 0,
-          customScale: anchorPos.scale,
-          absoluteY: anchorPos.y,
-          absoluteX: startX + i * spacing,
-          flipX: anchorPos.flipX,
-          noStagger: true, // All duplicates appear simultaneously
-        }));
-      }
+          customScale: anchorPos?.scale ?? 1.3,
+          absoluteY: anchorPos?.y ?? 90,
+          absoluteX: anchorPos?.x ?? 50,
+          flipX: anchorPos?.flipX,
+          noStagger: true,
+        };
+      });
+      if (results.length > 0) return results;
     }
 
     // Mission 12 Tool B: single placement using anchor map coordinates
@@ -2282,6 +2281,31 @@ export function VisualPlayScreen({
           {lockedBgKey === 'gallery_main_mobile_wide' && (
             <VisitorCalibrationEditor bgKey="gallery_main_mobile_wide" title="M11 Crowd (Tool B)" panelClassName="top-[290px] right-4" visitors={[
               { id: 'm11_crowd', img: m11CrowdAsset, label: 'קהל' },
+            ]} />
+          )}
+        </>
+      );
+    }
+    if (mission.mission_id === 'studio_12') {
+      const toolAImg = getToolImage(mission.options.find(o => o.key === 'a')?.asset || '');
+      return (
+        <>
+          <ToolCalibrationEditor
+            mission={mission}
+            currentBgKey={lockedBgKey}
+            onNextMission={onEditorNextMission}
+            sceneExtras={sceneExtras}
+            onExtraPositionChange={(extraId, x, y, scale) => {
+              setExtraOverrides(prev => ({ ...prev, [extraId]: { x, y, scale } }));
+            }}
+          />
+          {toolAImg && (
+            <VisitorCalibrationEditor bgKey="gallery_main_desktop" title="M12 Duplicates (A)" panelClassName="top-[290px] right-4" visitors={[
+              { id: 'm12_tool_a_1', img: toolAImg, label: 'עותק 1' },
+              { id: 'm12_tool_a_2', img: toolAImg, label: 'עותק 2' },
+              { id: 'm12_tool_a_3', img: toolAImg, label: 'עותק 3' },
+              { id: 'm12_tool_a_4', img: toolAImg, label: 'עותק 4' },
+              { id: 'm12_tool_a_5', img: toolAImg, label: 'עותק 5' },
             ]} />
           )}
         </>
