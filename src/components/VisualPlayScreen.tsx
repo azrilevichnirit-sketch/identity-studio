@@ -1726,40 +1726,77 @@ export function VisualPlayScreen({
           { img: visitorM08_03, anchor: 'm08_visitor_03' },
         ];
         
-        return visitors.map((v, i) => {
-          const pos = getAnchorPosition(lockedBgKey, v.anchor as AnchorRef);
-          if (!pos) return null;
-          const zIdx = zIndexForAnchorLayer(pos.z_layer);
-          return (
-            <div
-              key={`m08-visitor-${i}`}
-              className="absolute pointer-events-none"
-              style={{
-                left: `${pos.x}%`,
-                top: `${pos.y}%`,
-                transform: 'translate(-50%, -100%)',
-                zIndex: zIdx,
-              }}
-            >
+        // Render avatar alongside visitors
+        const avatarImg = getAvatarImage(avatarGender, 'idle');
+        const avatarPos = getAnchorPosition(lockedBgKey, 'm08_avatar' as AnchorRef);
+        
+        return (
+          <>
+            {visitors.map((v, i) => {
+              const pos = getAnchorPosition(lockedBgKey, v.anchor as AnchorRef);
+              if (!pos) return null;
+              const zIdx = zIndexForAnchorLayer(pos.z_layer);
+              return (
+                <div
+                  key={`m08-visitor-${i}`}
+                  className="absolute pointer-events-none"
+                  style={{
+                    left: `${pos.x}%`,
+                    top: `${pos.y}%`,
+                    transform: 'translate(-50%, -100%)',
+                    zIndex: zIdx,
+                  }}
+                >
+                  <div
+                    style={{
+                      opacity: 0,
+                      animation: `scale-in 0.6s ease-out ${i * 150}ms forwards`,
+                    }}
+                  >
+                    <img
+                      src={v.img}
+                      alt=""
+                      className="h-24 md:h-32 object-contain"
+                      style={{
+                        filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
+                        transform: `scale(${pos.scale})${pos.flipX ? ' scaleX(-1)' : ''}`,
+                      }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+            {avatarImg && avatarPos && (
               <div
+                key="m08-avatar"
+                className="absolute pointer-events-none"
                 style={{
-                  opacity: 0,
-                  animation: `scale-in 0.6s ease-out ${i * 150}ms forwards`,
+                  left: `${avatarPos.x}%`,
+                  top: `${avatarPos.y}%`,
+                  transform: 'translate(-50%, -100%)',
+                  zIndex: zIndexForAnchorLayer(avatarPos.z_layer),
                 }}
               >
-                <img
-                  src={v.img}
-                  alt=""
-                  className="h-24 md:h-32 object-contain"
+                <div
                   style={{
-                    filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-                    transform: `scale(${pos.scale})${pos.flipX ? ' scaleX(-1)' : ''}`,
+                    opacity: 0,
+                    animation: `scale-in 0.6s ease-out 450ms forwards`,
                   }}
-                />
+                >
+                  <img
+                    src={avatarImg}
+                    alt=""
+                    className="h-24 md:h-32 object-contain"
+                    style={{
+                      filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
+                      transform: `scale(${avatarPos.scale})${avatarPos.flipX ? ' scaleX(-1)' : ''}`,
+                    }}
+                  />
+                </div>
               </div>
-            </div>
-          );
-        });
+            )}
+          </>
+        );
       })()}
 
       {/* Mission 5 Tool B visitors - appear with fade-in when tool B is placed */}

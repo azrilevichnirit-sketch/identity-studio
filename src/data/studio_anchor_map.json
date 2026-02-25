@@ -1572,6 +1572,14 @@
     "z_layer": "front"
   },
   {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m08_avatar",
+    "x_pct": 0.45,
+    "y_pct": 0.88,
+    "scale": 2.5,
+    "z_layer": "front"
+  },
+  {
     "background_asset_key": "studio_exterior_bg",
     "anchor_ref": "m05_visitor_01",
     "x_pct": 0.665,
