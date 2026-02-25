@@ -866,7 +866,7 @@ export function VisualPlayScreen({
     const advanceDelay = isMission01Paint ? 2200 
       : isMission01ToolB ? 1600 
       : isMission02 ? 1600 
-      : (isMission11ToolA || isMission11ToolB) ? 2600  // extra time for avatar/crowd appear after tool
+      : (isMission11ToolA || isMission11ToolB) ? 10000  // extended for avatar/crowd calibration verification
       : (isMission07 || isMission11) ? 2200
       : isMission06ToolA ? 2400  // extra time for prop spawn + tool appear
       : (isMission10ToolA || isMission10ToolB) ? 2400  // extra time for tool + staff character appear
@@ -1910,6 +1910,7 @@ export function VisualPlayScreen({
         if (!avatarImg) return null;
         
         const avatarAnchor = getAnchorPosition(lockedBgKey, 'm11_avatar' as AnchorRef);
+        console.log('[M11 Avatar] lockedBgKey:', lockedBgKey, 'anchor:', avatarAnchor);
         const avatarPos = avatarAnchor || { x: 50, y: 85, scale: 2.0, z_layer: 'front', flipX: false };
         
         return (
