@@ -896,18 +896,18 @@
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m07_tool_b",
-    "x_pct": 0.941,
-    "y_pct": 0.887,
-    "scale": 3.8,
+    "x_pct": 0.868,
+    "y_pct": 0.79,
+    "scale": 4.2,
     "z_layer": "front",
     "flipX": true
   },
   {
     "background_asset_key": "studio_in_gallery_bg",
     "anchor_ref": "m07_tool_b",
-    "x_pct": 0.941,
-    "y_pct": 0.887,
-    "scale": 3.8,
+    "x_pct": 0.868,
+    "y_pct": 0.79,
+    "scale": 4.2,
     "z_layer": "front",
     "flipX": true
   },
