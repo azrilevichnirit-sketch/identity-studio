@@ -260,7 +260,7 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
       x_pct: Math.round((pos?.x ?? 50) * 10) / 10 / 100,
       y_pct: Math.round((pos?.y ?? 75) * 10) / 10 / 100,
       scale: pos?.scale ?? 1,
-      z_layer: "mid",
+      z_layer: (getAnchorPosition(currentBgKey, anchorRef as AnchorRef)?.z_layer ?? "mid") as "back" | "mid" | "front",
       ...(pos?.flipX && { flipX: true }),
     };
     navigator.clipboard.writeText(JSON.stringify(entry, null, 2));
@@ -276,7 +276,7 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
         x_pct: Math.round((pos?.x ?? 50) * 10) / 10 / 100,
         y_pct: Math.round((pos?.y ?? 75) * 10) / 10 / 100,
         scale: pos?.scale ?? 1,
-        z_layer: "mid",
+        z_layer: (getAnchorPosition(currentBgKey, extra.anchorRef)?.z_layer ?? "mid") as "back" | "mid" | "front",
         ...(pos?.flipX && { flipX: true }),
       };
     });
@@ -362,15 +362,18 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
       {sceneExtras.map(extra => {
         const pos = extraPositions[extra.id];
         if (!pos) return null;
-        return (
-          <div
-            key={extra.id}
-            className={`absolute cursor-move touch-none pointer-events-auto ${selectedExtra === extra.id ? 'z-[115]' : 'z-[95]'}`}
-            style={{
-              left: `${pos.x}%`,
-              top: `${pos.y}%`,
-              transform: 'translate(-50%, -100%)',
-            }}
+          const layer = getAnchorPosition(currentBgKey, extra.anchorRef)?.z_layer;
+          const baseZ = layer === 'back' ? 92 : layer === 'front' ? 104 : 98;
+          return (
+           <div
+             key={extra.id}
+             className="absolute cursor-move touch-none pointer-events-auto"
+             style={{
+               left: `${pos.x}%`,
+               top: `${pos.y}%`,
+               transform: 'translate(-50%, -100%)',
+               zIndex: selectedExtra === extra.id ? 115 : baseZ,
+             }}
             onPointerDown={(e) => handleExtraPointerDown(extra.id, e)}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}

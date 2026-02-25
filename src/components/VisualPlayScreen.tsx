@@ -1119,7 +1119,8 @@ export function VisualPlayScreen({
             return null;
           }
           
-          const zIndex = zIndexForAnchorLayer(extra.zLayer);
+          const resolvedLayer = (anchorPos.z_layer as 'back' | 'mid' | 'front' | undefined) ?? extra.zLayer;
+          const zIndex = zIndexForAnchorLayer(resolvedLayer);
           const override = extraOverrides[extra.id];
           const rawLeftPos = override ? override.x : (anchorPos.x + extra.offsetX);
           const leftPos = (isMobile && isPanoramic) ? anchorXToPanoramicLeft(rawLeftPos) : rawLeftPos;
