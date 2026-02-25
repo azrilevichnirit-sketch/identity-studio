@@ -45,6 +45,7 @@ export function AvatarSelect({ onSelect }: AvatarSelectProps) {
           {/* Title with strong contrast */}
           <div 
             className="text-center px-6 py-4 rounded-2xl"
+            dir="rtl"
             style={{
               background: 'rgba(0,0,0,0.5)',
               backdropFilter: 'blur(8px)',
