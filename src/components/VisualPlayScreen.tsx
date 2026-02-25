@@ -2155,6 +2155,7 @@ export function VisualPlayScreen({
             { id: 'm08_visitor_01', img: visitorM08_01, label: 'מבקר 1' },
             { id: 'm08_visitor_02', img: visitorM08_02, label: 'מבקרת 2' },
             { id: 'm08_visitor_03', img: visitorM08_03, label: 'מבקרת 3' },
+            ...(avatarImage ? [{ id: 'm08_avatar', img: avatarImage, label: 'אווטר' }] : []),
           ]} />
         </>
       );
