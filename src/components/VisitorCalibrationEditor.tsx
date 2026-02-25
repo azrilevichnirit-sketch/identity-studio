@@ -21,6 +21,7 @@ interface Props {
   bgKey: string;
   visitors: VisitorDef[];
   title: string;
+  panelClassName?: string;
 }
 
 function initPositions(visitors: VisitorDef[], bgKey: string): VisitorPosition[] {
@@ -42,7 +43,7 @@ function zIndexForLayer(zLayer: 'back' | 'mid' | 'front'): number {
   return 14;
 }
 
-export function VisitorCalibrationEditor({ bgKey, visitors, title }: Props) {
+export function VisitorCalibrationEditor({ bgKey, visitors, title, panelClassName }: Props) {
   const [isOpen, setIsOpen] = useState(true);
   const [selectedIdx, setSelectedIdx] = useState(0);
 
@@ -180,7 +181,7 @@ export function VisitorCalibrationEditor({ bgKey, visitors, title }: Props) {
       })}
 
       {/* Control panel */}
-      <div className="fixed top-4 right-4 z-[200] bg-card border border-border rounded-lg shadow-xl text-xs max-w-[220px]">
+      <div className={`fixed z-[200] bg-card border border-border rounded-lg shadow-xl text-xs max-w-[220px] ${panelClassName ?? 'top-4 right-4'}`}>
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="w-full flex items-center justify-between px-3 py-2 font-medium text-foreground hover:bg-accent"

@@ -198,7 +198,7 @@ export function Mission11CalibrationEditor({ mission, onBackgroundChange }: Miss
       </div>
 
       {/* Control panel */}
-      <div className="fixed top-4 left-4 z-[200] bg-card border border-border rounded-lg shadow-xl text-xs max-w-[220px]">
+      <div className="fixed top-4 right-4 z-[200] bg-card border border-border rounded-lg shadow-xl text-xs max-w-[220px]">
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="w-full flex items-center justify-between px-3 py-2 font-medium text-foreground hover:bg-accent"
