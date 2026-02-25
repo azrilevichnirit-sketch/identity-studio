@@ -34,6 +34,9 @@ import visitorM08_03 from '@/assets/avatars/studio_visitor_m08_03.png';
 import visitorM05_01 from '@/assets/avatars/studio_visitor_m05_01.png';
 import visitorM05_02 from '@/assets/avatars/studio_visitor_m05_02.png';
 import visitorM05_03 from '@/assets/avatars/studio_visitor_m05_03.png';
+// Mission 10 staff character imports
+import femaleStaffSittingImg from '@/assets/extras/studio_female_staff_sitting.webp';
+import femaleStaffStandingImg from '@/assets/extras/studio_female_staff_standing.webp';
 // Mission 11 Tool B crowd asset
 import m11CrowdAsset from '@/assets/extras/studio_extra_asset_07.webp';
 // import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter'; // Disabled
@@ -2307,6 +2310,25 @@ export function VisualPlayScreen({
               { id: 'm12_tool_a_5', img: toolAImg, label: 'עותק 5' },
             ]} />
           )}
+        </>
+      );
+    }
+    if (mission.mission_id === 'studio_10') {
+      return (
+        <>
+          <ToolCalibrationEditor
+            mission={mission}
+            currentBgKey={lockedBgKey}
+            onNextMission={onEditorNextMission}
+            sceneExtras={sceneExtras}
+            onExtraPositionChange={(extraId, x, y, scale) => {
+              setExtraOverrides(prev => ({ ...prev, [extraId]: { x, y, scale } }));
+            }}
+          />
+          <VisitorCalibrationEditor bgKey={lockedBgKey} title="M10 Staff" visitors={[
+            { id: 'm10_extra_staff', img: femaleStaffSittingImg, label: 'יושבת (כלי A)' },
+            { id: 'm10_extra_staff_b', img: femaleStaffStandingImg, label: 'עומדת (כלי B)' },
+          ]} />
         </>
       );
     }
