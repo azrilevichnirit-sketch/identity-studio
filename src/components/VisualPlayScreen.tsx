@@ -872,7 +872,7 @@ export function VisualPlayScreen({
     const advanceDelay = isMission01Paint ? 2200 
       : isMission01ToolB ? 1600 
       : isMission02 ? 1600
-      : isMission03ToolB ? 2900  // visitors fade-in + viewing time
+      : isMission03ToolB ? 3600  // tables appear first, then visitors fade-in + viewing time
       : (isMission11ToolA || isMission11ToolB) ? 2600  // extra time for avatar/crowd appear after tool
       : (isMission07 || isMission11) ? 2200
       : isMission06ToolA ? 2400  // extra time for prop spawn + tool appear
@@ -1887,7 +1887,7 @@ export function VisualPlayScreen({
               <div
                 style={{
                   opacity: 0,
-                  animation: `scale-in 0.6s ease-out ${600 + i * 150}ms forwards`,
+                  animation: `scale-in 0.6s ease-out ${1200 + i * 200}ms forwards`,
                 }}
               >
                 <img
