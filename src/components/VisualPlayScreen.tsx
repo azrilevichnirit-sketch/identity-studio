@@ -1728,8 +1728,9 @@ export function VisualPlayScreen({
         
         // Render avatar alongside visitors
         const avatarImg = getAvatarImage(avatarGender, 'idle');
-        const avatarPos = getAnchorPosition(lockedBgKey, 'm08_avatar' as AnchorRef);
-        console.log('[M08-avatar] gender:', avatarGender, 'img:', !!avatarImg, 'bgKey:', lockedBgKey, 'pos:', avatarPos);
+        const avatarAnchor = getAnchorPosition(lockedBgKey, 'm08_avatar' as AnchorRef);
+        // Fallback position if anchor not found
+        const avatarPos = avatarAnchor || { x: 45, y: 88, scale: 2.5, z_layer: 'front', flipX: false };
         
         return (
           <>
@@ -1767,7 +1768,7 @@ export function VisualPlayScreen({
                 </div>
               );
             })}
-            {avatarImg && avatarPos && (
+            {avatarImg && (
               <div
                 key="m08-avatar"
                 className="absolute pointer-events-none"
