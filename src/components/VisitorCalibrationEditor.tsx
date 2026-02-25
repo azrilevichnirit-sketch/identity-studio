@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Move, Copy, ChevronDown, ChevronUp } from 'lucide-react';
 import { getAnchorPosition } from '@/lib/jsonDataLoader';
 import type { AnchorRef } from '@/types/identity';
@@ -22,27 +22,38 @@ interface Props {
   title: string;
 }
 
+function initPositions(visitors: VisitorDef[], bgKey: string): VisitorPosition[] {
+  return visitors.map(v => {
+    const pos = getAnchorPosition(bgKey, v.id as AnchorRef);
+    return {
+      x: pos?.x ?? 50,
+      y: pos?.y ?? 70,
+      scale: pos?.scale ?? 1,
+      flipX: pos?.flipX ?? false,
+    };
+  });
+}
+
 export function VisitorCalibrationEditor({ bgKey, visitors, title }: Props) {
   const [isOpen, setIsOpen] = useState(true);
   const [selectedIdx, setSelectedIdx] = useState(0);
 
-  const [positions, setPositions] = useState<VisitorPosition[]>(() =>
-    visitors.map(v => {
-      const pos = getAnchorPosition(bgKey, v.id as AnchorRef);
-      return {
-        x: pos?.x ?? 50,
-        y: pos?.y ?? 70,
-        scale: pos?.scale ?? 1,
-        flipX: pos?.flipX ?? false,
-      };
-    })
-  );
+  const [positions, setPositions] = useState<VisitorPosition[]>(() => initPositions(visitors, bgKey));
+
+  // Sync positions when visitors list changes
+  useEffect(() => {
+    setPositions(prev => {
+      if (prev.length === visitors.length) return prev;
+      return initPositions(visitors, bgKey);
+    });
+    if (selectedIdx >= visitors.length) setSelectedIdx(0);
+  }, [visitors.length, bgKey]);
 
   const isDragging = useRef(false);
   const dragStart = useRef<{ x: number; y: number } | null>(null);
   const dragStartPos = useRef<{ x: number; y: number } | null>(null);
 
-  const current = positions[selectedIdx];
+  const current = positions[selectedIdx] || { x: 50, y: 70, scale: 1, flipX: false };
 
   const handlePointerDown = (e: React.PointerEvent) => {
     e.preventDefault();
