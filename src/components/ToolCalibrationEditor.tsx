@@ -138,8 +138,11 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
     const dx = e.clientX - startX;
     const dy = e.clientY - startY;
     
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
+    // Use game-stage container dimensions for accurate percentage conversion
+    const stage = document.querySelector('.game-stage');
+    const rect = stage?.getBoundingClientRect();
+    const vw = rect?.width || window.innerWidth;
+    const vh = rect?.height || window.innerHeight;
     const dxPct = (dx / vw) * 100;
     const dyPct = (dy / vh) * 100;
     

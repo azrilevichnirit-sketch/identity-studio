@@ -85,8 +85,11 @@ export function BranchingCalibrationEditor({ mission, bgKeyA, bgKeyB, onBackgrou
     if (!isDragging.current || !dragStartPos.current || !dragStartToolPos.current) return;
     const dx = e.clientX - dragStartPos.current.x;
     const dy = e.clientY - dragStartPos.current.y;
-    const dxPct = (dx / window.innerWidth) * 100;
-    const dyPct = (dy / window.innerHeight) * 100;
+    // Use game-stage container dimensions for accurate percentage conversion
+    const stage = document.querySelector('.game-stage');
+    const rect = stage?.getBoundingClientRect();
+    const dxPct = (dx / (rect?.width || window.innerWidth)) * 100;
+    const dyPct = (dy / (rect?.height || window.innerHeight)) * 100;
     setPositions(prev => ({
       ...prev,
       [selectedTool]: {
