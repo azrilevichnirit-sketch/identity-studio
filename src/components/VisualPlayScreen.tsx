@@ -2007,14 +2007,13 @@ export function VisualPlayScreen({
     return () => window.removeEventListener('resize', checkWidth);
   }, []);
 
-  // Get mission number for display (1-12 for main, 13+ for tie-breakers)
+  // Get mission number for display (1-15 for main, 16+ for tie-breakers)
   const missionDisplayNumber = useMemo(() => {
     if (mission.phase === 'main') {
       return mission.sequence;
     }
-    // Tie-breaker missions show as 13, 14, 15, etc. based on their index
-    // currentIndex is 0-based relative to total missions, so for tie-breakers:
-    // First tie-breaker (after 12 main) = index 12 = display 13
+    // Tie-breaker missions continue from main missions count
+    // currentIndex is passed as (mainMissions.length) for first tie, so +1 gives 16
     return currentIndex + 1;
   }, [mission.phase, mission.sequence, currentIndex]);
 
