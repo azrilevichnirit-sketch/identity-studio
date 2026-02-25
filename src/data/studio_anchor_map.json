@@ -982,16 +982,16 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m10_extra_staff",
-    "x_pct": 0.73,
-    "y_pct": 0.841,
-    "scale": 1.9,
+    "x_pct": 0.501,
+    "y_pct": 0.84,
+    "scale": 2.6,
     "z_layer": "back"
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m10_extra_staff_b",
-    "x_pct": 0.589,
-    "y_pct": 0.749,
+    "x_pct": 0.516,
+    "y_pct": 0.797,
     "scale": 2.8,
     "z_layer": "back"
   },
