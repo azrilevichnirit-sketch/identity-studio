@@ -159,6 +159,7 @@ export function VisualPlayScreen({
   const stageRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
   const dragStartPosRef = useRef<{ x: number; y: number } | null>(null);
+  const isStagePanningRef = useRef(false);
 
   // Keep latest pan offset WITHOUT triggering React re-renders.
   const panOffsetXRef = useRef(0);
@@ -923,14 +924,47 @@ export function VisualPlayScreen({
     completePlacement(variant);
   }, [completePlacement]);
 
-  // Keep for backwards compatibility but no longer used for dragging
-  const handlePointerMove = useCallback((_e: React.PointerEvent) => {
-    // No-op: drag-and-drop disabled
-  }, []);
+  const handleStagePointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (!(isMobile && isPanoramic)) return;
 
-  // Keep for backwards compatibility but no longer used for dragging
-  const handlePointerUp = useCallback((_e: React.PointerEvent) => {
-    // No-op: drag-and-drop disabled
+    const target = e.target as HTMLElement;
+    if (target.closest('button, [role="button"], input, textarea, select, .drop-target-anchor, .mission-tool-panel-mobile, .mission-tool-panel-desktop')) {
+      return;
+    }
+
+    isStagePanningRef.current = true;
+
+    const stage = stageRef.current;
+    if (!stage) return;
+    const rect = stage.getBoundingClientRect();
+    const normalizedX = Math.min(1, Math.max(0, (e.clientX - rect.left) / Math.max(1, rect.width)));
+    panApiRef.current?.updatePanFromDrag(normalizedX);
+  }, [isMobile, isPanoramic]);
+
+  const handleStagePointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (!(isMobile && isPanoramic) || !isStagePanningRef.current) return;
+
+    const stage = stageRef.current;
+    if (!stage) return;
+    const rect = stage.getBoundingClientRect();
+    const normalizedX = Math.min(1, Math.max(0, (e.clientX - rect.left) / Math.max(1, rect.width)));
+    panApiRef.current?.updatePanFromDrag(normalizedX);
+
+    const edgeZone = 0.18;
+    if (normalizedX < edgeZone) {
+      setEdgeProximity({ edge: 'left', intensity: (edgeZone - normalizedX) / edgeZone });
+      return;
+    }
+    if (normalizedX > 1 - edgeZone) {
+      setEdgeProximity({ edge: 'right', intensity: (normalizedX - (1 - edgeZone)) / edgeZone });
+      return;
+    }
+    setEdgeProximity({ edge: null, intensity: 0 });
+  }, [isMobile, isPanoramic]);
+
+  const handleStagePointerUp = useCallback(() => {
+    isStagePanningRef.current = false;
+    setEdgeProximity({ edge: null, intensity: 0 });
   }, []);
 
   // Handle tap on drop zone in carry mode
@@ -1074,7 +1108,7 @@ export function VisualPlayScreen({
     }
     
     return placements;
-  }, [localPlacement, placedProps, mission.sequence, lockedBgKey]);
+  }, [localPlacement, placedProps, mission.sequence, lockedBgKey, isMobile, isPanoramic]);
 
   const targetPosition = useMemo(() => {
     if (activeToolVariant) {
@@ -1183,7 +1217,7 @@ export function VisualPlayScreen({
         })}
       </div>
     );
-  }, [sceneExtras, lockedBgKey, extraOverrides, toolEditMode]);
+  }, [sceneExtras, lockedBgKey, extraOverrides, toolEditMode, localPlacement, isMobile, isPanoramic]);
 
   const targetZoneElement = activeToolVariant && targetPosition ? (
     <div
@@ -2522,6 +2556,9 @@ export function VisualPlayScreen({
     <>
       <MissionLayout
         stageRef={stageRef}
+        onStagePointerDown={handleStagePointerDown}
+        onStagePointerMove={handleStagePointerMove}
+        onStagePointerUp={handleStagePointerUp}
         background={backgroundElement}
         gradientOverlay={gradientOverlayElement}
         sceneExtras={sceneExtrasElement}
@@ -2533,7 +2570,7 @@ export function VisualPlayScreen({
         toolPanel={toolPanelElement}
         draggingGhost={draggingGhostElement}
         edgePanIndicators={
-          isMobile && isPanoramic && draggingTool ? (
+          isMobile && isPanoramic && edgeProximity.edge ? (
             <EdgePanIndicators 
               activeEdge={edgeProximity.edge} 
               intensity={edgeProximity.intensity} 
