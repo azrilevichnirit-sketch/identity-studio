@@ -1128,9 +1128,10 @@ export function VisualPlayScreen({
     return (
       <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 5 }}>
         {sceneExtras.map((extra) => {
-          // Mission 10 extras are always calibrated on workshop coordinates,
-          // regardless of temporary visual background overrides.
-          const calibratedBgKey = extra.anchorRef.startsWith('m10_') ? 'studio_in_workshop_bg' : lockedBgKey;
+          // Pin extras to their calibrated background regardless of visual overrides.
+          const calibratedBgKey = extra.anchorRef.startsWith('m10_') ? 'studio_in_workshop_bg'
+            : extra.anchorRef.startsWith('m07_extra') ? 'studio_in_entrance_view_bg'
+            : lockedBgKey;
           const anchorPos = getAnchorPosition(calibratedBgKey, extra.anchorRef);
           if (!anchorPos) {
             return null;
