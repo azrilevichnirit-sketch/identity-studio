@@ -31,6 +31,12 @@ export interface MissionLayoutProps {
   edgePanIndicators?: React.ReactNode;
   /** Stage ref for drag calculations */
   stageRef: React.RefObject<HTMLDivElement>;
+  /** Stage pointer down handler (mobile pan) */
+  onStagePointerDown?: (e: React.PointerEvent<HTMLDivElement>) => void;
+  /** Stage pointer move handler (mobile pan) */
+  onStagePointerMove?: (e: React.PointerEvent<HTMLDivElement>) => void;
+  /** Stage pointer up handler (mobile pan) */
+  onStagePointerUp?: (e: React.PointerEvent<HTMLDivElement>) => void;
   /** Handler for canceling carry mode */
   onCancelCarry?: () => void;
   /** Whether carry mode is active */
@@ -63,6 +69,9 @@ function DesktopMissionLayout({
   draggingGhost,
   calibrationOverlay,
   stageRef,
+  onStagePointerDown,
+  onStagePointerMove,
+  onStagePointerUp,
   onCancelCarry,
   isCarryMode,
 }: MissionLayoutProps) {
@@ -71,6 +80,10 @@ function DesktopMissionLayout({
       ref={stageRef} 
       className="game-stage desktop-layout missionScreen"
       onClick={isCarryMode ? onCancelCarry : undefined}
+      onPointerDown={onStagePointerDown}
+      onPointerMove={onStagePointerMove}
+      onPointerUp={onStagePointerUp}
+      onPointerCancel={onStagePointerUp}
     >
       {/* Background layer */}
       {background}
@@ -130,6 +143,9 @@ function MobileMissionLayout({
   edgePanIndicators,
   calibrationOverlay,
   stageRef,
+  onStagePointerDown,
+  onStagePointerMove,
+  onStagePointerUp,
   onCancelCarry,
   isCarryMode,
   isDragging = false,
@@ -150,6 +166,10 @@ function MobileMissionLayout({
       ref={stageRef} 
       className={stageClasses}
       onClick={isCarryMode ? onCancelCarry : undefined}
+      onPointerDown={onStagePointerDown}
+      onPointerMove={onStagePointerMove}
+      onPointerUp={onStagePointerUp}
+      onPointerCancel={onStagePointerUp}
     >
       {/* Background layer with mobile zoom */}
       {background}
