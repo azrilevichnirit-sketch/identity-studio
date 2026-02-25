@@ -34,6 +34,8 @@ import visitorM08_03 from '@/assets/avatars/studio_visitor_m08_03.png';
 import visitorM05_01 from '@/assets/avatars/studio_visitor_m05_01.png';
 import visitorM05_02 from '@/assets/avatars/studio_visitor_m05_02.png';
 import visitorM05_03 from '@/assets/avatars/studio_visitor_m05_03.png';
+// Mission 11 Tool B crowd asset
+import m11CrowdAsset from '@/assets/extras/studio_extra_asset_07.webp';
 // import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter'; // Disabled
 
 const DRAG_HINT_STORAGE_KEY = 'ie_hasDraggedOnce';
@@ -857,10 +859,11 @@ export function VisualPlayScreen({
     const isMission05ToolB = mission.mission_id === 'studio_05' && variant === 'b';
     const isMission08ToolB = mission.mission_id === 'studio_08' && variant === 'b';
     const isMission11ToolA = mission.mission_id === 'studio_11' && variant === 'a';
+    const isMission11ToolB = mission.mission_id === 'studio_11' && variant === 'b';
     const advanceDelay = isMission01Paint ? 2200 
       : isMission01ToolB ? 1600 
       : isMission02 ? 1600 
-      : isMission11ToolA ? 2600  // extra time for avatar appear after tool
+      : (isMission11ToolA || isMission11ToolB) ? 2600  // extra time for avatar/crowd appear after tool
       : (isMission07 || isMission11) ? 2200
       : isMission06ToolA ? 2400  // extra time for prop spawn + tool appear
       : (isMission10ToolA || isMission10ToolB) ? 2400  // extra time for tool + staff character appear
@@ -1935,6 +1938,48 @@ export function VisualPlayScreen({
           </div>
         );
       })()}
+
+      {/* Mission 11 Tool B crowd - appears with fade-in when tool B is placed */}
+      {(() => {
+        const m11ToolBPlaced = localPlacement?.missionId === 'studio_11' && localPlacement?.key === 'b'
+          || displayedPlacement.some(p => p.missionId === 'studio_11' && p.key === 'b');
+        const isOnM11 = mission.mission_id === 'studio_11';
+        
+        if (!m11ToolBPlaced || !isOnM11) return null;
+        
+        const crowdAnchor = getAnchorPosition(lockedBgKey, 'm11_crowd' as AnchorRef);
+        const crowdPos = crowdAnchor || { x: 50, y: 80, scale: 2.0, z_layer: 'back', flipX: false };
+        
+        return (
+          <div
+            key="m11-crowd"
+            className="absolute pointer-events-none"
+            style={{
+              left: `${crowdPos.x}%`,
+              top: `${crowdPos.y}%`,
+              transform: 'translate(-50%, -100%)',
+              zIndex: zIndexForAnchorLayer(crowdPos.z_layer),
+            }}
+          >
+            <div
+              style={{
+                opacity: 0,
+                animation: `scale-in 0.6s ease-out 600ms forwards`,
+              }}
+            >
+              <img
+                src={m11CrowdAsset}
+                alt=""
+                className="w-32 h-32 object-contain"
+                style={{
+                  filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
+                  transform: `scale(${crowdPos.scale})${crowdPos.flipX ? ' scaleX(-1)' : ''}`,
+                }}
+              />
+            </div>
+          </div>
+        );
+      })()}
     </>
   );
 
@@ -2226,10 +2271,13 @@ export function VisualPlayScreen({
         <>
           <Mission11CalibrationEditor mission={mission} onBackgroundChange={handleM7BackgroundChange} />
           {avatarImage && (
-            <VisitorCalibrationEditor bgKey="studio_in_workshop_bg" title="M11 Avatar" panelClassName="top-[290px] right-4" visitors={[
+            <VisitorCalibrationEditor bgKey="studio_in_workshop_bg" title="M11 Avatar (Tool A)" panelClassName="top-[290px] right-4" visitors={[
               { id: 'm11_avatar', img: avatarImage, label: 'אווטר' },
             ]} />
           )}
+          <VisitorCalibrationEditor bgKey="gallery_main_mobile_wide" title="M11 Crowd (Tool B)" panelClassName="top-[500px] right-4" visitors={[
+            { id: 'm11_crowd', img: m11CrowdAsset, label: 'קהל' },
+          ]} />
         </>
       );
     }

@@ -963,6 +963,14 @@
     "flipX": true
   },
   {
+    "background_asset_key": "gallery_main_mobile_wide",
+    "anchor_ref": "m11_crowd",
+    "x_pct": 0.5,
+    "y_pct": 0.8,
+    "scale": 2.0,
+    "z_layer": "back"
+  },
+  {
     "background_asset_key": "gallery_main_desktop",
     "anchor_ref": "m12_tool_a",
     "x_pct": 0.905,
