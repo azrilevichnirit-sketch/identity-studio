@@ -162,6 +162,10 @@ function checkShouldSpawn(
     if (rule.mission_id.startsWith('studio_tie_')) {
       return currentMissionId === rule.mission_id;
     }
+    // For extras that despawn after their own mission, show only during that exact mission
+    if (rule.despawn_mode === 'remove_after_mission_id' && rule.despawn_value === rule.mission_id) {
+      return currentMissionId === rule.mission_id;
+    }
     // Spawn before the mission - show if we're at or past this mission
     const missionOrder = parseInt(rule.mission_id.replace('studio_', ''), 10);
     return currentMissionIndex + 1 >= missionOrder;
