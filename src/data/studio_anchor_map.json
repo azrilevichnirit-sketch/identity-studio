@@ -237,10 +237,11 @@
   {
     "background_asset_key": "studio_doorway_park_view_v5",
     "anchor_ref": "m03_visitor_01",
-    "x_pct": 0.742,
-    "y_pct": 0.91,
+    "x_pct": 0.658,
+    "y_pct": 0.898,
     "scale": 2.7,
-    "z_layer": "mid"
+    "z_layer": "mid",
+    "flipX": true
   },
   {
     "background_asset_key": "studio_doorway_park_view_v5",
