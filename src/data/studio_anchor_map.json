@@ -91,17 +91,16 @@
   {
     "background_asset_key": "gallery_main_stylized_v3",
     "anchor_ref": "m01_tool_a",
-    "x_pct": 0.763,
-    "y_pct": 0.797,
+    "x_pct": 0.485,
+    "y_pct": 0.745,
     "scale": 2.6,
-    "z_layer": "front",
-    "flipX": true
+    "z_layer": "front"
   },
   {
     "background_asset_key": "gallery_main_stylized_v3",
     "anchor_ref": "m01_tool_b",
-    "x_pct": 0.873,
-    "y_pct": 0.789,
+    "x_pct": 0.6,
+    "y_pct": 0.819,
     "scale": 2.9,
     "z_layer": "front",
     "flipX": true
