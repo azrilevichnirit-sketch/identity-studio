@@ -534,18 +534,23 @@ export function VisualPlayScreen({
 
   const panApiRef = useRef<PanningApi | null>(null);
 
+  // Imperatively sync the CSS var for the content layer so tools/props follow the background.
+  const syncPanCssVar = useCallback(() => {
+    const offset = panApiRef.current?.getOffsetX() ?? 0;
+    panOffsetXRef.current = offset;
+    if (stageRef.current) {
+      stageRef.current.style.setProperty('--pan-shift-x', panOffsetToTranslatePercent(offset));
+    }
+  }, []);
+
   // Sync initial pan into the CSS var (no React state) when missions change.
   useEffect(() => {
     if (!isMobile || !isPanoramic) return;
     const timer = window.setTimeout(() => {
-      const offset = panApiRef.current?.getOffsetX() ?? 0;
-      panOffsetXRef.current = offset;
-      if (stageRef.current) {
-        stageRef.current.style.setProperty('--pan-shift-x', panOffsetToTranslatePercent(offset));
-      }
+      syncPanCssVar();
     }, 60);
     return () => window.clearTimeout(timer);
-  }, [isMobile, isPanoramic, initialPanTargetX]);
+  }, [isMobile, isPanoramic, initialPanTargetX, syncPanCssVar]);
 
   // Cleanup any pending RAF on unmount
   useEffect(() => {
@@ -782,11 +787,7 @@ export function VisualPlayScreen({
       panApiRef.current.panToPosition(snapped.x);
       // Sync the CSS var immediately so the content layer follows
       const timer = window.setTimeout(() => {
-        const offset = panApiRef.current?.getOffsetX() ?? 0;
-        panOffsetXRef.current = offset;
-        if (stageRef.current) {
-          stageRef.current.style.setProperty('--pan-shift-x', panOffsetToTranslatePercent(offset));
-        }
+        syncPanCssVar();
       }, 60);
       timeoutsRef.current.push(timer);
     }
@@ -924,6 +925,7 @@ export function VisualPlayScreen({
     completePlacement(variant);
   }, [completePlacement]);
 
+
   const handleStagePointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     if (!(isMobile && isPanoramic)) return;
 
@@ -939,7 +941,17 @@ export function VisualPlayScreen({
     const rect = stage.getBoundingClientRect();
     const normalizedX = Math.min(1, Math.max(0, (e.clientX - rect.left) / Math.max(1, rect.width)));
     panApiRef.current?.updatePanFromDrag(normalizedX);
-  }, [isMobile, isPanoramic]);
+    
+    // Start continuous CSS var sync loop
+    const syncLoop = () => {
+      syncPanCssVar();
+      if (isStagePanningRef.current) {
+        panSyncRafRef.current = requestAnimationFrame(syncLoop);
+      }
+    };
+    if (panSyncRafRef.current) cancelAnimationFrame(panSyncRafRef.current);
+    panSyncRafRef.current = requestAnimationFrame(syncLoop);
+  }, [isMobile, isPanoramic, syncPanCssVar]);
 
   const handleStagePointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     if (!(isMobile && isPanoramic) || !isStagePanningRef.current) return;
@@ -965,7 +977,14 @@ export function VisualPlayScreen({
   const handleStagePointerUp = useCallback(() => {
     isStagePanningRef.current = false;
     setEdgeProximity({ edge: null, intensity: 0 });
-  }, []);
+    // Stop sync loop
+    if (panSyncRafRef.current) {
+      cancelAnimationFrame(panSyncRafRef.current);
+      panSyncRafRef.current = null;
+    }
+    // Final sync
+    syncPanCssVar();
+  }, [syncPanCssVar]);
 
   // Handle tap on drop zone in carry mode
   const handleDropZoneTap = useCallback(() => {
@@ -1768,9 +1787,11 @@ export function VisualPlayScreen({
             : anchorPos.y + anchorInfo.offsetY;
           
           // Use absoluteX if provided (for fixed horizontal positioning)
-          const leftValue = anchorInfo.absoluteX !== undefined
+          const rawLeftValue = anchorInfo.absoluteX !== undefined
             ? anchorInfo.absoluteX
             : anchorPos.x + anchorInfo.offsetX;
+          // Apply panoramic conversion on mobile
+          const leftValue = (isMobile && isPanoramic) ? anchorXToPanoramicLeft(rawLeftValue) : rawLeftValue;
           
           // Wall-mounted tools use center transform, floor tools use bottom-anchored
           const transformStyle = anchorInfo.wallMount
