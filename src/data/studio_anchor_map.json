@@ -194,18 +194,18 @@
   {
     "background_asset_key": "studio_doorway_park_view_v5",
     "anchor_ref": "m03_tool_a",
-    "x_pct": 0.8,
-    "y_pct": 0.903,
-    "scale": 3.3,
+    "x_pct": 0.922,
+    "y_pct": 0.899,
+    "scale": 3.4,
     "z_layer": "front",
     "flipX": true
   },
   {
     "background_asset_key": "studio_doorway_park_view_v5",
     "anchor_ref": "m03_tool_b",
-    "x_pct": 0.761,
-    "y_pct": 0.991,
-    "scale": 3.6,
+    "x_pct": 0.779,
+    "y_pct": 0.966,
+    "scale": 3.3,
     "z_layer": "front",
     "flipX": true
   },
