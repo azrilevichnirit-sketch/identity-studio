@@ -2226,7 +2226,7 @@ export function VisualPlayScreen({
         <>
           <Mission11CalibrationEditor mission={mission} onBackgroundChange={handleM7BackgroundChange} />
           {avatarImage && (
-            <VisitorCalibrationEditor bgKey="studio_in_workshop_bg" title="M11 Avatar" visitors={[
+            <VisitorCalibrationEditor bgKey="studio_in_workshop_bg" title="M11 Avatar" panelClassName="top-[290px] right-4" visitors={[
               { id: 'm11_avatar', img: avatarImage, label: 'אווטר' },
             ]} />
           )}
