@@ -1128,8 +1128,10 @@ export function VisualPlayScreen({
     return (
       <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 5 }}>
         {sceneExtras.map((extra) => {
-          // Get anchor position from the current background
-          const anchorPos = getAnchorPosition(lockedBgKey, extra.anchorRef);
+          // Mission 10 extras are always calibrated on workshop coordinates,
+          // regardless of temporary visual background overrides.
+          const calibratedBgKey = extra.anchorRef.startsWith('m10_') ? 'studio_in_workshop_bg' : lockedBgKey;
+          const anchorPos = getAnchorPosition(calibratedBgKey, extra.anchorRef);
           if (!anchorPos) {
             return null;
           }
@@ -1970,7 +1972,8 @@ export function VisualPlayScreen({
         const avatarImg = getAvatarImage(avatarGender, 'idle');
         if (!avatarImg) return null;
         
-        const avatarAnchor = getAnchorPosition(lockedBgKey, 'm11_avatar' as AnchorRef);
+        // Mission 11 Avatar is calibrated on workshop background only (Tool A branch)
+        const avatarAnchor = getAnchorPosition('studio_in_workshop_bg', 'm11_avatar' as AnchorRef);
         const avatarPos = avatarAnchor || { x: 50, y: 85, scale: 2.0, z_layer: 'front', flipX: false };
         
         return (
@@ -2014,7 +2017,8 @@ export function VisualPlayScreen({
         
         if (!m11ToolBPlaced || m11ToolAPlaced || !isOnM11) return null;
         
-        const crowdAnchor = getAnchorPosition(lockedBgKey, 'm11_crowd' as AnchorRef);
+        // Mission 11 Crowd is calibrated on gallery_main_mobile_wide only (Tool B branch)
+        const crowdAnchor = getAnchorPosition('gallery_main_mobile_wide', 'm11_crowd' as AnchorRef);
         const crowdPos = crowdAnchor || { x: 50, y: 80, scale: 2.0, z_layer: 'back', flipX: false };
         
         return (
@@ -2386,7 +2390,7 @@ export function VisualPlayScreen({
               setExtraOverrides(prev => ({ ...prev, [extraId]: { x, y, scale } }));
             }}
           />
-          <VisitorCalibrationEditor bgKey={lockedBgKey} title="M10 Staff" visitors={[
+          <VisitorCalibrationEditor bgKey="studio_in_workshop_bg" title="M10 Staff" visitors={[
             { id: 'm10_extra_staff', img: femaleStaffSittingImg, label: 'יושבת (כלי A)' },
             { id: 'm10_extra_staff_b', img: femaleStaffStandingImg, label: 'עומדת (כלי B)' },
           ]} />
