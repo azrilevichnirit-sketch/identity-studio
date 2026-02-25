@@ -1729,6 +1729,7 @@ export function VisualPlayScreen({
         // Render avatar alongside visitors
         const avatarImg = getAvatarImage(avatarGender, 'idle');
         const avatarPos = getAnchorPosition(lockedBgKey, 'm08_avatar' as AnchorRef);
+        console.log('[M08-avatar] gender:', avatarGender, 'img:', !!avatarImg, 'bgKey:', lockedBgKey, 'pos:', avatarPos);
         
         return (
           <>
