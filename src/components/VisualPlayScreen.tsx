@@ -44,6 +44,11 @@ import femaleStaffSittingImg from '@/assets/extras/studio_female_staff_sitting.w
 import femaleStaffStandingImg from '@/assets/extras/studio_female_staff_standing.webp';
 // Mission 11 Tool B crowd asset
 import m11CrowdAsset from '@/assets/extras/studio_extra_asset_07.webp';
+// Mission 7 scene extras (props)
+import m07Frames from '@/assets/extras/studio_extra_asset_11.webp';
+import m07Easel from '@/assets/extras/studio_extra_asset_12.webp';
+import m07VasesLight from '@/assets/extras/studio_extra_asset_13.webp';
+import m07VasesDark from '@/assets/extras/studio_extra_asset_14.webp';
 // import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter'; // Disabled
 
 const DRAG_HINT_STORAGE_KEY = 'ie_hasDraggedOnce';
@@ -2335,7 +2340,22 @@ export function VisualPlayScreen({
   const calibrationOverlayElement = useMemo(() => {
     if (!toolEditMode) return null;
     if (mission.mission_id === 'studio_07') {
-      return <Mission7CalibrationEditor mission={mission} onBackgroundChange={handleM7BackgroundChange} />;
+      return (
+        <>
+          <Mission7CalibrationEditor mission={mission} onBackgroundChange={handleM7BackgroundChange} />
+          <VisitorCalibrationEditor bgKey="studio_in_entrance_view_bg" title="M07 Props" panelClassName="top-[290px] right-4" visitors={[
+            { id: 'm07_extra_frames', img: m07Frames, label: 'מסגרות' },
+            { id: 'm07_extra_easel_01', img: m07Easel, label: 'כן ציור 1' },
+            { id: 'm07_extra_easel_02', img: m07Easel, label: 'כן ציור 2' },
+            { id: 'm07_extra_easel_03', img: m07Easel, label: 'כן ציור 3' },
+            { id: 'm07_extra_easel_04', img: m07Easel, label: 'כן ציור 4' },
+            { id: 'm07_extra_vases_a_01', img: m07VasesLight, label: 'אגרטלים בהירים 1' },
+            { id: 'm07_extra_vases_a_02', img: m07VasesLight, label: 'אגרטלים בהירים 2' },
+            { id: 'm07_extra_vases_b_01', img: m07VasesDark, label: 'אגרטלים כהים 1' },
+            { id: 'm07_extra_vases_b_02', img: m07VasesDark, label: 'אגרטלים כהים 2' },
+          ]} />
+        </>
+      );
     }
     if (mission.mission_id === 'studio_11') {
       return (
