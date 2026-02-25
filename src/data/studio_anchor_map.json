@@ -990,8 +990,8 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m10_extra_staff_b",
-    "x_pct": 0.571,
-    "y_pct": 0.791,
+    "x_pct": 0.572,
+    "y_pct": 0.816,
     "scale": 2.8,
     "z_layer": "back"
   },
