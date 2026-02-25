@@ -1577,7 +1577,7 @@
     "x_pct": 0.45,
     "y_pct": 0.88,
     "scale": 2.5,
-    "z_layer": "front"
+    "z_layer": "mid"
   },
   {
     "background_asset_key": "studio_exterior_bg",
