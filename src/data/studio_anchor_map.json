@@ -1515,19 +1515,19 @@
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m13_tool_a",
-    "x_pct": 0.505,
-    "y_pct": 0.742,
-    "scale": 1.4,
-    "z_layer": "front",
-    "flipX": true
+    "x_pct": 0.517,
+    "y_pct": 0.738,
+    "scale": 1.7,
+    "z_layer": "front"
   },
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m13_tool_b",
-    "x_pct": 0.502,
-    "y_pct": 0.737,
-    "scale": 1.8,
-    "z_layer": "front"
+    "x_pct": 0.527,
+    "y_pct": 0.743,
+    "scale": 2.1,
+    "z_layer": "front",
+    "flipX": true
   },
   {
     "background_asset_key": "gallery_main_stylized",
@@ -1543,14 +1543,14 @@
     "anchor_ref": "m13_desk_b",
     "x_pct": 0.507,
     "y_pct": 0.899,
-    "scale": 2.8,
+    "scale": 2.7,
     "z_layer": "mid"
   },
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m13_desk_c",
-    "x_pct": 0.66,
-    "y_pct": 0.85,
+    "x_pct": 0.709,
+    "y_pct": 0.794,
     "scale": 2.2,
     "z_layer": "mid"
   },
@@ -1559,16 +1559,17 @@
     "anchor_ref": "m13_extra_couple",
     "x_pct": 0.509,
     "y_pct": 0.793,
-    "scale": 3.3,
+    "scale": 3.6,
     "z_layer": "back"
   },
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m13_extra_staff",
-    "x_pct": 0.42,
-    "y_pct": 0.82,
-    "scale": 2.5,
-    "z_layer": "back"
+    "x_pct": 0.603,
+    "y_pct": 0.833,
+    "scale": 3.4,
+    "z_layer": "back",
+    "flipX": true
   },
   {
     "background_asset_key": "studio_in_storage_bg",
