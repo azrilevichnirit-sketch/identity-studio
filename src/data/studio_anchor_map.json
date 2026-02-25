@@ -1563,6 +1563,14 @@
     "z_layer": "back"
   },
   {
+    "background_asset_key": "gallery_main_stylized",
+    "anchor_ref": "m13_extra_staff",
+    "x_pct": 0.42,
+    "y_pct": 0.82,
+    "scale": 2.5,
+    "z_layer": "back"
+  },
+  {
     "background_asset_key": "studio_in_storage_bg",
     "anchor_ref": "m14_tool_a",
     "x_pct": 0.549,
