@@ -16,6 +16,7 @@ import workDesk01 from '@/assets/extras/studio_work_desk_01.webp';
 import cncMachine01 from '@/assets/extras/studio_cnc_machine_01.webp';
 import coffeeTable01 from '@/assets/extras/studio_coffee_table_01.webp';
 import receptionDesk01 from '@/assets/extras/studio_reception_desk_01.webp';
+import extra05 from '@/assets/extras/studio_extra_asset_05.webp';
 
 // Map asset keys to actual images
 const extraAssetMap: Record<string, string> = {
@@ -29,6 +30,7 @@ const extraAssetMap: Record<string, string> = {
   studio_extra_asset_02: extra02,
   studio_extra_asset_03: extra03,
   studio_extra_asset_04: extra04,
+  studio_extra_asset_05: extra05,
   studio_work_desk_01: workDesk01,
   studio_cnc_machine_01: cncMachine01,
   studio_coffee_table_01: coffeeTable01,
@@ -65,14 +67,19 @@ interface SceneExtraRule {
 export function useSceneExtras(
   currentMissionId: string,
   currentMissionIndex: number,
-  placedProps: PickRecord[]
+  placedProps: PickRecord[],
+  localSelectedTool?: { missionId: string; assetName: string } | null
 ): SpawnedExtra[] {
   return useMemo(() => {
     const extras: SpawnedExtra[] = [];
     const rules = sceneExtrasData as SceneExtraRule[];
     
-    // Get list of picked tool IDs
-    const pickedToolIds = placedProps.map(p => p.assetName).filter(Boolean);
+    // Get list of picked tool IDs (includes both persisted and locally selected)
+    const pickedToolIds = placedProps.map(p => p.assetName).filter(Boolean) as string[];
+    // Also include the locally selected tool (before it's added to placedProps)
+    if (localSelectedTool?.assetName) {
+      pickedToolIds.push(localSelectedTool.assetName);
+    }
     
     // Process all rules - Mission 7 now continues the workshop zone
     // and shows extras from earlier missions
@@ -83,7 +90,7 @@ export function useSceneExtras(
         rule,
         currentMissionId,
         currentMissionIndex,
-        pickedToolIds as string[]
+        pickedToolIds
       );
       
       // Check if this extra should despawn
@@ -117,7 +124,7 @@ export function useSceneExtras(
     }
     
     return extras;
-  }, [currentMissionId, currentMissionIndex, placedProps]);
+  }, [currentMissionId, currentMissionIndex, placedProps, localSelectedTool]);
 }
 
 function checkShouldSpawn(
