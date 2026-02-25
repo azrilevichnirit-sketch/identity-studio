@@ -1557,9 +1557,9 @@
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m13_extra_couple",
-    "x_pct": 0.5,
-    "y_pct": 0.82,
-    "scale": 1.5,
+    "x_pct": 0.509,
+    "y_pct": 0.793,
+    "scale": 3.3,
     "z_layer": "back"
   },
   {
