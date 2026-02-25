@@ -918,7 +918,7 @@
     "x_pct": 0.73,
     "y_pct": 0.841,
     "scale": 1.9,
-    "z_layer": "mid"
+    "z_layer": "back"
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
@@ -926,7 +926,7 @@
     "x_pct": 0.55,
     "y_pct": 0.85,
     "scale": 1.5,
-    "z_layer": "mid"
+    "z_layer": "back"
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
