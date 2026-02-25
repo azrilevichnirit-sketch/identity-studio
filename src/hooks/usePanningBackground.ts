@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useIsMobile } from './use-mobile';
-import { DEFAULT_PAN_RANGE } from '@/lib/pan';
+import { DEFAULT_PAN_RANGE, MOBILE_BG_VERTICAL_ANCHOR } from '@/lib/pan';
 
 interface PanState {
   offsetX: number; // 0 = centered, negative = showing right side, positive = showing left side
@@ -206,9 +206,8 @@ export function usePanningBackground(
   }, [enabled, calculateOffsetForPosition, isPanning]);
 
   // Calculate background position
-  // Base is 50% (centered), offset shifts left/right
-  // Use 85% vertical to give a slight top-down angle (less ceiling, more floor)
-  const backgroundPosition = `${50 + panState.offsetX}% 85%`;
+  // Base is 50% (centered), offset shifts left/right.
+  const backgroundPosition = `${50 + panState.offsetX}% ${MOBILE_BG_VERTICAL_ANCHOR}%`;
 
   return {
     offsetX: panState.offsetX,
