@@ -998,8 +998,8 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m11_tool_a",
-    "x_pct": 0.523,
-    "y_pct": 0.872,
+    "x_pct": 0.535,
+    "y_pct": 0.922,
     "scale": 3.8,
     "z_layer": "front",
     "flipX": true
