@@ -1227,7 +1227,7 @@ export function VisualPlayScreen({
                 alt=""
                 className="w-32 h-32 object-contain"
                 style={{
-                  transform: `scale(${scale})${anchorPos.flipX ? ' scaleX(-1)' : ''}`,
+                  transform: `scale(${isMobile ? Math.min(2.4, Math.max(0.6, scale)) : scale})${anchorPos.flipX ? ' scaleX(-1)' : ''}`,
                   filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                 }}
               />
@@ -1732,7 +1732,7 @@ export function VisualPlayScreen({
                 className={`${isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32'} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
                 style={{
                   filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
-                  transform: `scale(${fixed.scale})${fixed.flipX ? ' scaleX(-1)' : ''}`,
+                  transform: `scale(${isMobile ? Math.min(2.4, Math.max(0.6, fixed.scale)) : fixed.scale})${fixed.flipX ? ' scaleX(-1)' : ''}`,
                 }}
               />
             </div>
@@ -1760,7 +1760,7 @@ export function VisualPlayScreen({
                 className={`${isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32'} object-contain`}
                 style={{
                   filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
-                  transform: `scale(${fixed.scale})${fixed.flipX ? ' scaleX(-1)' : ''}`,
+                  transform: `scale(${isMobile ? Math.min(2.4, Math.max(0.6, fixed.scale)) : fixed.scale})${fixed.flipX ? ' scaleX(-1)' : ''}`,
                 }}
               />
             </div>
@@ -1824,7 +1824,7 @@ export function VisualPlayScreen({
                 className={`${isMission01Buckets ? 'w-28 h-28 md:w-36 md:h-36' : (isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32')} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
                    style={{
                    filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
-                   transform: `scale(${finalScale})${anchorInfo.flipX ? ' scaleX(-1)' : ''}`,
+                   transform: `scale(${isMobile ? Math.min(2.4, Math.max(0.6, finalScale)) : finalScale})${anchorInfo.flipX ? ' scaleX(-1)' : ''}`,
                  }}
               />
             </div>
@@ -1882,7 +1882,7 @@ export function VisualPlayScreen({
                        className="w-32 h-32 object-contain"
                       style={{
                         filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-                        transform: `scale(${pos.scale})${pos.flipX ? ' scaleX(-1)' : ''}`,
+                        transform: `scale(${isMobile ? Math.min(2.4, Math.max(0.6, pos.scale)) : pos.scale})${pos.flipX ? ' scaleX(-1)' : ''}`,
                       }}
                     />
                   </div>
@@ -1912,7 +1912,7 @@ export function VisualPlayScreen({
                      className="w-32 h-32 object-contain"
                     style={{
                       filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-                      transform: `scale(${avatarPos.scale})${avatarPos.flipX ? ' scaleX(-1)' : ''}`,
+                      transform: `scale(${isMobile ? Math.min(2.4, Math.max(0.6, avatarPos.scale)) : avatarPos.scale})${avatarPos.flipX ? ' scaleX(-1)' : ''}`,
                     }}
                   />
                 </div>
@@ -1964,7 +1964,7 @@ export function VisualPlayScreen({
                    className="w-32 h-32 object-contain"
                   style={{
                     filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-                    transform: `scale(${pos.scale})${pos.flipX ? ' scaleX(-1)' : ''}`,
+                    transform: `scale(${isMobile ? Math.min(2.4, Math.max(0.6, pos.scale)) : pos.scale})${pos.flipX ? ' scaleX(-1)' : ''}`,
                   }}
                 />
               </div>
@@ -2014,7 +2014,7 @@ export function VisualPlayScreen({
                   className="w-32 h-32 object-contain"
                   style={{
                     filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-                    transform: `scale(${pos.scale})${pos.flipX ? ' scaleX(-1)' : ''}`,
+                    transform: `scale(${isMobile ? Math.min(2.4, Math.max(0.6, pos.scale)) : pos.scale})${pos.flipX ? ' scaleX(-1)' : ''}`,
                   }}
                 />
               </div>
@@ -2063,7 +2063,7 @@ export function VisualPlayScreen({
                  className="w-32 h-32 object-contain"
                 style={{
                   filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-                  transform: `scale(${avatarPos.scale})${avatarPos.flipX ? ' scaleX(-1)' : ''}`,
+                  transform: `scale(${isMobile ? Math.min(2.4, Math.max(0.6, avatarPos.scale)) : avatarPos.scale})${avatarPos.flipX ? ' scaleX(-1)' : ''}`,
                 }}
               />
             </div>
@@ -2108,7 +2108,7 @@ export function VisualPlayScreen({
                 className="w-32 h-32 object-contain"
                 style={{
                   filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-                  transform: `scale(${crowdPos.scale})${crowdPos.flipX ? ' scaleX(-1)' : ''}`,
+                  transform: `scale(${isMobile ? Math.min(2.4, Math.max(0.6, crowdPos.scale)) : crowdPos.scale})${crowdPos.flipX ? ' scaleX(-1)' : ''}`,
                 }}
               />
             </div>
