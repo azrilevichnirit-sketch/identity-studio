@@ -520,12 +520,12 @@ export function VisualPlayScreen({
     return x;
   }, []);
 
-  // Mobile sizing: per-category scale factors so each element type stays proportional
-  // without affecting calibrated positions. Base sprite classes are 96px on mobile vs 128px desktop.
-  const MOBILE_SCALE_TOOL = 1.15;      // tools (placed props)
-  const MOBILE_SCALE_VISITOR = 1.35;   // NPC visitors / crowd
-  const MOBILE_SCALE_AVATAR = 1.4;     // player avatar
-  const MOBILE_SCALE_EXTRA = 1.2;      // scene extras (furniture, decorations)
+  // Mobile scaling: keep exact parity with calibration map.
+  // Any global multiplier here shifts proportions and caused cross-mission mismatches.
+  const MOBILE_SCALE_TOOL = 1;
+  const MOBILE_SCALE_VISITOR = 1;
+  const MOBILE_SCALE_AVATAR = 1;
+  const MOBILE_SCALE_EXTRA = 1;
 
   const getSpriteTransform = useCallback((scale: number, flipX?: boolean, category?: 'tool' | 'visitor' | 'avatar' | 'extra') => {
     let mobileFactor = MOBILE_SCALE_TOOL; // default
@@ -1281,17 +1281,22 @@ export function VisualPlayScreen({
   // For mission 1, the paint buckets should be placed near EACH WALL (left, back, right)
   // צמוד לקיר = close to wall, on the floor
   const getDuplicateAnchors = (prop: typeof displayedPlacement[0]): { anchor: AnchorRef; offsetX: number; offsetY: number; customScale?: number; absoluteY?: number; absoluteX?: number; wallMount?: boolean; flipX?: boolean }[] => {
-    // Product rule: Mission 01 tool A duplicates to 3 placements (one per wall)
-    // Position: on the floor adjacent to each wall (left/center/right)
+    // Mission 01 Tool A: single placement from calibrated anchor map
     if (prop.missionId === 'studio_01' && prop.key === 'a') {
-      // Use fixed X positions for left/center/right walls (22%, 50%, 78%)
-      // Position close to back wall with larger scale so they look like real tools
-      // absoluteX ensures exact positioning regardless of anchor
-      return [
-        { anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: DUPLICATE_BUCKETS_Y, absoluteX: 22 },
-        { anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: DUPLICATE_BUCKETS_Y, absoluteX: 50 },
-        { anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 2.0, absoluteY: DUPLICATE_BUCKETS_Y, absoluteX: 78 },
-      ];
+      const anchorPos = getAnchorPosition(lockedBgKey, 'm01_tool_a');
+      if (anchorPos) {
+        return [{
+          anchor: 'm01_tool_a' as AnchorRef,
+          offsetX: 0,
+          offsetY: 0,
+          customScale: anchorPos.scale,
+          absoluteY: anchorPos.y,
+          absoluteX: anchorPos.x,
+          flipX: anchorPos.flipX,
+        }];
+      }
+      // Fallback
+      return [{ anchor: 'floor', offsetX: 0, offsetY: 0, customScale: 1.8, absoluteY: BACK_FLOOR_Y, absoluteX: 50 }];
     }
     
     // Mission 01 Tool B: use anchor map coordinates
@@ -1718,8 +1723,7 @@ export function VisualPlayScreen({
         // USE FIXED PLACEMENT FOR PERSISTED TOOLS
         // This ensures tools stay exactly where they were placed, not recalculated
         // No more duplication patterns - all missions use single placement from anchor map
-        const hasDuplicationPattern = (prop.missionId === 'studio_01' && prop.key === 'a')
-          || (prop.missionId === 'studio_03' && prop.key === 'b')
+        const hasDuplicationPattern = (prop.missionId === 'studio_03' && prop.key === 'b')
           || (prop.missionId === 'studio_12' && prop.key === 'a');
 
         // Mission 10: LOCAL placement should use fixedPlacement immediately (snap-now)
