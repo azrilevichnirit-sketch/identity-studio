@@ -1241,7 +1241,7 @@ export function VisualPlayScreen({
               <img 
                 src={extra.image}
                 alt=""
-                className="w-32 h-32 object-contain"
+                className="w-24 h-24 md:w-32 md:h-32 object-contain"
                 style={{
                   transform: getSpriteTransform(scale, anchorPos.flipX, 'extra'),
                   filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
@@ -1891,7 +1891,7 @@ export function VisualPlayScreen({
                     <img
                       src={v.img}
                       alt=""
-                       className="w-32 h-32 object-contain"
+                       className="w-24 h-24 md:w-32 md:h-32 object-contain"
                       style={{
                         filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                         transform: getSpriteTransform(pos.scale, pos.flipX, 'visitor'),
@@ -1921,7 +1921,7 @@ export function VisualPlayScreen({
                   <img
                     src={avatarImg}
                     alt=""
-                     className="w-32 h-32 object-contain"
+                     className="w-24 h-24 md:w-32 md:h-32 object-contain"
                     style={{
                       filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                       transform: getSpriteTransform(avatarPos.scale, avatarPos.flipX, 'avatar'),
@@ -1973,7 +1973,7 @@ export function VisualPlayScreen({
                 <img
                   src={v.img}
                   alt=""
-                   className="w-32 h-32 object-contain"
+                   className="w-24 h-24 md:w-32 md:h-32 object-contain"
                   style={{
                     filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                     transform: getSpriteTransform(pos.scale, pos.flipX, 'visitor'),
@@ -2023,7 +2023,7 @@ export function VisualPlayScreen({
                 <img
                   src={v.img}
                   alt=""
-                  className="w-32 h-32 object-contain"
+                  className="w-24 h-24 md:w-32 md:h-32 object-contain"
                   style={{
                     filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                     transform: getSpriteTransform(pos.scale, pos.flipX, 'visitor'),
@@ -2072,7 +2072,7 @@ export function VisualPlayScreen({
               <img
                 src={avatarImg}
                 alt=""
-                 className="w-32 h-32 object-contain"
+                 className="w-24 h-24 md:w-32 md:h-32 object-contain"
                 style={{
                   filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                   transform: getSpriteTransform(avatarPos.scale, avatarPos.flipX, 'avatar'),
@@ -2117,7 +2117,7 @@ export function VisualPlayScreen({
               <img
                 src={m11CrowdAsset}
                 alt=""
-                className="w-32 h-32 object-contain"
+                className="w-24 h-24 md:w-32 md:h-32 object-contain"
                 style={{
                   filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                   transform: getSpriteTransform(crowdPos.scale, crowdPos.flipX, 'visitor'),
