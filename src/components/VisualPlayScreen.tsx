@@ -520,30 +520,27 @@ export function VisualPlayScreen({
     return x;
   }, []);
 
-  // Mobile scaling: keep exact parity with calibration map.
-  // Any global multiplier here shifts proportions and caused cross-mission mismatches.
-  const MOBILE_SCALE_TOOL = 1;
-  const MOBILE_SCALE_VISITOR = 1;
-  const MOBILE_SCALE_AVATAR = 1;
-  const MOBILE_SCALE_EXTRA = 1;
+  // Mobile scaling: non-linear compression for high-scale sprites.
+  // Scales ≤ 1.5 stay unchanged (they already look correct on mobile).
+  // Scales > 1.5 are compressed to prevent viewport overflow:
+  //   effectiveScale = 1.5 + (scale - 1.5) * 0.35
+  // Examples: 1.6→1.535, 2.9→1.99, 3.9→2.34
+  const compressMobileScale = useCallback((scale: number): number => {
+    if (!isMobile) return scale;
+    if (scale <= 1.5) return scale;
+    return 1.5 + (scale - 1.5) * 0.35;
+  }, [isMobile]);
 
   // Keep ONE consistent base sprite size model across tools/visitors/avatar/extras.
-  // On mobile portrait the HEIGHT is the dominant dimension (background-size: cover
-  // scales the image by height when viewport is taller than wide). So we scale the
-  // base relative to viewport height vs a desktop reference height of 1080px.
   const getSpriteBasePx = useCallback((variant: 'normal' | 'large' | 'xlarge' = 'normal') => {
     const desktopBase = variant === 'xlarge' ? 160 : variant === 'large' ? 144 : 128;
     return desktopBase;
   }, []);
 
-  const getSpriteTransform = useCallback((scale: number, flipX?: boolean, category?: 'tool' | 'visitor' | 'avatar' | 'extra') => {
-    let mobileFactor = MOBILE_SCALE_TOOL; // default
-    if (category === 'visitor') mobileFactor = MOBILE_SCALE_VISITOR;
-    else if (category === 'avatar') mobileFactor = MOBILE_SCALE_AVATAR;
-    else if (category === 'extra') mobileFactor = MOBILE_SCALE_EXTRA;
-    const effectiveScale = isMobile ? scale * mobileFactor : scale;
+  const getSpriteTransform = useCallback((scale: number, flipX?: boolean, _category?: 'tool' | 'visitor' | 'avatar' | 'extra') => {
+    const effectiveScale = compressMobileScale(scale);
     return `scale(${effectiveScale})${flipX ? ' scaleX(-1)' : ''}`;
-  }, [isMobile]);
+  }, [compressMobileScale]);
 
   // Auto-pan on mission entry toward Tool A's target (helps reveal side-wall targets)
   const initialPanTargetX = useMemo(() => {
