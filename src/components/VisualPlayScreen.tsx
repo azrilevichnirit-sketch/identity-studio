@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useRef, useCallback, useEffect } from 'react';
 import type { Mission, HollandCode, AvatarGender, PickRecord, MissionOption, AnchorRef } from '@/types/identity';
 import { getToolImage, getBackgroundForMission, getAvatarImage, getBackgroundKey, getBackgroundByName, getPanoramicBackground, preloadBackground, preloadAllBackgrounds } from '@/lib/assetUtils';
-import { panOffsetToDropCompensation, panOffsetToTranslatePercent, anchorXToPanoramicLeft } from '@/lib/pan';
+import { panOffsetToDropCompensation, panOffsetToTranslatePercent } from '@/lib/pan';
 import { getAnchorPosition } from '@/lib/jsonDataLoader';
 import { SpeechBubble } from './SpeechBubble';
 import { Info } from 'lucide-react';
@@ -514,15 +514,11 @@ export function VisualPlayScreen({
   }, [isMobile, lockedBgKey]);
 
   const getRenderX = useCallback((x: number) => {
-    // On panoramic mobile, the background is 144% of viewport width.
-    // Anchor coordinates (0-100) are in "image space" and must be converted
-    // to viewport-space so tools align with their background features.
-    // The content layer's --pan-shift-x handles panning offset separately.
-    if (isPanoramic) {
-      return anchorXToPanoramicLeft(x);
-    }
+    // Keep anchor coordinates in raw mission space (0-100).
+    // Mobile panoramic translation is applied once via --pan-shift-x on the moving layer.
+    // This preserves parity with calibration values and prevents double-offset drift.
     return x;
-  }, [isPanoramic]);
+  }, []);
 
   // Mobile scale reduction: calibrated scales target desktop (128px base on ~1920px viewport).
   // On mobile (96px base on ~390px viewport), tools are proportionally ~3.75× larger.
