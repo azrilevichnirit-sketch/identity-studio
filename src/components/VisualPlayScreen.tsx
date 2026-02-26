@@ -1712,9 +1712,7 @@ export function VisualPlayScreen({
             <div
               key={`${prop.missionId}-${propIdx}-local-fixed`}
               className={`absolute pointer-events-none ${
-                isMission01ToolB
-                  ? 'animate-tool-appear'
-                  : (isJustPlaced ? 'animate-snap-pop-blink' : 'animate-snap-place')
+                isPersisted ? '' : 'animate-fade-in'
               }`}
               style={{
                 left: `${getRenderX(fixed.x)}%`,
@@ -1799,13 +1797,7 @@ export function VisualPlayScreen({
               <div
                 key={`${prop.missionId}-${propIdx}-${idx}`}
                 className={`absolute pointer-events-none ${
-                  isPersisted
-                    ? ''
-                    : (isMission01ToolB
-                        ? 'animate-tool-appear'
-                        : (isMission01Buckets
-                            ? 'animate-snap-place'
-                            : (isJustPlaced ? 'animate-snap-pop-blink' : 'animate-snap-place')))
+                  isPersisted ? '' : 'animate-fade-in'
                 }`}
                 style={{
                 left: `${leftValue}%`,
