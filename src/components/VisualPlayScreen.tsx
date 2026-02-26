@@ -528,14 +528,14 @@ export function VisualPlayScreen({
   const MOBILE_SCALE_EXTRA = 1;
 
   // Keep ONE consistent base sprite size model across tools/visitors/avatar/extras.
-  // On mobile, the base must scale proportionally to viewport width so that
-  // calibrated scale values produce the same VISUAL proportion as on desktop.
-  // Reference: 820px is the mobile breakpoint — at exactly 820px base equals desktop.
+  // On mobile portrait the HEIGHT is the dominant dimension (background-size: cover
+  // scales the image by height when viewport is taller than wide). So we scale the
+  // base relative to viewport height vs a desktop reference height of 1080px.
   const getSpriteBasePx = useCallback((variant: 'normal' | 'large' | 'xlarge' = 'normal') => {
     const desktopBase = variant === 'xlarge' ? 160 : variant === 'large' ? 144 : 128;
     if (!isMobile) return desktopBase;
-    const vw = window.innerWidth;
-    const mobileFactor = Math.min(1, vw / 820);
+    const vh = window.innerHeight;
+    const mobileFactor = Math.min(1, vh / 1080);
     return Math.round(desktopBase * mobileFactor);
   }, [isMobile]);
 
