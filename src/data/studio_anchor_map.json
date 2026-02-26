@@ -915,7 +915,7 @@
     "anchor_ref": "m08_tool_a",
     "x_pct": 0.113,
     "y_pct": 0.615,
-    "scale": 3.9,
+    "scale": 2.5,
     "z_layer": "front"
   },
   {
@@ -923,7 +923,7 @@
     "anchor_ref": "m08_tool_b",
     "x_pct": 0.769,
     "y_pct": 0.824,
-    "scale": 2.9,
+    "scale": 2.1,
     "z_layer": "front",
     "flipX": true
   },
