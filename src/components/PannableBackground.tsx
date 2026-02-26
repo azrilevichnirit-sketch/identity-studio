@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { BackgroundCrossfade } from './BackgroundCrossfade';
 import { usePanningBackground } from '@/hooks/usePanningBackground';
-import { PAN_BG_SIZE, MOBILE_BG_VERTICAL_ANCHOR } from '@/lib/pan';
+import { PAN_BG_SIZE, MOBILE_BG_VERTICAL_ANCHOR, MOBILE_BG_SIZE } from '@/lib/pan';
 
 export type PanningApi = {
   updatePanFromDrag: (normalizedX: number) => void;
@@ -73,7 +73,7 @@ export function PannableBackground({
     : ((isMobileView ?? enabled) ? `center ${MOBILE_BG_VERTICAL_ANCHOR}%` : 'center');
   // IMPORTANT: Use an explicit panoramic width so panning is always visible
   // and matches our compensation math (see src/lib/pan.ts).
-  const effectiveBgSize = isPanoramic ? PAN_BG_SIZE : 'cover';
+  const effectiveBgSize = isPanoramic ? PAN_BG_SIZE : ((isMobileView ?? enabled) ? MOBILE_BG_SIZE : 'cover');
 
   return (
     <BackgroundCrossfade
