@@ -699,7 +699,14 @@ export function VisualPlayScreen({
   // Simple tool placement lookup from anchor map (single source of truth)
   // REMOVED: Complex calculateFixedPlacement that tried to predict next_bg_override
   const getToolPlacementFromAnchorMap = useCallback((missionId: string, key: 'a' | 'b', bgKey: string) => {
-    const anchorRef = `m${missionId.replace('studio_', '').padStart(2, '0')}_tool_${key}` as AnchorRef;
+    const missionNum = missionId.includes('_tie_')
+      ? missionId.replace('studio_tie_', '').padStart(2, '0')
+      : missionId.replace('studio_', '').padStart(2, '0');
+
+    const anchorRef = (missionId.includes('_tie_')
+      ? `tie_${missionNum}_tool_${key}`
+      : `m${missionNum}_tool_${key}`) as AnchorRef;
+
     const anchorPos = getAnchorPosition(bgKey, anchorRef);
     if (anchorPos) {
       return {
@@ -730,7 +737,10 @@ export function VisualPlayScreen({
     // Snap LOCAL placement immediately to the calibrated anchor for all missions
     // (otherwise the user sees it "stick" where they released, until the next mission renders the persisted version)
     const shouldSnapLocalToAnchorNow = true;
-    const snapped = shouldSnapLocalToAnchorNow ? getTargetAnchor(variant) : null;
+    const targetBgForPlacement = getTargetBgForOption(option);
+    const snapped = shouldSnapLocalToAnchorNow
+      ? (getToolPlacementFromAnchorMap(mission.mission_id, variant, targetBgForPlacement.key) ?? getTargetAnchor(variant))
+      : null;
     
     // Mission 06 Tool A: spawn the prop (wood rack) FIRST, then show tool after a delay
     const isMission06ToolA = mission.mission_id === 'studio_06' && variant === 'a';
@@ -910,7 +920,7 @@ export function VisualPlayScreen({
     timeoutsRef.current.push(advanceId);
     
     setCarryModeTool(null);
-  }, [mission.mission_id, mission.phase, mission.sequence, optionA, optionB, onSelect, hasDraggedOnce, getTargetBgForOption, PAINTED_WALLS_BG_KEY, currentBg, getTargetAnchor, isMobile, isPanoramic]);
+  }, [mission.mission_id, mission.phase, mission.sequence, optionA, optionB, onSelect, hasDraggedOnce, getTargetBgForOption, PAINTED_WALLS_BG_KEY, currentBg, getTargetAnchor, getToolPlacementFromAnchorMap, isMobile, isPanoramic]);
 
   // Click-to-place: immediately place the selected tool
   const handleToolClick = useCallback((variant: 'a' | 'b', e: React.PointerEvent | React.MouseEvent) => {
