@@ -78,14 +78,14 @@ export function LeadForm({ onSubmit, isSubmitting = false }: LeadFormProps) {
             לאן לשלוח את התוצאות שלך?
           </p>
           
-          <form onSubmit={handleSubmit} className="space-y-4" dir="rtl">
+          <form onSubmit={handleSubmit} className="space-y-4 text-right" dir="rtl">
             <div>
               <label className="block text-sm font-medium mb-1.5 text-right" style={{ color: '#333' }}>שם מלא</label>
               <input
                 type="text"
                 value={formData.fullName}
                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                className="w-full px-4 py-3.5 rounded-xl bg-white border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors text-base"
+                className="w-full px-4 py-3.5 rounded-xl bg-white border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors text-base text-right"
                 style={{ color: '#1a1a1a', minHeight: '48px', fontSize: '16px' }}
                 placeholder="הכנס/י שם מלא"
                 autoComplete="name"
@@ -103,7 +103,7 @@ export function LeadForm({ onSubmit, isSubmitting = false }: LeadFormProps) {
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-4 py-3.5 rounded-xl bg-white border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors text-base"
+                className="w-full px-4 py-3.5 rounded-xl bg-white border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors text-base text-right"
                 style={{ color: '#1a1a1a', minHeight: '48px', fontSize: '16px' }}
                 placeholder="example@email.com"
                 dir="ltr"
@@ -122,7 +122,7 @@ export function LeadForm({ onSubmit, isSubmitting = false }: LeadFormProps) {
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full px-4 py-3.5 rounded-xl bg-white border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors text-base"
+                className="w-full px-4 py-3.5 rounded-xl bg-white border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors text-base text-right"
                 style={{ color: '#1a1a1a', minHeight: '48px', fontSize: '16px' }}
                 placeholder="050-0000000"
                 dir="ltr"
@@ -144,7 +144,7 @@ export function LeadForm({ onSubmit, isSubmitting = false }: LeadFormProps) {
               {isSubmitting ? 'מעבד...' : 'קחו אותי לפרופיל שלי >>'}
             </button>
             
-            <label className="flex items-center gap-3 mt-4 cursor-pointer">
+            <label className="flex flex-row-reverse items-center justify-end gap-3 mt-4 cursor-pointer text-right">
               <input
                 type="checkbox"
                 checked={formData.wantsUpdates}

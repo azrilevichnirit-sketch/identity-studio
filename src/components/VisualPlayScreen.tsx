@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useRef, useCallback, useEffect } from 'react';
 import type { Mission, HollandCode, AvatarGender, PickRecord, MissionOption, AnchorRef } from '@/types/identity';
 import { getToolImage, getBackgroundForMission, getAvatarImage, getBackgroundKey, getBackgroundByName, getPanoramicBackground, preloadBackground, preloadAllBackgrounds } from '@/lib/assetUtils';
-import { panOffsetToDropCompensation, panOffsetToTranslatePercent, anchorXToPanoramicLeft } from '@/lib/pan';
+import { panOffsetToDropCompensation, panOffsetToTranslatePercent } from '@/lib/pan';
 import { getAnchorPosition } from '@/lib/jsonDataLoader';
 import { SpeechBubble } from './SpeechBubble';
 import { Info } from 'lucide-react';
@@ -522,8 +522,10 @@ export function VisualPlayScreen({
   }, [isMobile, lockedBgKey]);
 
   const getRenderX = useCallback((x: number) => {
-    return (isMobile && isPanoramic) ? anchorXToPanoramicLeft(x) : x;
-  }, [isMobile, isPanoramic]);
+    // Coordinates from anchor map stay in raw 0-100 space.
+    // Mobile panoramic movement is handled once via --pan-shift-x on the layer wrapper.
+    return x;
+  }, []);
 
   const getSpriteTransform = useCallback((scale: number, flipX?: boolean) => {
     return `scale(${scale})${flipX ? ' scaleX(-1)' : ''}`;
