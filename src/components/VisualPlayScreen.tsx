@@ -521,6 +521,14 @@ export function VisualPlayScreen({
     return !!getPanoramicBackground(lockedBgKey);
   }, [isMobile, lockedBgKey]);
 
+  const getRenderX = useCallback((x: number) => {
+    return (isMobile && isPanoramic) ? anchorXToPanoramicLeft(x) : x;
+  }, [isMobile, isPanoramic]);
+
+  const getSpriteTransform = useCallback((scale: number, flipX?: boolean) => {
+    return `scale(${scale})${flipX ? ' scaleX(-1)' : ''}`;
+  }, []);
+
   // Auto-pan on mission entry toward Tool A's target (helps reveal side-wall targets)
   const initialPanTargetX = useMemo(() => {
     if (!isMobile || !isPanoramic) return undefined;
@@ -1202,7 +1210,7 @@ export function VisualPlayScreen({
           const zIndex = zIndexForAnchorLayer(resolvedLayer);
           const override = extraOverrides[extra.id];
           const rawLeftPos = override ? override.x : (anchorPos.x + extra.offsetX);
-          const leftPos = (isMobile && isPanoramic) ? anchorXToPanoramicLeft(rawLeftPos) : rawLeftPos;
+          const leftPos = getRenderX(rawLeftPos);
           const topPos = override ? override.y : (anchorPos.y + extra.offsetY);
           const scale = override ? override.scale : extra.scale * (anchorPos.scale || 1);
           
@@ -1227,7 +1235,7 @@ export function VisualPlayScreen({
                 alt=""
                 className="w-32 h-32 object-contain"
                 style={{
-                  transform: `scale(${isMobile ? Math.min(2.4, Math.max(0.6, scale)) : scale})${anchorPos.flipX ? ' scaleX(-1)' : ''}`,
+                  transform: getSpriteTransform(scale, anchorPos.flipX),
                   filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                 }}
               />
@@ -1236,7 +1244,7 @@ export function VisualPlayScreen({
         })}
       </div>
     );
-  }, [sceneExtras, lockedBgKey, extraOverrides, toolEditMode, localPlacement, isMobile, isPanoramic]);
+  }, [sceneExtras, lockedBgKey, extraOverrides, toolEditMode, localPlacement, getRenderX, getSpriteTransform]);
 
   const targetZoneElement = activeToolVariant && targetPosition ? (
     <div
@@ -1732,7 +1740,7 @@ export function VisualPlayScreen({
                 className={`${isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32'} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
                 style={{
                   filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
-                  transform: `scale(${isMobile ? Math.min(2.4, Math.max(0.6, fixed.scale)) : fixed.scale})${fixed.flipX ? ' scaleX(-1)' : ''}`,
+                  transform: getSpriteTransform(fixed.scale, fixed.flipX),
                 }}
               />
             </div>
@@ -1760,7 +1768,7 @@ export function VisualPlayScreen({
                 className={`${isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32'} object-contain`}
                 style={{
                   filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
-                  transform: `scale(${isMobile ? Math.min(2.4, Math.max(0.6, fixed.scale)) : fixed.scale})${fixed.flipX ? ' scaleX(-1)' : ''}`,
+                  transform: getSpriteTransform(fixed.scale, fixed.flipX),
                 }}
               />
             </div>
@@ -1791,7 +1799,7 @@ export function VisualPlayScreen({
             ? anchorInfo.absoluteX
             : anchorPos.x + anchorInfo.offsetX;
           // Apply panoramic conversion on mobile
-          const leftValue = (isMobile && isPanoramic) ? anchorXToPanoramicLeft(rawLeftValue) : rawLeftValue;
+          const leftValue = getRenderX(rawLeftValue);
           
           // Wall-mounted tools use center transform, floor tools use bottom-anchored
           const transformStyle = anchorInfo.wallMount
@@ -1823,9 +1831,9 @@ export function VisualPlayScreen({
                 alt=""
                 className={`${isMission01Buckets ? 'w-28 h-28 md:w-36 md:h-36' : (isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32')} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
                    style={{
-                   filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
-                   transform: `scale(${isMobile ? Math.min(2.4, Math.max(0.6, finalScale)) : finalScale})${anchorInfo.flipX ? ' scaleX(-1)' : ''}`,
-                 }}
+                    filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
+                    transform: getSpriteTransform(finalScale, anchorInfo.flipX),
+                  }}
               />
             </div>
           );
@@ -1864,7 +1872,7 @@ export function VisualPlayScreen({
                   key={`m08-visitor-${i}`}
                   className="absolute pointer-events-none"
                   style={{
-                    left: `${pos.x}%`,
+                    left: `${getRenderX(pos.x)}%`,
                     top: `${pos.y}%`,
                     transform: 'translate(-50%, -100%)',
                     zIndex: zIdx,
@@ -1882,7 +1890,7 @@ export function VisualPlayScreen({
                        className="w-32 h-32 object-contain"
                       style={{
                         filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-                        transform: `scale(${isMobile ? Math.min(2.4, Math.max(0.6, pos.scale)) : pos.scale})${pos.flipX ? ' scaleX(-1)' : ''}`,
+                        transform: getSpriteTransform(pos.scale, pos.flipX),
                       }}
                     />
                   </div>
@@ -1894,7 +1902,7 @@ export function VisualPlayScreen({
                 key="m08-avatar"
                 className="absolute pointer-events-none"
                 style={{
-                  left: `${avatarPos.x}%`,
+                  left: `${getRenderX(avatarPos.x)}%`,
                   top: `${avatarPos.y}%`,
                   transform: 'translate(-50%, -100%)',
                   zIndex: zIndexForAnchorLayer(avatarPos.z_layer),
@@ -1912,7 +1920,7 @@ export function VisualPlayScreen({
                      className="w-32 h-32 object-contain"
                     style={{
                       filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-                      transform: `scale(${isMobile ? Math.min(2.4, Math.max(0.6, avatarPos.scale)) : avatarPos.scale})${avatarPos.flipX ? ' scaleX(-1)' : ''}`,
+                      transform: getSpriteTransform(avatarPos.scale, avatarPos.flipX),
                     }}
                   />
                 </div>
@@ -1946,7 +1954,7 @@ export function VisualPlayScreen({
               key={`m03-visitor-${i}`}
               className="absolute pointer-events-none"
               style={{
-                left: `${pos.x}%`,
+                left: `${getRenderX(pos.x)}%`,
                 top: `${pos.y}%`,
                 transform: 'translate(-50%, -100%)',
                 zIndex: zIdx,
@@ -1964,7 +1972,7 @@ export function VisualPlayScreen({
                    className="w-32 h-32 object-contain"
                   style={{
                     filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-                    transform: `scale(${isMobile ? Math.min(2.4, Math.max(0.6, pos.scale)) : pos.scale})${pos.flipX ? ' scaleX(-1)' : ''}`,
+                    transform: getSpriteTransform(pos.scale, pos.flipX),
                   }}
                 />
               </div>
@@ -1996,7 +2004,7 @@ export function VisualPlayScreen({
               key={`m05-visitor-${i}`}
               className="absolute pointer-events-none"
               style={{
-                left: `${pos.x}%`,
+                left: `${getRenderX(pos.x)}%`,
                 top: `${pos.y}%`,
                 transform: 'translate(-50%, -100%)',
                 zIndex: zIdx,
@@ -2014,7 +2022,7 @@ export function VisualPlayScreen({
                   className="w-32 h-32 object-contain"
                   style={{
                     filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-                    transform: `scale(${isMobile ? Math.min(2.4, Math.max(0.6, pos.scale)) : pos.scale})${pos.flipX ? ' scaleX(-1)' : ''}`,
+                    transform: getSpriteTransform(pos.scale, pos.flipX),
                   }}
                 />
               </div>
@@ -2045,7 +2053,7 @@ export function VisualPlayScreen({
             key="m11-avatar"
             className="absolute pointer-events-none"
             style={{
-              left: `${avatarPos.x}%`,
+              left: `${getRenderX(avatarPos.x)}%`,
               top: `${avatarPos.y}%`,
               transform: 'translate(-50%, -100%)',
               zIndex: zIndexForAnchorLayer(avatarPos.z_layer),
@@ -2063,7 +2071,7 @@ export function VisualPlayScreen({
                  className="w-32 h-32 object-contain"
                 style={{
                   filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-                  transform: `scale(${isMobile ? Math.min(2.4, Math.max(0.6, avatarPos.scale)) : avatarPos.scale})${avatarPos.flipX ? ' scaleX(-1)' : ''}`,
+                  transform: getSpriteTransform(avatarPos.scale, avatarPos.flipX),
                 }}
               />
             </div>
@@ -2090,7 +2098,7 @@ export function VisualPlayScreen({
             key="m11-crowd"
             className="absolute pointer-events-none"
             style={{
-              left: `${crowdPos.x}%`,
+              left: `${getRenderX(crowdPos.x)}%`,
               top: `${crowdPos.y}%`,
               transform: 'translate(-50%, -100%)',
               zIndex: zIndexForAnchorLayer(crowdPos.z_layer),
@@ -2108,7 +2116,7 @@ export function VisualPlayScreen({
                 className="w-32 h-32 object-contain"
                 style={{
                   filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-                  transform: `scale(${isMobile ? Math.min(2.4, Math.max(0.6, crowdPos.scale)) : crowdPos.scale})${crowdPos.flipX ? ' scaleX(-1)' : ''}`,
+                  transform: getSpriteTransform(crowdPos.scale, crowdPos.flipX),
                 }}
               />
             </div>
