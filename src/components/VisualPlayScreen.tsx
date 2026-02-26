@@ -528,11 +528,15 @@ export function VisualPlayScreen({
   const MOBILE_SCALE_EXTRA = 1;
 
   // Keep ONE consistent base sprite size model across tools/visitors/avatar/extras.
-  // Mobile MUST keep the same base size as desktop; anchor map scale already defines proportions.
-  const MOBILE_SPRITE_BASE_FACTOR = 1;
+  // On mobile, the base must scale proportionally to viewport width so that
+  // calibrated scale values produce the same VISUAL proportion as on desktop.
+  // Reference: 820px is the mobile breakpoint — at exactly 820px base equals desktop.
   const getSpriteBasePx = useCallback((variant: 'normal' | 'large' | 'xlarge' = 'normal') => {
     const desktopBase = variant === 'xlarge' ? 160 : variant === 'large' ? 144 : 128;
-    return Math.round(desktopBase * (isMobile ? MOBILE_SPRITE_BASE_FACTOR : 1));
+    if (!isMobile) return desktopBase;
+    const vw = window.innerWidth;
+    const mobileFactor = Math.min(1, vw / 820);
+    return Math.round(desktopBase * mobileFactor);
   }, [isMobile]);
 
   const getSpriteTransform = useCallback((scale: number, flipX?: boolean, category?: 'tool' | 'visitor' | 'avatar' | 'extra') => {
