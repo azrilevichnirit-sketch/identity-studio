@@ -533,11 +533,8 @@ export function VisualPlayScreen({
   // base relative to viewport height vs a desktop reference height of 1080px.
   const getSpriteBasePx = useCallback((variant: 'normal' | 'large' | 'xlarge' = 'normal') => {
     const desktopBase = variant === 'xlarge' ? 160 : variant === 'large' ? 144 : 128;
-    if (!isMobile) return desktopBase;
-    const vh = window.innerHeight;
-    const mobileFactor = Math.min(1, vh / 1080);
-    return Math.round(desktopBase * mobileFactor);
-  }, [isMobile]);
+    return desktopBase;
+  }, []);
 
   const getSpriteTransform = useCallback((scale: number, flipX?: boolean, category?: 'tool' | 'visitor' | 'avatar' | 'extra') => {
     let mobileFactor = MOBILE_SCALE_TOOL; // default
