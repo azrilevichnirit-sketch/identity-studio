@@ -79,7 +79,7 @@ export function ProcessingScreen({ estimatedTimeMs = 5000 }: ProcessingScreenPro
       <div className="relative z-10 flex flex-col items-center animate-fade-in">
         {/* Card container */}
         <div 
-          className="p-6 md:p-8 rounded-2xl text-center"
+          className="p-6 md:p-8 rounded-2xl text-center" dir="rtl"
           style={{
             width: 'min(320px, 88vw)',
             background: 'rgba(255, 252, 245, 0.96)',
