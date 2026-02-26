@@ -2,21 +2,19 @@
 // Keep these values in ONE place so background sizing, visual compensation,
 // and drop-coordinate math always stay in sync.
 
-/** Default pan range (0-1). 0.22 = ~22% extra content on each side. */
-export const DEFAULT_PAN_RANGE = 0.22;
+/** Default pan range (0-1). 0.16 = ~16% extra content on each side (mobile zoom-out). */
+export const DEFAULT_PAN_RANGE = 0.16;
 
 /** Full background width factor relative to viewport width. (1 + 2*panRange) */
-export const PAN_IMAGE_WIDTH_FACTOR = 1 + DEFAULT_PAN_RANGE * 2; // 1.44
+export const PAN_IMAGE_WIDTH_FACTOR = 1 + DEFAULT_PAN_RANGE * 2; // 1.32
 
-/** CSS background-size for panoramic backgrounds (width x height).
- *  Height < 100% zooms out to show more room depth on mobile. */
-export const PAN_BG_SIZE = `${PAN_IMAGE_WIDTH_FACTOR * 100}% 82%`;
+/** CSS background-size for panoramic backgrounds (width x height). */
+export const PAN_BG_SIZE = `${PAN_IMAGE_WIDTH_FACTOR * 100}% 100%`;
 
-/** Shared vertical anchor (%) for mobile background framing.
- *  Lower value shows more ceiling/upper walls. */
+/** Shared vertical anchor (%) for mobile background framing. */
 export const MOBILE_BG_VERTICAL_ANCHOR = 40;
 
-/** CSS background-size for non-panoramic mobile backgrounds (zoom out to show room depth). */
+/** CSS background-size for non-panoramic mobile backgrounds (kept for fallback path). */
 export const MOBILE_BG_SIZE = 'auto 82%';
 
 /**
