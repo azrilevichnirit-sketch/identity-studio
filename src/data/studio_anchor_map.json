@@ -930,17 +930,17 @@
   {
     "background_asset_key": "studio_doorway_park_view_bg",
     "anchor_ref": "m09_tool_a",
-    "x_pct": 0.794,
-    "y_pct": 0.877,
-    "scale": 3.2,
+    "x_pct": 0.805,
+    "y_pct": 0.913,
+    "scale": 2.8,
     "z_layer": "front"
   },
   {
     "background_asset_key": "studio_doorway_park_view_bg",
     "anchor_ref": "m09_tool_b",
-    "x_pct": 0.513,
-    "y_pct": 0.948,
-    "scale": 2.8,
+    "x_pct": 0.508,
+    "y_pct": 0.988,
+    "scale": 2.4,
     "z_layer": "front",
     "flipX": true
   },
