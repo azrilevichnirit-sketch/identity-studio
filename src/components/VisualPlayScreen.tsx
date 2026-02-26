@@ -528,8 +528,8 @@ export function VisualPlayScreen({
   const MOBILE_SCALE_EXTRA = 1;
 
   // Keep ONE consistent base sprite size model across tools/visitors/avatar/extras.
-  // Mobile uses a smaller base box while preserving calibrated anchor scale values.
-  const MOBILE_SPRITE_BASE_FACTOR = 0.75;
+  // Mobile MUST keep the same base size as desktop; anchor map scale already defines proportions.
+  const MOBILE_SPRITE_BASE_FACTOR = 1;
   const getSpriteBasePx = useCallback((variant: 'normal' | 'large' | 'xlarge' = 'normal') => {
     const desktopBase = variant === 'xlarge' ? 160 : variant === 'large' ? 144 : 128;
     return Math.round(desktopBase * (isMobile ? MOBILE_SPRITE_BASE_FACTOR : 1));
