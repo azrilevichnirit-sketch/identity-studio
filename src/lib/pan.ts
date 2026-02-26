@@ -8,14 +8,16 @@ export const DEFAULT_PAN_RANGE = 0.22;
 /** Full background width factor relative to viewport width. (1 + 2*panRange) */
 export const PAN_IMAGE_WIDTH_FACTOR = 1 + DEFAULT_PAN_RANGE * 2; // 1.44
 
-/** CSS background-size for panoramic backgrounds (width x height). */
-export const PAN_BG_SIZE = `${PAN_IMAGE_WIDTH_FACTOR * 100}% 100%`;
+/** CSS background-size for panoramic backgrounds (width x height).
+ *  Height < 100% zooms out to show more room depth on mobile. */
+export const PAN_BG_SIZE = `${PAN_IMAGE_WIDTH_FACTOR * 100}% 82%`;
 
-/** Shared vertical anchor (%) for mobile background framing. */
-export const MOBILE_BG_VERTICAL_ANCHOR = 45;
+/** Shared vertical anchor (%) for mobile background framing.
+ *  Lower value shows more ceiling/upper walls. */
+export const MOBILE_BG_VERTICAL_ANCHOR = 40;
 
 /** CSS background-size for non-panoramic mobile backgrounds (zoom out to show room depth). */
-export const MOBILE_BG_SIZE = 'auto 72%';
+export const MOBILE_BG_SIZE = 'auto 82%';
 
 /**
  * Convert an anchor-map X coordinate (0-100, calibrated on desktop where image = viewport)
