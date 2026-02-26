@@ -196,6 +196,15 @@ export function VisualPlayScreen({
     // Reset mobile UI suppression on mission change
     setSuppressToolPanel(false);
 
+    // Clear any pending timing callbacks from previous mission
+    timeoutsRef.current.forEach((id) => window.clearTimeout(id));
+    timeoutsRef.current = [];
+
+    // Clear transient placement/animation state to prevent cross-mission ghost renders
+    setLocalPlacement(null);
+    setJustPlaced(null);
+    setLockPulseKey(null);
+
     // If coming from M7 with an active transition, don't clear immediately
     if (m7TransitionRef.current.active) {
       // Clear after a delay to allow the user to see the tool on its target background
