@@ -520,11 +520,19 @@ export function VisualPlayScreen({
     return x;
   }, []);
 
-  // Mobile sizing: keep items larger than before but still proportional to desktop calibration.
-  // Base sprite classes are already smaller on mobile (96px vs 128px), so we scale up uniformly.
-  const MOBILE_SPRITE_SCALE = 1.25;
-  const getSpriteTransform = useCallback((scale: number, flipX?: boolean) => {
-    const effectiveScale = isMobile ? scale * MOBILE_SPRITE_SCALE : scale;
+  // Mobile sizing: per-category scale factors so each element type stays proportional
+  // without affecting calibrated positions. Base sprite classes are 96px on mobile vs 128px desktop.
+  const MOBILE_SCALE_TOOL = 1.15;      // tools (placed props)
+  const MOBILE_SCALE_VISITOR = 1.35;   // NPC visitors / crowd
+  const MOBILE_SCALE_AVATAR = 1.4;     // player avatar
+  const MOBILE_SCALE_EXTRA = 1.2;      // scene extras (furniture, decorations)
+
+  const getSpriteTransform = useCallback((scale: number, flipX?: boolean, category?: 'tool' | 'visitor' | 'avatar' | 'extra') => {
+    let mobileFactor = MOBILE_SCALE_TOOL; // default
+    if (category === 'visitor') mobileFactor = MOBILE_SCALE_VISITOR;
+    else if (category === 'avatar') mobileFactor = MOBILE_SCALE_AVATAR;
+    else if (category === 'extra') mobileFactor = MOBILE_SCALE_EXTRA;
+    const effectiveScale = isMobile ? scale * mobileFactor : scale;
     return `scale(${effectiveScale})${flipX ? ' scaleX(-1)' : ''}`;
   }, [isMobile]);
 
@@ -1235,7 +1243,7 @@ export function VisualPlayScreen({
                 alt=""
                 className="w-32 h-32 object-contain"
                 style={{
-                  transform: getSpriteTransform(scale, anchorPos.flipX),
+                  transform: getSpriteTransform(scale, anchorPos.flipX, 'extra'),
                   filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                 }}
               />
@@ -1738,7 +1746,7 @@ export function VisualPlayScreen({
                 className={`${isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32'} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
                 style={{
                   filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
-                  transform: getSpriteTransform(fixed.scale, fixed.flipX),
+                  transform: getSpriteTransform(fixed.scale, fixed.flipX, 'tool'),
                 }}
               />
             </div>
@@ -1766,7 +1774,7 @@ export function VisualPlayScreen({
                 className={`${isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32'} object-contain`}
                 style={{
                   filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
-                  transform: getSpriteTransform(fixed.scale, fixed.flipX),
+                  transform: getSpriteTransform(fixed.scale, fixed.flipX, 'tool'),
                 }}
               />
             </div>
@@ -1824,7 +1832,7 @@ export function VisualPlayScreen({
                 className={`${isMission01Buckets ? 'w-28 h-28 md:w-36 md:h-36' : (isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32')} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
                    style={{
                     filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
-                    transform: getSpriteTransform(finalScale, anchorInfo.flipX),
+                    transform: getSpriteTransform(finalScale, anchorInfo.flipX, 'tool'),
                   }}
               />
             </div>
@@ -1882,7 +1890,7 @@ export function VisualPlayScreen({
                        className="w-32 h-32 object-contain"
                       style={{
                         filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-                        transform: getSpriteTransform(pos.scale, pos.flipX),
+                        transform: getSpriteTransform(pos.scale, pos.flipX, 'visitor'),
                       }}
                     />
                   </div>
@@ -1912,7 +1920,7 @@ export function VisualPlayScreen({
                      className="w-32 h-32 object-contain"
                     style={{
                       filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-                      transform: getSpriteTransform(avatarPos.scale, avatarPos.flipX),
+                      transform: getSpriteTransform(avatarPos.scale, avatarPos.flipX, 'avatar'),
                     }}
                   />
                 </div>
@@ -1964,7 +1972,7 @@ export function VisualPlayScreen({
                    className="w-32 h-32 object-contain"
                   style={{
                     filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-                    transform: getSpriteTransform(pos.scale, pos.flipX),
+                    transform: getSpriteTransform(pos.scale, pos.flipX, 'visitor'),
                   }}
                 />
               </div>
@@ -2014,7 +2022,7 @@ export function VisualPlayScreen({
                   className="w-32 h-32 object-contain"
                   style={{
                     filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-                    transform: getSpriteTransform(pos.scale, pos.flipX),
+                    transform: getSpriteTransform(pos.scale, pos.flipX, 'visitor'),
                   }}
                 />
               </div>
@@ -2063,7 +2071,7 @@ export function VisualPlayScreen({
                  className="w-32 h-32 object-contain"
                 style={{
                   filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-                  transform: getSpriteTransform(avatarPos.scale, avatarPos.flipX),
+                  transform: getSpriteTransform(avatarPos.scale, avatarPos.flipX, 'avatar'),
                 }}
               />
             </div>
@@ -2108,7 +2116,7 @@ export function VisualPlayScreen({
                 className="w-32 h-32 object-contain"
                 style={{
                   filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-                  transform: getSpriteTransform(crowdPos.scale, crowdPos.flipX),
+                  transform: getSpriteTransform(crowdPos.scale, crowdPos.flipX, 'visitor'),
                 }}
               />
             </div>
