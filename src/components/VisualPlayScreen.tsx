@@ -1241,7 +1241,7 @@ export function VisualPlayScreen({
               <img 
                 src={extra.image}
                 alt=""
-                className="w-24 h-24 md:w-32 md:h-32 object-contain"
+                className="w-32 h-32 object-contain"
                 style={{
                   transform: getSpriteTransform(scale, anchorPos.flipX, 'extra'),
                   filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
@@ -1747,7 +1747,7 @@ export function VisualPlayScreen({
               <img
                 src={toolImg}
                 alt=""
-                className={`${isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32'} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
+                className={`${isMission01ToolB || isMission02ToolB ? 'w-40 h-40' : 'w-32 h-32'} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
                 style={{
                   filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
                   transform: getSpriteTransform(fixed.scale, fixed.flipX, 'tool'),
@@ -1775,7 +1775,7 @@ export function VisualPlayScreen({
               <img 
                 src={toolImg}
                 alt=""
-                className={`${isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32'} object-contain`}
+                className={`${isMission01ToolB || isMission02ToolB ? 'w-40 h-40' : 'w-32 h-32'} object-contain`}
                 style={{
                   filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
                   transform: getSpriteTransform(fixed.scale, fixed.flipX, 'tool'),
@@ -1833,7 +1833,7 @@ export function VisualPlayScreen({
               <img 
                 src={toolImg}
                 alt=""
-                className={`${isMission01Buckets ? 'w-28 h-28 md:w-36 md:h-36' : (isMission01ToolB || isMission02ToolB ? 'w-32 h-32 md:w-40 md:h-40' : 'w-24 h-24 md:w-32 md:h-32')} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
+                className={`${isMission01Buckets ? 'w-36 h-36' : (isMission01ToolB || isMission02ToolB ? 'w-40 h-40' : 'w-32 h-32')} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
                    style={{
                     filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
                     transform: getSpriteTransform(finalScale, anchorInfo.flipX, 'tool'),
@@ -1891,7 +1891,7 @@ export function VisualPlayScreen({
                     <img
                       src={v.img}
                       alt=""
-                       className="w-24 h-24 md:w-32 md:h-32 object-contain"
+                       className="w-32 h-32 object-contain"
                       style={{
                         filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                         transform: getSpriteTransform(pos.scale, pos.flipX, 'visitor'),
@@ -1921,7 +1921,7 @@ export function VisualPlayScreen({
                   <img
                     src={avatarImg}
                     alt=""
-                     className="w-24 h-24 md:w-32 md:h-32 object-contain"
+                     className="w-32 h-32 object-contain"
                     style={{
                       filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                       transform: getSpriteTransform(avatarPos.scale, avatarPos.flipX, 'avatar'),
@@ -1973,7 +1973,7 @@ export function VisualPlayScreen({
                 <img
                   src={v.img}
                   alt=""
-                   className="w-24 h-24 md:w-32 md:h-32 object-contain"
+                   className="w-32 h-32 object-contain"
                   style={{
                     filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                     transform: getSpriteTransform(pos.scale, pos.flipX, 'visitor'),
@@ -2023,7 +2023,7 @@ export function VisualPlayScreen({
                 <img
                   src={v.img}
                   alt=""
-                  className="w-24 h-24 md:w-32 md:h-32 object-contain"
+                  className="w-32 h-32 object-contain"
                   style={{
                     filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                     transform: getSpriteTransform(pos.scale, pos.flipX, 'visitor'),
@@ -2072,7 +2072,7 @@ export function VisualPlayScreen({
               <img
                 src={avatarImg}
                 alt=""
-                 className="w-24 h-24 md:w-32 md:h-32 object-contain"
+                 className="w-32 h-32 object-contain"
                 style={{
                   filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                   transform: getSpriteTransform(avatarPos.scale, avatarPos.flipX, 'avatar'),
@@ -2117,7 +2117,7 @@ export function VisualPlayScreen({
               <img
                 src={m11CrowdAsset}
                 alt=""
-                className="w-24 h-24 md:w-32 md:h-32 object-contain"
+                className="w-32 h-32 object-contain"
                 style={{
                   filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                   transform: getSpriteTransform(crowdPos.scale, crowdPos.flipX, 'visitor'),
@@ -2145,7 +2145,7 @@ export function VisualPlayScreen({
   // Check if we're on tablet or mobile (< 1024px) for text wrapping
   const [isTabletOrMobile, setIsTabletOrMobile] = useState(false);
   useEffect(() => {
-    const checkWidth = () => setIsTabletOrMobile(window.innerWidth < 1024);
+    const checkWidth = () => setIsTabletOrMobile(window.innerWidth < 821);
     checkWidth();
     window.addEventListener('resize', checkWidth);
     return () => window.removeEventListener('resize', checkWidth);

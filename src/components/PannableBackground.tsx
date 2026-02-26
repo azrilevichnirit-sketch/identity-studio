@@ -66,14 +66,13 @@ export function PannableBackground({
     };
   }, [panApiRef, updatePanFromDrag, resetPan, panToPosition, offsetX]);
 
-  // Keep one shared vertical anchor for all mobile backgrounds so
-  // tool anchors remain visually aligned across missions.
+  // Non-panoramic mobile: use 'cover' with centered position (same coordinate space as desktop).
+  // Panoramic mobile: use the panning hook's dynamic position.
   const effectiveBgPosition = isPanoramic
     ? backgroundPosition
-    : ((isMobileView ?? enabled) ? `center ${MOBILE_BG_VERTICAL_ANCHOR}%` : 'center');
-  // IMPORTANT: Use an explicit panoramic width so panning is always visible
-  // and matches our compensation math (see src/lib/pan.ts).
-  const effectiveBgSize = isPanoramic ? PAN_BG_SIZE : ((isMobileView ?? enabled) ? MOBILE_BG_SIZE : 'cover');
+    : 'center';
+  // IMPORTANT: Non-panoramic mobile MUST use 'cover' to match the anchor coordinate space.
+  const effectiveBgSize = isPanoramic ? PAN_BG_SIZE : 'cover';
 
   return (
     <BackgroundCrossfade

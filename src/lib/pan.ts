@@ -14,8 +14,10 @@ export const PAN_BG_SIZE = `${PAN_IMAGE_WIDTH_FACTOR * 100}% 100%`;
 /** Shared vertical anchor (%) for mobile background framing. */
 export const MOBILE_BG_VERTICAL_ANCHOR = 40;
 
-/** CSS background-size for non-panoramic mobile backgrounds (kept for fallback path). */
-export const MOBILE_BG_SIZE = 'auto 82%';
+/** CSS background-size for non-panoramic mobile backgrounds.
+ *  MUST be 'cover' to match the coordinate space that anchors are calibrated against.
+ *  Using 'auto 82%' caused the background to shrink, breaking anchor alignment on mobile. */
+export const MOBILE_BG_SIZE = 'cover';
 
 /**
  * Convert an anchor-map X coordinate (0-100, calibrated on desktop where image = viewport)
