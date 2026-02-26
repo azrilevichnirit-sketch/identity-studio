@@ -236,16 +236,9 @@ export function VisualPlayScreen({
       return 'gallery_main_stylized_v3'; // Cracked walls
     }
     
-    // Mission 02: Use bg_override from quest data
-    if (mission.phase === 'main' && (mission.mission_id === 'studio_02' || mission.sequence === 2)) {
-      if (mission.bg_override) {
-        return mission.bg_override;
-      }
-      if (hasPaintedWalls) {
-        return PAINTED_WALLS_BG_KEY; // White walls (Tool A chosen)
-      }
-      // Tool B was chosen - use main studio (finished)
-      return 'gallery_main_stylized';
+    // Missions 01-02: always stay on cracked walls per narrative spec
+    if (mission.phase === 'main' && (mission.mission_id === 'studio_01' || mission.mission_id === 'studio_02' || mission.sequence === 2)) {
+      return 'gallery_main_stylized_v3';
     }
     
     // Exterior missions (view: "out") - Mission 05 ONLY
@@ -333,10 +326,9 @@ export function VisualPlayScreen({
   // If Tool B was chosen, keep the cracked walls background.
   // Exterior missions (view: "out") use exterior background.
   // Guardrail: lock by mission_id too (in case sequence is inconsistent).
-  const isWhiteWallsLocked =
-    mission.phase === 'main' && (mission.mission_id === 'studio_02' || mission.sequence === 2) && mission.bg_override === PAINTED_WALLS_BG_KEY;
+  const isWhiteWallsLocked = false;
   const isCrackedWallsLocked =
-    mission.phase === 'main' && (mission.mission_id === 'studio_02' || mission.sequence === 2) && mission.bg_override !== PAINTED_WALLS_BG_KEY && !hasPaintedWalls;
+    mission.phase === 'main' && (mission.mission_id === 'studio_01' || mission.mission_id === 'studio_02' || mission.sequence === 2);
   const isExteriorLocked =
     mission.phase === 'main' && mission.view === 'out' && mission.mission_id !== 'studio_11';
   // Missions with explicit bg_override that are NOT workshop: M06 (doorway), M09/M12 (gallery), tie-breakers
@@ -825,7 +817,7 @@ export function VisualPlayScreen({
     }
     setJustPlaced(null);
     setLockPulseKey(null);
-    const isMission01Paint = mission.mission_id === 'studio_01' && variant === 'a';
+    const isMission01Paint = false; // M01 no longer changes background
     const isMission01ToolB = mission.mission_id === 'studio_01' && variant === 'b';
     
     // ===== TIMING SEQUENCE =====
