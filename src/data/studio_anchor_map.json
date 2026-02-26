@@ -1662,8 +1662,8 @@
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m13_desk_a",
-    "x_pct": 0.351,
-    "y_pct": 0.85,
+    "x_pct": 0.764,
+    "y_pct": 0.948,
     "scale": 2.2,
     "z_layer": "mid",
     "flipX": true
@@ -1671,16 +1671,16 @@
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m13_desk_b",
-    "x_pct": 0.507,
-    "y_pct": 0.899,
+    "x_pct": 0.497,
+    "y_pct": 0.974,
     "scale": 2.7,
     "z_layer": "mid"
   },
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m13_desk_c",
-    "x_pct": 0.709,
-    "y_pct": 0.794,
+    "x_pct": 0.226,
+    "y_pct": 0.839,
     "scale": 2.2,
     "z_layer": "mid"
   },
