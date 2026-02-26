@@ -1014,9 +1014,9 @@
   {
     "background_asset_key": "gallery_main_mobile_wide",
     "anchor_ref": "m11_tool_b",
-    "x_pct": 0.757,
-    "y_pct": 0.704,
-    "scale": 6.2,
+    "x_pct": 0.706,
+    "y_pct": 0.678,
+    "scale": 4.1,
     "z_layer": "front",
     "flipX": true
   },
