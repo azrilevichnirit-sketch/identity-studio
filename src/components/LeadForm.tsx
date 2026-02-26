@@ -63,7 +63,8 @@ export function LeadForm({ onSubmit, isSubmitting = false }: LeadFormProps) {
         }}
       >
         <div 
-          className="p-5 md:p-8 rounded-2xl w-full animate-fade-in"
+          dir="rtl"
+          className="p-5 md:p-8 rounded-2xl w-full animate-fade-in text-right"
           style={{
             maxWidth: 'min(400px, 92vw)',
             background: 'rgba(255, 252, 245, 0.98)',
@@ -77,9 +78,9 @@ export function LeadForm({ onSubmit, isSubmitting = false }: LeadFormProps) {
             לאן לשלוח את התוצאות שלך?
           </p>
           
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4" dir="rtl">
             <div>
-              <label className="block text-sm font-medium mb-1.5" style={{ color: '#333' }}>שם מלא</label>
+              <label className="block text-sm font-medium mb-1.5 text-right" style={{ color: '#333' }}>שם מלא</label>
               <input
                 type="text"
                 value={formData.fullName}

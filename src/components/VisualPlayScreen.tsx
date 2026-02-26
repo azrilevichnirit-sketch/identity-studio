@@ -535,9 +535,8 @@ export function VisualPlayScreen({
 
     const anchorRef = optionA.anchor_ref as AnchorRef;
     const anchorPos = getAnchorPosition(lockedBgKey, anchorRef);
-    // Use panoramic-transformed coordinate so pan targets the correct viewport position
-    const rawX = anchorPos?.x ?? 50;
-    return anchorXToPanoramicLeft(rawX);
+    // Pan API expects RAW anchor X in 0-100 mission space.
+    return anchorPos?.x ?? 50;
   }, [isMobile, isPanoramic, optionA.anchor_ref, lockedBgKey]);
 
   const panApiRef = useRef<PanningApi | null>(null);
@@ -590,12 +589,9 @@ export function VisualPlayScreen({
        if (!anchorPos) {
          anchorPos = getAnchorPosition(targetBgKey, fallbackAnchorRef);
        }
-        if (anchorPos) {
-          if (isMobile && isPanoramic) {
-            return { ...anchorPos, x: anchorXToPanoramicLeft(anchorPos.x) };
-          }
-          return anchorPos;
-        }
+       if (anchorPos) {
+         return anchorPos;
+       }
      }
 
      // SPECIAL CASE: Mission 11 - tool-specific destination rooms
@@ -606,12 +602,9 @@ export function VisualPlayScreen({
        if (!anchorPos) {
          anchorPos = getAnchorPosition(targetBgKey, fallbackAnchorRef);
        }
-        if (anchorPos) {
-          if (isMobile && isPanoramic) {
-            return { ...anchorPos, x: anchorXToPanoramicLeft(anchorPos.x) };
-          }
-          return anchorPos;
-        }
+       if (anchorPos) {
+         return anchorPos;
+       }
      }
      
      // CRITICAL: For missions with locked backgrounds (M02 = white/cracked walls, exterior, M03+ = workshop),
@@ -637,20 +630,13 @@ export function VisualPlayScreen({
        }
      }
      
-      if (anchorPos) {
-        // If panoramic on mobile, transform coordinates to panoramic viewport space
-        if (isMobile && isPanoramic) {
-          return {
-            ...anchorPos,
-            x: anchorXToPanoramicLeft(anchorPos.x),
-          };
-        }
-        return anchorPos;
-      }
+     if (anchorPos) {
+       return anchorPos;
+     }
 
      // Default fallback
      return { x: 50, y: 70, scale: 1, z_layer: 'mid' as const, flipX: false };
-   }, [optionA, optionB, currentBgKey, isWhiteWallsLocked, isCrackedWallsLocked, isExteriorLocked, isWorkshopLocked, PAINTED_WALLS_BG_KEY, mission.mission_id, isMobile, isPanoramic]);
+   }, [optionA, optionB, currentBgKey, isWhiteWallsLocked, isCrackedWallsLocked, isExteriorLocked, isWorkshopLocked, PAINTED_WALLS_BG_KEY, mission.mission_id]);
 
   // Flash cue when mission changes (helps player notice the transition)
   const [showMissionFlash, setShowMissionFlash] = useState(false);
@@ -1103,7 +1089,6 @@ export function VisualPlayScreen({
           
           // Only show if anchor exists in current background
           if (placement) {
-            const finalX = (isMobile && isPanoramic) ? anchorXToPanoramicLeft(placement.x) : placement.x;
             placements.push({
               missionId: prop.missionId,
               key: prop.key,
@@ -1111,7 +1096,7 @@ export function VisualPlayScreen({
               hollandCode: prop.hollandCode,
               isPersisted: true,
               fixedPlacement: {
-                x: finalX,
+                x: placement.x,
                 y: placement.y,
                 scale: placement.scale,
                 flipX: placement.flipX,
@@ -1250,7 +1235,7 @@ export function VisualPlayScreen({
     <div
       className="drop-target-anchor"
       style={{
-        left: `${targetPosition.x}%`,
+        left: `${getRenderX(targetPosition.x)}%`,
         top: `${targetPosition.y}%`,
         // Align the drop target to the same anchor point the tool will snap to
         // (we anchor tool placement by its bottom-center)
@@ -1728,7 +1713,7 @@ export function VisualPlayScreen({
                   : (isJustPlaced ? 'animate-snap-pop-blink' : 'animate-snap-place')
               }`}
               style={{
-                left: `${fixed.x}%`,
+                left: `${getRenderX(fixed.x)}%`,
                 top: `${fixed.y}%`,
                 transform: 'translate(-50%, -100%)',
                 zIndex,
@@ -1756,7 +1741,7 @@ export function VisualPlayScreen({
               key={`${prop.missionId}-${propIdx}-fixed`}
               className="absolute pointer-events-none"
               style={{
-                left: `${fixed.x}%`,
+                left: `${getRenderX(fixed.x)}%`,
                 top: `${fixed.y}%`,
                 transform: 'translate(-50%, -100%)',
                 zIndex,
