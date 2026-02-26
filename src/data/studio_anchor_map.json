@@ -1712,9 +1712,9 @@
   {
     "background_asset_key": "studio_in_storage_bg",
     "anchor_ref": "m14_tool_b",
-    "x_pct": 0.629,
-    "y_pct": 0.871,
-    "scale": 3.3,
+    "x_pct": 0.656,
+    "y_pct": 0.902,
+    "scale": 2.5,
     "z_layer": "front",
     "flipX": true
   },
