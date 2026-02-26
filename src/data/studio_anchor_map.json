@@ -1009,7 +1009,7 @@
     "x_pct": 0.588,
     "y_pct": 0.791,
     "scale": 2.8,
-    "z_layer": "front"
+    "z_layer": "mid"
   },
   {
     "background_asset_key": "gallery_main_mobile_wide",
