@@ -520,10 +520,9 @@ export function VisualPlayScreen({
     return x;
   }, []);
 
-  // Mobile scale reduction: calibrated scales target desktop (128px base on ~1920px viewport).
-  // On mobile (96px base on ~390px viewport), tools are proportionally ~3.75× larger.
-  // A factor of 0.55 brings them close to desktop proportions while staying visible.
-  const MOBILE_SPRITE_SCALE = 0.55;
+  // Mobile sizing: keep items larger than before but still proportional to desktop calibration.
+  // Base sprite classes are already smaller on mobile (96px vs 128px), so we scale up uniformly.
+  const MOBILE_SPRITE_SCALE = 1.25;
   const getSpriteTransform = useCallback((scale: number, flipX?: boolean) => {
     const effectiveScale = isMobile ? scale * MOBILE_SPRITE_SCALE : scale;
     return `scale(${effectiveScale})${flipX ? ' scaleX(-1)' : ''}`;
@@ -732,12 +731,18 @@ export function VisualPlayScreen({
     timeoutsRef.current = [];
 
     // Step 1: Immediately show the tool on the floor (local state, before global update)
-    // Snap LOCAL placement immediately to the calibrated anchor for all missions
-    // (otherwise the user sees it "stick" where they released, until the next mission renders the persisted version)
+    // Keep local snap on the background currently shown to preserve calibration parity on mobile.
+    // Only missions that intentionally switch background on placement should snap by target background.
     const shouldSnapLocalToAnchorNow = true;
     const targetBgForPlacement = getTargetBgForOption(option);
+    const placementBgKeyForLocalSnap =
+      mission.mission_id === 'studio_07' ||
+      mission.mission_id === 'studio_11' ||
+      (mission.phase === 'tb' && !!option.next_bg_override)
+        ? targetBgForPlacement.key
+        : lockedBgKey;
     const snapped = shouldSnapLocalToAnchorNow
-      ? (getToolPlacementFromAnchorMap(mission.mission_id, variant, targetBgForPlacement.key) ?? getTargetAnchor(variant))
+      ? (getToolPlacementFromAnchorMap(mission.mission_id, variant, placementBgKeyForLocalSnap) ?? getTargetAnchor(variant))
       : null;
     
     // Mission 06 Tool A: spawn the prop (wood rack) FIRST, then show tool after a delay
@@ -918,7 +923,7 @@ export function VisualPlayScreen({
     timeoutsRef.current.push(advanceId);
     
     setCarryModeTool(null);
-  }, [mission.mission_id, mission.phase, mission.sequence, optionA, optionB, onSelect, hasDraggedOnce, getTargetBgForOption, PAINTED_WALLS_BG_KEY, currentBg, getTargetAnchor, getToolPlacementFromAnchorMap, isMobile, isPanoramic]);
+  }, [mission.mission_id, mission.phase, mission.sequence, optionA, optionB, onSelect, hasDraggedOnce, getTargetBgForOption, PAINTED_WALLS_BG_KEY, currentBg, getTargetAnchor, getToolPlacementFromAnchorMap, isMobile, isPanoramic, lockedBgKey]);
 
   // Click-to-place: immediately place the selected tool
   const handleToolClick = useCallback((variant: 'a' | 'b', e: React.PointerEvent | React.MouseEvent) => {
