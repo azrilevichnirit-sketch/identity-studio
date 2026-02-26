@@ -108,6 +108,7 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
         <button
           onClick={onStart}
           className="flex items-center gap-2 px-5 py-3 md:px-7 md:py-4 rounded-xl font-semibold text-sm md:text-base transition-all duration-200 hover:scale-105 active:scale-95"
+          dir="rtl"
           style={{
             background: "hsl(220 30% 12%)",
             color: "white",
@@ -115,8 +116,8 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
             minHeight: "48px",
           }}
         >
-          <ArrowLeft className="w-5 h-5" />
           <span>יאללה, מתחילים?</span>
+          <ArrowLeft className="w-5 h-5" />
         </button>
       </div>
       {/* No disclaimer here - it exists only on World Select and Summary */}
