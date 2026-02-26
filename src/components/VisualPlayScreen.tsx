@@ -527,6 +527,14 @@ export function VisualPlayScreen({
   const MOBILE_SCALE_AVATAR = 1;
   const MOBILE_SCALE_EXTRA = 1;
 
+  // Keep ONE consistent base sprite size model across tools/visitors/avatar/extras.
+  // Mobile uses a smaller base box while preserving calibrated anchor scale values.
+  const MOBILE_SPRITE_BASE_FACTOR = 0.75;
+  const getSpriteBasePx = useCallback((variant: 'normal' | 'large' | 'xlarge' = 'normal') => {
+    const desktopBase = variant === 'xlarge' ? 160 : variant === 'large' ? 144 : 128;
+    return Math.round(desktopBase * (isMobile ? MOBILE_SPRITE_BASE_FACTOR : 1));
+  }, [isMobile]);
+
   const getSpriteTransform = useCallback((scale: number, flipX?: boolean, category?: 'tool' | 'visitor' | 'avatar' | 'extra') => {
     let mobileFactor = MOBILE_SCALE_TOOL; // default
     if (category === 'visitor') mobileFactor = MOBILE_SCALE_VISITOR;
@@ -1241,8 +1249,10 @@ export function VisualPlayScreen({
               <img 
                 src={extra.image}
                 alt=""
-                className="w-32 h-32 object-contain"
+                className="object-contain"
                 style={{
+                  width: `${getSpriteBasePx('normal')}px`,
+                  height: `${getSpriteBasePx('normal')}px`,
                   transform: getSpriteTransform(scale, anchorPos.flipX, 'extra'),
                   filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                 }}
@@ -1747,8 +1757,10 @@ export function VisualPlayScreen({
               <img
                 src={toolImg}
                 alt=""
-                className={`${isMission01ToolB || isMission02ToolB ? 'w-40 h-40' : 'w-32 h-32'} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
+                className={`object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
                 style={{
+                  width: `${getSpriteBasePx(isMission01ToolB || isMission02ToolB ? 'xlarge' : 'normal')}px`,
+                  height: `${getSpriteBasePx(isMission01ToolB || isMission02ToolB ? 'xlarge' : 'normal')}px`,
                   filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
                   transform: getSpriteTransform(fixed.scale, fixed.flipX, 'tool'),
                 }}
@@ -1775,8 +1787,10 @@ export function VisualPlayScreen({
               <img 
                 src={toolImg}
                 alt=""
-                className={`${isMission01ToolB || isMission02ToolB ? 'w-40 h-40' : 'w-32 h-32'} object-contain`}
+                className="object-contain"
                 style={{
+                  width: `${getSpriteBasePx(isMission01ToolB || isMission02ToolB ? 'xlarge' : 'normal')}px`,
+                  height: `${getSpriteBasePx(isMission01ToolB || isMission02ToolB ? 'xlarge' : 'normal')}px`,
                   filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
                   transform: getSpriteTransform(fixed.scale, fixed.flipX, 'tool'),
                 }}
@@ -1833,11 +1847,13 @@ export function VisualPlayScreen({
               <img 
                 src={toolImg}
                 alt=""
-                className={`${isMission01Buckets ? 'w-36 h-36' : (isMission01ToolB || isMission02ToolB ? 'w-40 h-40' : 'w-32 h-32')} object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
-                   style={{
-                    filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
-                    transform: getSpriteTransform(finalScale, anchorInfo.flipX, 'tool'),
-                  }}
+                className={`object-contain ${lockPulseKey === `${prop.missionId}-${prop.key}` ? 'tool-lock-confirm' : ''}`}
+                style={{
+                  width: `${getSpriteBasePx(isMission01Buckets ? 'large' : (isMission01ToolB || isMission02ToolB ? 'xlarge' : 'normal'))}px`,
+                  height: `${getSpriteBasePx(isMission01Buckets ? 'large' : (isMission01ToolB || isMission02ToolB ? 'xlarge' : 'normal'))}px`,
+                  filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))',
+                  transform: getSpriteTransform(finalScale, anchorInfo.flipX, 'tool'),
+                }}
               />
             </div>
           );
@@ -1891,8 +1907,10 @@ export function VisualPlayScreen({
                     <img
                       src={v.img}
                       alt=""
-                       className="w-32 h-32 object-contain"
+                      className="object-contain"
                       style={{
+                        width: `${getSpriteBasePx('normal')}px`,
+                        height: `${getSpriteBasePx('normal')}px`,
                         filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                         transform: getSpriteTransform(pos.scale, pos.flipX, 'visitor'),
                       }}
@@ -1921,8 +1939,10 @@ export function VisualPlayScreen({
                   <img
                     src={avatarImg}
                     alt=""
-                     className="w-32 h-32 object-contain"
+                    className="object-contain"
                     style={{
+                      width: `${getSpriteBasePx('normal')}px`,
+                      height: `${getSpriteBasePx('normal')}px`,
                       filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                       transform: getSpriteTransform(avatarPos.scale, avatarPos.flipX, 'avatar'),
                     }}
@@ -1973,8 +1993,10 @@ export function VisualPlayScreen({
                 <img
                   src={v.img}
                   alt=""
-                   className="w-32 h-32 object-contain"
+                  className="object-contain"
                   style={{
+                    width: `${getSpriteBasePx('normal')}px`,
+                    height: `${getSpriteBasePx('normal')}px`,
                     filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                     transform: getSpriteTransform(pos.scale, pos.flipX, 'visitor'),
                   }}
@@ -2023,8 +2045,10 @@ export function VisualPlayScreen({
                 <img
                   src={v.img}
                   alt=""
-                  className="w-32 h-32 object-contain"
+                  className="object-contain"
                   style={{
+                    width: `${getSpriteBasePx('normal')}px`,
+                    height: `${getSpriteBasePx('normal')}px`,
                     filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                     transform: getSpriteTransform(pos.scale, pos.flipX, 'visitor'),
                   }}
@@ -2072,8 +2096,10 @@ export function VisualPlayScreen({
               <img
                 src={avatarImg}
                 alt=""
-                 className="w-32 h-32 object-contain"
+                className="object-contain"
                 style={{
+                  width: `${getSpriteBasePx('normal')}px`,
+                  height: `${getSpriteBasePx('normal')}px`,
                   filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                   transform: getSpriteTransform(avatarPos.scale, avatarPos.flipX, 'avatar'),
                 }}
@@ -2117,8 +2143,10 @@ export function VisualPlayScreen({
               <img
                 src={m11CrowdAsset}
                 alt=""
-                className="w-32 h-32 object-contain"
+                className="object-contain"
                 style={{
+                  width: `${getSpriteBasePx('normal')}px`,
+                  height: `${getSpriteBasePx('normal')}px`,
                   filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
                   transform: getSpriteTransform(crowdPos.scale, crowdPos.flipX, 'visitor'),
                 }}
