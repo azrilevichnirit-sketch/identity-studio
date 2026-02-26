@@ -1193,13 +1193,11 @@
   }
 }
 
-/* Show on click (mobile only) - controlled by is-active class */
-@media (max-width: 820px) {
-  .tool-info-btn.is-active ~ .desktop-hover-tooltip {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-  }
+/* Show on click (mobile) - controlled by is-active class */
+.tool-info-btn.is-active ~ .desktop-hover-tooltip {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 /* ============================================
