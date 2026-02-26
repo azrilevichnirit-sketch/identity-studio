@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useRef, useCallback, useEffect } from 'react';
 import type { Mission, HollandCode, AvatarGender, PickRecord, MissionOption, AnchorRef } from '@/types/identity';
 import { getToolImage, getBackgroundForMission, getAvatarImage, getBackgroundKey, getBackgroundByName, getPanoramicBackground, preloadBackground, preloadAllBackgrounds } from '@/lib/assetUtils';
-import { panOffsetToDropCompensation, panOffsetToTranslatePercent } from '@/lib/pan';
+import { panOffsetToDropCompensation, panOffsetToTranslatePercent, anchorXToPanoramicLeft } from '@/lib/pan';
 import { getAnchorPosition } from '@/lib/jsonDataLoader';
 import { SpeechBubble } from './SpeechBubble';
 import { Info } from 'lucide-react';
@@ -514,14 +514,24 @@ export function VisualPlayScreen({
   }, [isMobile, lockedBgKey]);
 
   const getRenderX = useCallback((x: number) => {
-    // Coordinates from anchor map stay in raw 0-100 space.
-    // Mobile panoramic movement is handled once via --pan-shift-x on the layer wrapper.
+    // On panoramic mobile, the background is 144% of viewport width.
+    // Anchor coordinates (0-100) are in "image space" and must be converted
+    // to viewport-space so tools align with their background features.
+    // The content layer's --pan-shift-x handles panning offset separately.
+    if (isPanoramic) {
+      return anchorXToPanoramicLeft(x);
+    }
     return x;
-  }, []);
+  }, [isPanoramic]);
 
+  // Mobile scale reduction: calibrated scales target desktop (128px base on ~1920px viewport).
+  // On mobile (96px base on ~390px viewport), tools are proportionally ~3.75× larger.
+  // A factor of 0.55 brings them close to desktop proportions while staying visible.
+  const MOBILE_SPRITE_SCALE = 0.55;
   const getSpriteTransform = useCallback((scale: number, flipX?: boolean) => {
-    return `scale(${scale})${flipX ? ' scaleX(-1)' : ''}`;
-  }, []);
+    const effectiveScale = isMobile ? scale * MOBILE_SPRITE_SCALE : scale;
+    return `scale(${effectiveScale})${flipX ? ' scaleX(-1)' : ''}`;
+  }, [isMobile]);
 
   // Auto-pan on mission entry toward Tool A's target (helps reveal side-wall targets)
   const initialPanTargetX = useMemo(() => {
