@@ -1629,17 +1629,17 @@
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m13_tool_a",
-    "x_pct": 0.505,
-    "y_pct": 0.775,
-    "scale": 1.3,
+    "x_pct": 0.508,
+    "y_pct": 0.781,
+    "scale": 0.9,
     "z_layer": "front"
   },
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m13_tool_b",
-    "x_pct": 0.506,
-    "y_pct": 0.803,
-    "scale": 1.6,
+    "x_pct": 0.52,
+    "y_pct": 0.788,
+    "scale": 1.2,
     "z_layer": "front",
     "flipX": true
   },
@@ -1655,8 +1655,8 @@
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m13_desk_b",
-    "x_pct": 0.497,
-    "y_pct": 0.974,
+    "x_pct": 0.505,
+    "y_pct": 0.91,
     "scale": 2.7,
     "z_layer": "mid"
   },
