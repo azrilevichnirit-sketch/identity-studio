@@ -4,6 +4,7 @@ import { getAnchorPosition } from '@/lib/jsonDataLoader';
 import { getToolImage } from '@/lib/assetUtils';
 import type { AnchorRef, Mission } from '@/types/identity';
 import type { SpawnedExtra } from '@/hooks/useSceneExtras';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ToolCalibrationEditorProps {
   mission: Mission;
@@ -22,7 +23,8 @@ interface ToolPosition {
 }
 
 export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sceneExtras = [], onExtraPositionChange, enabledTools = ['a', 'b'] }: ToolCalibrationEditorProps) {
-  const [isOpen, setIsOpen] = useState(true);
+  const isMobile = useIsMobile();
+  const [isOpen, setIsOpen] = useState(!isMobile);
   const [selectedTool, setSelectedTool] = useState<'a' | 'b' | null>(null);
   const [selectedExtra, setSelectedExtra] = useState<string | null>(null);
   
@@ -79,7 +81,8 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
     setPositions({ a: getInitialPos('a'), b: getInitialPos('b') });
     setSelectedTool(null);
     setSelectedExtra(null);
-  }, [mission.mission_id, currentBgKey]);
+    if (isMobile) setIsOpen(false);
+  }, [mission.mission_id, currentBgKey, isMobile]);
 
   // Update extra positions when sceneExtras change
   useEffect(() => {
@@ -309,6 +312,10 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
     alert(`All ${entries.length} extras copied!`);
   };
 
+  const panelPositionClass = isMobile
+    ? 'left-2 right-2 top-auto bottom-[max(0.5rem,env(safe-area-inset-bottom))] max-h-[48dvh]'
+    : 'top-4 right-4 max-w-[220px]';
+
   return (
     <>
       {/* Draggable elements container - positioned inside game-stage coordinate space */}
@@ -431,7 +438,7 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
       </div>
 
       {/* Control panel */}
-      <div className="fixed top-4 right-4 z-[200] bg-card border border-border rounded-lg shadow-xl text-xs max-w-[220px] max-h-[80vh] overflow-y-auto">
+      <div className={`fixed z-[200] bg-card border border-border rounded-lg shadow-xl text-xs overflow-y-auto ${panelPositionClass}`}>
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="w-full flex items-center justify-between px-3 py-2 font-medium text-foreground hover:bg-accent"

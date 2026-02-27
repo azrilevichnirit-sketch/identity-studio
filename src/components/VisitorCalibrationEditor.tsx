@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Move, Copy, ChevronDown, ChevronUp } from 'lucide-react';
 import { getAnchorPosition } from '@/lib/jsonDataLoader';
+import { useIsMobile } from '@/hooks/use-mobile';
 import type { AnchorRef } from '@/types/identity';
 
 interface VisitorDef {
@@ -44,7 +45,8 @@ function zIndexForLayer(zLayer: 'back' | 'mid' | 'front'): number {
 }
 
 export function VisitorCalibrationEditor({ bgKey, visitors, title, panelClassName }: Props) {
-  const [isOpen, setIsOpen] = useState(true);
+  const isMobile = useIsMobile();
+  const [isOpen, setIsOpen] = useState(!isMobile);
   const [selectedIdx, setSelectedIdx] = useState(0);
 
   const [positions, setPositions] = useState<VisitorPosition[]>(() => initPositions(visitors, bgKey));
@@ -57,6 +59,10 @@ export function VisitorCalibrationEditor({ bgKey, visitors, title, panelClassNam
     });
     if (selectedIdx >= visitors.length) setSelectedIdx(0);
   }, [visitors.length, bgKey]);
+
+  useEffect(() => {
+    if (isMobile) setIsOpen(false);
+  }, [isMobile, bgKey]);
 
   const isDragging = useRef(false);
   const dragStart = useRef<{ x: number; y: number } | null>(null);
@@ -143,6 +149,10 @@ export function VisitorCalibrationEditor({ bgKey, visitors, title, panelClassNam
     alert('Copied visitors JSON!');
   };
 
+  const panelPositionClass = isMobile
+    ? 'left-2 right-2 top-auto bottom-[max(0.5rem,env(safe-area-inset-bottom))] max-h-[44dvh]'
+    : (panelClassName ?? 'top-4 right-4');
+
   return (
     <>
       {/* Render all visitors */}
@@ -186,7 +196,7 @@ export function VisitorCalibrationEditor({ bgKey, visitors, title, panelClassNam
       })}
 
       {/* Control panel */}
-      <div className={`fixed z-[200] bg-card border border-border rounded-lg shadow-xl text-xs max-w-[220px] ${panelClassName ?? 'top-4 right-4'}`}>
+      <div className={`fixed z-[200] bg-card border border-border rounded-lg shadow-xl text-xs overflow-y-auto ${isMobile ? '' : 'max-w-[220px]'} ${panelPositionClass}`}>
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="w-full flex items-center justify-between px-3 py-2 font-medium text-foreground hover:bg-accent"
@@ -199,7 +209,7 @@ export function VisitorCalibrationEditor({ bgKey, visitors, title, panelClassNam
         </button>
 
         {isOpen && (
-          <div className="p-3 space-y-3 border-t border-border">
+          <div className="p-3 space-y-3 border-t border-border overflow-y-auto">
             <div className="flex flex-col gap-1">
               {visitors.map((v, i) => (
                 <button

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Move, Copy, ChevronDown, ChevronUp, RotateCw } from 'lucide-react';
 import { getAnchorPosition } from '@/lib/jsonDataLoader';
 import { getToolImage } from '@/lib/assetUtils';
+import { useIsMobile } from '@/hooks/use-mobile';
 import type { AnchorRef, Mission } from '@/types/identity';
 
 // Import backgrounds for calibration
@@ -22,7 +23,8 @@ interface ToolPosition {
 }
 
 export function Mission11CalibrationEditor({ mission, onBackgroundChange }: Mission11CalibrationEditorProps) {
-  const [isOpen, setIsOpen] = useState(true);
+  const isMobile = useIsMobile();
+  const [isOpen, setIsOpen] = useState(!isMobile);
   const [selectedTool, setSelectedTool] = useState<'a' | 'b'>('a');
   
   // Tool A = Workshop (same as M10), Tool B = Gallery mobile wide
@@ -57,6 +59,10 @@ export function Mission11CalibrationEditor({ mission, onBackgroundChange }: Miss
       onBackgroundChange?.(galleryMobileWideBg, bgKeyB);
     }
   }, [selectedTool, onBackgroundChange]);
+
+  useEffect(() => {
+    if (isMobile) setIsOpen(false);
+  }, [isMobile, mission.mission_id]);
 
   const optionA = mission.options.find(o => o.key === 'a');
   const optionB = mission.options.find(o => o.key === 'b');
@@ -164,6 +170,10 @@ export function Mission11CalibrationEditor({ mission, onBackgroundChange }: Miss
     alert('Copied to clipboard!');
   };
 
+  const panelPositionClass = isMobile
+    ? 'left-2 right-2 top-auto bottom-[max(0.5rem,env(safe-area-inset-bottom))] max-h-[46dvh]'
+    : 'top-4 right-4 max-w-[220px]';
+
   return (
     <>
       {/* Single draggable tool based on selection */}
@@ -201,7 +211,7 @@ export function Mission11CalibrationEditor({ mission, onBackgroundChange }: Miss
       </div>
 
       {/* Control panel */}
-      <div className="fixed top-4 right-4 z-[200] bg-card border border-border rounded-lg shadow-xl text-xs max-w-[220px]">
+      <div className={`fixed z-[200] bg-card border border-border rounded-lg shadow-xl text-xs overflow-y-auto ${panelPositionClass}`}>
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="w-full flex items-center justify-between px-3 py-2 font-medium text-foreground hover:bg-accent"
