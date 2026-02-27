@@ -1860,7 +1860,7 @@
     "anchor_ref": "m06_extra_desk_mobile",
     "x_pct": 0.787,
     "y_pct": 0.81,
-    "scale": 1.8,
+    "scale": 1.1,
     "z_layer": "mid",
     "flipX": true
   },
@@ -2357,7 +2357,7 @@
   {
     "background_asset_key": "gallery_main_stylized_white_v1",
     "anchor_ref": "tie_05_tool_a_mobile",
-    "x_pct": 0.968,
+    "x_pct": 0.85,
     "y_pct": 0.61,
     "scale": 2.5,
     "z_layer": "front",
