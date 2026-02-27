@@ -65,12 +65,24 @@ describe("mobile anchor parity policy", () => {
   });
 
   it("uses mobile-specific scale for anchors WITH _mobile overrides", () => {
-    // M08 visitors have _mobile overrides with reduced scales
-    const visitor = getAnchorPosition("studio_in_workshop_bg", "m08_visitor_02" as any, { isMobile: true });
-    const desktop = getAnchorPosition("studio_in_workshop_bg", "m08_visitor_02" as any, { isMobile: false });
+    const cases = [
+      { bg: "studio_in_workshop_bg", ref: "m08_visitor_02" },
+      { bg: "studio_doorway_park_view_bg", ref: "m09_tool_a" },
+      { bg: "studio_doorway_park_view_bg", ref: "m09_tool_b" },
+      { bg: "studio_doorway_park_view_bg", ref: "m09_extra_crowd" },
+      { bg: "studio_in_workshop_bg", ref: "m11_tool_a" },
+      { bg: "gallery_main_mobile_wide", ref: "m11_tool_b" },
+      { bg: "gallery_main_mobile_wide", ref: "m11_crowd" },
+      { bg: "studio_in_workshop_bg", ref: "m11_avatar" },
+    ] as const;
 
-    expect(visitor).not.toBeNull();
-    expect(desktop).not.toBeNull();
-    expect(visitor!.scale).toBeLessThan(desktop!.scale);
+    for (const c of cases) {
+      const mobile = getAnchorPosition(c.bg, c.ref as any, { isMobile: true });
+      const desktop = getAnchorPosition(c.bg, c.ref as any, { isMobile: false });
+
+      expect(mobile).not.toBeNull();
+      expect(desktop).not.toBeNull();
+      expect(mobile!.scale).toBeLessThan(desktop!.scale);
+    }
   });
 });
