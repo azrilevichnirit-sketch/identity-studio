@@ -566,18 +566,18 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m04_tool_a",
-    "x_pct": 0.776,
-    "y_pct": 0.861,
-    "scale": 3.7,
+    "x_pct": 0.779,
+    "y_pct": 0.827,
+    "scale": 3.3,
     "z_layer": "front",
     "flipX": true
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m04_tool_b",
-    "x_pct": 0.786,
-    "y_pct": 0.927,
-    "scale": 3.7,
+    "x_pct": 0.506,
+    "y_pct": 0.881,
+    "scale": 3.4,
     "z_layer": "front",
     "flipX": true
   },
