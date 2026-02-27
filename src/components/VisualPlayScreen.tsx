@@ -531,23 +531,20 @@ export function VisualPlayScreen({
     return x;
   }, []);
 
-  // Responsive scaling: on mobile, shrink the base pixel size proportionally to viewport width.
-  // Anchor map scale values remain 1:1 — the base size adapts instead.
-  // Desktop reference width: 1920px → base 128px. On 390px phone → 128 * (390/1920) ≈ 26px.
-  // This keeps calibrated proportions identical across all screen sizes.
-  const DESKTOP_REF_WIDTH = 1920;
+  // Mobile scaling: uniform multiplier applied to ALL scales equally.
+  // This preserves the exact proportions from calibration (anchor map ratios stay 1:1),
+  // while uniformly shrinking everything to fit mobile viewports.
+  const MOBILE_SCALE_FACTOR = 0.55;
 
   const getSpriteBasePx = useCallback((variant: 'normal' | 'large' | 'xlarge' = 'normal') => {
     const desktopBase = variant === 'xlarge' ? 160 : variant === 'large' ? 144 : 128;
-    if (!isMobile) return desktopBase;
-    // Scale base proportionally to viewport width
-    const vw = window.innerWidth;
-    return desktopBase * (vw / DESKTOP_REF_WIDTH);
-  }, [isMobile]);
+    return desktopBase;
+  }, []);
 
   const getSpriteTransform = useCallback((scale: number, flipX?: boolean, _category?: 'tool' | 'visitor' | 'avatar' | 'extra') => {
-    return `scale(${scale})${flipX ? ' scaleX(-1)' : ''}`;
-  }, []);
+    const effectiveScale = isMobile ? scale * MOBILE_SCALE_FACTOR : scale;
+    return `scale(${effectiveScale})${flipX ? ' scaleX(-1)' : ''}`;
+  }, [isMobile]);
 
   // Auto-pan on mission entry toward Tool A's target (helps reveal side-wall targets)
   const initialPanTargetX = useMemo(() => {
