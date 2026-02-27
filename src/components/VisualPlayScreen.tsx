@@ -1315,7 +1315,7 @@ export function VisualPlayScreen({
     
     // Mission 01 Tool B: use anchor map coordinates
     if (prop.missionId === 'studio_01' && prop.key === 'b') {
-      const anchorPos = getAnchorPosition(currentBgKey, 'm01_tool_b');
+      const anchorPos = getAnchorPosition(lockedBgKey, 'm01_tool_b');
       if (anchorPos) {
         return [{ 
           anchor: 'm01_tool_b' as AnchorRef, 
@@ -1533,7 +1533,7 @@ export function VisualPlayScreen({
 
     // Mission 07 Tool B: placed in Gallery room
     if (prop.missionId === 'studio_07' && prop.key === 'b') {
-      const anchorPos = getAnchorPosition('studio_in_gallery_bg', 'm07_tool_b');
+      const anchorPos = getAnchorPosition('gallery_main_stylized', 'm07_tool_b');
       if (anchorPos) {
         return [{ 
           anchor: 'm07_tool_b' as AnchorRef, 

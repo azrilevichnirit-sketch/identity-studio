@@ -147,6 +147,29 @@ export function getAnchorMap(): AnchorCoordinate[] {
   return _anchorMap;
 }
 
+const BG_KEY_ALIASES: Record<string, string[]> = {
+  studio_doorway_park_view_bg: ['studio_doorway_park_view_v5'],
+  studio_doorway_park_view_v5: ['studio_doorway_park_view_bg'],
+  studio_in_storage_bg: ['studio_in_storage_v2'],
+  studio_in_storage_v2: ['studio_in_storage_bg'],
+  studio_in_workshop_bg: ['studio_in_workshop_v3'],
+  studio_in_workshop_v3: ['studio_in_workshop_bg'],
+  studio_in_entrance_view_bg: ['studio_entrance_view_stylized_v7'],
+  studio_entrance_view_stylized_v7: ['studio_in_entrance_view_bg'],
+  studio_exterior_bg: ['studio_exterior_park_bg', 'studio_exterior_park_stylized_v3', 'studio_exterior'],
+  studio_exterior_park_bg: ['studio_exterior_bg', 'studio_exterior_park_stylized_v3', 'studio_exterior'],
+  studio_exterior_park_stylized_v3: ['studio_exterior_bg', 'studio_exterior_park_bg', 'studio_exterior'],
+  studio_entry_inside_bg: ['gallery_main_stylized_v3'],
+  gallery_main_stylized_v3: ['studio_entry_inside_bg', 'studio_front_bg', 'studio_in_gallery_bg'],
+  studio_in_gallery_wall_bg: ['gallery_main_stylized_white_v1'],
+  gallery_main_stylized_white_v1: ['studio_in_gallery_wall_bg'],
+};
+
+function getBgKeyCandidates(bgKey: string): string[] {
+  const variants = BG_KEY_ALIASES[bgKey] ?? [];
+  return [bgKey, ...variants];
+}
+
 // Helper to get anchor coordinates for a specific background and anchor_ref.
 // On mobile, checks for a mobile-specific override first (anchor_ref + "_mobile").
 // This allows per-mission mobile calibration without affecting desktop at all.
@@ -156,34 +179,30 @@ export function getAnchorPosition(
   options?: { isMobile?: boolean }
 ): { x: number; y: number; scale: number; z_layer: string; flipX: boolean } | null {
   const anchors = getAnchorMap();
-  
+  const bgCandidates = getBgKeyCandidates(bgKey);
+
+  const toAnchorPosition = (row: AnchorCoordinate) => ({
+    x: row.x_pct * 100,
+    y: row.y_pct * 100,
+    scale: row.scale,
+    z_layer: row.z_layer,
+    flipX: row.flipX || false,
+  });
+
   // On mobile, try mobile-specific override first (e.g., "m06_tool_a_mobile")
   if (options?.isMobile) {
     const mobileRef = `${anchorRef}_mobile`;
-    const mobileMatch = anchors.find(a => a.background_asset_key === bgKey && a.anchor_ref === mobileRef);
-    if (mobileMatch) {
-      return {
-        x: mobileMatch.x_pct * 100,
-        y: mobileMatch.y_pct * 100,
-        scale: mobileMatch.scale,
-        z_layer: mobileMatch.z_layer,
-        flipX: mobileMatch.flipX || false,
-      };
+    for (const key of bgCandidates) {
+      const mobileMatch = anchors.find(a => a.background_asset_key === key && a.anchor_ref === mobileRef);
+      if (mobileMatch) return toAnchorPosition(mobileMatch);
     }
   }
-  
-  const match = anchors.find(a => a.background_asset_key === bgKey && a.anchor_ref === anchorRef);
-  
-  if (match) {
-    return {
-      x: match.x_pct * 100,
-      y: match.y_pct * 100,
-      scale: match.scale,
-      z_layer: match.z_layer,
-      flipX: match.flipX || false,
-    };
+
+  for (const key of bgCandidates) {
+    const match = anchors.find(a => a.background_asset_key === key && a.anchor_ref === anchorRef);
+    if (match) return toAnchorPosition(match);
   }
-  
+
   // Fallback defaults - ONLY for generic/structural anchors, NOT mission-specific tool anchors.
   // Mission-specific anchors (m##_tool_*, tie_##_tool_*, *_extra_*) must be explicitly
   // defined in the anchor map. Returning a fallback for them causes tools to appear
@@ -203,7 +222,7 @@ export function getAnchorPosition(
     table_center: { x: 52, y: 74 },
     avatar_hand: { x: 82, y: 55 },
   };
-  
+
   const fb = fallbacks[anchorRef] || { x: 50, y: 60 };
   return { x: fb.x, y: fb.y, scale: 1, z_layer: 'mid', flipX: false };
 }
