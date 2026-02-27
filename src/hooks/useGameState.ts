@@ -3,6 +3,7 @@ import type { GameState, Phase, AvatarGender, Dimension, HollandCode, PickRecord
 import { getStudioQuests, getStudioTie } from '@/lib/jsonDataLoader';
 
 // Check for ?mission=N URL parameter for dev/debug jumping
+// Returns -1 when no mission param is provided.
 const getInitialMissionIndex = (): number => {
   if (typeof window !== 'undefined') {
     const params = new URLSearchParams(window.location.search);
@@ -14,18 +15,18 @@ const getInitialMissionIndex = (): number => {
       }
     }
   }
-  return 0;
+  return -1;
 };
 
 const getInitialState = (): GameState => {
   const missionIndex = getInitialMissionIndex();
-  const skipToMain = missionIndex > 0;
+  const skipToMain = missionIndex >= 0;
   
   return {
     phase: skipToMain ? 'main' : 'dimension',
     dimension: skipToMain ? 'studio' : null,
     avatarGender: skipToMain ? 'female' : null,
-    mainIndex: missionIndex,
+    mainIndex: skipToMain ? missionIndex : 0,
     firstPicksByMissionId: {},
     finalPicksByMissionId: {},
     undoEvents: [],
