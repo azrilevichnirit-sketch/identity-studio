@@ -175,11 +175,9 @@ function getBgKeyCandidates(bgKey: string): string[] {
 }
 
 function getMobileFallbackScale(_anchorRef: AnchorRef, scale: number): number {
-  // Non-linear compression for anchors WITHOUT explicit _mobile overrides.
-  // Prevents large desktop scales from rendering oversized on mobile's 128px base.
-  if (scale <= 1.2) return scale;             // Small items stay unchanged
-  if (scale <= 1.8) return +(scale * 0.88).toFixed(2);  // Moderate compression
-  return +(1.35 + (scale - 1.8) * 0.38).toFixed(2);    // Heavy compression for large items
+  // With viewport-proportional sprite base (72-128px), the base itself handles
+  // mobile size adaptation. No additional compression needed.
+  return scale;
 }
 
 // Helper to get anchor coordinates for a specific background and anchor_ref.

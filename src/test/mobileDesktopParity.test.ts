@@ -1,58 +1,51 @@
 import { describe, it, expect } from "vitest";
 
 /**
- * The sprite base is a FIXED 128px on all devices.
- * Mobile scale adjustments are handled by:
- *   1. Explicit _mobile overrides in the anchor map
- *   2. getMobileFallbackScale() compression for anchors without overrides
+ * The sprite base is VIEWPORT-PROPORTIONAL: Math.max(72, Math.min(128, Math.round(w * 0.0937)))
+ * - Desktop 1366px → 128px
+ * - Tablet 820px  → 77px
+ * - Phone  360px  → 72px (clamped floor)
  *
- * This test verifies the fixed base and compression logic.
+ * getMobileFallbackScale is now a pass-through (no compression needed).
  */
-describe("fixed sprite base with mobile scale compression", () => {
-  const SPRITE_BASE = 128;
-
-  it("sprite base is always 128px regardless of viewport", () => {
-    expect(SPRITE_BASE).toBe(128);
-  });
-
-  it("large variant is 144px, xlarge is 160px", () => {
-    const large = Math.round(SPRITE_BASE * (144 / 128));
-    const xlarge = Math.round(SPRITE_BASE * (160 / 128));
-    expect(large).toBe(144);
-    expect(xlarge).toBe(160);
-  });
-
-  // Replicate getMobileFallbackScale logic
-  function mobileFallback(scale: number): number {
-    if (scale <= 1.2) return scale;
-    if (scale <= 1.8) return +(scale * 0.88).toFixed(2);
-    return +(1.35 + (scale - 1.8) * 0.38).toFixed(2);
+describe("viewport-proportional sprite base", () => {
+  function viewportBase(w: number): number {
+    return Math.max(72, Math.min(128, Math.round(w * 0.0937)));
   }
 
-  it("small scales (≤1.2) pass through unchanged", () => {
-    expect(mobileFallback(0.9)).toBe(0.9);
-    expect(mobileFallback(1.2)).toBe(1.2);
+  it("desktop 1366px → 128px", () => {
+    expect(viewportBase(1366)).toBe(128);
   });
 
-  it("moderate scales (1.2–1.8) are compressed by 12%", () => {
-    expect(mobileFallback(1.5)).toBeCloseTo(1.32, 1);
-    expect(mobileFallback(1.8)).toBeCloseTo(1.58, 1);
+  it("tablet 820px → 77px", () => {
+    expect(viewportBase(820)).toBe(77);
   });
 
-  it("large scales (>1.8) are heavily compressed", () => {
-    // scale 2.6 → 1.35 + 0.8*0.38 = 1.654
-    expect(mobileFallback(2.6)).toBeCloseTo(1.65, 1);
-    // scale 3.3 → 1.35 + 1.5*0.38 = 1.92
-    expect(mobileFallback(3.3)).toBeCloseTo(1.92, 1);
-    // scale 4.2 → 1.35 + 2.4*0.38 = 2.262
-    expect(mobileFallback(4.2)).toBeCloseTo(2.26, 1);
+  it("phone 390px → 72px (clamped)", () => {
+    expect(viewportBase(390)).toBe(72);
   });
 
-  it("mobile tool at scale 2.6 renders at reasonable size", () => {
-    const mobileScale = mobileFallback(2.6);
-    const px = SPRITE_BASE * mobileScale;
-    // ~211px on 360px screen = ~59% — visible but not overwhelming
-    expect(px).toBeGreaterThan(150);
-    expect(px).toBeLessThan(280);
+  it("phone 360px → 72px (clamped)", () => {
+    expect(viewportBase(360)).toBe(72);
+  });
+
+  it("large desktop 1920px → 128px (capped)", () => {
+    expect(viewportBase(1920)).toBe(128);
+  });
+
+  it("tool at scale 2.5 is proportional across viewports", () => {
+    const scale = 2.5;
+    const desktopPx = viewportBase(1366) * scale; // 320px / 1366 = 23%
+    const tabletPx = viewportBase(820) * scale;   // 192px / 820 = 23%
+    const phonePx = viewportBase(360) * scale;    // 180px / 360 = 50%
+
+    // Desktop and tablet should be nearly identical ratio
+    const desktopRatio = desktopPx / 1366;
+    const tabletRatio = tabletPx / 820;
+    expect(Math.abs(desktopRatio - tabletRatio)).toBeLessThan(0.02);
+
+    // Phone is clamped so ratio is higher, but tool is still reasonable
+    expect(phonePx).toBeGreaterThan(150);
+    expect(phonePx).toBeLessThan(200);
   });
 });
