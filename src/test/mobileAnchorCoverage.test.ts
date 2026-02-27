@@ -59,7 +59,7 @@ describe("mobile anchor override coverage", () => {
     (r) =>
       !r.anchor_ref!.endsWith("_mobile") &&
       missionPattern.test(r.anchor_ref!) &&
-      (r.scale ?? 1) > 1.5
+      (r.scale ?? 1) > 1.2
   );
 
   // Check if ANY alias of the bg has a mobile override for this anchor
@@ -68,7 +68,7 @@ describe("mobile anchor override coverage", () => {
     return !candidates.some((bg) => mobileOverrideSet.has(`${bg}::${r.anchor_ref}`));
   }).map((r) => `${r.background_asset_key} / ${r.anchor_ref} (scale ${r.scale})`);
 
-  it("every mission anchor with desktop scale > 1.5 has a _mobile override", () => {
+  it("every mission anchor with desktop scale > 1.2 has a _mobile override", () => {
     expect(
       missing,
       `Missing mobile overrides:\n${missing.join("\n")}`
