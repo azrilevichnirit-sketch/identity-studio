@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { getAnchorPosition } from "@/lib/jsonDataLoader";
 
 /**
  * Deep parity policy:
@@ -38,5 +39,29 @@ describe("desktop-parity sprite base", () => {
     expect(desktopPx).toBe(320);
     expect(tabletPx).toBe(320);
     expect(phonePx).toBe(320);
+  });
+});
+
+describe("mobile anchor parity policy", () => {
+  it("keeps desktop scale and height for mission tools on mobile", () => {
+    const cases = [
+      { bg: "gallery_main_stylized_v3", ref: "m01_tool_a" },
+      { bg: "gallery_main_stylized_v3", ref: "m01_tool_b" },
+      { bg: "studio_in_workshop_bg", ref: "m10_tool_a" },
+      { bg: "studio_in_workshop_bg", ref: "m10_tool_b" },
+      { bg: "gallery_main_stylized", ref: "m13_tool_a" },
+      { bg: "gallery_main_stylized", ref: "m13_tool_b" },
+    ] as const;
+
+    for (const c of cases) {
+      const desktop = getAnchorPosition(c.bg, c.ref as any, { isMobile: false });
+      const mobile = getAnchorPosition(c.bg, c.ref as any, { isMobile: true });
+
+      expect(desktop).not.toBeNull();
+      expect(mobile).not.toBeNull();
+
+      expect(mobile!.scale).toBeCloseTo(desktop!.scale, 6);
+      expect(mobile!.y).toBeCloseTo(desktop!.y, 3);
+    }
   });
 });

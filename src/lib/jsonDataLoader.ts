@@ -181,8 +181,9 @@ function getMobileFallbackScale(_anchorRef: AnchorRef, scale: number): number {
 }
 
 // Helper to get anchor coordinates for a specific background and anchor_ref.
-// On mobile, checks for a mobile-specific override first (anchor_ref + "_mobile").
-// This allows per-mission mobile calibration without affecting desktop at all.
+// Mobile behavior follows desktop parity:
+// - Always keep desktop-calibrated scale and Y (height)
+// - Allow mobile X override only for edge anchors to avoid portrait crop
 export function getAnchorPosition(
   bgKey: string,
   anchorRef: AnchorRef,
@@ -199,27 +200,36 @@ export function getAnchorPosition(
     flipX: row.flipX || false,
   });
 
-  // On mobile, try mobile-specific override first (e.g., "m06_tool_a_mobile")
-  if (options?.isMobile) {
-    const mobileRef = `${anchorRef}_mobile`;
+  const findAnchor = (ref: string): AnchorCoordinate | null => {
     for (const key of bgCandidates) {
-      const mobileMatch = anchors.find(a => a.background_asset_key === key && a.anchor_ref === mobileRef);
-      if (mobileMatch) return toAnchorPosition(mobileMatch);
+      const match = anchors.find(a => a.background_asset_key === key && a.anchor_ref === ref);
+      if (match) return match;
     }
+    return null;
+  };
+
+  const desktopMatch = findAnchor(anchorRef);
+  const mobileMatch = options?.isMobile ? findAnchor(`${anchorRef}_mobile`) : null;
+
+  if (desktopMatch) {
+    const desktopPos = toAnchorPosition(desktopMatch);
+
+    if (options?.isMobile) {
+      const isEdgeAnchor = desktopPos.x < 15 || desktopPos.x > 85;
+      const mobilePos = mobileMatch ? toAnchorPosition(mobileMatch) : null;
+
+      return {
+        ...desktopPos,
+        x: isEdgeAnchor && mobilePos ? mobilePos.x : desktopPos.x,
+        scale: getMobileFallbackScale(anchorRef, desktopPos.scale),
+      };
+    }
+
+    return desktopPos;
   }
 
-  for (const key of bgCandidates) {
-    const match = anchors.find(a => a.background_asset_key === key && a.anchor_ref === anchorRef);
-    if (match) {
-      const resolved = toAnchorPosition(match);
-      if (options?.isMobile) {
-        return {
-          ...resolved,
-          scale: getMobileFallbackScale(anchorRef, resolved.scale),
-        };
-      }
-      return resolved;
-    }
+  if (options?.isMobile && mobileMatch) {
+    return toAnchorPosition(mobileMatch);
   }
 
   // Fallback defaults - ONLY for generic/structural anchors, NOT mission-specific tool anchors.
