@@ -1906,6 +1906,7 @@
     "z_layer": "mid"
   },
 
+  {"_comment": "=== M10 mobile overrides — desktop parity for tools + extras ==="},
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m10_tool_a_mobile",
@@ -1924,9 +1925,33 @@
     "z_layer": "front",
     "flipX": true
   },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m10_extra_desk_mobile",
+    "x_pct": 0.488,
+    "y_pct": 0.913,
+    "scale": 2.2,
+    "z_layer": "mid",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m10_extra_staff_mobile",
+    "x_pct": 0.412,
+    "y_pct": 0.849,
+    "scale": 2.9,
+    "z_layer": "back"
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m10_extra_staff_b_mobile",
+    "x_pct": 0.428,
+    "y_pct": 0.826,
+    "scale": 2.9,
+    "z_layer": "back"
+  },
 
-  {"_comment": "M10 extras mobile scale overrides removed for desktop parity; desktop anchors are used on mobile"},
-
+  {"_comment": "=== M13 mobile overrides — desktop parity ==="},
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m13_tool_a_mobile",
@@ -1939,50 +1964,50 @@
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m13_tool_b_mobile",
     "x_pct": 0.52,
-    "y_pct": 0.80,
-    "scale": 1.0,
+    "y_pct": 0.788,
+    "scale": 1.2,
     "z_layer": "front",
     "flipX": true
   },
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m13_desk_a_mobile",
-    "x_pct": 0.78,
-    "y_pct": 0.92,
-    "scale": 0.9,
+    "x_pct": 0.764,
+    "y_pct": 0.948,
+    "scale": 2.2,
     "z_layer": "front",
     "flipX": true
   },
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m13_desk_b_mobile",
-    "x_pct": 0.50,
-    "y_pct": 0.88,
-    "scale": 1.1,
+    "x_pct": 0.505,
+    "y_pct": 0.91,
+    "scale": 2.7,
     "z_layer": "front"
   },
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m13_desk_c_mobile",
-    "x_pct": 0.22,
-    "y_pct": 0.84,
-    "scale": 0.9,
+    "x_pct": 0.226,
+    "y_pct": 0.839,
+    "scale": 2.2,
     "z_layer": "front"
   },
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m13_extra_couple_mobile",
-    "x_pct": 0.50,
-    "y_pct": 0.76,
-    "scale": 1.4,
+    "x_pct": 0.509,
+    "y_pct": 0.793,
+    "scale": 3.6,
     "z_layer": "back"
   },
   {
     "background_asset_key": "gallery_main_stylized",
     "anchor_ref": "m13_extra_staff_mobile",
-    "x_pct": 0.62,
-    "y_pct": 0.80,
-    "scale": 1.3,
+    "x_pct": 0.603,
+    "y_pct": 0.833,
+    "scale": 3.4,
     "z_layer": "back",
     "flipX": true
   },
@@ -1992,8 +2017,8 @@
     "background_asset_key": "studio_doorway_park_view_bg",
     "anchor_ref": "m09_extra_crowd_mobile",
     "x_pct": 0.51,
-    "y_pct": 0.74,
-    "scale": 1.0,
+    "y_pct": 0.759,
+    "scale": 4.1,
     "z_layer": "back"
   },
   {"_comment": "M08 visitor/avatar mobile overrides REMOVED — viewport-relative sizing handles proportionality, positions identical to desktop"},
@@ -2144,21 +2169,21 @@
 
   {"_comment": "M08 visitor/avatar mobile scale overrides removed for desktop parity; desktop anchors are used on mobile"},
 
-  {"_comment": "=== M09 mobile overrides ==="},
+  {"_comment": "=== M09 mobile overrides — desktop parity ==="},
   {
     "background_asset_key": "studio_doorway_park_view_bg",
     "anchor_ref": "m09_tool_a_mobile",
-    "x_pct": 0.75,
-    "y_pct": 0.88,
-    "scale": 1.0,
+    "x_pct": 0.789,
+    "y_pct": 0.875,
+    "scale": 2.5,
     "z_layer": "front"
   },
   {
     "background_asset_key": "studio_doorway_park_view_bg",
     "anchor_ref": "m09_tool_b_mobile",
-    "x_pct": 0.50,
-    "y_pct": 0.93,
-    "scale": 1.1,
+    "x_pct": 0.507,
+    "y_pct": 0.938,
+    "scale": 2.7,
     "z_layer": "front",
     "flipX": true
   },
@@ -2266,13 +2291,13 @@
     "flipX": true
   },
 
-  {"_comment": "=== M11 mobile overrides - scale tuned for true phone parity ==="},
+  {"_comment": "=== M11 mobile overrides — desktop parity ==="},
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m11_tool_a_mobile",
     "x_pct": 0.505,
     "y_pct": 0.9,
-    "scale": 1.25,
+    "scale": 3.1,
     "z_layer": "front",
     "flipX": true
   },
@@ -2280,8 +2305,8 @@
     "background_asset_key": "gallery_main_mobile_wide",
     "anchor_ref": "m11_tool_b_mobile",
     "x_pct": 0.628,
-    "y_pct": 0.72,
-    "scale": 1.3,
+    "y_pct": 0.717,
+    "scale": 3.7,
     "z_layer": "front",
     "flipX": true
   },
@@ -2289,8 +2314,8 @@
     "background_asset_key": "gallery_main_mobile_wide",
     "anchor_ref": "m11_crowd_mobile",
     "x_pct": 0.336,
-    "y_pct": 0.805,
-    "scale": 1.15,
+    "y_pct": 0.796,
+    "scale": 3.3,
     "z_layer": "mid"
   },
   {
@@ -2298,7 +2323,7 @@
     "anchor_ref": "m11_avatar_mobile",
     "x_pct": 0.588,
     "y_pct": 0.791,
-    "scale": 1.05,
+    "scale": 2.8,
     "z_layer": "mid"
   },
 

@@ -64,7 +64,7 @@ describe("mobile anchor parity policy", () => {
     }
   });
 
-  it("uses mobile-specific scale for anchors WITH _mobile overrides", () => {
+  it("resolves mobile-specific anchors for entries WITH _mobile overrides", () => {
     const cases = [
       { bg: "studio_in_workshop_bg", ref: "m08_visitor_02" },
       { bg: "studio_doorway_park_view_bg", ref: "m09_tool_a" },
@@ -82,7 +82,7 @@ describe("mobile anchor parity policy", () => {
 
       expect(mobile).not.toBeNull();
       expect(desktop).not.toBeNull();
-      expect(mobile!.scale).toBeLessThan(desktop!.scale);
+      expect(mobile!.scale).toBeLessThanOrEqual(desktop!.scale);
     }
   });
 });
