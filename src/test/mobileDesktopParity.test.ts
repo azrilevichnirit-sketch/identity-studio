@@ -1,51 +1,42 @@
 import { describe, it, expect } from "vitest";
 
 /**
- * The sprite base is VIEWPORT-PROPORTIONAL: Math.max(72, Math.min(128, Math.round(w * 0.0937)))
- * - Desktop 1366px → 128px
- * - Tablet 820px  → 77px
- * - Phone  360px  → 72px (clamped floor)
- *
- * getMobileFallbackScale is now a pass-through (no compression needed).
+ * Deep parity policy:
+ * sprite base remains desktop-calibrated on every viewport.
  */
-describe("viewport-proportional sprite base", () => {
-  function viewportBase(w: number): number {
-    return Math.max(72, Math.min(128, Math.round(w * 0.0937)));
+describe("desktop-parity sprite base", () => {
+  function viewportBase(_w: number): number {
+    return 128;
   }
 
   it("desktop 1366px → 128px", () => {
     expect(viewportBase(1366)).toBe(128);
   });
 
-  it("tablet 820px → 77px", () => {
-    expect(viewportBase(820)).toBe(77);
+  it("tablet 820px → 128px", () => {
+    expect(viewportBase(820)).toBe(128);
   });
 
-  it("phone 390px → 72px (clamped)", () => {
-    expect(viewportBase(390)).toBe(72);
+  it("phone 390px → 128px", () => {
+    expect(viewportBase(390)).toBe(128);
   });
 
-  it("phone 360px → 72px (clamped)", () => {
-    expect(viewportBase(360)).toBe(72);
+  it("phone 360px → 128px", () => {
+    expect(viewportBase(360)).toBe(128);
   });
 
-  it("large desktop 1920px → 128px (capped)", () => {
+  it("large desktop 1920px → 128px", () => {
     expect(viewportBase(1920)).toBe(128);
   });
 
-  it("tool at scale 2.5 is proportional across viewports", () => {
+  it("tool at scale 2.5 matches desktop size on 820 and 360", () => {
     const scale = 2.5;
-    const desktopPx = viewportBase(1366) * scale; // 320px / 1366 = 23%
-    const tabletPx = viewportBase(820) * scale;   // 192px / 820 = 23%
-    const phonePx = viewportBase(360) * scale;    // 180px / 360 = 50%
+    const desktopPx = viewportBase(1366) * scale;
+    const tabletPx = viewportBase(820) * scale;
+    const phonePx = viewportBase(360) * scale;
 
-    // Desktop and tablet should be nearly identical ratio
-    const desktopRatio = desktopPx / 1366;
-    const tabletRatio = tabletPx / 820;
-    expect(Math.abs(desktopRatio - tabletRatio)).toBeLessThan(0.02);
-
-    // Phone is clamped so ratio is higher, but tool is still reasonable
-    expect(phonePx).toBeGreaterThan(150);
-    expect(phonePx).toBeLessThan(200);
+    expect(desktopPx).toBe(320);
+    expect(tabletPx).toBe(320);
+    expect(phonePx).toBe(320);
   });
 });
