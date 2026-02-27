@@ -1840,6 +1840,40 @@
 
   {
     "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m08_visitor_01_mobile",
+    "x_pct": 0.392,
+    "y_pct": 0.754,
+    "scale": 1.0,
+    "z_layer": "front",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m08_visitor_02_mobile",
+    "x_pct": 0.521,
+    "y_pct": 0.856,
+    "scale": 1.5,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m08_visitor_03_mobile",
+    "x_pct": 0.462,
+    "y_pct": 0.793,
+    "scale": 1.6,
+    "z_layer": "back"
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m08_avatar_mobile",
+    "x_pct": 0.737,
+    "y_pct": 0.782,
+    "scale": 1.4,
+    "z_layer": "mid"
+  },
+
+  {
+    "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m06_tool_a_mobile",
     "x_pct": 0.51,
     "y_pct": 0.837,

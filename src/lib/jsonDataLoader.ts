@@ -181,9 +181,9 @@ function getMobileFallbackScale(_anchorRef: AnchorRef, scale: number): number {
 }
 
 // Helper to get anchor coordinates for a specific background and anchor_ref.
-// Mobile behavior follows desktop parity:
-// - Always keep desktop-calibrated scale and Y (height)
-// - Allow mobile X override only for edge anchors to avoid portrait crop
+// On mobile, checks for a mobile-specific override first (anchor_ref + "_mobile").
+// If a _mobile override exists, it is used IN FULL (position + scale + flip).
+// If no _mobile override exists, desktop values are used as-is (128px fixed base handles sizing).
 export function getAnchorPosition(
   bgKey: string,
   anchorRef: AnchorRef,
@@ -208,29 +208,17 @@ export function getAnchorPosition(
     return null;
   };
 
+  // On mobile, try mobile-specific override first — use it fully if found
+  if (options?.isMobile) {
+    const mobileMatch = findAnchor(`${anchorRef}_mobile`);
+    if (mobileMatch) return toAnchorPosition(mobileMatch);
+  }
+
   const desktopMatch = findAnchor(anchorRef);
-  const mobileMatch = options?.isMobile ? findAnchor(`${anchorRef}_mobile`) : null;
-
   if (desktopMatch) {
-    const desktopPos = toAnchorPosition(desktopMatch);
-
-    if (options?.isMobile) {
-      const isEdgeAnchor = desktopPos.x < 15 || desktopPos.x > 85;
-      const mobilePos = mobileMatch ? toAnchorPosition(mobileMatch) : null;
-
-      return {
-        ...desktopPos,
-        x: isEdgeAnchor && mobilePos ? mobilePos.x : desktopPos.x,
-        scale: getMobileFallbackScale(anchorRef, desktopPos.scale),
-      };
-    }
-
-    return desktopPos;
+    return toAnchorPosition(desktopMatch);
   }
 
-  if (options?.isMobile && mobileMatch) {
-    return toAnchorPosition(mobileMatch);
-  }
 
   // Fallback defaults - ONLY for generic/structural anchors, NOT mission-specific tool anchors.
   // Mission-specific anchors (m##_tool_*, tie_##_tool_*, *_extra_*) must be explicitly
