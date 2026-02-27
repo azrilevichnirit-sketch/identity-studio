@@ -2521,5 +2521,214 @@
     "y_pct": 0.873,
     "scale": 1.4,
     "z_layer": "front"
+  },
+
+  {"_comment": "=== M01 gallery_main_stylized mobile - tool_a scale 1.6 → 1.0 ==="},
+  {
+    "background_asset_key": "gallery_main_stylized",
+    "anchor_ref": "m01_tool_a_mobile",
+    "x_pct": 0.404,
+    "y_pct": 0.731,
+    "scale": 1.0,
+    "z_layer": "front"
+  },
+
+  {"_comment": "=== M02 gallery_main_stylized mobile - tool_b scale 2.0 → 1.2 ==="},
+  {
+    "background_asset_key": "gallery_main_stylized",
+    "anchor_ref": "m02_tool_b_mobile",
+    "x_pct": 0.15,
+    "y_pct": 0.677,
+    "scale": 1.2,
+    "z_layer": "front"
+  },
+
+  {"_comment": "=== M02 studio_entry_inside_bg mobile - tool_a scale 1.8 → 1.1 ==="},
+  {
+    "background_asset_key": "studio_entry_inside_bg",
+    "anchor_ref": "m02_tool_a_mobile",
+    "x_pct": 0.78,
+    "y_pct": 0.832,
+    "scale": 1.1,
+    "z_layer": "front",
+    "flipX": true
+  },
+
+  {"_comment": "=== M02 studio_entry_inside_bg mobile - tool_b scale 2.0 → 1.2 ==="},
+  {
+    "background_asset_key": "studio_entry_inside_bg",
+    "anchor_ref": "m02_tool_b_mobile",
+    "x_pct": 0.7,
+    "y_pct": 0.868,
+    "scale": 1.2,
+    "z_layer": "front",
+    "flipX": true
+  },
+
+  {"_comment": "=== M03 studio_entry_inside_bg mobile - tool_a scale 2.4 → 1.4 ==="},
+  {
+    "background_asset_key": "studio_entry_inside_bg",
+    "anchor_ref": "m03_tool_a_mobile",
+    "x_pct": 0.35,
+    "y_pct": 0.95,
+    "scale": 1.4,
+    "z_layer": "front",
+    "flipX": true
+  },
+
+  {"_comment": "=== M03 studio_entry_inside_bg mobile - tool_b scale 1.8 → 1.1 ==="},
+  {
+    "background_asset_key": "studio_entry_inside_bg",
+    "anchor_ref": "m03_tool_b_mobile",
+    "x_pct": 0.22,
+    "y_pct": 0.878,
+    "scale": 1.1,
+    "z_layer": "front"
+  },
+
+  {"_comment": "=== M03 doorway_v5 mobile - visitor_01 scale 2.4 → 1.3 ==="},
+  {
+    "background_asset_key": "studio_doorway_park_view_v5",
+    "anchor_ref": "m03_visitor_01_mobile",
+    "x_pct": 0.658,
+    "y_pct": 0.898,
+    "scale": 1.3,
+    "z_layer": "back",
+    "flipX": true
+  },
+
+  {"_comment": "=== M03 doorway_v5 mobile - visitor_02 scale 1.7 → 1.0 ==="},
+  {
+    "background_asset_key": "studio_doorway_park_view_v5",
+    "anchor_ref": "m03_visitor_02_mobile",
+    "x_pct": 0.293,
+    "y_pct": 0.819,
+    "scale": 1.0,
+    "z_layer": "back"
+  },
+
+  {"_comment": "=== M03 doorway_v5 mobile - visitor_03 scale 1.7 → 1.0 ==="},
+  {
+    "background_asset_key": "studio_doorway_park_view_v5",
+    "anchor_ref": "m03_visitor_03_mobile",
+    "x_pct": 0.224,
+    "y_pct": 0.819,
+    "scale": 1.0,
+    "z_layer": "back"
+  },
+
+  {"_comment": "=== M03 doorway_v5 mobile - visitor_04 scale 1.9 → 1.1 ==="},
+  {
+    "background_asset_key": "studio_doorway_park_view_v5",
+    "anchor_ref": "m03_visitor_04_mobile",
+    "x_pct": 0.624,
+    "y_pct": 0.879,
+    "scale": 1.1,
+    "z_layer": "back",
+    "flipX": true
+  },
+
+  {"_comment": "=== M03 workshop mobile - tool_a scale 3.3 → 1.8 ==="},
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m03_tool_a_mobile",
+    "x_pct": 0.724,
+    "y_pct": 0.869,
+    "scale": 1.8,
+    "z_layer": "front",
+    "flipX": true
+  },
+
+  {"_comment": "=== M03 workshop mobile - tool_b scale 2.9 → 1.6 ==="},
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m03_tool_b_mobile",
+    "x_pct": 0.48,
+    "y_pct": 0.905,
+    "scale": 1.6,
+    "z_layer": "front",
+    "flipX": true
+  },
+
+  {"_comment": "=== M06 doorway_park_view_bg mobile - tool_a scale 3.0 → 1.6 ==="},
+  {
+    "background_asset_key": "studio_doorway_park_view_bg",
+    "anchor_ref": "m06_tool_a_mobile",
+    "x_pct": 0.75,
+    "y_pct": 0.882,
+    "scale": 1.6,
+    "z_layer": "front",
+    "flipX": true
+  },
+
+  {"_comment": "=== M06 doorway_park_view_bg mobile - tool_b scale 3.5 → 1.8 ==="},
+  {
+    "background_asset_key": "studio_doorway_park_view_bg",
+    "anchor_ref": "m06_tool_b_mobile",
+    "x_pct": 0.72,
+    "y_pct": 0.962,
+    "scale": 1.8,
+    "z_layer": "front"
+  },
+
+  {"_comment": "=== M07 workshop mobile - tool_b scale 1.8 → 1.1 ==="},
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m07_tool_b_mobile",
+    "x_pct": 0.5,
+    "y_pct": 0.88,
+    "scale": 1.1,
+    "z_layer": "front"
+  },
+
+  {"_comment": "=== M10 workshop mobile - desk scale 1.6 → 1.0 ==="},
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m10_desk_mobile",
+    "x_pct": 0.787,
+    "y_pct": 0.874,
+    "scale": 1.0,
+    "z_layer": "mid",
+    "flipX": true
+  },
+
+  {"_comment": "=== T02 white_v1 mobile - tool_a scale 1.6 → 1.0 ==="},
+  {
+    "background_asset_key": "gallery_main_stylized_white_v1",
+    "anchor_ref": "tie_02_tool_a_mobile",
+    "x_pct": 0.212,
+    "y_pct": 0.783,
+    "scale": 1.0,
+    "z_layer": "front"
+  },
+
+  {"_comment": "=== T03 white_v1 mobile - tool_b scale 2.4 → 1.3 ==="},
+  {
+    "background_asset_key": "gallery_main_stylized_white_v1",
+    "anchor_ref": "tie_03_tool_b_mobile",
+    "x_pct": 0.22,
+    "y_pct": 0.503,
+    "scale": 1.3,
+    "z_layer": "front"
+  },
+
+  {"_comment": "=== T13 exterior mobile - tool_a scale 1.6 → 1.0 ==="},
+  {
+    "background_asset_key": "studio_exterior_bg",
+    "anchor_ref": "tie_13_tool_a_mobile",
+    "x_pct": 0.475,
+    "y_pct": 0.759,
+    "scale": 1.0,
+    "z_layer": "front"
+  },
+
+  {"_comment": "=== T13 exterior mobile - tool_b scale 1.7 → 1.0 ==="},
+  {
+    "background_asset_key": "studio_exterior_bg",
+    "anchor_ref": "tie_13_tool_b_mobile",
+    "x_pct": 0.489,
+    "y_pct": 0.852,
+    "scale": 1.0,
+    "z_layer": "front"
   }
 ]
