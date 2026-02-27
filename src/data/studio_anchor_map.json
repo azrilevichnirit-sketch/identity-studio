@@ -1833,7 +1833,7 @@
     "x_pct": 0.414,
     "y_pct": 0.804,
     "scale": 1.3,
-    "z_layer": "front",
+    "z_layer": "back",
     "flipX": true
   },
   {
