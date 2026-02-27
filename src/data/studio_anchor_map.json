@@ -964,10 +964,11 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m10_tool_b",
-    "x_pct": 0.619,
-    "y_pct": 0.755,
+    "x_pct": 0.473,
+    "y_pct": 0.8,
     "scale": 1.4,
-    "z_layer": "front"
+    "z_layer": "front",
+    "flipX": true
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
