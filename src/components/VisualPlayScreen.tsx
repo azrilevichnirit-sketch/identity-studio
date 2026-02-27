@@ -531,10 +531,16 @@ export function VisualPlayScreen({
     return x;
   }, []);
 
-  // Mobile scaling: uniform multiplier applied to ALL scales equally.
-  // This preserves the exact proportions from calibration (anchor map ratios stay 1:1),
-  // while uniformly shrinking everything to fit mobile viewports.
-  const MOBILE_SCALE_FACTOR = 0.55;
+  // Mobile scaling: non-linear compression for high-scale sprites.
+  // Scales ≤ 1.5 stay unchanged (they already look correct on mobile).
+  // Scales > 1.5 are compressed to prevent viewport overflow:
+  //   effectiveScale = 1.5 + (scale - 1.5) * 0.35
+  // Examples: 1.6→1.535, 2.9→1.99, 3.9→2.34
+  const compressMobileScale = useCallback((scale: number): number => {
+    if (!isMobile) return scale;
+    if (scale <= 1.5) return scale;
+    return 1.5 + (scale - 1.5) * 0.35;
+  }, [isMobile]);
 
   const getSpriteBasePx = useCallback((variant: 'normal' | 'large' | 'xlarge' = 'normal') => {
     const desktopBase = variant === 'xlarge' ? 160 : variant === 'large' ? 144 : 128;
@@ -542,9 +548,9 @@ export function VisualPlayScreen({
   }, []);
 
   const getSpriteTransform = useCallback((scale: number, flipX?: boolean, _category?: 'tool' | 'visitor' | 'avatar' | 'extra') => {
-    const effectiveScale = isMobile ? scale * MOBILE_SCALE_FACTOR : scale;
+    const effectiveScale = compressMobileScale(scale);
     return `scale(${effectiveScale})${flipX ? ' scaleX(-1)' : ''}`;
-  }, [isMobile]);
+  }, [compressMobileScale]);
 
   // Auto-pan on mission entry toward Tool A's target (helps reveal side-wall targets)
   const initialPanTargetX = useMemo(() => {
