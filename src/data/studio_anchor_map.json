@@ -2027,5 +2027,29 @@
     "y_pct": 0.796,
     "scale": 2.0,
     "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_doorway_park_view_bg",
+    "anchor_ref": "m09_extra_crowd_mobile",
+    "x_pct": 0.51,
+    "y_pct": 0.72,
+    "scale": 2.5,
+    "z_layer": "back"
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m08_visitor_02_mobile",
+    "x_pct": 0.521,
+    "y_pct": 0.856,
+    "scale": 1.8,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m08_visitor_03_mobile",
+    "x_pct": 0.462,
+    "y_pct": 0.793,
+    "scale": 1.9,
+    "z_layer": "back"
   }
 ]
