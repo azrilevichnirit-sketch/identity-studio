@@ -379,6 +379,11 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
                 transform: `scale(${positions.b.scale}) ${positions.b.flipX ? 'scaleX(-1)' : ''}`,
                 filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.5))',
               }}
+              onError={(e) => {
+                console.error('Tool B image failed to load:', toolBImage);
+                (e.target as HTMLImageElement).style.border = '3px solid red';
+                (e.target as HTMLImageElement).style.background = 'rgba(255,0,0,0.3)';
+              }}
             />
           )}
           <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded whitespace-nowrap">
