@@ -1993,7 +1993,7 @@
     "anchor_ref": "m09_extra_crowd_mobile",
     "x_pct": 0.51,
     "y_pct": 0.74,
-    "scale": 2.2,
+    "scale": 1.4,
     "z_layer": "back"
   },
   {"_comment": "M08 visitor/avatar mobile overrides REMOVED — viewport-relative sizing handles proportionality, positions identical to desktop"},
@@ -2150,7 +2150,7 @@
     "anchor_ref": "m09_tool_a_mobile",
     "x_pct": 0.75,
     "y_pct": 0.88,
-    "scale": 2.5,
+    "scale": 1.4,
     "z_layer": "front"
   },
   {
@@ -2158,7 +2158,7 @@
     "anchor_ref": "m09_tool_b_mobile",
     "x_pct": 0.50,
     "y_pct": 0.93,
-    "scale": 2.7,
+    "scale": 1.5,
     "z_layer": "front",
     "flipX": true
   },
