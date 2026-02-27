@@ -531,16 +531,12 @@ export function VisualPlayScreen({
     return x;
   }, []);
 
-  // Mobile scaling: non-linear compression for high-scale sprites.
-  // Scales ≤ 1.5 stay unchanged (they already look correct on mobile).
-  // Scales > 1.5 are compressed to prevent viewport overflow:
-  //   effectiveScale = 1.5 + (scale - 1.5) * 0.35
-  // Examples: 1.6→1.535, 2.9→1.99, 3.9→2.34
+  // Mobile scaling: 1:1 parity with anchor map calibration.
+  // No compression applied — calibrated values render exactly the same on mobile.
+  // If an element is too large on mobile, recalibrate with a smaller scale in the anchor map.
   const compressMobileScale = useCallback((scale: number): number => {
-    if (!isMobile) return scale;
-    if (scale <= 1.5) return scale;
-    return 1.5 + (scale - 1.5) * 0.35;
-  }, [isMobile]);
+    return scale;
+  }, []);
 
   // Keep ONE consistent base sprite size model across tools/visitors/avatar/extras.
   const getSpriteBasePx = useCallback((variant: 'normal' | 'large' | 'xlarge' = 'normal') => {
