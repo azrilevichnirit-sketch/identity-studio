@@ -208,8 +208,14 @@ export function getAnchorPosition(
     return null;
   };
 
-  // On mobile, try mobile-specific override first — use it fully if found
-  if (options?.isMobile) {
+  // On mobile, try mobile-specific override first — use it fully if found.
+  // Fallback behavior: if caller didn't pass options.isMobile, auto-detect by viewport
+  // so runtime callers that forget to pass the flag still get correct mobile anchors.
+  const isMobileViewport =
+    options?.isMobile ??
+    (typeof window !== 'undefined' ? window.innerWidth <= 820 : false);
+
+  if (isMobileViewport) {
     const mobileMatch = findAnchor(`${anchorRef}_mobile`);
     if (mobileMatch) return toAnchorPosition(mobileMatch);
   }
