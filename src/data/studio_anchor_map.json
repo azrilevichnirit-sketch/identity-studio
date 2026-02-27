@@ -1986,31 +1986,7 @@
     "scale": 2.2,
     "z_layer": "back"
   },
-  {
-    "background_asset_key": "studio_in_workshop_bg",
-    "anchor_ref": "m08_visitor_01_mobile",
-    "x_pct": 0.558,
-    "y_pct": 0.762,
-    "scale": 1.0,
-    "z_layer": "front",
-    "flipX": true
-  },
-  {
-    "background_asset_key": "studio_in_workshop_bg",
-    "anchor_ref": "m08_visitor_02_mobile",
-    "x_pct": 0.521,
-    "y_pct": 0.856,
-    "scale": 1.6,
-    "z_layer": "mid"
-  },
-  {
-    "background_asset_key": "studio_in_workshop_bg",
-    "anchor_ref": "m08_visitor_03_mobile",
-    "x_pct": 0.462,
-    "y_pct": 0.793,
-    "scale": 1.7,
-    "z_layer": "back"
-  },
+  {"_comment": "M08 visitor/avatar mobile overrides REMOVED — viewport-relative sizing handles proportionality, positions identical to desktop"},
 
   {"_comment": "=== M04 mobile overrides - scale 3.3/3.4 → 1.8/1.9 ==="},
   {
@@ -2105,13 +2081,13 @@
     "flipX": true
   },
 
-  {"_comment": "=== M08 mobile overrides - scale 2.5/2.2 → 1.5/1.4 ==="},
+  {"_comment": "=== M08 mobile overrides - position-only (scale matches desktop) ==="},
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m08_tool_a_mobile",
     "x_pct": 0.18,
     "y_pct": 0.65,
-    "scale": 1.5,
+    "scale": 2.5,
     "z_layer": "front"
   },
   {
@@ -2119,7 +2095,7 @@
     "anchor_ref": "m08_tool_b_mobile",
     "x_pct": 0.65,
     "y_pct": 0.88,
-    "scale": 1.4,
+    "scale": 2.2,
     "z_layer": "front",
     "flipX": true
   },
@@ -2321,15 +2297,7 @@
     "flipX": true
   },
 
-  {"_comment": "=== M08 avatar mobile override - scale 2.6 → 1.5 ==="},
-  {
-    "background_asset_key": "studio_in_workshop_bg",
-    "anchor_ref": "m08_avatar_mobile",
-    "x_pct": 0.737,
-    "y_pct": 0.782,
-    "scale": 1.5,
-    "z_layer": "mid"
-  },
+  {"_comment": "M08 avatar mobile override REMOVED — position identical to desktop, viewport-relative handles scale"},
 
   {"_comment": "=== TIE-BREAKER MOBILE OVERRIDES ==="},
 
