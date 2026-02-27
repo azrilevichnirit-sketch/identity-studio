@@ -102,7 +102,11 @@ export function parseSceneExtras(): SceneExtra[] {
 export function parseAnchorMap(): AnchorCoordinate[] {
   const rows = studioAnchorMapData as Record<string, unknown>[];
   
-  return rows.map((row) => ({
+  // Filter out _comment marker objects that have no real anchor data
+  return rows
+    .filter((row) => row.background_asset_key && row.anchor_ref && !('_comment' in row && !row.background_asset_key))
+    .filter((row) => String(row.background_asset_key || '') !== '' && String(row.background_asset_key || '') !== '_mobile_overrides_marker')
+    .map((row) => ({
     background_asset_key: String(row.background_asset_key || ''),
     anchor_ref: String(row.anchor_ref || 'floor') as AnchorRef,
     x_pct: Number(row.x_pct) || 0.5,
