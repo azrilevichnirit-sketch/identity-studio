@@ -23,11 +23,11 @@ const PLACEMENT_BG: Record<string, { a: string; b: string }> = {
 };
 
 // Deep parity base (mirrors VisualPlayScreen logic)
-function getBasePxForViewport(width: number, missionId: string, key: OptionKey): number {
+function getBasePxForViewport(_width: number, missionId: string, key: OptionKey): number {
   const isXlarge =
     (missionId === "studio_01" && key === "b") ||
     (missionId === "studio_02" && key === "b");
-  const viewportBase = Math.max(48, Math.round(width * 0.0937));
+  const viewportBase = 128;
   const factor = isXlarge ? 160 / 128 : 1;
   return Math.round(viewportBase * factor);
 }
@@ -44,7 +44,7 @@ function checkAnchorAtViewport(
   if (!pos) return `${label}: no anchor (${bgKey} / ${anchorRef})`;
 
   const px = +(basePx * pos.scale).toFixed(1);
-  const minPx = viewportWidth <= 360 ? 38 : viewportWidth <= 820 ? 50 : 80;
+  const minPx = viewportWidth <= 360 ? 76 : viewportWidth <= 820 ? 84 : 80;
 
   if (px < minPx) return `${label}: too small ${px}px at ${viewportWidth}px viewport (min=${minPx}px)`;
   return null;
