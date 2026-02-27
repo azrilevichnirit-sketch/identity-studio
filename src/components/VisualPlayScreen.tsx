@@ -531,23 +531,23 @@ export function VisualPlayScreen({
     return x;
   }, []);
 
-  // Mobile scaling: 1:1 parity with anchor map calibration.
-  // No compression applied — calibrated values render exactly the same on mobile.
-  // If an element is too large on mobile, recalibrate with a smaller scale in the anchor map.
-  const compressMobileScale = useCallback((scale: number): number => {
-    return scale;
-  }, []);
+  // Responsive scaling: on mobile, shrink the base pixel size proportionally to viewport width.
+  // Anchor map scale values remain 1:1 — the base size adapts instead.
+  // Desktop reference width: 1920px → base 128px. On 390px phone → 128 * (390/1920) ≈ 26px.
+  // This keeps calibrated proportions identical across all screen sizes.
+  const DESKTOP_REF_WIDTH = 1920;
 
-  // Keep ONE consistent base sprite size model across tools/visitors/avatar/extras.
   const getSpriteBasePx = useCallback((variant: 'normal' | 'large' | 'xlarge' = 'normal') => {
     const desktopBase = variant === 'xlarge' ? 160 : variant === 'large' ? 144 : 128;
-    return desktopBase;
-  }, []);
+    if (!isMobile) return desktopBase;
+    // Scale base proportionally to viewport width
+    const vw = window.innerWidth;
+    return desktopBase * (vw / DESKTOP_REF_WIDTH);
+  }, [isMobile]);
 
   const getSpriteTransform = useCallback((scale: number, flipX?: boolean, _category?: 'tool' | 'visitor' | 'avatar' | 'extra') => {
-    const effectiveScale = compressMobileScale(scale);
-    return `scale(${effectiveScale})${flipX ? ' scaleX(-1)' : ''}`;
-  }, [compressMobileScale]);
+    return `scale(${scale})${flipX ? ' scaleX(-1)' : ''}`;
+  }, []);
 
   // Auto-pan on mission entry toward Tool A's target (helps reveal side-wall targets)
   const initialPanTargetX = useMemo(() => {
