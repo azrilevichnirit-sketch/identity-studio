@@ -2297,7 +2297,35 @@
     "z_layer": "mid"
   },
 
-  {"_comment": "=== M14 mobile overrides - Tool B scale 2.5 → 1.5 ==="},
+  {"_comment": "=== M02 mobile overrides - scale 1.8/2.0 → 1.0/1.2 ==="},
+  {
+    "background_asset_key": "gallery_main_stylized_white_v1",
+    "anchor_ref": "m02_tool_a_mobile",
+    "x_pct": 0.6,
+    "y_pct": 0.777,
+    "scale": 1.0,
+    "z_layer": "front",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "gallery_main_stylized_white_v1",
+    "anchor_ref": "m02_tool_b_mobile",
+    "x_pct": 0.537,
+    "y_pct": 0.765,
+    "scale": 1.2,
+    "z_layer": "front",
+    "flipX": true
+  },
+
+  {"_comment": "=== M14 mobile overrides - Tool A scale 1.5 → 1.0, Tool B scale 2.5 → 1.5 ==="},
+  {
+    "background_asset_key": "studio_in_storage_bg",
+    "anchor_ref": "m14_tool_a_mobile",
+    "x_pct": 0.504,
+    "y_pct": 0.877,
+    "scale": 1.0,
+    "z_layer": "front"
+  },
   {
     "background_asset_key": "studio_in_storage_bg",
     "anchor_ref": "m14_tool_b_mobile",
