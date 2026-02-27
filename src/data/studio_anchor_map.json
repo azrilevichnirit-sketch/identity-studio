@@ -955,8 +955,8 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m10_tool_a",
-    "x_pct": 0.588,
-    "y_pct": 0.812,
+    "x_pct": 0.478,
+    "y_pct": 0.81,
     "scale": 1.4,
     "z_layer": "front",
     "flipX": true
@@ -972,25 +972,25 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m10_extra_desk",
-    "x_pct": 0.607,
-    "y_pct": 0.932,
-    "scale": 1.9,
+    "x_pct": 0.488,
+    "y_pct": 0.913,
+    "scale": 2,
     "z_layer": "mid",
     "flipX": true
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m10_extra_staff",
-    "x_pct": 0.548,
-    "y_pct": 0.808,
+    "x_pct": 0.424,
+    "y_pct": 0.802,
     "scale": 2.9,
     "z_layer": "back"
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m10_extra_staff_b",
-    "x_pct": 0.569,
-    "y_pct": 0.8,
+    "x_pct": 0.45,
+    "y_pct": 0.816,
     "scale": 2.8,
     "z_layer": "back"
   },
