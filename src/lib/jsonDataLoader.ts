@@ -174,12 +174,11 @@ function getBgKeyCandidates(bgKey: string): string[] {
   return [bgKey, ...variants];
 }
 
-function getMobileFallbackScale(anchorRef: AnchorRef, scale: number): number {
-  const isMissionVisualAnchor = /^(m\d|tie_\d|.*_extra_|.*_visitor_|.*_avatar|.*_desk)/.test(anchorRef);
-  if (!isMissionVisualAnchor) return scale;
-  if (scale <= 1.2) return scale;
-  if (scale <= 1.8) return Number((scale * 0.88).toFixed(3));
-  return Number((1.35 + (scale - 1.8) * 0.38).toFixed(3));
+function getMobileFallbackScale(_anchorRef: AnchorRef, scale: number): number {
+  // Deep parity fix: do not auto-compress mobile scales.
+  // If a _mobile override exists, it is used as-is.
+  // If no _mobile override exists, desktop scale is preserved.
+  return scale;
 }
 
 // Helper to get anchor coordinates for a specific background and anchor_ref.
