@@ -537,26 +537,16 @@ export function VisualPlayScreen({
     return x;
   }, []);
 
-  // Mobile scaling: non-linear compression for high-scale sprites.
-  // Scales ≤ 1.5 stay unchanged (they already look correct on mobile).
-  // Scales > 1.5 are compressed to prevent viewport overflow:
-  //   effectiveScale = 1.5 + (scale - 1.5) * 0.35
-  // Examples: 1.6→1.535, 2.9→1.99, 3.9→2.34
-  const compressMobileScale = useCallback((scale: number): number => {
-    if (!isMobile) return scale;
-    if (scale <= 1.5) return scale;
-    return 1.5 + (scale - 1.5) * 0.35;
-  }, [isMobile]);
-
+  // Keep strict 1:1 scale parity between desktop and mobile.
+  // We render exactly the scale from anchor map / fixedPlacement with no mobile compression.
   const getSpriteBasePx = useCallback((variant: 'normal' | 'large' | 'xlarge' = 'normal') => {
     const desktopBase = variant === 'xlarge' ? 160 : variant === 'large' ? 144 : 128;
     return desktopBase;
   }, []);
 
   const getSpriteTransform = useCallback((scale: number, flipX?: boolean, _category?: 'tool' | 'visitor' | 'avatar' | 'extra') => {
-    const effectiveScale = compressMobileScale(scale);
-    return `scale(${effectiveScale})${flipX ? ' scaleX(-1)' : ''}`;
-  }, [compressMobileScale]);
+    return `scale(${scale})${flipX ? ' scaleX(-1)' : ''}`;
+  }, []);
 
   // Auto-pan on mission entry toward Tool A's target (helps reveal side-wall targets)
   const initialPanTargetX = useMemo(() => {
