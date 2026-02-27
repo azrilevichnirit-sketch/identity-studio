@@ -921,9 +921,9 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m08_tool_b",
-    "x_pct": 0.769,
-    "y_pct": 0.824,
-    "scale": 2.1,
+    "x_pct": 0.702,
+    "y_pct": 0.886,
+    "scale": 2.2,
     "z_layer": "front",
     "flipX": true
   },
@@ -1788,8 +1788,8 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m08_visitor_01",
-    "x_pct": 0.597,
-    "y_pct": 0.761,
+    "x_pct": 0.558,
+    "y_pct": 0.762,
     "scale": 1.7,
     "z_layer": "front",
     "flipX": true
@@ -1797,25 +1797,25 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m08_visitor_02",
-    "x_pct": 0.563,
-    "y_pct": 0.84,
+    "x_pct": 0.521,
+    "y_pct": 0.856,
     "scale": 2.8,
-    "z_layer": "front"
+    "z_layer": "mid"
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m08_visitor_03",
-    "x_pct": 0.514,
-    "y_pct": 0.884,
+    "x_pct": 0.462,
+    "y_pct": 0.793,
     "scale": 3,
-    "z_layer": "front"
+    "z_layer": "back"
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m08_avatar",
-    "x_pct": 0.794,
-    "y_pct": 0.773,
-    "scale": 2.3,
+    "x_pct": 0.737,
+    "y_pct": 0.782,
+    "scale": 2.6,
     "z_layer": "mid"
   },
   {
