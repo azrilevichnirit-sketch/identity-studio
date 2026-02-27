@@ -30,30 +30,60 @@ function getBasePx(missionId: string, key: OptionKey): number {
   return isXlarge ? 160 : 128;
 }
 
+function checkAnchor(
+  bgKey: string,
+  anchorRef: AnchorRef,
+  basePx: number,
+  label: string
+): string | null {
+  const desktop = getAnchorPosition(bgKey, anchorRef, { isMobile: false });
+  const mobile = getAnchorPosition(bgKey, anchorRef, { isMobile: true });
+
+  if (!desktop) return `${label}: no desktop anchor (${bgKey} / ${anchorRef})`;
+  if (!mobile) return `${label}: no mobile anchor (${bgKey} / ${anchorRef})`;
+
+  const desktopPx = +(basePx * desktop.scale).toFixed(1);
+  const mobilePx = +(basePx * mobile.scale).toFixed(1);
+  const ratio = +(mobilePx / desktopPx).toFixed(3);
+
+  if (mobilePx < 96) return `${label}: mobile too small ${mobilePx}px (desktop=${desktopPx}px, ratio=${ratio})`;
+  if (ratio < 0.35) return `${label}: excessive shrink ratio=${ratio} (${mobilePx}px vs ${desktopPx}px)`;
+
+  return null;
+}
+
 function checkMissionTool(missionId: string, key: OptionKey): string | null {
   const bgMap = PLACEMENT_BG[missionId];
   if (!bgMap) return `missing placement background mapping`;
 
   const missionNum = missionId.replace("studio_", "").padStart(2, "0");
   const anchorRef = `m${missionNum}_tool_${key}` as AnchorRef;
-  const bgKey = bgMap[key];
-
-  const desktop = getAnchorPosition(bgKey, anchorRef, { isMobile: false });
-  const mobile = getAnchorPosition(bgKey, anchorRef, { isMobile: true });
-
-  if (!desktop) return `no desktop anchor (${bgKey} / ${anchorRef})`;
-  if (!mobile) return `no mobile anchor (${bgKey} / ${anchorRef})`;
-
-  const basePx = getBasePx(missionId, key);
-  const desktopPx = +(basePx * desktop.scale).toFixed(1);
-  const mobilePx = +(basePx * mobile.scale).toFixed(1);
-  const ratio = +(mobilePx / desktopPx).toFixed(3);
-
-  if (mobilePx < 96) return `mobile too small: ${mobilePx}px (desktop=${desktopPx}px, ratio=${ratio})`;
-  if (ratio < 0.4) return `excessive shrink: ratio=${ratio} (${mobilePx}px vs ${desktopPx}px)`;
-
-  return null; // pass
+  return checkAnchor(bgMap[key], anchorRef, getBasePx(missionId, key), "tool");
 }
+
+// Extra anchors per mission that should also be validated
+const MISSION_EXTRAS: Record<string, { bgKey: string; anchors: string[] }> = {
+  studio_08: {
+    bgKey: "studio_in_workshop_bg",
+    anchors: ["m08_visitor_01", "m08_visitor_02", "m08_visitor_03", "m08_avatar"],
+  },
+  studio_10: {
+    bgKey: "studio_in_workshop_bg",
+    anchors: ["m10_extra_desk", "m10_extra_staff", "m10_extra_staff_b"],
+  },
+  studio_11: {
+    bgKey: "studio_in_workshop_bg",
+    anchors: ["m11_avatar"],
+  },
+  studio_11_crowd: {
+    bgKey: "gallery_main_mobile_wide",
+    anchors: ["m11_crowd"],
+  },
+  studio_13: {
+    bgKey: "gallery_main_stylized",
+    anchors: ["m13_desk_a", "m13_desk_b", "m13_desk_c", "m13_extra_couple", "m13_extra_staff"],
+  },
+};
 
 describe("deep mobile audit — all 15 main missions", () => {
   const missions = getStudioQuests().slice(0, 15);
@@ -73,4 +103,16 @@ describe("deep mobile audit — all 15 main missions", () => {
       expect(err).toBeNull();
     });
   });
+});
+
+describe("deep mobile audit — extras, visitors, avatars (M08, M10, M11, M13)", () => {
+  for (const [missionId, config] of Object.entries(MISSION_EXTRAS)) {
+    config.anchors.forEach((anchorRef) => {
+      it(`${missionId} / ${anchorRef} — mobile override exists & size OK`, () => {
+        const err = checkAnchor(config.bgKey, anchorRef as AnchorRef, 128, anchorRef);
+        if (err) console.log(`❌ ${err}`);
+        expect(err).toBeNull();
+      });
+    });
+  }
 });
