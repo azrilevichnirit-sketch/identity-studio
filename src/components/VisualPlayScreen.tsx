@@ -850,6 +850,14 @@ export function VisualPlayScreen({
     setLockPulseKey(null);
     const isMission01Paint = false; // M01 no longer changes background
     const isMission01ToolB = mission.mission_id === 'studio_01' && variant === 'b';
+
+    // In Tool Edit mode we freeze progression after placement so calibration/debug
+    // can inspect exact landing location without mission auto-advance.
+    if (toolEditMode) {
+      setJustPlaced(`${mission.mission_id}-${variant}`);
+      setCarryModeTool(null);
+      return;
+    }
     
     // ===== TIMING SEQUENCE =====
     // Tool -> Lock pulse -> Advance to next mission
@@ -943,7 +951,7 @@ export function VisualPlayScreen({
     timeoutsRef.current.push(advanceId);
     
     setCarryModeTool(null);
-  }, [mission.mission_id, mission.phase, mission.sequence, optionA, optionB, onSelect, hasDraggedOnce, getTargetBgForOption, PAINTED_WALLS_BG_KEY, currentBg, getTargetAnchor, getToolPlacementFromAnchorMap, isMobile, isPanoramic, lockedBgKey]);
+  }, [mission.mission_id, mission.phase, mission.sequence, optionA, optionB, onSelect, hasDraggedOnce, getTargetBgForOption, PAINTED_WALLS_BG_KEY, currentBg, getTargetAnchor, getToolPlacementFromAnchorMap, isMobile, isPanoramic, lockedBgKey, toolEditMode]);
 
   // Click-to-place: immediately place the selected tool
   const handleToolClick = useCallback((variant: 'a' | 'b', e: React.PointerEvent | React.MouseEvent) => {
