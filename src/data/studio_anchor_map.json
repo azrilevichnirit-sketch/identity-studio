@@ -772,9 +772,9 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m06_tool_a",
-    "x_pct": 0.527,
-    "y_pct": 0.865,
-    "scale": 1.5,
+    "x_pct": 0.51,
+    "y_pct": 0.837,
+    "scale": 1,
     "z_layer": "front",
     "flipX": true
   },
@@ -798,9 +798,9 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m06_extra_rack",
-    "x_pct": 0.517,
-    "y_pct": 0.847,
-    "scale": 1.3,
+    "x_pct": 0.46,
+    "y_pct": 0.813,
+    "scale": 1.2,
     "z_layer": "mid"
   },
   {
