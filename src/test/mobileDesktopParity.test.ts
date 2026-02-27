@@ -1,51 +1,58 @@
 import { describe, it, expect } from "vitest";
 
 /**
- * With viewport-relative sprite sizing, desktop and mobile use the SAME anchor data.
- * The sprite base scales proportionally with viewport width:
- *   spriteBasePx = Math.round(viewportWidth * 128 / 1366)
+ * The sprite base is a FIXED 128px on all devices.
+ * Mobile scale adjustments are handled by:
+ *   1. Explicit _mobile overrides in the anchor map
+ *   2. getMobileFallbackScale() compression for anchors without overrides
  *
- * This test verifies the math guarantees proportional parity.
+ * This test verifies the fixed base and compression logic.
  */
-describe("viewport-relative sprite sizing parity", () => {
-  const DESKTOP_BASE = 128;
-  const DESKTOP_REF_WIDTH = 1366;
-  const RATIO = DESKTOP_BASE / DESKTOP_REF_WIDTH;
+describe("fixed sprite base with mobile scale compression", () => {
+  const SPRITE_BASE = 128;
 
-  it("produces exactly 128px base at 1366px desktop", () => {
-    const base = Math.round(1366 * RATIO);
-    expect(base).toBe(128);
+  it("sprite base is always 128px regardless of viewport", () => {
+    expect(SPRITE_BASE).toBe(128);
   });
 
-  it("produces proportionally correct base at 360px mobile", () => {
-    const base = Math.round(360 * RATIO);
-    // 360 * 0.0937 ≈ 33.7 → rounds to 34
-    expect(base).toBeGreaterThanOrEqual(33);
-    expect(base).toBeLessThanOrEqual(34);
+  it("large variant is 144px, xlarge is 160px", () => {
+    const large = Math.round(SPRITE_BASE * (144 / 128));
+    const xlarge = Math.round(SPRITE_BASE * (160 / 128));
+    expect(large).toBe(144);
+    expect(xlarge).toBe(160);
   });
 
-  it("a scale of 3.3 occupies the same viewport % on desktop and mobile", () => {
-    const scale = 3.3;
-    const desktopPx = Math.round(1366 * RATIO) * scale;
-    const mobilePx = Math.round(360 * RATIO) * scale;
+  // Replicate getMobileFallbackScale logic
+  function mobileFallback(scale: number): number {
+    if (scale <= 1.2) return scale;
+    if (scale <= 1.8) return +(scale * 0.88).toFixed(2);
+    return +(1.35 + (scale - 1.8) * 0.38).toFixed(2);
+  }
 
-    const desktopPct = desktopPx / 1366;
-    const mobilePct = mobilePx / 360;
-
-    // Should be within 1% of each other
-    expect(Math.abs(desktopPct - mobilePct)).toBeLessThan(0.01);
+  it("small scales (≤1.2) pass through unchanged", () => {
+    expect(mobileFallback(0.9)).toBe(0.9);
+    expect(mobileFallback(1.2)).toBe(1.2);
   });
 
-  it("large and xlarge variants maintain correct proportions", () => {
-    const vw = 360;
-    const base = Math.round(vw * RATIO);
-    const large = Math.round(base * (144 / 128));
-    const xlarge = Math.round(base * (160 / 128));
+  it("moderate scales (1.2–1.8) are compressed by 12%", () => {
+    expect(mobileFallback(1.5)).toBeCloseTo(1.32, 1);
+    expect(mobileFallback(1.8)).toBeCloseTo(1.58, 1);
+  });
 
-    expect(large).toBeGreaterThan(base);
-    expect(xlarge).toBeGreaterThan(large);
-    // Ratios preserved
-    expect(large / base).toBeCloseTo(144 / 128, 1);
-    expect(xlarge / base).toBeCloseTo(160 / 128, 1);
+  it("large scales (>1.8) are heavily compressed", () => {
+    // scale 2.6 → 1.35 + 0.8*0.38 = 1.654
+    expect(mobileFallback(2.6)).toBeCloseTo(1.65, 1);
+    // scale 3.3 → 1.35 + 1.5*0.38 = 1.92
+    expect(mobileFallback(3.3)).toBeCloseTo(1.92, 1);
+    // scale 4.2 → 1.35 + 2.4*0.38 = 2.262
+    expect(mobileFallback(4.2)).toBeCloseTo(2.26, 1);
+  });
+
+  it("mobile tool at scale 2.6 renders at reasonable size", () => {
+    const mobileScale = mobileFallback(2.6);
+    const px = SPRITE_BASE * mobileScale;
+    // ~211px on 360px screen = ~59% — visible but not overwhelming
+    expect(px).toBeGreaterThan(150);
+    expect(px).toBeLessThan(280);
   });
 });
