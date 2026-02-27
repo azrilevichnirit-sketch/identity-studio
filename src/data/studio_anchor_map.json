@@ -193,9 +193,9 @@
   {
     "background_asset_key": "studio_doorway_park_view_v5",
     "anchor_ref": "m03_tool_a",
-    "x_pct": 0.922,
-    "y_pct": 0.899,
-    "scale": 3.4,
+    "x_pct": 0.815,
+    "y_pct": 0.886,
+    "scale": 2.7,
     "z_layer": "front",
     "flipX": true
   },
@@ -213,7 +213,7 @@
     "anchor_ref": "m03_tool_b_1",
     "x_pct": 0.257,
     "y_pct": 0.882,
-    "scale": 2.1,
+    "scale": 1.7,
     "z_layer": "front"
   },
   {
@@ -238,33 +238,33 @@
     "anchor_ref": "m03_visitor_01",
     "x_pct": 0.658,
     "y_pct": 0.898,
-    "scale": 2.7,
-    "z_layer": "mid",
+    "scale": 2.4,
+    "z_layer": "back",
     "flipX": true
   },
   {
     "background_asset_key": "studio_doorway_park_view_v5",
     "anchor_ref": "m03_visitor_02",
-    "x_pct": 0.294,
-    "y_pct": 0.805,
-    "scale": 1.9,
-    "z_layer": "mid"
+    "x_pct": 0.293,
+    "y_pct": 0.819,
+    "scale": 1.7,
+    "z_layer": "back"
   },
   {
     "background_asset_key": "studio_doorway_park_view_v5",
     "anchor_ref": "m03_visitor_03",
-    "x_pct": 0.229,
-    "y_pct": 0.786,
+    "x_pct": 0.224,
+    "y_pct": 0.819,
     "scale": 1.7,
-    "z_layer": "mid"
+    "z_layer": "back"
   },
   {
     "background_asset_key": "studio_doorway_park_view_v5",
     "anchor_ref": "m03_visitor_04",
     "x_pct": 0.624,
     "y_pct": 0.879,
-    "scale": 2.0,
-    "z_layer": "mid",
+    "scale": 1.9,
+    "z_layer": "back",
     "flipX": true
   },
   {
