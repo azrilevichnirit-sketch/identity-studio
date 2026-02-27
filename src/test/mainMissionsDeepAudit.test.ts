@@ -4,7 +4,6 @@ import type { AnchorRef } from "@/types/identity";
 
 type OptionKey = "a" | "b";
 
-// Mirrors the actual placement background logic in VisualPlayScreen
 const PLACEMENT_BG: Record<string, { a: string; b: string }> = {
   studio_01: { a: "studio_entry_inside_bg", b: "studio_entry_inside_bg" },
   studio_02: { a: "gallery_main_stylized_white_v1", b: "gallery_main_stylized_white_v1" },
@@ -23,93 +22,89 @@ const PLACEMENT_BG: Record<string, { a: string; b: string }> = {
   studio_15: { a: "gallery_main_stylized", b: "gallery_main_stylized" },
 };
 
-function getBasePx(missionId: string, key: OptionKey): number {
+// Viewport-proportional base (mirrors VisualPlayScreen logic)
+function getBasePxForViewport(width: number, missionId: string, key: OptionKey): number {
   const isXlarge =
     (missionId === "studio_01" && key === "b") ||
     (missionId === "studio_02" && key === "b");
-  return isXlarge ? 160 : 128;
+  const viewportBase = Math.max(72, Math.min(128, Math.round(width * 0.0937)));
+  const factor = isXlarge ? 160 / 128 : 1;
+  return Math.round(viewportBase * factor);
 }
 
-function checkAnchor(
+function checkAnchorAtViewport(
   bgKey: string,
   anchorRef: AnchorRef,
+  viewportWidth: number,
   basePx: number,
-  label: string
+  label: string,
+  isMobile: boolean,
 ): string | null {
-  const desktop = getAnchorPosition(bgKey, anchorRef, { isMobile: false });
-  const mobile = getAnchorPosition(bgKey, anchorRef, { isMobile: true });
+  const pos = getAnchorPosition(bgKey, anchorRef, { isMobile });
+  if (!pos) return `${label}: no anchor (${bgKey} / ${anchorRef})`;
 
-  if (!desktop) return `${label}: no desktop anchor (${bgKey} / ${anchorRef})`;
-  if (!mobile) return `${label}: no mobile anchor (${bgKey} / ${anchorRef})`;
+  const px = +(basePx * pos.scale).toFixed(1);
+  const minPx = isMobile ? 56 : 80;
 
-  const desktopPx = +(basePx * desktop.scale).toFixed(1);
-  const mobilePx = +(basePx * mobile.scale).toFixed(1);
-  const ratio = +(mobilePx / desktopPx).toFixed(3);
-
-  if (mobilePx < 96) return `${label}: mobile too small ${mobilePx}px (desktop=${desktopPx}px, ratio=${ratio})`;
-  if (ratio < 0.35) return `${label}: excessive shrink ratio=${ratio} (${mobilePx}px vs ${desktopPx}px)`;
-
+  if (px < minPx) return `${label}: too small ${px}px at ${viewportWidth}px viewport (min=${minPx}px)`;
   return null;
 }
 
-function checkMissionTool(missionId: string, key: OptionKey): string | null {
+function checkMissionToolAtViewport(missionId: string, key: OptionKey, viewportWidth: number): string | null {
   const bgMap = PLACEMENT_BG[missionId];
   if (!bgMap) return `missing placement background mapping`;
-
   const missionNum = missionId.replace("studio_", "").padStart(2, "0");
   const anchorRef = `m${missionNum}_tool_${key}` as AnchorRef;
-  return checkAnchor(bgMap[key], anchorRef, getBasePx(missionId, key), "tool");
+  const isMobile = viewportWidth <= 820;
+  const basePx = getBasePxForViewport(viewportWidth, missionId, key);
+  return checkAnchorAtViewport(bgMap[key], anchorRef, viewportWidth, basePx, "tool", isMobile);
 }
 
-// Extra anchors per mission that should also be validated
 const MISSION_EXTRAS: Record<string, { bgKey: string; anchors: string[] }> = {
-  studio_08: {
-    bgKey: "studio_in_workshop_bg",
-    anchors: ["m08_visitor_01", "m08_visitor_02", "m08_visitor_03", "m08_avatar"],
-  },
-  studio_10: {
-    bgKey: "studio_in_workshop_bg",
-    anchors: ["m10_extra_desk", "m10_extra_staff", "m10_extra_staff_b"],
-  },
-  studio_11: {
-    bgKey: "studio_in_workshop_bg",
-    anchors: ["m11_avatar"],
-  },
-  studio_11_crowd: {
-    bgKey: "gallery_main_mobile_wide",
-    anchors: ["m11_crowd"],
-  },
-  studio_13: {
-    bgKey: "gallery_main_stylized",
-    anchors: ["m13_desk_a", "m13_desk_b", "m13_desk_c", "m13_extra_couple", "m13_extra_staff"],
-  },
+  studio_08: { bgKey: "studio_in_workshop_bg", anchors: ["m08_visitor_01", "m08_visitor_02", "m08_visitor_03", "m08_avatar"] },
+  studio_10: { bgKey: "studio_in_workshop_bg", anchors: ["m10_extra_desk", "m10_extra_staff", "m10_extra_staff_b"] },
+  studio_11: { bgKey: "studio_in_workshop_bg", anchors: ["m11_avatar"] },
+  studio_11_crowd: { bgKey: "gallery_main_mobile_wide", anchors: ["m11_crowd"] },
+  studio_13: { bgKey: "gallery_main_stylized", anchors: ["m13_desk_a", "m13_desk_b", "m13_desk_c", "m13_extra_couple", "m13_extra_staff"] },
 };
 
-describe("deep mobile audit — all 15 main missions", () => {
+const VIEWPORTS = [
+  { width: 1366, label: "desktop", isMobile: false },
+  { width: 820, label: "tablet", isMobile: true },
+  { width: 360, label: "phone", isMobile: true },
+];
+
+describe("deep mobile audit — all 15 missions at 3 viewports", () => {
   const missions = getStudioQuests().slice(0, 15);
 
-  missions.forEach((mission, idx) => {
-    const num = idx + 1;
+  for (const vp of VIEWPORTS) {
+    describe(`${vp.label} (${vp.width}px)`, () => {
+      missions.forEach((mission, idx) => {
+        const num = idx + 1;
+        const prefix = `M${String(num).padStart(2, "0")}`;
 
-    it(`M${String(num).padStart(2, "0")} Tool A — anchor resolves & mobile size OK`, () => {
-      const err = checkMissionTool(mission.mission_id, "a");
-      if (err) console.log(`❌ ${mission.mission_id}/a: ${err}`);
-      expect(err).toBeNull();
-    });
+        it(`${prefix} Tool A`, () => {
+          const err = checkMissionToolAtViewport(mission.mission_id, "a", vp.width);
+          if (err) console.log(`❌ ${err}`);
+          expect(err).toBeNull();
+        });
 
-    it(`M${String(num).padStart(2, "0")} Tool B — anchor resolves & mobile size OK`, () => {
-      const err = checkMissionTool(mission.mission_id, "b");
-      if (err) console.log(`❌ ${mission.mission_id}/b: ${err}`);
-      expect(err).toBeNull();
+        it(`${prefix} Tool B`, () => {
+          const err = checkMissionToolAtViewport(mission.mission_id, "b", vp.width);
+          if (err) console.log(`❌ ${err}`);
+          expect(err).toBeNull();
+        });
+      });
     });
-  });
+  }
 });
 
-describe("deep mobile audit — extras, visitors, avatars (M08, M10, M11, M13)", () => {
+describe("extras audit — M08, M10, M11, M13 at phone (360px)", () => {
   for (const [missionId, config] of Object.entries(MISSION_EXTRAS)) {
     config.anchors.forEach((anchorRef) => {
-      it(`${missionId} / ${anchorRef} — mobile override exists & size OK`, () => {
-        const err = checkAnchor(config.bgKey, anchorRef as AnchorRef, 128, anchorRef);
+      it(`${missionId} / ${anchorRef}`, () => {
+        const basePx = Math.max(72, Math.min(128, Math.round(360 * 0.0937)));
+        const err = checkAnchorAtViewport(config.bgKey, anchorRef as AnchorRef, 360, basePx, anchorRef, true);
         if (err) console.log(`❌ ${err}`);
         expect(err).toBeNull();
       });

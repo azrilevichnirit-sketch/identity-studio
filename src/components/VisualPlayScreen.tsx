@@ -537,12 +537,12 @@ export function VisualPlayScreen({
     return x;
   }, []);
 
-  // Fixed sprite base size — mobile scale adjustments are handled by _mobile overrides
-  // in the anchor map and getMobileFallbackScale() compression.
+  // Viewport-proportional sprite base: 128px at 1366px desktop, scales down on mobile.
+  // Floor of 72px prevents ant-sized sprites on small phones (360px).
   const getSpriteBasePx = useCallback((variant: 'normal' | 'large' | 'xlarge' = 'normal') => {
-    const base = 128;
+    const viewportBase = Math.max(72, Math.min(128, Math.round(window.innerWidth * 0.0937)));
     const factor = variant === 'xlarge' ? 160 / 128 : variant === 'large' ? 144 / 128 : 1;
-    return Math.round(base * factor);
+    return Math.round(viewportBase * factor);
   }, []);
 
   const getSpriteTransform = useCallback((scale: number, flipX?: boolean, _category?: 'tool' | 'visitor' | 'avatar' | 'extra') => {
