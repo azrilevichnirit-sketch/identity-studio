@@ -70,6 +70,12 @@ export type AnchorRef =
   | `tie_${string}_tool_a`
   | `tie_${string}_tool_b`
   | `tie_${string}_extra_${string}`
+  | `m${string}_tool_${string}_mobile`
+  | `m${string}_extra_${string}_mobile`
+  | `m${string}_visitor_${string}_mobile`
+  | `m${string}_avatar_mobile`
+  | `m${string}_crowd_mobile`
+  | `m${string}_desk_${string}_mobile`
   | 'm01_npc_female'
   | 'm02_npc_male_a'
   | 'm02_npc_male_b'
