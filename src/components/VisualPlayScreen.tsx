@@ -537,11 +537,14 @@ export function VisualPlayScreen({
     return x;
   }, []);
 
-  // Keep strict 1:1 scale parity between desktop and mobile.
-  // We render exactly the scale from anchor map / fixedPlacement with no mobile compression.
+  // Viewport-relative sprite base: ensures identical visual proportions on any screen width.
+  // On desktop (1366px): 128px. On mobile (360px): ~34px. Same ratio = same look.
   const getSpriteBasePx = useCallback((variant: 'normal' | 'large' | 'xlarge' = 'normal') => {
-    const desktopBase = variant === 'xlarge' ? 160 : variant === 'large' ? 144 : 128;
-    return desktopBase;
+    const RATIO = 128 / 1366; // ~0.0937 — proportion of 128px base to reference desktop width
+    const vw = typeof window !== 'undefined' ? window.innerWidth : 1366;
+    const base = Math.round(vw * RATIO);
+    const factor = variant === 'xlarge' ? 160 / 128 : variant === 'large' ? 144 / 128 : 1;
+    return Math.round(base * factor);
   }, []);
 
   const getSpriteTransform = useCallback((scale: number, flipX?: boolean, _category?: 'tool' | 'visitor' | 'avatar' | 'extra') => {
