@@ -49,6 +49,8 @@ import m07Frames from '@/assets/extras/studio_extra_asset_11.webp';
 import m07Easel from '@/assets/extras/studio_extra_asset_12.webp';
 import m07VasesLight from '@/assets/extras/studio_extra_asset_13.webp';
 import m07VasesDark from '@/assets/extras/studio_extra_asset_14.webp';
+// Mission 6 rack prop
+import m06RackImg from '@/assets/extras/studio_extra_asset_05.webp';
 // import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter'; // Disabled
 
 const DRAG_HINT_STORAGE_KEY = 'ie_hasDraggedOnce';
@@ -2501,6 +2503,24 @@ export function VisualPlayScreen({
               { id: 'm12_tool_a_5', img: toolAImg, label: 'עותק 5' },
             ]} />
           )}
+        </>
+      );
+    }
+    if (mission.mission_id === 'studio_06') {
+      return (
+        <>
+          <ToolCalibrationEditor
+            mission={mission}
+            currentBgKey={lockedBgKey}
+            onNextMission={onEditorNextMission}
+            sceneExtras={sceneExtras}
+            onExtraPositionChange={(extraId, x, y, scale) => {
+              setExtraOverrides(prev => ({ ...prev, [extraId]: { x, y, scale } }));
+            }}
+          />
+          <VisitorCalibrationEditor bgKey="studio_in_workshop_bg" title="M06 Rack (Tool A)" visitors={[
+            { id: 'm06_extra_rack', img: m06RackImg, label: 'מתלה (כלי A)' },
+          ]} />
         </>
       );
     }
