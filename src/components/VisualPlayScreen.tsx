@@ -537,12 +537,11 @@ export function VisualPlayScreen({
     return x;
   }, []);
 
-  // Viewport-proportional sizing policy:
-  // Elements occupy the same % of screen as on desktop (128px / 1366px ≈ 9.37%).
-  // Floor of 48px prevents elements from becoming too small on tiny screens.
+  // Deep parity sizing policy:
+  // keep sprite base identical to desktop for all viewports (including <=820 and <=360)
+  // so no tool/extra/avatar appears smaller than desktop calibration.
   const getSpriteBasePx = useCallback((variant: 'normal' | 'large' | 'xlarge' = 'normal') => {
-    const vw = typeof window !== 'undefined' ? window.innerWidth : 1366;
-    const viewportBase = Math.max(48, Math.round(vw * 0.0937));
+    const viewportBase = 128;
     const factor = variant === 'xlarge' ? 160 / 128 : variant === 'large' ? 144 / 128 : 1;
     return Math.round(viewportBase * factor);
   }, []);
