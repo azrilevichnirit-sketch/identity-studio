@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Move, Copy, ChevronDown, ChevronUp } from 'lucide-react';
 import { getAnchorPosition } from '@/lib/jsonDataLoader';
 import { getToolImage } from '@/lib/assetUtils';
+import { useIsMobile } from '@/hooks/use-mobile';
 import type { AnchorRef, Mission } from '@/types/identity';
 
 // Import all possible branching backgrounds
@@ -32,7 +33,8 @@ interface ToolPosition {
 }
 
 export function BranchingCalibrationEditor({ mission, bgKeyA, bgKeyB, onBackgroundChange }: BranchingCalibrationEditorProps) {
-  const [isOpen, setIsOpen] = useState(true);
+  const isMobile = useIsMobile();
+  const [isOpen, setIsOpen] = useState(!isMobile);
   const [selectedTool, setSelectedTool] = useState<'a' | 'b'>('a');
 
   const isTie = mission.mission_id.includes('_tie_');
@@ -64,6 +66,10 @@ export function BranchingCalibrationEditor({ mission, bgKeyA, bgKeyB, onBackgrou
     const bgUrl = BG_MAP[bgKey];
     if (bgUrl) onBackgroundChange?.(bgUrl, bgKey);
   }, [selectedTool, bgKeyA, bgKeyB, onBackgroundChange]);
+
+  useEffect(() => {
+    if (isMobile) setIsOpen(false);
+  }, [isMobile, mission.mission_id]);
 
   const optionA = mission.options.find(o => o.key === 'a');
   const optionB = mission.options.find(o => o.key === 'b');
@@ -155,6 +161,10 @@ export function BranchingCalibrationEditor({ mission, bgKeyA, bgKeyB, onBackgrou
   const bgLabelA = bgKeyA.replace('studio_', '').replace('gallery_main_', '').replace(/_/g, ' ');
   const bgLabelB = bgKeyB.replace('studio_', '').replace('gallery_main_', '').replace(/_/g, ' ');
 
+  const panelPositionClass = isMobile
+    ? 'left-2 right-2 top-auto bottom-[max(0.5rem,env(safe-area-inset-bottom))] max-h-[44dvh]'
+    : 'top-4 left-4 max-w-[220px]';
+
   return (
     <>
       {/* Draggable tool */}
@@ -190,7 +200,7 @@ export function BranchingCalibrationEditor({ mission, bgKeyA, bgKeyB, onBackgrou
       </div>
 
       {/* Control panel */}
-      <div className="fixed top-4 left-4 z-[200] bg-card border border-border rounded-lg shadow-xl text-xs max-w-[220px]">
+      <div className={`fixed z-[200] bg-card border border-border rounded-lg shadow-xl text-xs overflow-y-auto ${panelPositionClass}`}>
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="w-full flex items-center justify-between px-3 py-2 font-medium text-foreground hover:bg-accent"
