@@ -537,12 +537,17 @@ export function VisualPlayScreen({
     return x;
   }, []);
 
-  // Keep strict 1:1 scale parity between desktop and mobile.
-  // We render exactly the scale from anchor map / fixedPlacement with no mobile compression.
+  // Viewport-responsive base size: on desktop (1920px reference) base = 128px.
+  // On smaller viewports, scale down proportionally so tools keep the same
+  // visual ratio relative to the screen — no mobile overrides needed.
+  const REFERENCE_WIDTH = 1920;
   const getSpriteBasePx = useCallback((variant: 'normal' | 'large' | 'xlarge' = 'normal') => {
     const desktopBase = variant === 'xlarge' ? 160 : variant === 'large' ? 144 : 128;
-    return desktopBase;
-  }, []);
+    if (!isMobile) return desktopBase;
+    const vw = window.innerWidth;
+    const factor = vw / REFERENCE_WIDTH;
+    return desktopBase * factor;
+  }, [isMobile]);
 
   const getSpriteTransform = useCallback((scale: number, flipX?: boolean, _category?: 'tool' | 'visitor' | 'avatar' | 'extra') => {
     return `scale(${scale})${flipX ? ' scaleX(-1)' : ''}`;
