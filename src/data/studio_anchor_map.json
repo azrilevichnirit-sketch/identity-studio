@@ -781,17 +781,17 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m06_tool_b",
-    "x_pct": 0.829,
-    "y_pct": 0.761,
+    "x_pct": 0.794,
+    "y_pct": 0.742,
     "scale": 1.1,
     "z_layer": "front"
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m06_extra_desk",
-    "x_pct": 0.829,
-    "y_pct": 0.83,
-    "scale": 1.4,
+    "x_pct": 0.787,
+    "y_pct": 0.81,
+    "scale": 1.8,
     "z_layer": "mid",
     "flipX": true
   },
