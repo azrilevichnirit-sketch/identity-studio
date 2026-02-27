@@ -1771,9 +1771,9 @@
   {
     "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m08_visitor_01",
-    "x_pct": 0.558,
-    "y_pct": 0.762,
-    "scale": 1.7,
+    "x_pct": 0.392,
+    "y_pct": 0.754,
+    "scale": 1.9,
     "z_layer": "front",
     "flipX": true
   },
@@ -1790,7 +1790,7 @@
     "anchor_ref": "m08_visitor_03",
     "x_pct": 0.462,
     "y_pct": 0.793,
-    "scale": 3,
+    "scale": 3.0,
     "z_layer": "back"
   },
   {
