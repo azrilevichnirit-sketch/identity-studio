@@ -174,6 +174,14 @@ function getBgKeyCandidates(bgKey: string): string[] {
   return [bgKey, ...variants];
 }
 
+function getMobileFallbackScale(anchorRef: AnchorRef, scale: number): number {
+  const isMissionVisualAnchor = /^(m\d|tie_\d|.*_extra_|.*_visitor_|.*_avatar|.*_desk)/.test(anchorRef);
+  if (!isMissionVisualAnchor) return scale;
+  if (scale <= 1.2) return scale;
+  if (scale <= 1.8) return Number((scale * 0.88).toFixed(3));
+  return Number((1.35 + (scale - 1.8) * 0.38).toFixed(3));
+}
+
 // Helper to get anchor coordinates for a specific background and anchor_ref.
 // On mobile, checks for a mobile-specific override first (anchor_ref + "_mobile").
 // This allows per-mission mobile calibration without affecting desktop at all.
@@ -204,7 +212,16 @@ export function getAnchorPosition(
 
   for (const key of bgCandidates) {
     const match = anchors.find(a => a.background_asset_key === key && a.anchor_ref === anchorRef);
-    if (match) return toAnchorPosition(match);
+    if (match) {
+      const resolved = toAnchorPosition(match);
+      if (options?.isMobile) {
+        return {
+          ...resolved,
+          scale: getMobileFallbackScale(anchorRef, resolved.scale),
+        };
+      }
+      return resolved;
+    }
   }
 
   // Fallback defaults - ONLY for generic/structural anchors, NOT mission-specific tool anchors.
