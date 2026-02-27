@@ -2,7 +2,7 @@ import React, { useMemo, useState, useRef, useCallback, useEffect } from 'react'
 import type { Mission, HollandCode, AvatarGender, PickRecord, MissionOption, AnchorRef } from '@/types/identity';
 import { getToolImage, getBackgroundForMission, getAvatarImage, getBackgroundKey, getBackgroundByName, getPanoramicBackground, preloadBackground, preloadAllBackgrounds } from '@/lib/assetUtils';
 import { panOffsetToDropCompensation, panOffsetToTranslatePercent } from '@/lib/pan';
-import { getAnchorPosition } from '@/lib/jsonDataLoader';
+import { getAnchorPosition as _getAnchorPosition } from '@/lib/jsonDataLoader';
 import { SpeechBubble } from './SpeechBubble';
 import { Info } from 'lucide-react';
 import { UndoConfirmPopover } from './UndoConfirmDialog';
@@ -333,6 +333,12 @@ export function VisualPlayScreen({
   
   // Mobile detection (used across background + interactions)
   const isMobile = useIsMobile();
+  
+  // Mobile-aware anchor lookup: automatically checks for _mobile overrides on mobile devices.
+  // Desktop is completely unaffected — this wrapper only adds the isMobile flag.
+  const getAnchorPosition = useCallback((bgKey: string, anchorRef: AnchorRef) => {
+    return _getAnchorPosition(bgKey, anchorRef, { isMobile });
+  }, [isMobile]);
   // Product rule: Mission 02 uses white walls ONLY if Tool A was chosen in Mission 01.
   // If Tool B was chosen, keep the cracked walls background.
   // Exterior missions (view: "out") use exterior background.

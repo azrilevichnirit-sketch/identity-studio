@@ -147,9 +147,31 @@ export function getAnchorMap(): AnchorCoordinate[] {
   return _anchorMap;
 }
 
-// Helper to get anchor coordinates for a specific background and anchor_ref
-export function getAnchorPosition(bgKey: string, anchorRef: AnchorRef): { x: number; y: number; scale: number; z_layer: string; flipX: boolean } | null {
+// Helper to get anchor coordinates for a specific background and anchor_ref.
+// On mobile, checks for a mobile-specific override first (anchor_ref + "_mobile").
+// This allows per-mission mobile calibration without affecting desktop at all.
+export function getAnchorPosition(
+  bgKey: string,
+  anchorRef: AnchorRef,
+  options?: { isMobile?: boolean }
+): { x: number; y: number; scale: number; z_layer: string; flipX: boolean } | null {
   const anchors = getAnchorMap();
+  
+  // On mobile, try mobile-specific override first (e.g., "m06_tool_a_mobile")
+  if (options?.isMobile) {
+    const mobileRef = `${anchorRef}_mobile`;
+    const mobileMatch = anchors.find(a => a.background_asset_key === bgKey && a.anchor_ref === mobileRef);
+    if (mobileMatch) {
+      return {
+        x: mobileMatch.x_pct * 100,
+        y: mobileMatch.y_pct * 100,
+        scale: mobileMatch.scale,
+        z_layer: mobileMatch.z_layer,
+        flipX: mobileMatch.flipX || false,
+      };
+    }
+  }
+  
   const match = anchors.find(a => a.background_asset_key === bgKey && a.anchor_ref === anchorRef);
   
   if (match) {

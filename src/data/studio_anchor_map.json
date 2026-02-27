@@ -1843,5 +1843,189 @@
     "y_pct": 0.736,
     "scale": 1.4,
     "z_layer": "back"
+  },
+
+  {
+    "_comment": "=== MOBILE OVERRIDES === These entries are used ONLY on mobile (<=820px). They override the desktop anchor of the same name (without _mobile suffix). Desktop rendering is completely unaffected.",
+    "background_asset_key": "_mobile_overrides_marker",
+    "anchor_ref": "_marker",
+    "x_pct": 0,
+    "y_pct": 0,
+    "scale": 0,
+    "z_layer": "mid"
+  },
+
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m06_tool_a_mobile",
+    "x_pct": 0.51,
+    "y_pct": 0.837,
+    "scale": 1.0,
+    "z_layer": "front",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m06_tool_b_mobile",
+    "x_pct": 0.794,
+    "y_pct": 0.742,
+    "scale": 1.1,
+    "z_layer": "front"
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m06_extra_desk_mobile",
+    "x_pct": 0.787,
+    "y_pct": 0.81,
+    "scale": 1.8,
+    "z_layer": "mid",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m06_extra_rack_mobile",
+    "x_pct": 0.46,
+    "y_pct": 0.813,
+    "scale": 1.2,
+    "z_layer": "mid"
+  },
+
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m10_tool_a_mobile",
+    "x_pct": 0.466,
+    "y_pct": 0.797,
+    "scale": 1.3,
+    "z_layer": "front",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m10_tool_b_mobile",
+    "x_pct": 0.466,
+    "y_pct": 0.791,
+    "scale": 1.3,
+    "z_layer": "front",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m10_extra_desk_mobile",
+    "x_pct": 0.488,
+    "y_pct": 0.913,
+    "scale": 1.5,
+    "z_layer": "mid",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m10_extra_staff_mobile",
+    "x_pct": 0.412,
+    "y_pct": 0.849,
+    "scale": 1.8,
+    "z_layer": "back"
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m10_extra_staff_b_mobile",
+    "x_pct": 0.428,
+    "y_pct": 0.826,
+    "scale": 1.8,
+    "z_layer": "back"
+  },
+
+  {
+    "background_asset_key": "gallery_main_stylized",
+    "anchor_ref": "m13_tool_a_mobile",
+    "x_pct": 0.508,
+    "y_pct": 0.781,
+    "scale": 0.9,
+    "z_layer": "front"
+  },
+  {
+    "background_asset_key": "gallery_main_stylized",
+    "anchor_ref": "m13_tool_b_mobile",
+    "x_pct": 0.52,
+    "y_pct": 0.788,
+    "scale": 1.2,
+    "z_layer": "front",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "gallery_main_stylized",
+    "anchor_ref": "m13_desk_a_mobile",
+    "x_pct": 0.764,
+    "y_pct": 0.948,
+    "scale": 1.5,
+    "z_layer": "front",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "gallery_main_stylized",
+    "anchor_ref": "m13_desk_b_mobile",
+    "x_pct": 0.505,
+    "y_pct": 0.91,
+    "scale": 1.8,
+    "z_layer": "front"
+  },
+  {
+    "background_asset_key": "gallery_main_stylized",
+    "anchor_ref": "m13_desk_c_mobile",
+    "x_pct": 0.226,
+    "y_pct": 0.839,
+    "scale": 1.5,
+    "z_layer": "front"
+  },
+  {
+    "background_asset_key": "gallery_main_stylized",
+    "anchor_ref": "m13_extra_couple_mobile",
+    "x_pct": 0.509,
+    "y_pct": 0.793,
+    "scale": 2.2,
+    "z_layer": "back"
+  },
+  {
+    "background_asset_key": "gallery_main_stylized",
+    "anchor_ref": "m13_extra_staff_mobile",
+    "x_pct": 0.603,
+    "y_pct": 0.833,
+    "scale": 2.1,
+    "z_layer": "back",
+    "flipX": true
+  },
+
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m11_tool_a_mobile",
+    "x_pct": 0.505,
+    "y_pct": 0.9,
+    "scale": 2.0,
+    "z_layer": "front",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m11_avatar_mobile",
+    "x_pct": 0.588,
+    "y_pct": 0.791,
+    "scale": 1.8,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "gallery_main_mobile_wide",
+    "anchor_ref": "m11_tool_b_mobile",
+    "x_pct": 0.628,
+    "y_pct": 0.717,
+    "scale": 2.3,
+    "z_layer": "front",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "gallery_main_mobile_wide",
+    "anchor_ref": "m11_crowd_mobile",
+    "x_pct": 0.336,
+    "y_pct": 0.796,
+    "scale": 2.0,
+    "z_layer": "mid"
   }
 ]
