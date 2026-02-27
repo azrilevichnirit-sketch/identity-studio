@@ -1086,8 +1086,8 @@
     "background_asset_key": "gallery_main_desktop",
     "anchor_ref": "m12_tool_b",
     "x_pct": 0.534,
-    "y_pct": 0.961,
-    "scale": 3.2,
+    "y_pct": 0.931,
+    "scale": 2.9,
     "z_layer": "front",
     "flipX": true
   },
