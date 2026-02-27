@@ -4,10 +4,8 @@ import type { AnchorRef } from "@/types/identity";
 
 type OptionKey = "a" | "b";
 
-type MissionBgMap = Record<string, { a: string; b: string }>;
-
 // Mirrors the actual placement background logic in VisualPlayScreen
-const PLACEMENT_BG_BY_MISSION: MissionBgMap = {
+const PLACEMENT_BG: Record<string, { a: string; b: string }> = {
   studio_01: { a: "studio_entry_inside_bg", b: "studio_entry_inside_bg" },
   studio_02: { a: "gallery_main_stylized_white_v1", b: "gallery_main_stylized_white_v1" },
   studio_03: { a: "studio_doorway_park_view_v5", b: "studio_doorway_park_view_v5" },
@@ -32,61 +30,47 @@ function getBasePx(missionId: string, key: OptionKey): number {
   return isXlarge ? 160 : 128;
 }
 
-describe("deep mobile audit for all 15 main missions", () => {
+function checkMissionTool(missionId: string, key: OptionKey): string | null {
+  const bgMap = PLACEMENT_BG[missionId];
+  if (!bgMap) return `missing placement background mapping`;
+
+  const missionNum = missionId.replace("studio_", "").padStart(2, "0");
+  const anchorRef = `m${missionNum}_tool_${key}` as AnchorRef;
+  const bgKey = bgMap[key];
+
+  const desktop = getAnchorPosition(bgKey, anchorRef, { isMobile: false });
+  const mobile = getAnchorPosition(bgKey, anchorRef, { isMobile: true });
+
+  if (!desktop) return `no desktop anchor (${bgKey} / ${anchorRef})`;
+  if (!mobile) return `no mobile anchor (${bgKey} / ${anchorRef})`;
+
+  const basePx = getBasePx(missionId, key);
+  const desktopPx = +(basePx * desktop.scale).toFixed(1);
+  const mobilePx = +(basePx * mobile.scale).toFixed(1);
+  const ratio = +(mobilePx / desktopPx).toFixed(3);
+
+  if (mobilePx < 96) return `mobile too small: ${mobilePx}px (desktop=${desktopPx}px, ratio=${ratio})`;
+  if (ratio < 0.4) return `excessive shrink: ratio=${ratio} (${mobilePx}px vs ${desktopPx}px)`;
+
+  return null; // pass
+}
+
+describe("deep mobile audit — all 15 main missions", () => {
   const missions = getStudioQuests().slice(0, 15);
 
-  it("has valid anchor placement on mobile and desktop for both options in all 15 missions", () => {
-    const failures: string[] = [];
+  missions.forEach((mission, idx) => {
+    const num = idx + 1;
 
-    for (const mission of missions) {
-      const bgMap = PLACEMENT_BG_BY_MISSION[mission.mission_id];
-      if (!bgMap) {
-        failures.push(`${mission.mission_id}: missing placement background mapping`);
-        continue;
-      }
+    it(`M${String(num).padStart(2, "0")} Tool A — anchor resolves & mobile size OK`, () => {
+      const err = checkMissionTool(mission.mission_id, "a");
+      if (err) console.log(`❌ ${mission.mission_id}/a: ${err}`);
+      expect(err).toBeNull();
+    });
 
-      (["a", "b"] as const).forEach((key) => {
-        const missionNum = mission.mission_id.replace("studio_", "").padStart(2, "0");
-        const anchorRef = `m${missionNum}_tool_${key}` as AnchorRef;
-        const bgKey = bgMap[key];
-
-        const desktop = getAnchorPosition(bgKey, anchorRef, { isMobile: false });
-        const mobile = getAnchorPosition(bgKey, anchorRef, { isMobile: true });
-
-        if (!desktop) {
-          failures.push(`${mission.mission_id}/${key}: missing desktop anchor (${bgKey} / ${anchorRef})`);
-          return;
-        }
-        if (!mobile) {
-          failures.push(`${mission.mission_id}/${key}: missing mobile anchor resolution (${bgKey} / ${anchorRef})`);
-          return;
-        }
-
-        const basePx = getBasePx(mission.mission_id, key);
-        const desktopPx = +(basePx * desktop.scale).toFixed(1);
-        const mobilePx = +(basePx * mobile.scale).toFixed(1);
-        const ratio = +(mobilePx / desktopPx).toFixed(3);
-
-        // Hard anti-"ants" guardrail
-        if (mobilePx < 96) {
-          failures.push(
-            `${mission.mission_id}/${key}: mobile too small (${mobilePx}px, desktop=${desktopPx}px, ratio=${ratio})`
-          );
-        }
-
-        // Guardrail against extreme shrink vs desktop
-        if (ratio < 0.4) {
-          failures.push(
-            `${mission.mission_id}/${key}: excessive shrink (${mobilePx}px vs ${desktopPx}px, ratio=${ratio})`
-          );
-        }
-      });
-    }
-
-    if (failures.length) {
-      console.log("Deep mission audit failures:\n" + failures.map((f) => `- ${f}`).join("\n"));
-    }
-
-    expect(failures).toEqual([]);
+    it(`M${String(num).padStart(2, "0")} Tool B — anchor resolves & mobile size OK`, () => {
+      const err = checkMissionTool(mission.mission_id, "b");
+      if (err) console.log(`❌ ${mission.mission_id}/b: ${err}`);
+      expect(err).toBeNull();
+    });
   });
 });
