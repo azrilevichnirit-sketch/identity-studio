@@ -537,10 +537,11 @@ export function VisualPlayScreen({
     return x;
   }, []);
 
-  // Viewport-proportional sprite base: 128px at 1366px desktop, scales down on mobile.
-  // Floor of 72px prevents ant-sized sprites on small phones (360px).
+  // Deep parity sizing policy:
+  // keep sprite base identical to desktop for all viewports (including <=820 and <=360)
+  // so no tool/extra/avatar appears smaller than desktop calibration.
   const getSpriteBasePx = useCallback((variant: 'normal' | 'large' | 'xlarge' = 'normal') => {
-    const viewportBase = Math.max(72, Math.min(128, Math.round(window.innerWidth * 0.0937)));
+    const viewportBase = 128;
     const factor = variant === 'xlarge' ? 160 / 128 : variant === 'large' ? 144 / 128 : 1;
     return Math.round(viewportBase * factor);
   }, []);

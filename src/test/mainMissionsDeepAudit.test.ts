@@ -22,12 +22,12 @@ const PLACEMENT_BG: Record<string, { a: string; b: string }> = {
   studio_15: { a: "gallery_main_stylized", b: "gallery_main_stylized" },
 };
 
-// Viewport-proportional base (mirrors VisualPlayScreen logic)
-function getBasePxForViewport(width: number, missionId: string, key: OptionKey): number {
+// Deep parity base (mirrors VisualPlayScreen logic)
+function getBasePxForViewport(_width: number, missionId: string, key: OptionKey): number {
   const isXlarge =
     (missionId === "studio_01" && key === "b") ||
     (missionId === "studio_02" && key === "b");
-  const viewportBase = Math.max(72, Math.min(128, Math.round(width * 0.0937)));
+  const viewportBase = 128;
   const factor = isXlarge ? 160 / 128 : 1;
   return Math.round(viewportBase * factor);
 }
@@ -44,7 +44,7 @@ function checkAnchorAtViewport(
   if (!pos) return `${label}: no anchor (${bgKey} / ${anchorRef})`;
 
   const px = +(basePx * pos.scale).toFixed(1);
-  const minPx = isMobile ? 56 : 80;
+  const minPx = viewportWidth <= 360 ? 76 : viewportWidth <= 820 ? 84 : 80;
 
   if (px < minPx) return `${label}: too small ${px}px at ${viewportWidth}px viewport (min=${minPx}px)`;
   return null;
@@ -103,7 +103,7 @@ describe("extras audit — M08, M10, M11, M13 at phone (360px)", () => {
   for (const [missionId, config] of Object.entries(MISSION_EXTRAS)) {
     config.anchors.forEach((anchorRef) => {
       it(`${missionId} / ${anchorRef}`, () => {
-        const basePx = Math.max(72, Math.min(128, Math.round(360 * 0.0937)));
+        const basePx = getBasePxForViewport(360, missionId.startsWith("studio_") ? missionId : "studio_11", "a");
         const err = checkAnchorAtViewport(config.bgKey, anchorRef as AnchorRef, 360, basePx, anchorRef, true);
         if (err) console.log(`❌ ${err}`);
         expect(err).toBeNull();

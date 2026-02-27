@@ -1891,32 +1891,7 @@
     "flipX": true
   },
 
-  {"_comment": "=== M10 extras mobile overrides ==="},
-  {
-    "background_asset_key": "studio_in_workshop_bg",
-    "anchor_ref": "m10_extra_desk_mobile",
-    "x_pct": 0.488,
-    "y_pct": 0.913,
-    "scale": 1.5,
-    "z_layer": "mid",
-    "flipX": true
-  },
-  {
-    "background_asset_key": "studio_in_workshop_bg",
-    "anchor_ref": "m10_extra_staff_mobile",
-    "x_pct": 0.412,
-    "y_pct": 0.849,
-    "scale": 1.8,
-    "z_layer": "back"
-  },
-  {
-    "background_asset_key": "studio_in_workshop_bg",
-    "anchor_ref": "m10_extra_staff_b_mobile",
-    "x_pct": 0.428,
-    "y_pct": 0.826,
-    "scale": 1.8,
-    "z_layer": "back"
-  },
+  {"_comment": "M10 extras mobile scale overrides removed for desktop parity; desktop anchors are used on mobile"},
 
   {
     "background_asset_key": "gallery_main_stylized",
@@ -2133,11 +2108,7 @@
     "flipX": true
   },
 
-  {"_comment": "=== M08 visitor/avatar mobile overrides ==="},
-  {"background_asset_key": "studio_in_workshop_bg", "anchor_ref": "m08_visitor_01_mobile", "x_pct": 0.558, "y_pct": 0.762, "scale": 1.5, "z_layer": "front", "flipX": true},
-  {"background_asset_key": "studio_in_workshop_bg", "anchor_ref": "m08_visitor_02_mobile", "x_pct": 0.521, "y_pct": 0.856, "scale": 1.7, "z_layer": "mid"},
-  {"background_asset_key": "studio_in_workshop_bg", "anchor_ref": "m08_visitor_03_mobile", "x_pct": 0.462, "y_pct": 0.793, "scale": 1.8, "z_layer": "back"},
-  {"background_asset_key": "studio_in_workshop_bg", "anchor_ref": "m08_avatar_mobile", "x_pct": 0.737, "y_pct": 0.782, "scale": 1.6, "z_layer": "mid"},
+  {"_comment": "M08 visitor/avatar mobile scale overrides removed for desktop parity; desktop anchors are used on mobile"},
 
   {"_comment": "=== M09 mobile overrides ==="},
   {
