@@ -1857,6 +1857,14 @@
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m06_npc_female_mobile",
+    "x_pct": 0.20,
+    "y_pct": 0.853,
+    "scale": 1.0,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m06_extra_rack_mobile",
     "x_pct": 0.46,
     "y_pct": 0.813,
@@ -2037,6 +2045,46 @@
     "scale": 4.2,
     "z_layer": "front",
     "flipX": true
+  },
+  {
+    "background_asset_key": "studio_in_gallery_wall_bg",
+    "anchor_ref": "m07_wall_art_left_mobile",
+    "x_pct": 0.18,
+    "y_pct": 0.32,
+    "scale": 0.35,
+    "z_layer": "back"
+  },
+  {
+    "background_asset_key": "studio_in_gallery_wall_bg",
+    "anchor_ref": "m07_wall_base_left_mobile",
+    "x_pct": 0.16,
+    "y_pct": 0.72,
+    "scale": 0.55,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_in_entrance_view_bg",
+    "anchor_ref": "m07_wall_art_left_mobile",
+    "x_pct": 0.16,
+    "y_pct": 0.28,
+    "scale": 0.28,
+    "z_layer": "back"
+  },
+  {
+    "background_asset_key": "studio_in_entrance_view_bg",
+    "anchor_ref": "m07_wall_base_left_mobile",
+    "x_pct": 0.16,
+    "y_pct": 0.58,
+    "scale": 0.35,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "studio_in_entrance_view_bg",
+    "anchor_ref": "m07_floor_near_wall_left_mobile",
+    "x_pct": 0.18,
+    "y_pct": 0.78,
+    "scale": 0.55,
+    "z_layer": "front"
   },
 
   {"_comment": "=== M08 mobile overrides - position-only (scale matches desktop) ==="},
@@ -2427,6 +2475,14 @@
     "y_pct": 0.9,
     "scale": 2.2,
     "z_layer": "front"
+  },
+  {
+    "background_asset_key": "studio_in_storage_bg",
+    "anchor_ref": "tie_09_extra_table_mobile",
+    "x_pct": 0.82,
+    "y_pct": 0.923,
+    "scale": 1,
+    "z_layer": "mid"
   },
 
   {"_comment": "=== T10 mobile - A scale 2.3 → 1.4 ==="},
