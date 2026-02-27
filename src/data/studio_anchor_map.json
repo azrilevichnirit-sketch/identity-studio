@@ -1857,15 +1857,6 @@
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
-    "anchor_ref": "m06_extra_desk_mobile",
-    "x_pct": 0.787,
-    "y_pct": 0.81,
-    "scale": 1.1,
-    "z_layer": "mid",
-    "flipX": true
-  },
-  {
-    "background_asset_key": "studio_in_workshop_bg",
     "anchor_ref": "m06_extra_rack_mobile",
     "x_pct": 0.46,
     "y_pct": 0.813,
@@ -1890,31 +1881,6 @@
     "scale": 1.3,
     "z_layer": "front",
     "flipX": true
-  },
-  {
-    "background_asset_key": "studio_in_workshop_bg",
-    "anchor_ref": "m10_extra_desk_mobile",
-    "x_pct": 0.488,
-    "y_pct": 0.913,
-    "scale": 1.3,
-    "z_layer": "mid",
-    "flipX": true
-  },
-  {
-    "background_asset_key": "studio_in_workshop_bg",
-    "anchor_ref": "m10_extra_staff_mobile",
-    "x_pct": 0.412,
-    "y_pct": 0.849,
-    "scale": 1.6,
-    "z_layer": "back"
-  },
-  {
-    "background_asset_key": "studio_in_workshop_bg",
-    "anchor_ref": "m10_extra_staff_b_mobile",
-    "x_pct": 0.428,
-    "y_pct": 0.826,
-    "scale": 1.6,
-    "z_layer": "back"
   },
 
   {
@@ -2043,14 +2009,6 @@
     "scale": 1.3,
     "z_layer": "back",
     "flipX": true
-  },
-  {
-    "background_asset_key": "studio_exterior_bg",
-    "anchor_ref": "m05_visitor_03_mobile",
-    "x_pct": 0.607,
-    "y_pct": 0.736,
-    "scale": 1.5,
-    "z_layer": "back"
   },
 
   {"_comment": "=== M07 mobile overrides — scale matches desktop ==="},
