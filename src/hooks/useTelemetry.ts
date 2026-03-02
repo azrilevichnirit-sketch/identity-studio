@@ -139,17 +139,12 @@ async function fetchWithRetry(url: string, options: RequestInit, maxRetries: num
     try {
       const response = await fetch(url, options);
 
-      // If successful or client error (4xx), don't retry
-      if (response.ok || (response.status >= 400 && response.status < 500)) {
-        return response;
-      }
-
-      // Server error (5xx) - retry
-      console.warn(`[Telemetry] Attempt ${attempt + 1} failed with status ${response.status}, retrying...`);
-      lastError = new Error(`HTTP ${response.status}`);
+      // IMPORTANT: Never retry when we already got an HTTP response.
+      // Retrying 5xx can create duplicate webhook executions in Make.
+      return response;
     } catch (error) {
-      // Network error - retry
-      console.warn(`[Telemetry] Attempt ${attempt + 1} failed:`, error);
+      // Retry only for network-level failures (no HTTP response received)
+      console.warn(`[Telemetry] Network failure on attempt ${attempt + 1}, retrying...`, error);
       lastError = error as Error;
     }
 
