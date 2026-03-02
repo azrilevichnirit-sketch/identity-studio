@@ -42,56 +42,116 @@ interface ParsedSection {
   content: string;  // full content (markdown)
 }
 
-function parseResultText(text: string): { intro: string; sectionHeader: string; sections: ParsedSection[] } {
-  // Split on lines starting with ## (not ###)
-  const parts = text.split(/\n(?=## (?!#))/);
+function toSubtitle(content: string): string {
+  const firstContentLine = content.split('\n').find((l) => l.trim().length > 0) || '';
+  return firstContentLine
+    .replace(/^[#*\->\s]+/, '')
+    .replace(/\*\*/g, '')
+    .replace(/\*/g, '')
+    .trim()
+    .substring(0, 120);
+}
 
-  const intro = parts[0]?.trim() || '';
+function splitByBoldHeadings(content: string): ParsedSection[] {
+  const lines = content.split('\n');
+  const blocks: ParsedSection[] = [];
+
+  let currentTitle = '';
+  let currentContent: string[] = [];
+
+  const pushCurrent = () => {
+    if (!currentTitle) return;
+    const blockContent = currentContent.join('\n').trim();
+    blocks.push({
+      title: currentTitle,
+      subtitle: toSubtitle(blockContent),
+      content: blockContent,
+    });
+  };
+
+  for (const line of lines) {
+    const match = line.trim().match(/^\*\*(.+?)\*\*$/);
+    if (match) {
+      pushCurrent();
+      currentTitle = match[1].trim();
+      currentContent = [];
+      continue;
+    }
+
+    if (currentTitle) {
+      currentContent.push(line);
+    }
+  }
+
+  pushCurrent();
+  return blocks.filter((b) => b.title && b.content);
+}
+
+function parseResultText(text: string): { intro: string; sectionHeader: string; sections: ParsedSection[] } {
+  const normalized = text.replace(/\r\n/g, '\n').trim();
+  const parts = normalized.split(/\n(?=##\s+(?!#))/);
+
+  const intro = parts[0]?.startsWith('## ') ? '' : (parts[0]?.trim() || '');
+  const headingParts = parts[0]?.startsWith('## ') ? parts : parts.slice(1);
+
   let sectionHeader = '';
   const sections: ParsedSection[] = [];
 
-  for (let i = 1; i < parts.length; i++) {
-    const part = parts[i].trim();
+  for (let i = 0; i < headingParts.length; i++) {
+    const part = headingParts[i].trim();
     if (!part) continue;
 
     const lines = part.split('\n');
+    if (!lines[0]?.startsWith('## ')) continue;
+
     const titleLine = lines[0].replace(/^##\s*/, '').trim();
     const contentLines = lines.slice(1).join('\n').trim();
 
-    // Check if this section has ### sub-sections (programs)
-    const subParts = contentLines.split(/\n(?=### )/);
-    
-    if (subParts.length > 1) {
-      // Use the ## title as the section header
+    if (!sectionHeader) {
       sectionHeader = titleLine;
-      
-      for (let j = 0; j < subParts.length; j++) {
-        const sub = subParts[j].trim();
-        if (!sub) continue;
-        // Skip parts that don't start with ###
-        if (!sub.startsWith('### ')) continue;
+    }
+
+    // 1) Preferred: ### headings
+    const subParts = contentLines ? contentLines.split(/\n(?=###\s+)/) : [];
+    const h3Sections = subParts
+      .map((sub) => sub.trim())
+      .filter((sub) => sub.startsWith('### '))
+      .map((sub) => {
         const subLines = sub.split('\n');
         const subTitle = subLines[0].replace(/^###\s*/, '').trim();
         const subContent = subLines.slice(1).join('\n').trim();
-        const firstContentLine = subContent.split('\n').find(l => l.trim().length > 0) || '';
-        const subtitle = firstContentLine
-          .replace(/^[#*\->\s]+/, '')
-          .replace(/\*\*/g, '')
-          .replace(/\*/g, '')
-          .trim()
-          .substring(0, 120);
-        sections.push({ title: subTitle, subtitle, content: subContent });
-      }
-    } else {
-      // No sub-sections — standalone card
-      const firstContentLine = contentLines.split('\n').find(l => l.trim().length > 0) || '';
-      const subtitle = firstContentLine
-        .replace(/^[#*\->\s]+/, '')
-        .replace(/\*\*/g, '')
-        .replace(/\*/g, '')
-        .trim()
-        .substring(0, 120);
-      sections.push({ title: titleLine, subtitle, content: contentLines });
+        return {
+          title: subTitle,
+          subtitle: toSubtitle(subContent),
+          content: subContent,
+        };
+      })
+      .filter((s) => s.title && s.content);
+
+    if (h3Sections.length > 0) {
+      sections.push(...h3Sections);
+      continue;
+    }
+
+    // 2) Fallback: bold program headings (**...**)
+    const boldSections = splitByBoldHeadings(contentLines);
+    if (boldSections.length > 1) {
+      sections.push(...boldSections);
+      continue;
+    }
+
+    // 3) Multiple ## blocks => blocks after the first are programs
+    if (headingParts.length > 1 && i === 0 && !contentLines) {
+      continue;
+    }
+    if (headingParts.length > 1 && i > 0) {
+      sections.push({ title: titleLine, subtitle: toSubtitle(contentLines), content: contentLines });
+      continue;
+    }
+
+    // 4) Single block fallback
+    if (contentLines) {
+      sections.push({ title: titleLine, subtitle: toSubtitle(contentLines), content: contentLines });
     }
   }
 
@@ -112,12 +172,13 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
   return (
     <div className="summary-screen-overlay" style={{ direction: 'rtl' }}>
       <div className="summary-screen-scroller">
-        {/* Logo */}
-        <div
-          className="flex justify-end py-4 px-4 md:px-8"
-          style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 16px)' }}
-        >
-          <img src={logoKinneret} alt="Kinneret Academy" className="h-16 md:h-20 object-contain" />
+        {/* Banner - always first, edge-to-edge */}
+        <div className="w-full">
+          <img
+            src={bannerSummary}
+            alt="החותמת האישית שלך"
+            className="block w-full object-cover"
+          />
         </div>
 
         {/* Content */}
@@ -125,13 +186,9 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
           className="flex flex-col gap-4 animate-fade-in w-full items-center"
           style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 100px)' }}
         >
-          {/* Banner - full width edge-to-edge */}
-          <div className="w-full">
-            <img
-              src={bannerSummary}
-              alt="החותמת האישית שלך"
-              className="w-full object-cover"
-            />
+          {/* Logo */}
+          <div className="flex justify-end pt-4 px-4 md:px-8 w-full">
+            <img src={logoKinneret} alt="Kinneret Academy" className="h-16 md:h-20 object-contain" />
           </div>
 
           {/* Main card */}
@@ -182,7 +239,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
                     className="text-xl md:text-2xl font-bold mt-6 mb-4 text-right"
                     style={{ color: '#111', fontFamily: "'Rubik', sans-serif" }}
                   >
-                    {parsed.sectionHeader || 'תוכניות הלימודים שלך'}
+                    {parsed.sectionHeader || 'כיווני הלימוד שמתאימים לך'}
                   </h2>
                 )}
 
