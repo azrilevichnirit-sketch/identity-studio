@@ -11,6 +11,7 @@ import type { AvatarGender, Mission } from '@/types/identity';
 // 6. Mission 07 entrance view: gallery looking outside - studio_entrance_view_stylized_v7
 // IMPORTANT: Mission 1 starts with CRACKED WALLS (v3), not the finished studio!
 import galleryCrackedWalls from '@/assets/backgrounds/gallery_main_stylized_v3.webp';
+import galleryBoxesBg from '@/assets/backgrounds/gallery_main_boxes_v1.webp';
 import galleryMainStylized from '@/assets/backgrounds/gallery_main_stylized.webp';
 import galleryMainStylizedWhite from '@/assets/backgrounds/gallery_main_stylized_white_v1.webp';
 import studioWorkshopBg from '@/assets/backgrounds/studio_in_workshop_v3.webp';
@@ -171,6 +172,9 @@ const backgroundAssets: Record<string, string> = {
   studio_entry_inside_bg: galleryCrackedWalls,
   gallery_main_stylized_v3: galleryCrackedWalls,
   
+  // Mission 02: boxes/moving scene
+  gallery_main_boxes_v1: galleryBoxesBg,
+  
   // Mission 01 Tool B result / Mission 02 (if B chosen) / M09, M12: main studio (finished)
   gallery_main_stylized: galleryMainStylized,
   
@@ -211,6 +215,7 @@ const panoramicBackgrounds: Record<string, string> = {
   studio_in_gallery_bg: galleryCrackedWalls,
   studio_entry_inside_bg: galleryCrackedWalls,
   gallery_main_stylized_v3: galleryCrackedWalls,
+  gallery_main_boxes_v1: galleryBoxesBg,
   // Main studio (finished)
   gallery_main_stylized: galleryMainStylized,
   // White walls (Mission 02 if Tool A was chosen)

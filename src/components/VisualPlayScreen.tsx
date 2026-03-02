@@ -247,9 +247,9 @@ export function VisualPlayScreen({
       return 'gallery_main_stylized_v3'; // Cracked walls
     }
     
-    // Missions 01-02: always stay on cracked walls per narrative spec
-    if (mission.phase === 'main' && (mission.mission_id === 'studio_01' || mission.mission_id === 'studio_02' || mission.sequence === 2)) {
-      return 'gallery_main_stylized_v3';
+    // Mission 02: boxes/moving scene
+    if (mission.phase === 'main' && (mission.mission_id === 'studio_02' || mission.sequence === 2)) {
+      return 'gallery_main_boxes_v1';
     }
     
     // Exterior missions (view: "out") - Mission 05 ONLY
