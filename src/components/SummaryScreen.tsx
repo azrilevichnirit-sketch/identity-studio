@@ -43,8 +43,8 @@ interface ParsedSection {
 }
 
 function parseResultText(text: string): { intro: string; sections: ParsedSection[] } {
-  // Split on lines starting with ## (but not ###)
-  const parts = text.split(/\n(?=## (?!#))/);
+  // Split on lines starting with ## or ###
+  const parts = text.split(/\n(?=#{2,3} )/);
 
   const intro = parts[0]?.trim() || '';
   const sections: ParsedSection[] = [];
@@ -53,28 +53,49 @@ function parseResultText(text: string): { intro: string; sections: ParsedSection
     const part = parts[i].trim();
     if (!part) continue;
 
-    // First line is "## Title"
     const lines = part.split('\n');
-    const titleLine = lines[0].replace(/^##\s*/, '').trim();
+    const titleLine = lines[0].replace(/^#{2,3}\s*/, '').trim();
 
-    // Rest is content
     const contentLines = lines.slice(1).join('\n').trim();
 
-    // First non-empty line of content as subtitle
-    const firstContentLine = contentLines.split('\n').find(l => l.trim().length > 0) || '';
-    // Strip markdown formatting for subtitle display
-    const subtitle = firstContentLine
-      .replace(/^[#*\->\s]+/, '')
-      .replace(/\*\*/g, '')
-      .replace(/\*/g, '')
-      .trim()
-      .substring(0, 120);
-
-    sections.push({
-      title: titleLine,
-      subtitle,
-      content: contentLines,
-    });
+    // Check if this section has ### sub-sections (programs)
+    const subParts = contentLines.split(/\n(?=### )/);
+    
+    if (subParts.length > 1) {
+      // This ## section contains ### sub-programs — extract each as a separate card
+      // First part before any ### is intro text for this section (skip or add to intro)
+      const sectionIntro = subParts[0]?.trim();
+      if (sectionIntro) {
+        // Treat the parent ## as a non-accordion intro paragraph
+        // We'll prepend it to the main intro
+      }
+      
+      for (let j = 1; j < subParts.length; j++) {
+        const sub = subParts[j].trim();
+        if (!sub) continue;
+        const subLines = sub.split('\n');
+        const subTitle = subLines[0].replace(/^###\s*/, '').trim();
+        const subContent = subLines.slice(1).join('\n').trim();
+        const firstContentLine = subContent.split('\n').find(l => l.trim().length > 0) || '';
+        const subtitle = firstContentLine
+          .replace(/^[#*\->\s]+/, '')
+          .replace(/\*\*/g, '')
+          .replace(/\*/g, '')
+          .trim()
+          .substring(0, 120);
+        sections.push({ title: subTitle, subtitle, content: subContent });
+      }
+    } else {
+      // No sub-sections — this ## is a standalone card
+      const firstContentLine = contentLines.split('\n').find(l => l.trim().length > 0) || '';
+      const subtitle = firstContentLine
+        .replace(/^[#*\->\s]+/, '')
+        .replace(/\*\*/g, '')
+        .replace(/\*/g, '')
+        .trim()
+        .substring(0, 120);
+      sections.push({ title: titleLine, subtitle, content: contentLines });
+    }
   }
 
   return { intro, sections };
