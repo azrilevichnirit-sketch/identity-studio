@@ -73,10 +73,9 @@ const Index = () => {
     sendBehavioralPayload,
   } = useTelemetry();
 
-  // Track run start on mount
-  useEffect(() => {
-    trackRunStarted();
-  }, [trackRunStarted]);
+  // Run starts when user actually begins gameplay (Start button)
+  // so each new playthrough gets a fresh runId.
+
 
   // Track mission shown when currentMission changes
   const lastTrackedMissionRef = useRef<string | null>(null);
@@ -350,6 +349,7 @@ const Index = () => {
   };
 
   const handleStart = () => {
+    trackRunStarted();
     setPhase('main');
   };
 
