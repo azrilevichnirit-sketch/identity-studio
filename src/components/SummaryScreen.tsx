@@ -104,35 +104,41 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
 
         {/* Content */}
         <div
-          className="flex flex-col gap-4 animate-fade-in w-full items-center px-4 md:px-8"
+          className="flex flex-col gap-4 animate-fade-in w-full items-center"
           style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 100px)' }}
         >
-          {/* Banner */}
-          <div className="w-full" style={{ maxWidth: 'min(700px, 92vw)' }}>
+          {/* Banner - full width edge-to-edge */}
+          <div className="w-full">
             <img
               src={bannerSummary}
               alt="החותמת האישית שלך"
-              className="w-full rounded-2xl object-cover"
+              className="w-full object-cover"
             />
           </div>
 
           {/* Main card */}
           <div
-            className="p-5 md:p-6 rounded-2xl w-full"
+            className="p-5 md:p-8 w-full"
             style={{
-              maxWidth: 'min(700px, 92vw)',
-              background: 'white',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+              maxWidth: 'min(800px, 96vw)',
             }}
           >
+            {/* Title */}
+            <h1
+              className="text-2xl md:text-3xl font-bold mb-2 text-center"
+              style={{ color: '#111', fontFamily: "'Rubik', sans-serif" }}
+            >
+              החותמת האישית שלך
+            </h1>
+
             {/* Greeting */}
             {firstName && (
-              <h1
-                className="text-xl md:text-2xl font-bold mb-4 text-center"
-                style={{ color: '#111', fontFamily: "'Rubik', sans-serif" }}
+              <p
+                className="text-base mb-4 text-right"
+                style={{ color: '#333', fontFamily: "'Rubik', sans-serif" }}
               >
-                היי {firstName} 👋
-              </h1>
+                היי {firstName},
+              </p>
             )}
 
             {parsed ? (
@@ -152,35 +158,46 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
                   </div>
                 )}
 
-                {/* Program accordions */}
+                {/* Section header */}
                 {parsed.sections.length > 0 && (
-                  <Accordion type="multiple" className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <h2
+                    className="text-xl md:text-2xl font-bold mt-6 mb-4 text-right"
+                    style={{ color: '#111', fontFamily: "'Rubik', sans-serif" }}
+                  >
+                    תוכניות הלימודים שלך
+                  </h2>
+                )}
+
+                {/* Program accordions - each in its own card */}
+                {parsed.sections.length > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {parsed.sections.map((section, idx) => (
-                      <AccordionItem
-                        key={idx}
-                        value={`program-${idx}`}
-                        className="border rounded-xl px-4 bg-gray-50/60"
-                      >
-                        <AccordionTrigger className="text-right hover:no-underline py-3">
-                          <div className="flex flex-col items-start gap-1 text-right">
-                            <span className="font-bold text-base" style={{ color: '#222' }}>
-                              {section.title}
-                            </span>
-                            <span className="text-sm text-gray-500 line-clamp-1">
-                              {section.subtitle}
-                            </span>
-                          </div>
-                        </AccordionTrigger>
-                        <AccordionContent>
-                          <div className="prose prose-sm max-w-none" style={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
-                            <ReactMarkdown components={MD_COMPONENTS}>
-                              {section.content}
-                            </ReactMarkdown>
-                          </div>
-                        </AccordionContent>
-                      </AccordionItem>
+                      <Accordion key={idx} type="multiple">
+                        <AccordionItem
+                          value={`program-${idx}`}
+                          className="border rounded-xl px-4 bg-white shadow-sm"
+                        >
+                          <AccordionTrigger className="text-right hover:no-underline py-4">
+                            <div className="flex flex-col items-start gap-1 text-right w-full">
+                              <span className="font-bold text-base" style={{ color: '#222' }}>
+                                {section.title}
+                              </span>
+                              <span className="text-sm text-gray-500 line-clamp-1">
+                                {section.subtitle}
+                              </span>
+                            </div>
+                          </AccordionTrigger>
+                          <AccordionContent>
+                            <div className="prose prose-sm max-w-none" style={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
+                              <ReactMarkdown components={MD_COMPONENTS}>
+                                {section.content}
+                              </ReactMarkdown>
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
                     ))}
-                  </Accordion>
+                  </div>
                 )}
               </div>
             ) : (
