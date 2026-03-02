@@ -23,7 +23,7 @@ const MD_COMPONENTS = {
   h1: ({ children }: any) => <h1 className="text-xl font-bold mt-4 mb-2">{children}</h1>,
   h2: ({ children }: any) => <h2 className="text-lg font-bold mt-3 mb-2">{children}</h2>,
   h3: ({ children }: any) => <h3 className="text-base font-bold mt-2 mb-1">{children}</h3>,
-  p: ({ children }: any) => <p className="mb-3 last:mb-0">{children}</p>,
+  p: ({ children }: any) => <p className="mb-1.5 last:mb-0">{children}</p>,
   ul: ({ children }: any) => <ul className="list-disc list-inside mb-3 space-y-1">{children}</ul>,
   ol: ({ children }: any) => <ol className="list-decimal list-inside mb-3 space-y-1">{children}</ol>,
   li: ({ children }: any) => <li className="leading-relaxed">{children}</li>,
