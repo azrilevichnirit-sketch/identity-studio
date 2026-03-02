@@ -241,10 +241,11 @@ const Index = () => {
       [],
     );
     
-    // Store result text from gameplay payload
+    // Store result text from gameplay payload (strip [SOURCE: ...] tags)
     if (result.success && result.resultText) {
-      console.log("[Index] Gameplay result text received:", result.resultText.substring(0, 100) + "...");
-      setResultText(result.resultText);
+      const cleanText = result.resultText.replace(/\[SOURCE:[^\]]*\]/g, '').trim();
+      console.log("[Index] Gameplay result text received:", cleanText.substring(0, 100) + "...");
+      setResultText(cleanText);
     }
 
     // Send behavioral payload (fire and forget)
@@ -315,10 +316,11 @@ const Index = () => {
       rank23TieTrace,
     );
     
-    // Store result text from gameplay payload
+    // Store result text from gameplay payload (strip [SOURCE: ...] tags)
     if (result.success && result.resultText) {
-      console.log("[Index] Tournament gameplay result text received:", result.resultText.substring(0, 100) + "...");
-      setResultText(result.resultText);
+      const cleanText = result.resultText.replace(/\[SOURCE:[^\]]*\]/g, '').trim();
+      console.log("[Index] Tournament gameplay result text received:", cleanText.substring(0, 100) + "...");
+      setResultText(cleanText);
     }
 
     // Send behavioral payload (fire and forget)
