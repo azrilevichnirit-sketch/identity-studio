@@ -1,5 +1,5 @@
 import { useRef, useCallback } from "react";
-import type { HollandCode, CountsFinal, LeadFormData, PickRecord, UndoEvent, AnalysisResponse } from "@/types/identity";
+import type { HollandCode, CountsFinal, LeadFormData, PickRecord, UndoEvent } from "@/types/identity";
 
 // Event types for the events[] log
 export type TelemetryEventType =
@@ -172,13 +172,9 @@ export function useTelemetry() {
   const eventsRef = useRef<TelemetryEvent[]>([]);
 
   // Idempotency guards per stage (prevents duplicate webhook submissions per run)
-  const gameplayResultRef = useRef<TelemetrySendResult | null>(null);
-  const completionResultRef = useRef<TelemetrySendResult | null>(null);
+  const gameplaySentRef = useRef<boolean>(false);
+  const completionSentRef = useRef<boolean>(false);
   const behavioralSentRef = useRef<boolean>(false);
-
-  const gameplayRequestRef = useRef<Promise<TelemetrySendResult> | null>(null);
-  const completionRequestRef = useRef<Promise<TelemetrySendResult> | null>(null);
-  const behavioralRequestRef = useRef<Promise<{ success: boolean }> | null>(null);
 
   // Add event to log
   const logEvent = useCallback((type: TelemetryEventType, missionId?: string, pickKey?: "a" | "b") => {
@@ -199,12 +195,9 @@ export function useTelemetry() {
     eventsRef.current = [];
 
     // Reset stage-level send guards for a fresh playthrough
-    gameplayResultRef.current = null;
-    completionResultRef.current = null;
+    gameplaySentRef.current = false;
+    completionSentRef.current = false;
     behavioralSentRef.current = false;
-    gameplayRequestRef.current = null;
-    completionRequestRef.current = null;
-    behavioralRequestRef.current = null;
 
     console.log("[Telemetry] New run started:", runIdRef.current);
     logEvent("RUN_STARTED");
@@ -258,209 +251,162 @@ export function useTelemetry() {
       tieFlags: TieFlags,
       tieTrace: Array<{ round: string; pair: string; winner: string }>,
       rank23TieTrace: Array<{ round: string; pair: string; winner: string; loser: string }>,
-    ): Promise<TelemetrySendResult> => {
-      if (gameplayResultRef.current?.success) {
+    ): Promise<{ success: boolean; resultText?: string }> => {
+      if (gameplaySentRef.current) {
         console.log("[Telemetry] Gameplay already sent for this run, skipping duplicate send");
-        return gameplayResultRef.current;
+        return { success: true };
       }
 
-      if (gameplayRequestRef.current) {
-        console.log("[Telemetry] Gameplay send already in-flight, reusing request");
-        return gameplayRequestRef.current;
+      const gameplayEndedAt = Date.now();
+
+      const clientContext: ClientContext = {
+        timezoneOffsetMinutes: new Date().getTimezoneOffset(),
+        locale: navigator.language || "he-IL",
+        screenW: window.innerWidth,
+        screenH: window.innerHeight,
+        deviceType: getDeviceType(),
+      };
+
+      const countsFirst = calculateCounts(firstPicksByMissionId);
+
+      const resolvedScores: ResolvedScores = { ...countsFinal };
+      if (rank1Code) {
+        resolvedScores[rank1Code] = (resolvedScores[rank1Code] || 0) + 0.5;
+      }
+      if (rank2Code) {
+        resolvedScores[rank2Code] = (resolvedScores[rank2Code] || 0) + 0.3;
+      }
+      if (rank3Code) {
+        resolvedScores[rank3Code] = (resolvedScores[rank3Code] || 0) + 0.1;
       }
 
-      const requestPromise = (async (): Promise<TelemetrySendResult> => {
-        const gameplayEndedAt = Date.now();
+      console.log("[Telemetry] Resolved scores with bonuses:", resolvedScores);
 
-        const clientContext: ClientContext = {
-          timezoneOffsetMinutes: new Date().getTimezoneOffset(),
-          locale: navigator.language || "he-IL",
-          screenW: window.innerWidth,
-          screenH: window.innerHeight,
-          deviceType: getDeviceType(),
-        };
+      const payload: GameplayPayload = {
+        runId: runIdRef.current,
+        stage: "gameplay",
+        dimension: "studio",
+        avatarGender,
+        gameStartedAt: gameStartedAtRef.current,
+        gameplayEndedAt,
+        missionShownAtById: { ...missionShownAtByIdRef.current },
+        missionAnsweredAtById: { ...missionAnsweredAtByIdRef.current },
+        firstPicksByMissionId,
+        finalPicksByMissionId,
+        undoEvents: undoEvents.map((e) => ({
+          missionId: e.missionId,
+          prevTrait: e.prevTrait,
+          newTrait: e.newTrait,
+          timestampMs: e.timestamp,
+          phase: e.phase || "main",
+        })),
+        tie: tieState,
+        tie_state: tieState,
+        countsFirst,
+        countsFinal,
+        base_scores: countsFinal,
+        resolved_scores: resolvedScores,
+        leaders,
+        clientContext,
+        events: [...eventsRef.current],
+        rank1_code: rank1Code?.toLowerCase() || "",
+        rank2_code: rank2Code?.toLowerCase() || "",
+        rank3_code: rank3Code?.toLowerCase() || "",
+        tie_flags: tieFlags,
+        tie_trace: tieTrace,
+        rank23_tie_trace: rank23TieTrace,
+      };
 
-        const countsFirst = calculateCounts(firstPicksByMissionId);
+      console.log("[Telemetry] Sending gameplay payload:", JSON.stringify(payload, null, 2));
 
-        // Calculate resolved scores: base scores + fractional bonuses for ranks
-        // +0.5 for rank1, +0.3 for rank2, +0.1 for rank3
-        const resolvedScores: ResolvedScores = { ...countsFinal };
-        if (rank1Code) {
-          resolvedScores[rank1Code] = (resolvedScores[rank1Code] || 0) + 0.5;
-        }
-        if (rank2Code) {
-          resolvedScores[rank2Code] = (resolvedScores[rank2Code] || 0) + 0.3;
-        }
-        if (rank3Code) {
-          resolvedScores[rank3Code] = (resolvedScores[rank3Code] || 0) + 0.1;
-        }
-
-        console.log("[Telemetry] Resolved scores with bonuses:", resolvedScores);
-
-        const payload: GameplayPayload = {
-          runId: runIdRef.current,
-          stage: "gameplay",
-          dimension: "studio",
-          avatarGender,
-          gameStartedAt: gameStartedAtRef.current,
-          gameplayEndedAt,
-          missionShownAtById: { ...missionShownAtByIdRef.current },
-          missionAnsweredAtById: { ...missionAnsweredAtByIdRef.current },
-          firstPicksByMissionId,
-          finalPicksByMissionId,
-          undoEvents: undoEvents.map((e) => ({
-            missionId: e.missionId,
-            prevTrait: e.prevTrait,
-            newTrait: e.newTrait,
-            timestampMs: e.timestamp,
-            phase: e.phase || "main",
-          })),
-          tie: tieState,
-          tie_state: tieState, // Snake_case duplicate for Make
-          countsFirst,
-          countsFinal,
-          base_scores: countsFinal, // Snake_case alias
-          resolved_scores: resolvedScores,
-          leaders,
-          clientContext,
-          events: [...eventsRef.current],
-          // Tie-breaker fields - lowercase, no nulls
-          rank1_code: rank1Code?.toLowerCase() || "",
-          rank2_code: rank2Code?.toLowerCase() || "",
-          rank3_code: rank3Code?.toLowerCase() || "",
-          tie_flags: tieFlags,
-          tie_trace: tieTrace,
-          rank23_tie_trace: rank23TieTrace,
-        };
-
-        console.log("[Telemetry] Sending gameplay payload:", JSON.stringify(payload, null, 2));
-
-        try {
-          const response = await fetchWithRetry(MAKE_WEBHOOK_URL, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-          });
-
-          console.log("[Telemetry] Gameplay payload sent, status:", response.status);
-
-          if (response.ok) {
-            // Read response as text (analysis results from Make)
-            const resultText = await response.text();
-            console.log("[Telemetry] Gameplay response text:", resultText);
-            const result: TelemetrySendResult = { success: true, resultText };
-            gameplayResultRef.current = result;
-            return result;
-          }
-
-          return { success: false };
-        } catch (error) {
-          console.error("[Telemetry] Failed to send gameplay payload after retries:", error);
-          return { success: false };
-        }
-      })();
-
-      gameplayRequestRef.current = requestPromise;
       try {
-        return await requestPromise;
-      } finally {
-        gameplayRequestRef.current = null;
+        const response = await fetchWithRetry(MAKE_WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        console.log("[Telemetry] Gameplay payload sent, status:", response.status);
+
+        if (response.ok) {
+          gameplaySentRef.current = true;
+          const resultText = await response.text();
+          console.log("[Telemetry] Gameplay response text:", resultText);
+          return { success: true, resultText };
+        }
+
+        return { success: false };
+      } catch (error) {
+        console.error("[Telemetry] Failed to send gameplay payload after retries:", error);
+        return { success: false };
       }
     },
     [],
   );
 
-  // Send completion payload (AFTER lead form submission)
-  // Only sends lead form data - all game data was already sent in gameplay payload
   const sendCompletionPayload = useCallback(
-    async (leadForm: LeadFormData): Promise<TelemetrySendResult> => {
-      if (completionResultRef.current?.success) {
+    async (leadForm: LeadFormData): Promise<{ success: boolean; resultText?: string }> => {
+      if (completionSentRef.current) {
         console.log("[Telemetry] Completion already sent for this run, skipping duplicate send");
-        return completionResultRef.current;
+        return { success: true };
       }
 
-      if (completionRequestRef.current) {
-        console.log("[Telemetry] Completion send already in-flight, reusing request");
-        return completionRequestRef.current;
-      }
+      const gameEndedAt = Date.now();
 
-      const requestPromise = (async (): Promise<TelemetrySendResult> => {
-        const gameEndedAt = Date.now();
+      logEvent("LEAD_SUBMITTED");
+      logEvent("RUN_ENDED");
 
-        // Log final events once before send
-        logEvent("LEAD_SUBMITTED");
-        logEvent("RUN_ENDED");
-
-        // Redundant payload structure to ensure Make.com catches the fields regardless of mapping
-        const payload: CompletionPayload = {
-          runId: runIdRef.current,
-          stage: "completion",
-          gameEndedAt,
-          // Root level fields (compatibility)
+      const payload: CompletionPayload = {
+        runId: runIdRef.current,
+        stage: "completion",
+        gameEndedAt,
+        fullName: leadForm.fullName,
+        email: leadForm.email,
+        phone: leadForm.phone,
+        leadForm: {
           fullName: leadForm.fullName,
           email: leadForm.email,
           phone: leadForm.phone,
-          // camelCase structure
-          leadForm: {
-            fullName: leadForm.fullName,
-            email: leadForm.email,
-            phone: leadForm.phone,
-            wantsUpdates: leadForm.wantsUpdates,
-          },
-          // snake_case structure
-          lead_form: {
-            full_name: leadForm.fullName,
-            first_name: leadForm.fullName.trim().split(/\s+/)[0] || "",
-            last_name: leadForm.fullName.trim().split(/\s+/).slice(1).join(" ") || "",
-            email: leadForm.email,
-            phone: leadForm.phone,
-            wants_updates: leadForm.wantsUpdates,
-          },
-          events: [...eventsRef.current],
-        };
+          wantsUpdates: leadForm.wantsUpdates,
+        },
+        lead_form: {
+          full_name: leadForm.fullName,
+          first_name: leadForm.fullName.trim().split(/\s+/)[0] || "",
+          last_name: leadForm.fullName.trim().split(/\s+/).slice(1).join(" ") || "",
+          email: leadForm.email,
+          phone: leadForm.phone,
+          wants_updates: leadForm.wantsUpdates,
+        },
+        events: [...eventsRef.current],
+      };
 
-        console.log("[Telemetry] Sending completion payload:", JSON.stringify(payload, null, 2));
+      console.log("[Telemetry] Sending completion payload:", JSON.stringify(payload, null, 2));
 
-        try {
-          const response = await fetchWithRetry(MAKE_COMPLETION_WEBHOOK_URL, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-          });
-
-          console.log("[Telemetry] Completion payload sent, status:", response.status);
-
-          if (response.ok) {
-            // Read response as text (not JSON)
-            const resultText = await response.text();
-            console.log("[Telemetry] Completion response text:", resultText);
-            const result: TelemetrySendResult = { success: true, resultText };
-            completionResultRef.current = result;
-            return result;
-          }
-
-          return { success: false };
-        } catch (error) {
-          console.error("[Telemetry] Failed to send completion payload after retries:", error);
-          return { success: false };
-        }
-      })();
-
-      completionRequestRef.current = requestPromise;
       try {
-        return await requestPromise;
-      } finally {
-        completionRequestRef.current = null;
+        const response = await fetchWithRetry(MAKE_COMPLETION_WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        console.log("[Telemetry] Completion payload sent, status:", response.status);
+
+        if (response.ok) {
+          completionSentRef.current = true;
+          const resultText = await response.text();
+          console.log("[Telemetry] Completion response text:", resultText);
+          return { success: true, resultText };
+        }
+
+        return { success: false };
+      } catch (error) {
+        console.error("[Telemetry] Failed to send completion payload after retries:", error);
+        return { success: false };
       }
     },
     [logEvent],
   );
 
-  // Send behavioral telemetry payload (separate webhook, sent when transitioning to lead form)
   const sendBehavioralPayload = useCallback(
     async (
       undoEvents: UndoEvent[],
@@ -472,56 +418,42 @@ export function useTelemetry() {
         return { success: true };
       }
 
-      if (behavioralRequestRef.current) {
-        console.log("[Telemetry] Behavioral send already in-flight, reusing request");
-        return behavioralRequestRef.current;
-      }
+      const payload = {
+        runId: runIdRef.current,
+        type: "behavioral",
+        timestamp: new Date().toISOString(),
+        missionShownAtById: { ...missionShownAtByIdRef.current },
+        missionAnsweredAtById: { ...missionAnsweredAtByIdRef.current },
+        undoEvents: undoEvents.map((e) => ({
+          missionId: e.missionId,
+          prevTrait: e.prevTrait,
+          newTrait: e.newTrait,
+          timestampMs: e.timestamp,
+          phase: e.phase || "main",
+        })),
+        totalMissions: 15,
+        totalUndos: undoEvents.length,
+        identityCode,
+        tieBreakersPlayed,
+      };
 
-      const requestPromise = (async (): Promise<{ success: boolean }> => {
-        const payload = {
-          runId: runIdRef.current,
-          type: "behavioral",
-          timestamp: new Date().toISOString(),
-          missionShownAtById: { ...missionShownAtByIdRef.current },
-          missionAnsweredAtById: { ...missionAnsweredAtByIdRef.current },
-          undoEvents: undoEvents.map((e) => ({
-            missionId: e.missionId,
-            prevTrait: e.prevTrait,
-            newTrait: e.newTrait,
-            timestampMs: e.timestamp,
-            phase: e.phase || "main",
-          })),
-          totalMissions: 15,
-          totalUndos: undoEvents.length,
-          identityCode,
-          tieBreakersPlayed,
-        };
+      console.log("[Telemetry] Sending behavioral payload:", JSON.stringify(payload, null, 2));
 
-        console.log("[Telemetry] Sending behavioral payload:", JSON.stringify(payload, null, 2));
-
-        try {
-          const response = await fetchWithRetry(MAKE_BEHAVIORAL_WEBHOOK_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-
-          console.log("[Telemetry] Behavioral payload sent, status:", response.status);
-          if (response.ok) {
-            behavioralSentRef.current = true;
-          }
-          return { success: response.ok };
-        } catch (error) {
-          console.error("[Telemetry] Failed to send behavioral payload:", error);
-          return { success: false };
-        }
-      })();
-
-      behavioralRequestRef.current = requestPromise;
       try {
-        return await requestPromise;
-      } finally {
-        behavioralRequestRef.current = null;
+        const response = await fetchWithRetry(MAKE_BEHAVIORAL_WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        console.log("[Telemetry] Behavioral payload sent, status:", response.status);
+        if (response.ok) {
+          behavioralSentRef.current = true;
+        }
+        return { success: response.ok };
+      } catch (error) {
+        console.error("[Telemetry] Failed to send behavioral payload:", error);
+        return { success: false };
       }
     },
     [],
