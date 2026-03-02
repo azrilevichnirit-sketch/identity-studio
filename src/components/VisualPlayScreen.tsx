@@ -353,16 +353,18 @@ export function VisualPlayScreen({
     mission.phase === 'main' && (mission.mission_id === 'studio_02' || mission.sequence === 2);
   const isMission4BgLocked =
     mission.phase === 'main' && mission.mission_id === 'studio_04';
+  const isMission6BgLocked =
+    mission.phase === 'main' && mission.mission_id === 'studio_06';
   const isCrackedWallsLocked =
     mission.phase === 'main' && mission.mission_id === 'studio_01';
   const isExteriorLocked =
     mission.phase === 'main' && mission.view === 'out' && mission.mission_id !== 'studio_11';
   // Missions with explicit bg_override that are NOT workshop: M06 (doorway), M09/M12 (gallery), tie-breakers
-  const isGalleryMission = ((mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12' || mission.mission_id === 'studio_13' || mission.mission_id === 'studio_15' || mission.mission_id === 'studio_06') && mission.bg_override) || mission.mission_id === 'studio_14' || mission.phase === 'tb';
+  const isGalleryMission = ((mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12' || mission.mission_id === 'studio_13' || mission.mission_id === 'studio_15') && mission.bg_override) || mission.mission_id === 'studio_14' || mission.phase === 'tb';
   const isTieBreakerLocked = mission.phase === 'tb' && !toolEditMode;
   const isWorkshopLocked =
     mission.phase === 'main' &&
-    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission && !isMission4BgLocked) &&
+    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission && !isMission4BgLocked && !isMission6BgLocked) &&
     (!mission.bg_override || mission.bg_override === 'studio_in_workshop_bg');
 
   const taskText = mission.task_heb || `MISSING: task_heb`;
@@ -504,6 +506,8 @@ export function VisualPlayScreen({
     ? 'gallery_main_boxes_v1'
     : isMission4BgLocked
     ? 'gallery_mission4_bg'
+    : isMission6BgLocked
+    ? 'gallery_mission6_bg'
     : isCrackedWallsLocked
     ? (mission.bg_override || 'studio_entry_inside_bg')
     : isExteriorLocked
@@ -528,6 +532,8 @@ export function VisualPlayScreen({
     ? (getBackgroundByName('gallery_main_boxes_v1') || displayBg)
     : isMission4BgLocked
     ? (getBackgroundByName('gallery_mission4_bg') || displayBg)
+    : isMission6BgLocked
+    ? (getBackgroundByName('gallery_mission6_bg') || displayBg)
     : isCrackedWallsLocked
     ? (getBackgroundByName(mission.bg_override || 'studio_entry_inside_bg') || displayBg)
     : isExteriorLocked
@@ -650,6 +656,7 @@ export function VisualPlayScreen({
       const lookupBgKey = isWhiteWallsLocked ? PAINTED_WALLS_BG_KEY 
         : isBoxesBgLocked ? 'gallery_main_boxes_v1'
         : isMission4BgLocked ? 'gallery_mission4_bg'
+        : isMission6BgLocked ? 'gallery_mission6_bg'
         : isCrackedWallsLocked ? 'studio_entry_inside_bg'
        : isExteriorLocked ? 'studio_exterior_bg'
        : isWorkshopLocked ? 'studio_in_workshop_bg' 
@@ -676,7 +683,7 @@ export function VisualPlayScreen({
 
      // Default fallback
      return { x: 50, y: 70, scale: 1, z_layer: 'mid' as const, flipX: false };
-   }, [optionA, optionB, currentBgKey, isWhiteWallsLocked, isBoxesBgLocked, isMission4BgLocked, isCrackedWallsLocked, isExteriorLocked, isWorkshopLocked, PAINTED_WALLS_BG_KEY, mission.mission_id]);
+   }, [optionA, optionB, currentBgKey, isWhiteWallsLocked, isBoxesBgLocked, isMission4BgLocked, isMission6BgLocked, isCrackedWallsLocked, isExteriorLocked, isWorkshopLocked, PAINTED_WALLS_BG_KEY, mission.mission_id]);
 
   // Flash cue when mission changes (helps player notice the transition)
   const [showMissionFlash, setShowMissionFlash] = useState(false);

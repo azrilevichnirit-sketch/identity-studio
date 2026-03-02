@@ -20,6 +20,7 @@ import studioEntranceViewBg from '@/assets/backgrounds/studio_entrance_view_styl
 import studioStorageBg from '@/assets/backgrounds/studio_in_storage_v2.webp';
 import studioDoorwayParkBg from '@/assets/backgrounds/studio_doorway_park_view_v5.webp';
 import galleryMission4Bg from '@/assets/backgrounds/gallery_mission4_bg.webp';
+import galleryMission6Bg from '@/assets/backgrounds/gallery_mission6_bg.webp';
 import galleryMobileWideBg from '@/assets/backgrounds/gallery_main_mobile_wide.webp';
 import galleryMainDesktopBg from '@/assets/backgrounds/gallery_main_desktop.webp';
 
@@ -205,6 +206,9 @@ const backgroundAssets: Record<string, string> = {
   // Mission 04 background
   gallery_mission4_bg: galleryMission4Bg,
   
+  // Mission 06 background
+  gallery_mission6_bg: galleryMission6Bg,
+  
   // Gallery mobile wide (Mission 11 Tool B destination)
   gallery_main_mobile_wide: galleryMobileWideBg,
   
@@ -235,6 +239,7 @@ const panoramicBackgrounds: Record<string, string> = {
   studio_doorway_park_view_bg: studioDoorwayParkBg,
   studio_doorway_park_view_v5: studioDoorwayParkBg,
   gallery_mission4_bg: galleryMission4Bg,
+  gallery_mission6_bg: galleryMission6Bg,
   gallery_main_mobile_wide: galleryMobileWideBg,
   gallery_main_desktop: galleryMainDesktopBg,
 };
