@@ -42,11 +42,12 @@ interface ParsedSection {
   content: string;  // full content (markdown)
 }
 
-function parseResultText(text: string): { intro: string; sections: ParsedSection[] } {
-  // Split on lines starting with ## or ###
-  const parts = text.split(/\n(?=#{2,3} )/);
+function parseResultText(text: string): { intro: string; sectionHeader: string; sections: ParsedSection[] } {
+  // Split on lines starting with ## (not ###)
+  const parts = text.split(/\n(?=## (?!#))/);
 
   const intro = parts[0]?.trim() || '';
+  let sectionHeader = '';
   const sections: ParsedSection[] = [];
 
   for (let i = 1; i < parts.length; i++) {
@@ -54,25 +55,21 @@ function parseResultText(text: string): { intro: string; sections: ParsedSection
     if (!part) continue;
 
     const lines = part.split('\n');
-    const titleLine = lines[0].replace(/^#{2,3}\s*/, '').trim();
-
+    const titleLine = lines[0].replace(/^##\s*/, '').trim();
     const contentLines = lines.slice(1).join('\n').trim();
 
     // Check if this section has ### sub-sections (programs)
     const subParts = contentLines.split(/\n(?=### )/);
     
     if (subParts.length > 1) {
-      // This ## section contains ### sub-programs — extract each as a separate card
-      // First part before any ### is intro text for this section (skip or add to intro)
-      const sectionIntro = subParts[0]?.trim();
-      if (sectionIntro) {
-        // Treat the parent ## as a non-accordion intro paragraph
-        // We'll prepend it to the main intro
-      }
+      // Use the ## title as the section header
+      sectionHeader = titleLine;
       
-      for (let j = 1; j < subParts.length; j++) {
+      for (let j = 0; j < subParts.length; j++) {
         const sub = subParts[j].trim();
         if (!sub) continue;
+        // Skip parts that don't start with ###
+        if (!sub.startsWith('### ')) continue;
         const subLines = sub.split('\n');
         const subTitle = subLines[0].replace(/^###\s*/, '').trim();
         const subContent = subLines.slice(1).join('\n').trim();
@@ -86,7 +83,7 @@ function parseResultText(text: string): { intro: string; sections: ParsedSection
         sections.push({ title: subTitle, subtitle, content: subContent });
       }
     } else {
-      // No sub-sections — this ## is a standalone card
+      // No sub-sections — standalone card
       const firstContentLine = contentLines.split('\n').find(l => l.trim().length > 0) || '';
       const subtitle = firstContentLine
         .replace(/^[#*\->\s]+/, '')
@@ -98,7 +95,7 @@ function parseResultText(text: string): { intro: string; sections: ParsedSection
     }
   }
 
-  return { intro, sections };
+  return { intro, sectionHeader, sections };
 }
 
 export function SummaryScreen({ state, countsFinal, leaders, resultText }: SummaryScreenProps) {
@@ -179,13 +176,13 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
                   </div>
                 )}
 
-                {/* Section header */}
+                {/* Section header - from ## in content, or fallback */}
                 {parsed.sections.length > 0 && (
                   <h2
                     className="text-xl md:text-2xl font-bold mt-6 mb-4 text-right"
                     style={{ color: '#111', fontFamily: "'Rubik', sans-serif" }}
                   >
-                    תוכניות הלימודים שלך
+                    {parsed.sectionHeader || 'תוכניות הלימודים שלך'}
                   </h2>
                 )}
 
