@@ -22,6 +22,7 @@ import studioDoorwayParkBg from '@/assets/backgrounds/studio_doorway_park_view_v
 import galleryMission4Bg from '@/assets/backgrounds/gallery_mission4_bg.webp';
 import galleryMission6Bg from '@/assets/backgrounds/gallery_mission6_bg.webp';
 import galleryMission8Bg from '@/assets/backgrounds/gallery_mission8_bg.webp';
+import galleryMission10Bg from '@/assets/backgrounds/gallery_mission10_bg.webp';
 import galleryMobileWideBg from '@/assets/backgrounds/gallery_main_mobile_wide.webp';
 import galleryMainDesktopBg from '@/assets/backgrounds/gallery_main_desktop.webp';
 
@@ -213,6 +214,9 @@ const backgroundAssets: Record<string, string> = {
   // Mission 08 background
   gallery_mission8_bg: galleryMission8Bg,
   
+  // Mission 10 background
+  gallery_mission10_bg: galleryMission10Bg,
+  
   // Gallery mobile wide (Mission 11 Tool B destination)
   gallery_main_mobile_wide: galleryMobileWideBg,
   
@@ -245,6 +249,7 @@ const panoramicBackgrounds: Record<string, string> = {
   gallery_mission4_bg: galleryMission4Bg,
   gallery_mission6_bg: galleryMission6Bg,
   gallery_mission8_bg: galleryMission8Bg,
+  gallery_mission10_bg: galleryMission10Bg,
   gallery_main_mobile_wide: galleryMobileWideBg,
   gallery_main_desktop: galleryMainDesktopBg,
 };
