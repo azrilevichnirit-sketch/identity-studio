@@ -531,6 +531,8 @@ export function VisualPlayScreen({
     ? 'gallery_mission6_bg'
     : isMission8BgLocked
     ? 'gallery_mission8_bg'
+    : isMission10BgLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.key
     : isMission10BgLocked
     ? 'gallery_mission10_bg'
     : isCrackedWallsLocked
@@ -561,6 +563,8 @@ export function VisualPlayScreen({
     ? (getBackgroundByName('gallery_mission6_bg') || displayBg)
     : isMission8BgLocked
     ? (getBackgroundByName('gallery_mission8_bg') || displayBg)
+    : isMission10BgLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.image
     : isMission10BgLocked
     ? (getBackgroundByName('gallery_mission10_bg') || displayBg)
     : isCrackedWallsLocked
@@ -894,6 +898,13 @@ export function VisualPlayScreen({
     // so it does NOT snap back to the workshop before advancing to Mission 12.
     const isMission11 = mission.mission_id === 'studio_11';
     if (isMission11) {
+      const targetBg = getTargetBgForOption(option);
+      setLocalBgOverride({ ...targetBg, missionId: mission.mission_id });
+    }
+
+    // Mission 10: Lock the background to the tool-specific result bg on placement
+    const isMission10 = mission.mission_id === 'studio_10';
+    if (isMission10) {
       const targetBg = getTargetBgForOption(option);
       setLocalBgOverride({ ...targetBg, missionId: mission.mission_id });
     }
