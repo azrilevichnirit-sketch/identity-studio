@@ -44,11 +44,6 @@ import femaleStaffSittingImg from '@/assets/extras/studio_female_staff_sitting.w
 import femaleStaffStandingImg from '@/assets/extras/studio_female_staff_standing.webp';
 // Mission 11 Tool B crowd asset
 import m11CrowdAsset from '@/assets/extras/studio_extra_asset_07.webp';
-// Mission 7 scene extras (props)
-import m07Frames from '@/assets/extras/studio_extra_asset_11.webp';
-import m07Easel from '@/assets/extras/studio_extra_asset_12.webp';
-import m07VasesLight from '@/assets/extras/studio_extra_asset_13.webp';
-import m07VasesDark from '@/assets/extras/studio_extra_asset_14.webp';
 // Mission 6 rack prop
 import m06RackImg from '@/assets/extras/studio_extra_asset_05.webp';
 // import { AnimatedStaffCharacter, type CharacterState } from './AnimatedStaffCharacter'; // Disabled
@@ -1249,12 +1244,8 @@ export function VisualPlayScreen({
     return (
       <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 5 }}>
         {sceneExtras.map((extra) => {
-          // Hide M07 extras once a tool has been selected (background switches away from entrance view)
-          if (extra.anchorRef.startsWith('m07_extra') && localPlacement) return null;
-          
           // Pin extras to their calibrated background regardless of visual overrides.
           const calibratedBgKey = extra.anchorRef.startsWith('m10_') ? 'studio_in_workshop_bg'
-            : extra.anchorRef.startsWith('m07_extra') ? 'studio_in_entrance_view_bg'
             : lockedBgKey;
           const anchorPos = getAnchorPosition(calibratedBgKey, extra.anchorRef);
           if (!anchorPos) {
@@ -2478,20 +2469,7 @@ export function VisualPlayScreen({
     if (!toolEditMode) return null;
     if (mission.mission_id === 'studio_07') {
       return (
-        <>
-          <Mission7CalibrationEditor mission={mission} onBackgroundChange={handleM7BackgroundChange} />
-          <VisitorCalibrationEditor bgKey="studio_in_entrance_view_bg" title="M07 Props" panelClassName="top-[290px] right-4" visitors={[
-            { id: 'm07_extra_frames', img: m07Frames, label: 'מסגרות' },
-            { id: 'm07_extra_easel_01', img: m07Easel, label: 'כן ציור 1' },
-            { id: 'm07_extra_easel_02', img: m07Easel, label: 'כן ציור 2' },
-            { id: 'm07_extra_easel_03', img: m07Easel, label: 'כן ציור 3' },
-            { id: 'm07_extra_easel_04', img: m07Easel, label: 'כן ציור 4' },
-            { id: 'm07_extra_vases_a_01', img: m07VasesLight, label: 'אגרטלים בהירים 1' },
-            { id: 'm07_extra_vases_a_02', img: m07VasesLight, label: 'אגרטלים בהירים 2' },
-            { id: 'm07_extra_vases_b_01', img: m07VasesDark, label: 'אגרטלים כהים 1' },
-            { id: 'm07_extra_vases_b_02', img: m07VasesDark, label: 'אגרטלים כהים 2' },
-          ]} />
-        </>
+        <Mission7CalibrationEditor mission={mission} onBackgroundChange={handleM7BackgroundChange} />
       );
     }
     if (mission.mission_id === 'studio_11') {
