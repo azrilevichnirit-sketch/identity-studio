@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useRef, useCallback, useEffect } from 'react';
 import type { Mission, HollandCode, AvatarGender, PickRecord, MissionOption, AnchorRef } from '@/types/identity';
-import { getToolImage, getBackgroundForMission, getAvatarImage, getBackgroundKey, getBackgroundByName, getPanoramicBackground, preloadBackground, preloadAllBackgrounds } from '@/lib/assetUtils';
+import { getToolImage, getBackgroundForMission, getAvatarImage, getBackgroundKey, getBackgroundByName, getPanoramicBackground, getMobilePortraitBackground, preloadBackground, preloadAllBackgrounds } from '@/lib/assetUtils';
 import { panOffsetToDropCompensation, panOffsetToTranslatePercent } from '@/lib/pan';
 import { getAnchorPosition as _getAnchorPosition } from '@/lib/jsonDataLoader';
 import { SpeechBubble } from './SpeechBubble';
@@ -633,14 +633,25 @@ export function VisualPlayScreen({
     : displayBg;
 
 
+  // ==================== MOBILE PORTRAIT BACKGROUNDS ====================
+  // If a native portrait (3072x4096) background exists for the current bg key,
+  // use it directly on mobile — no panoramic panning needed.
+  const mobilePortraitBg = useMemo(() => {
+    if (!isMobile) return null;
+    return getMobilePortraitBackground(lockedBgKey);
+  }, [isMobile, lockedBgKey]);
+
+  const effectiveLockedBg = mobilePortraitBg || lockedBg;
 
   // ==================== MOBILE PANORAMIC PANNING ====================
   // IMPORTANT: panning must follow the *actual* background being shown (lockedBgKey),
   // otherwise some missions won't pan on mobile and side-wall anchors become unreachable.
+  // Panoramic panning is DISABLED when a portrait background is available.
   const isPanoramic = useMemo(() => {
     if (!isMobile) return false;
+    if (mobilePortraitBg) return false; // Portrait bg = no panning
     return !!getPanoramicBackground(lockedBgKey);
-  }, [isMobile, lockedBgKey]);
+  }, [isMobile, lockedBgKey, mobilePortraitBg]);
 
   const getRenderX = useCallback((x: number) => {
     // Keep anchor coordinates in raw mission space (0-100).
@@ -1330,7 +1341,7 @@ export function VisualPlayScreen({
   
   const backgroundElement = (
     <PannableBackground
-      src={lockedBg}
+      src={effectiveLockedBg}
       className="layout-bg"
       filter="saturate(1.18) contrast(1.08)"
       durationMs={bgCrossfadeDuration}
