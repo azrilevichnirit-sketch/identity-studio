@@ -745,14 +745,19 @@ export function VisualPlayScreen({
     }
     
     if (previousBgKeyRef.current !== lockedBgKey) {
-      // Background is changing - hide UI during transition
-      setIsBackgroundTransitioning(true);
+      // M10: same room with items appearing — skip UI hiding for seamless feel
+      const isM10Transition = mission.mission_id === 'studio_10';
+      if (!isM10Transition) {
+        // Background is changing - hide UI during transition
+        setIsBackgroundTransitioning(true);
+      }
       previousBgKeyRef.current = lockedBgKey;
       
       // After crossfade completes, show the UI
+      const fadeDuration = isM10Transition ? 200 : CROSSFADE_DURATION;
       const fadeTimer = window.setTimeout(() => {
         setIsBackgroundTransitioning(false);
-      }, CROSSFADE_DURATION);
+      }, fadeDuration);
       
       return () => window.clearTimeout(fadeTimer);
     }
@@ -1234,12 +1239,15 @@ export function VisualPlayScreen({
   // ========== RENDER ELEMENTS ==========
   // These are passed to the layout wrapper
 
+  // M10: very fast crossfade (same room, items just appear on table)
+  const bgCrossfadeDuration = mission.mission_id === 'studio_10' ? 200 : 800;
+  
   const backgroundElement = (
     <PannableBackground
       src={lockedBg}
       className="layout-bg"
       filter="saturate(1.18) contrast(1.08)"
-      durationMs={800}
+      durationMs={bgCrossfadeDuration}
       zIndex={0}
       enabled={isMobile && isPanoramic}
       isPanoramic={isMobile && isPanoramic}
