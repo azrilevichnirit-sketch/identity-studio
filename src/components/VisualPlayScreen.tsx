@@ -183,6 +183,14 @@ export function VisualPlayScreen({
     }
   }, [avatarGender]);
 
+  // Mission 10: prewarm per-tool result backgrounds so swap is visible immediately
+  useEffect(() => {
+    if (mission.mission_id === 'studio_10') {
+      preloadBackground('gallery_mission10a_bg');
+      preloadBackground('gallery_mission10b_bg');
+    }
+  }, [mission.mission_id]);
+
   // Track if we're transitioning from Mission 7 (need to preserve bg during fixation)
   const m7TransitionRef = useRef<{ active: boolean; bgKey: string | null }>({ active: false, bgKey: null });
   
@@ -990,7 +998,7 @@ export function VisualPlayScreen({
       : (isMission11ToolA || isMission11ToolB) ? 2600  // extra time for avatar/crowd appear after tool
       : (isMission07 || isMission11) ? 2200
       : isMission06ToolA ? 2400  // extra time for prop spawn + tool appear
-      : (mission.mission_id === 'studio_10') ? 2000  // bg switch viewing time
+      : (mission.mission_id === 'studio_10') ? 3200  // ensure player sees per-tool bg before M11
       : isMission05ToolA ? 2400  // extra 1s viewing time for M05 tool A
       : isMission05ToolB ? 2900  // visitors fade-in + 1.5s viewing time
       : isMission08ToolB ? 2900  // visitors fade-in + 1.5s viewing time
