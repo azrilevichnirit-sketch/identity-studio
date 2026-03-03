@@ -893,9 +893,10 @@ export function VisualPlayScreen({
       }, toolAppearDelay);
       timeoutsRef.current.push(showToolId);
     } else {
-      // M11 Tool B: tool is baked into gallery_mission11b_bg — skip rendering the prop entirely
+      // M11 Tool B & M13: tools are baked into their backgrounds — skip rendering the prop
       const isM11BakedB = mission.mission_id === 'studio_11' && variant === 'b';
-      if (!isM11BakedB) {
+      const isM13Baked = mission.mission_id === 'studio_13';
+      if (!isM11BakedB && !isM13Baked) {
         setLocalPlacement({
           missionId: mission.mission_id,
           key: variant,
@@ -950,9 +951,10 @@ export function VisualPlayScreen({
       setLocalBgOverride({ ...targetBg, missionId: mission.mission_id });
     }
 
-    // Mission 10: Lock the background to the tool-specific result bg on placement
+    // Mission 10 & 13: Lock the background to the tool-specific result bg on placement
     const isMission10 = mission.mission_id === 'studio_10';
-    if (isMission10) {
+    const isMission13 = mission.mission_id === 'studio_13';
+    if (isMission10 || isMission13) {
       const targetBg = getTargetBgForOption(option);
       setLocalBgOverride({ ...targetBg, missionId: mission.mission_id });
     }
@@ -1039,6 +1041,7 @@ export function VisualPlayScreen({
       : (isMission07 || isMission11) ? 2200
       : isMission06ToolA ? 2400  // extra time for prop spawn + tool appear
       : (mission.mission_id === 'studio_10') ? 1500  // faster handoff so M11 bubble appears quickly
+      : isMission13 ? 1500  // baked bg crossfade + brief viewing
       : isMission05ToolA ? 2400  // extra 1s viewing time for M05 tool A
       : isMission05ToolB ? 2900  // visitors fade-in + 1.5s viewing time
       : isMission08ToolB ? 2900  // visitors fade-in + 1.5s viewing time
