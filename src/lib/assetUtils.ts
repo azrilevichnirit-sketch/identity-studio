@@ -28,6 +28,7 @@ import galleryMission10bBg from '@/assets/backgrounds/gallery_mission10b_bg.webp
 import galleryMission11aBg from '@/assets/backgrounds/gallery_mission11a_bg.webp';
 import galleryMission11bBg from '@/assets/backgrounds/gallery_mission11b_bg.webp';
 import galleryMission13aBg from '@/assets/backgrounds/gallery_mission13a_bg.webp';
+import galleryMission13bBg from '@/assets/backgrounds/gallery_mission13b_bg.webp';
 import galleryMobileWideBg from '@/assets/backgrounds/gallery_main_mobile_wide.webp';
 import galleryMainDesktopBg from '@/assets/backgrounds/gallery_main_desktop.webp';
 
@@ -236,6 +237,7 @@ const backgroundAssets: Record<string, string> = {
   
   // Mission 13 backgrounds
   gallery_mission13a_bg: galleryMission13aBg,
+  gallery_mission13b_bg: galleryMission13bBg,
 };
 
 // Wide panoramic backgrounds for mobile panning (key -> asset)
@@ -269,6 +271,7 @@ const panoramicBackgrounds: Record<string, string> = {
   gallery_main_mobile_wide: galleryMobileWideBg,
   gallery_main_desktop: galleryMainDesktopBg,
   gallery_mission13a_bg: galleryMission13aBg,
+  gallery_mission13b_bg: galleryMission13bBg,
 };
 
 export function getPanoramicBackground(bgKey: string): string | null {

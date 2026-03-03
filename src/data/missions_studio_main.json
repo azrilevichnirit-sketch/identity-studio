@@ -330,7 +330,8 @@
         "holland_code": "c",
         "asset": "studio_13_b",
         "tooltip_heb": "פולדר עם הצעת מחיר",
-        "view": "in"
+        "view": "in",
+        "next_bg_override": "gallery_mission13b_bg"
       }
     ]
   },
