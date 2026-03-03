@@ -2479,6 +2479,25 @@
     "flipX": true
   },
 
+  {"_comment": "=== M02 mobile overrides for boxes background ==="},
+  {
+    "background_asset_key": "gallery_main_boxes_v1",
+    "anchor_ref": "m02_tool_a_mobile",
+    "x_pct": 0.273,
+    "y_pct": 0.728,
+    "scale": 1,
+    "z_layer": "front"
+  },
+  {
+    "background_asset_key": "gallery_main_boxes_v1",
+    "anchor_ref": "m02_tool_b_mobile",
+    "x_pct": 0.81,
+    "y_pct": 0.636,
+    "scale": 1,
+    "z_layer": "front",
+    "flipX": true
+  },
+
   {"_comment": "=== M14 mobile overrides - Tool A scale 1.5 → 1.0, Tool B scale 2.5 → 1.5 ==="},
   {
     "background_asset_key": "studio_in_storage_bg",
