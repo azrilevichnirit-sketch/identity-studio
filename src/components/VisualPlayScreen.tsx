@@ -183,10 +183,12 @@ export function VisualPlayScreen({
     }
   }, [avatarGender]);
 
-  // Mission 10: prewarm the backgrounds that can appear immediately after selection
-  // so the player never sees a black frame during the M10 -> M11 transition.
+  // Mission 10: prewarm M10 result AND M11 starting backgrounds
+  // so both transitions (M10 pick → M10 result, M10 result → M11 start) are instant.
   useEffect(() => {
     if (mission.mission_id === 'studio_10') {
+      preloadBackground('gallery_mission10a_bg');
+      preloadBackground('gallery_mission10b_bg');
       preloadBackground('gallery_mission11a_bg');
       preloadBackground('gallery_mission11b_bg');
     }
@@ -267,13 +269,13 @@ export function VisualPlayScreen({
       return 'studio_exterior_bg';
     }
     
-    // Mission 11: Inherit M10's result background directly (already on screen from M10 transition)
+    // Mission 11: Use M11-specific background based on M10's choice (key, not nextBgOverride)
+    // M10 result bg (gallery_mission10a/b_bg) is visible briefly after M10 pick,
+    // then crossfades to M11's own bg when M11 loads.
     if (mission.phase === 'main' && mission.mission_id === 'studio_11') {
       const m10Pick = placedProps.find(p => p.missionId === 'studio_10');
-      // M10's next_bg_override already points to M11's bg (gallery_mission11a/b_bg)
-      if (m10Pick?.nextBgOverride) {
-        return m10Pick.nextBgOverride;
-      }
+      if (m10Pick?.key === 'a') return 'gallery_mission11a_bg';
+      if (m10Pick?.key === 'b') return 'gallery_mission11b_bg';
       return 'gallery_mission11a_bg'; // fallback
     }
     
