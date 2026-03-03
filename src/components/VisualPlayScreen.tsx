@@ -1331,7 +1331,8 @@ export function VisualPlayScreen({
   
   const sceneExtrasElement = useMemo(() => {
     // Hide actual extras when calibration editor is active (it renders its own copies)
-    if (sceneExtras.length === 0 || toolEditMode) return null;
+    // Mission 13 uses baked-in props in the background, so never render scene extras there.
+    if (mission.mission_id === 'studio_13' || sceneExtras.length === 0 || toolEditMode) return null;
     
     return (
       <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 5 }}>
@@ -1384,7 +1385,7 @@ export function VisualPlayScreen({
         })}
       </div>
     );
-  }, [sceneExtras, lockedBgKey, extraOverrides, toolEditMode, localPlacement, getRenderX, getSpriteTransform]);
+  }, [mission.mission_id, sceneExtras, lockedBgKey, extraOverrides, toolEditMode, localPlacement, getRenderX, getSpriteTransform]);
 
   const targetZoneElement = activeToolVariant && targetPosition ? (
     <div
