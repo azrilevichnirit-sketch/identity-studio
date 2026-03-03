@@ -266,9 +266,12 @@ export function VisualPlayScreen({
       return 'studio_exterior_bg';
     }
     
-    // Mission 11: Start on Mission 10's baked result background (tool with scene)
+    // Mission 11: Use M11-specific background based on M10's choice
     if (mission.phase === 'main' && mission.mission_id === 'studio_11') {
       const m10Pick = placedProps.find(p => p.missionId === 'studio_10');
+      if (m10Pick?.key === 'a') {
+        return 'gallery_mission11a_bg';
+      }
       if (m10Pick?.nextBgOverride) {
         return m10Pick.nextBgOverride;
       }
