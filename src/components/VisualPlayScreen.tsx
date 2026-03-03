@@ -883,14 +883,26 @@ export function VisualPlayScreen({
       }, toolAppearDelay);
       timeoutsRef.current.push(showToolId);
     } else {
-      setLocalPlacement({
-        missionId: mission.mission_id,
-        key: variant,
-        assetName: option.asset,
-        fixedPlacement: snapped
-          ? { x: snapped.x, y: snapped.y, scale: snapped.scale, flipX: snapped.flipX, z_layer: snapped.z_layer }
-          : undefined,
-      });
+      // M11 Tool B: tool is baked into gallery_mission11b_bg — skip rendering the prop entirely
+      const isM11BakedB = mission.mission_id === 'studio_11' && variant === 'b';
+      if (!isM11BakedB) {
+        setLocalPlacement({
+          missionId: mission.mission_id,
+          key: variant,
+          assetName: option.asset,
+          fixedPlacement: snapped
+            ? { x: snapped.x, y: snapped.y, scale: snapped.scale, flipX: snapped.flipX, z_layer: snapped.z_layer }
+            : undefined,
+        });
+      } else {
+        // Still set localPlacement for background switching logic, but with no visual
+        setLocalPlacement({
+          missionId: mission.mission_id,
+          key: variant,
+          assetName: option.asset,
+          fixedPlacement: { x: -999, y: -999, scale: 0, flipX: false, z_layer: 'mid' },
+        });
+      }
     }
 
     // Mobile: hide tool panel briefly so it doesn't cover the newly placed tool
