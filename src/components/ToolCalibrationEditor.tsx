@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
-import { Move, Copy, ChevronDown, ChevronUp, SkipForward, Box } from 'lucide-react';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { Move, Copy, ChevronDown, ChevronUp, SkipForward, Box, Monitor, Smartphone } from 'lucide-react';
 import { getAnchorPosition } from '@/lib/jsonDataLoader';
 import { getToolImage } from '@/lib/assetUtils';
 import type { AnchorRef, Mission } from '@/types/identity';
@@ -27,23 +27,44 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
   const [isOpen, setIsOpen] = useState(!isMobile);
   const [selectedTool, setSelectedTool] = useState<'a' | 'b' | null>(null);
   const [selectedExtra, setSelectedExtra] = useState<string | null>(null);
+  // Calibration mode: 'desktop' or 'mobile' — controls which anchors are loaded/exported
+  const [calibrationMode, setCalibrationMode] = useState<'desktop' | 'mobile'>('desktop');
+
+  const getAnchorRef = useCallback((key: 'a' | 'b', mode: 'desktop' | 'mobile'): AnchorRef => {
+    const isTie = mission.mission_id.includes('_tie_');
+    const missionNum = mission.mission_id.replace('studio_', '').replace('tie_', '').padStart(2, '0');
+    const base = isTie ? `tie_${missionNum}_tool_${key}` : `m${missionNum}_tool_${key}`;
+    return (mode === 'mobile' ? `${base}_mobile` : base) as AnchorRef;
+  }, [mission.mission_id]);
+
+  const getInitialPos = useCallback((key: 'a' | 'b', mode: 'desktop' | 'mobile'): ToolPosition => {
+    const anchorRef = getAnchorRef(key, mode);
+    // For mobile mode, try mobile anchor first, fall back to desktop
+    let pos = getAnchorPosition(currentBgKey, anchorRef, { isMobile: false });
+    if (!pos && mode === 'mobile') {
+      pos = getAnchorPosition(currentBgKey, getAnchorRef(key, 'desktop'), { isMobile: false });
+    }
+    return {
+      x: pos?.x ?? 50,
+      y: pos?.y ?? 80,
+      scale: pos?.scale ?? 1,
+      flipX: pos?.flipX ?? false,
+    };
+  }, [currentBgKey, getAnchorRef]);
   
   // Single position per tool - same for drag target AND final placement
-  const [positions, setPositions] = useState<{ a: ToolPosition; b: ToolPosition }>(() => {
-    const getInitialPos = (key: 'a' | 'b'): ToolPosition => {
-      const isTie = mission.mission_id.includes('_tie_');
-      const missionNum = mission.mission_id.replace('studio_', '').replace('tie_', '').padStart(2, '0');
-      const anchorRef = (isTie ? `tie_${missionNum}_tool_${key}` : `m${missionNum}_tool_${key}`) as AnchorRef;
-      const pos = getAnchorPosition(currentBgKey, anchorRef);
-      return {
-        x: pos?.x ?? 50,
-        y: pos?.y ?? 80,
-        scale: pos?.scale ?? 1,
-        flipX: pos?.flipX ?? false,
-      };
-    };
-    return { a: getInitialPos('a'), b: getInitialPos('b') };
-  });
+  const [positions, setPositions] = useState<{ a: ToolPosition; b: ToolPosition }>(() => ({
+    a: getInitialPos('a', calibrationMode),
+    b: getInitialPos('b', calibrationMode),
+  }));
+
+  // Reload positions when calibration mode changes
+  useEffect(() => {
+    setPositions({
+      a: getInitialPos('a', calibrationMode),
+      b: getInitialPos('b', calibrationMode),
+    });
+  }, [calibrationMode, getInitialPos]);
 
   // Extra positions state - use anchor map for initial position
   const [extraPositions, setExtraPositions] = useState<Record<string, ToolPosition>>(() => {
@@ -235,9 +256,6 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
   };
 
   const copyToClipboard = () => {
-    const isTie = mission.mission_id.includes('_tie_');
-    const missionNum = mission.mission_id.replace('studio_', '').replace('tie_', '').padStart(2, '0');
-    const prefix = isTie ? 'tie' : 'm';
     const entries = [] as Array<{
       background_asset_key: string;
       anchor_ref: string;
@@ -249,9 +267,10 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
     }>;
 
     if (isToolAEnabled) {
+      const ref = getAnchorRef('a', calibrationMode);
       entries.push({
         background_asset_key: currentBgKey,
-        anchor_ref: `${prefix}${missionNum}_tool_a`,
+        anchor_ref: ref,
         x_pct: Math.round(positions.a.x * 10) / 1000,
         y_pct: Math.round(positions.a.y * 10) / 1000,
         scale: positions.a.scale,
@@ -261,9 +280,10 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
     }
 
     if (isToolBEnabled) {
+      const ref = getAnchorRef('b', calibrationMode);
       entries.push({
         background_asset_key: currentBgKey,
-        anchor_ref: `${prefix}${missionNum}_tool_b`,
+        anchor_ref: ref,
         x_pct: Math.round(positions.b.x * 10) / 1000,
         y_pct: Math.round(positions.b.y * 10) / 1000,
         scale: positions.b.scale,
@@ -273,7 +293,7 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
     }
     
     navigator.clipboard.writeText(JSON.stringify(entries, null, 2));
-    alert('Copied to clipboard!');
+    alert(`Copied ${calibrationMode} anchors to clipboard!`);
   };
 
   const copyExtraToClipboard = () => {
@@ -457,6 +477,32 @@ export function ToolCalibrationEditor({ mission, currentBgKey, onNextMission, sc
             </div>
             <div className="text-muted-foreground text-[10px] break-all">
               <strong>BG:</strong> {currentBgKey}
+            </div>
+            
+            {/* Desktop / Mobile calibration toggle */}
+            <div className="flex gap-1 p-1 bg-muted rounded">
+              <button
+                onClick={() => setCalibrationMode('desktop')}
+                className={`flex-1 flex items-center justify-center gap-1 px-2 py-1.5 rounded text-[10px] font-medium transition-colors ${
+                  calibrationMode === 'desktop' 
+                    ? 'bg-primary text-primary-foreground' 
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                <Monitor className="w-3 h-3" />
+                Desktop
+              </button>
+              <button
+                onClick={() => setCalibrationMode('mobile')}
+                className={`flex-1 flex items-center justify-center gap-1 px-2 py-1.5 rounded text-[10px] font-medium transition-colors ${
+                  calibrationMode === 'mobile' 
+                    ? 'bg-primary text-primary-foreground' 
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                <Smartphone className="w-3 h-3" />
+                Mobile
+              </button>
             </div>
             
             {/* Tool A controls */}
