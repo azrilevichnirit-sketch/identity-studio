@@ -6,13 +6,30 @@ export function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined);
 
   React.useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
-    const onChange = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    const widthMql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    const coarsePointerMql = window.matchMedia("(pointer: coarse)");
+
+    const evaluateIsMobile = () => {
+      const isNarrowViewport = window.innerWidth < MOBILE_BREAKPOINT;
+      const isPhoneLandscape =
+        coarsePointerMql.matches &&
+        window.innerWidth > window.innerHeight &&
+        window.innerHeight <= 500;
+
+      setIsMobile(isNarrowViewport || isPhoneLandscape);
     };
-    mql.addEventListener("change", onChange);
-    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-    return () => mql.removeEventListener("change", onChange);
+
+    widthMql.addEventListener("change", evaluateIsMobile);
+    coarsePointerMql.addEventListener("change", evaluateIsMobile);
+    window.addEventListener("resize", evaluateIsMobile);
+
+    evaluateIsMobile();
+
+    return () => {
+      widthMql.removeEventListener("change", evaluateIsMobile);
+      coarsePointerMql.removeEventListener("change", evaluateIsMobile);
+      window.removeEventListener("resize", evaluateIsMobile);
+    };
   }, []);
 
   return !!isMobile;

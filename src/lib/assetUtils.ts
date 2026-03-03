@@ -302,6 +302,10 @@ const panoramicBackgrounds: Record<string, string> = {
   gallery_main_desktop: galleryMainDesktopBg,
   gallery_mission13a_bg: galleryMission13aBg,
   gallery_mission13b_bg: galleryMission13bBg,
+  gallery_mission4_mobile_bg: galleryMission4MobileBg,
+  gallery_mission4a_mobile_bg: galleryMission4aMobileBg,
+  gallery_mission4b_m_mobile_bg: galleryMission4bMMobileBg,
+  gallery_mission4b_f_mobile_bg: galleryMission4bFMobileBg,
 };
 
 export function getPanoramicBackground(bgKey: string): string | null {
@@ -324,12 +328,6 @@ const mobilePortraitBackgrounds: Record<string, string> = {
   // Mission 03 baked results (mobile only)
   gallery_mission3a_mobile_bg: galleryMission3aMobileBg,
   gallery_mission3b_mobile_bg: galleryMission3bMobileBg,
-  // Mission 04: base + baked results (mobile only)
-  gallery_mission4_bg: galleryMission4MobileBg,
-  gallery_mission4_mobile_bg: galleryMission4MobileBg,
-  gallery_mission4a_mobile_bg: galleryMission4aMobileBg,
-  gallery_mission4b_m_mobile_bg: galleryMission4bMMobileBg,
-  gallery_mission4b_f_mobile_bg: galleryMission4bFMobileBg,
 };
 
 export function getMobilePortraitBackground(bgKey: string): string | null {
