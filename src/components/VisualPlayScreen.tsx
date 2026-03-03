@@ -437,7 +437,7 @@ export function VisualPlayScreen({
     }
     // Mission 10/11: Tool-specific backgrounds are data-driven via next_bg_override
     // (prevents hardcoded mismatches and visual jumps between missions)
-    if (mission.mission_id === 'studio_10' || mission.mission_id === 'studio_11' || mission.mission_id === 'studio_13') {
+    if (mission.mission_id === 'studio_10' || mission.mission_id === 'studio_11' || mission.mission_id === 'studio_13' || mission.mission_id === 'studio_15') {
       const targetBgKey = option.next_bg_override || mission.bg_override || currentBgKey;
       const targetBgImage = getBackgroundByName(targetBgKey) || currentBg;
       return { key: targetBgKey, image: targetBgImage };
