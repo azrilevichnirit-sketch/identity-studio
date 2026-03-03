@@ -15,25 +15,27 @@ type BackgroundCrossfadeProps = {
 // Cache of preloaded images to avoid re-fetching
 const preloadedImages = new Set<string>();
 
-function preloadImage(src: string): Promise<void> {
+function preloadImage(src: string): Promise<boolean> {
   if (preloadedImages.has(src)) {
-    return Promise.resolve();
+    return Promise.resolve(true);
   }
+
   return new Promise((resolve) => {
     const img = new Image();
     img.onload = () => {
       preloadedImages.add(src);
-      resolve();
+      resolve(true);
     };
     img.onerror = () => {
       console.warn(`BackgroundCrossfade: Failed to preload ${src}`);
-      resolve();
+      resolve(false);
     };
     img.src = src;
-    // If the image is already in browser cache, complete is true synchronously
-    if (img.complete) {
+
+    // If the image is already in browser cache, complete can be synchronous.
+    if (img.complete && img.naturalWidth > 0) {
       preloadedImages.add(src);
-      resolve();
+      resolve(true);
     }
   });
 }
@@ -102,12 +104,14 @@ export function BackgroundCrossfade({
       }, durationMs + 50);
     };
 
-    // Preload the new image before transitioning, but cap wait at 2s
-    const timeout = window.setTimeout(doTransition, 2000);
-    preloadImage(src).then(doTransition);
+    // Transition ONLY after the new image is actually loaded.
+    // This prevents black flashes on slow/large background swaps.
+    preloadImage(src).then((loaded) => {
+      if (!loaded) return;
+      doTransition();
+    });
 
     return () => {
-      window.clearTimeout(timeout);
       // Don't clear cleanupRef here - let the fade-out complete even if src changes again
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
