@@ -266,9 +266,13 @@ export function VisualPlayScreen({
       return 'studio_exterior_bg';
     }
     
-    // Mission 11: Continue in workshop (same as M10)
+    // Mission 11: Start on Mission 10's baked result background (tool with scene)
     if (mission.phase === 'main' && mission.mission_id === 'studio_11') {
-      return 'studio_in_workshop_bg';
+      const m10Pick = placedProps.find(p => p.missionId === 'studio_10');
+      if (m10Pick?.nextBgOverride) {
+        return m10Pick.nextBgOverride;
+      }
+      return 'gallery_mission10_bg'; // fallback
     }
     
     // Mission 07: use mission-defined background (entrance view) as base scene.
@@ -310,7 +314,7 @@ export function VisualPlayScreen({
     }
 
     return undefined;
-  }, [mission.phase, mission.sequence, mission.mission_id, mission.view, mission.bg_override, hasPaintedWalls, toolEditMode]);
+  }, [mission.phase, mission.sequence, mission.mission_id, mission.view, mission.bg_override, hasPaintedWalls, toolEditMode, placedProps]);
 
   const currentBg = useMemo(() => getBackgroundForMission(mission, previousBgOverride), [mission, previousBgOverride]);
   const currentBgKey = useMemo(() => getBackgroundKey(mission, previousBgOverride), [mission, previousBgOverride]);
@@ -373,9 +377,11 @@ export function VisualPlayScreen({
   const isTieBreakerLocked = mission.phase === 'tb' && !toolEditMode;
   const isMission10BgLocked =
     mission.phase === 'main' && mission.mission_id === 'studio_10';
+  const isMission11BgFromM10 =
+    mission.phase === 'main' && mission.mission_id === 'studio_11';
   const isWorkshopLocked =
     mission.phase === 'main' &&
-    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission && !isMission4BgLocked && !isMission6BgLocked && !isMission8BgLocked && !isMission10BgLocked) &&
+    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission && !isMission4BgLocked && !isMission6BgLocked && !isMission8BgLocked && !isMission10BgLocked && !isMission11BgFromM10) &&
     (!mission.bg_override || mission.bg_override === 'studio_in_workshop_bg');
 
   const taskText = mission.task_heb || `MISSING: task_heb`;
