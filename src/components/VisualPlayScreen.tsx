@@ -387,9 +387,11 @@ export function VisualPlayScreen({
     mission.phase === 'main' && mission.mission_id === 'studio_11';
   const isMission12BgLocked =
     mission.phase === 'main' && mission.mission_id === 'studio_12';
+  const isMission13BgLocked =
+    mission.phase === 'main' && mission.mission_id === 'studio_13';
   const isWorkshopLocked =
     mission.phase === 'main' &&
-    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission && !isMission4BgLocked && !isMission6BgLocked && !isMission8BgLocked && !isMission10BgLocked && !isMission11BgLocked && !isMission12BgLocked) &&
+    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission && !isMission4BgLocked && !isMission6BgLocked && !isMission8BgLocked && !isMission10BgLocked && !isMission11BgLocked && !isMission12BgLocked && !isMission13BgLocked) &&
     (!mission.bg_override || mission.bg_override === 'studio_in_workshop_bg');
 
   const taskText = mission.task_heb || `MISSING: task_heb`;
@@ -425,8 +427,8 @@ export function VisualPlayScreen({
     }
     // Mission 10/11: Tool-specific backgrounds are data-driven via next_bg_override
     // (prevents hardcoded mismatches and visual jumps between missions)
-    if (mission.mission_id === 'studio_10' || mission.mission_id === 'studio_11') {
-      const targetBgKey = option.next_bg_override || currentBgKey;
+    if (mission.mission_id === 'studio_10' || mission.mission_id === 'studio_11' || mission.mission_id === 'studio_13') {
+      const targetBgKey = option.next_bg_override || mission.bg_override || currentBgKey;
       const targetBgImage = getBackgroundByName(targetBgKey) || currentBg;
       return { key: targetBgKey, image: targetBgImage };
     }
@@ -556,6 +558,10 @@ export function VisualPlayScreen({
     ? (previousBgOverride || 'gallery_mission11a_bg')
     : isMission12BgLocked
     ? 'gallery_main_desktop'
+    : isMission13BgLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.key
+    : isMission13BgLocked
+    ? 'gallery_main_stylized'
     : isCrackedWallsLocked
     ? (mission.bg_override || 'studio_entry_inside_bg')
     : isExteriorLocked
@@ -594,6 +600,10 @@ export function VisualPlayScreen({
     ? (getBackgroundByName(previousBgOverride || 'gallery_mission11a_bg') || displayBg)
     : isMission12BgLocked
     ? (getBackgroundByName('gallery_main_desktop') || displayBg)
+    : isMission13BgLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.image
+    : isMission13BgLocked
+    ? (getBackgroundByName('gallery_main_stylized') || displayBg)
     : isCrackedWallsLocked
     ? (getBackgroundByName(mission.bg_override || 'studio_entry_inside_bg') || displayBg)
     : isExteriorLocked
