@@ -912,10 +912,11 @@ export function VisualPlayScreen({
       }, toolAppearDelay);
       timeoutsRef.current.push(showToolId);
     } else {
-      // M11 Tool B & M13: tools are baked into their backgrounds — skip rendering the prop
+      // M11 Tool B, M13, M15: tools are baked into their backgrounds — skip rendering the prop
       const isM11BakedB = mission.mission_id === 'studio_11' && variant === 'b';
       const isM13Baked = mission.mission_id === 'studio_13';
-      if (!isM11BakedB && !isM13Baked) {
+      const isM15Baked = mission.mission_id === 'studio_15';
+      if (!isM11BakedB && !isM13Baked && !isM15Baked) {
         setLocalPlacement({
           missionId: mission.mission_id,
           key: variant,
