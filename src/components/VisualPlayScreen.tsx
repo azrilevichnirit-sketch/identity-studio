@@ -404,7 +404,7 @@ export function VisualPlayScreen({
     // Mission 10: Tool-specific backgrounds
     // Tool A -> gallery_mission10a_bg, Tool B -> gallery_mission10b_bg (fallback to base)
     if (mission.mission_id === 'studio_10') {
-      const targetBgKey = option.key === 'a' ? 'gallery_mission10a_bg' : 'gallery_mission10_bg';
+      const targetBgKey = option.key === 'a' ? 'gallery_mission10a_bg' : 'gallery_mission10b_bg';
       const targetBgImage = getBackgroundByName(targetBgKey) || currentBg;
       return { key: targetBgKey, image: targetBgImage };
     }
