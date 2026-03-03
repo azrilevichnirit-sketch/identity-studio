@@ -927,6 +927,24 @@
     "z_layer": "front",
     "flipX": true
   },
+  {"_comment": "=== M08 gallery_mission8_bg duplicates (new background) ==="},
+  {
+    "background_asset_key": "gallery_mission8_bg",
+    "anchor_ref": "m08_tool_a",
+    "x_pct": 0.113,
+    "y_pct": 0.615,
+    "scale": 2.5,
+    "z_layer": "front"
+  },
+  {
+    "background_asset_key": "gallery_mission8_bg",
+    "anchor_ref": "m08_tool_b",
+    "x_pct": 0.702,
+    "y_pct": 0.886,
+    "scale": 2.2,
+    "z_layer": "front",
+    "flipX": true
+  },
   {
     "background_asset_key": "studio_doorway_park_view_bg",
     "anchor_ref": "m09_tool_a",
@@ -1729,6 +1747,40 @@
     "scale": 2.6,
     "z_layer": "mid"
   },
+  {"_comment": "=== M08 visitors/avatar for gallery_mission8_bg ==="},
+  {
+    "background_asset_key": "gallery_mission8_bg",
+    "anchor_ref": "m08_visitor_01",
+    "x_pct": 0.392,
+    "y_pct": 0.754,
+    "scale": 1.9,
+    "z_layer": "front",
+    "flipX": true
+  },
+  {
+    "background_asset_key": "gallery_mission8_bg",
+    "anchor_ref": "m08_visitor_02",
+    "x_pct": 0.521,
+    "y_pct": 0.856,
+    "scale": 2.8,
+    "z_layer": "mid"
+  },
+  {
+    "background_asset_key": "gallery_mission8_bg",
+    "anchor_ref": "m08_visitor_03",
+    "x_pct": 0.462,
+    "y_pct": 0.793,
+    "scale": 3.0,
+    "z_layer": "back"
+  },
+  {
+    "background_asset_key": "gallery_mission8_bg",
+    "anchor_ref": "m08_avatar",
+    "x_pct": 0.737,
+    "y_pct": 0.782,
+    "scale": 2.6,
+    "z_layer": "mid"
+  },
   {
     "background_asset_key": "studio_exterior_bg",
     "anchor_ref": "m05_visitor_01",
@@ -2087,6 +2139,24 @@
   },
   {
     "background_asset_key": "studio_in_workshop_bg",
+    "anchor_ref": "m08_tool_b_mobile",
+    "x_pct": 0.65,
+    "y_pct": 0.88,
+    "scale": 2.2,
+    "z_layer": "front",
+    "flipX": true
+  },
+  {"_comment": "=== M08 mobile overrides for gallery_mission8_bg ==="},
+  {
+    "background_asset_key": "gallery_mission8_bg",
+    "anchor_ref": "m08_tool_a_mobile",
+    "x_pct": 0.18,
+    "y_pct": 0.65,
+    "scale": 2.5,
+    "z_layer": "front"
+  },
+  {
+    "background_asset_key": "gallery_mission8_bg",
     "anchor_ref": "m08_tool_b_mobile",
     "x_pct": 0.65,
     "y_pct": 0.88,
