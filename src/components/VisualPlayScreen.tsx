@@ -266,13 +266,14 @@ export function VisualPlayScreen({
       return 'studio_exterior_bg';
     }
     
-    // Mission 11: Use M11-specific background based on M10's choice
+    // Mission 11: Inherit M10's result background directly (already on screen from M10 transition)
     if (mission.phase === 'main' && mission.mission_id === 'studio_11') {
       const m10Pick = placedProps.find(p => p.missionId === 'studio_10');
-      if (m10Pick?.key === 'a') {
-        return 'gallery_mission11a_bg';
+      // M10's next_bg_override already points to M11's bg (gallery_mission11a/b_bg)
+      if (m10Pick?.nextBgOverride) {
+        return m10Pick.nextBgOverride;
       }
-      return 'gallery_mission11b_bg';
+      return 'gallery_mission11a_bg'; // fallback
     }
     
     // Mission 07: use mission-defined background (entrance view) as base scene.
