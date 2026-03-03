@@ -37,6 +37,7 @@ import galleryMainDesktopBg from '@/assets/backgrounds/gallery_main_desktop.webp
 
 // Mobile portrait backgrounds (3072x4096)
 import galleryCrackedWallsMobile from '@/assets/backgrounds/gallery_main_stylized_v5_mobile.webp';
+import galleryBoxesMobile from '@/assets/backgrounds/gallery_main_boxes_v1_mobile.webp';
 
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
@@ -298,6 +299,8 @@ const mobilePortraitBackgrounds: Record<string, string> = {
   gallery_main_stylized_v3: galleryCrackedWallsMobile,
   studio_front_bg: galleryCrackedWallsMobile,
   studio_in_gallery_bg: galleryCrackedWallsMobile,
+  // Mission 02: boxes
+  gallery_main_boxes_v1: galleryBoxesMobile,
 };
 
 export function getMobilePortraitBackground(bgKey: string): string | null {
