@@ -363,6 +363,28 @@ export function VisualPlayScreen({
   
   // Mobile detection (used across background + interactions)
   const isMobile = useIsMobile();
+  const [isPortraitOrientation, setIsPortraitOrientation] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return window.innerHeight >= window.innerWidth;
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const portraitMql = window.matchMedia('(orientation: portrait)');
+    const updateOrientation = () => {
+      setIsPortraitOrientation(portraitMql.matches);
+    };
+
+    portraitMql.addEventListener('change', updateOrientation);
+    window.addEventListener('resize', updateOrientation);
+    updateOrientation();
+
+    return () => {
+      portraitMql.removeEventListener('change', updateOrientation);
+      window.removeEventListener('resize', updateOrientation);
+    };
+  }, []);
   
   // Mobile-aware anchor lookup: automatically checks for _mobile overrides on mobile devices.
   // Desktop is completely unaffected — this wrapper only adds the isMobile flag.
@@ -552,6 +574,8 @@ export function VisualPlayScreen({
     ? (mission.bg_override || PAINTED_WALLS_BG_KEY)
     : isBoxesBgLocked
     ? 'gallery_main_boxes_v1'
+    : isMission4BgLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.key
     : isMission4BgLocked
     ? 'gallery_mission4_bg'
     : isMission6BgLocked
@@ -598,6 +622,8 @@ export function VisualPlayScreen({
     ? (getBackgroundByName(mission.bg_override || PAINTED_WALLS_BG_KEY) || displayBg)
     : isBoxesBgLocked
     ? (getBackgroundByName('gallery_main_boxes_v1') || displayBg)
+    : isMission4BgLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.image
     : isMission4BgLocked
     ? (getBackgroundByName('gallery_mission4_bg') || displayBg)
     : isMission6BgLocked
@@ -637,9 +663,9 @@ export function VisualPlayScreen({
   // If a native portrait (3072x4096) background exists for the current bg key,
   // use it directly on mobile — no panoramic panning needed.
   const mobilePortraitBg = useMemo(() => {
-    if (!isMobile) return null;
+    if (!isMobile || !isPortraitOrientation) return null;
     return getMobilePortraitBackground(lockedBgKey);
-  }, [isMobile, lockedBgKey]);
+  }, [isMobile, isPortraitOrientation, lockedBgKey]);
 
   const effectiveLockedBg = mobilePortraitBg || lockedBg;
 
