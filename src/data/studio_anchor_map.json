@@ -1771,7 +1771,7 @@
     "z_layer": "mid"
   },
   {
-    "background_asset_key": "gallery_main_stylized",
+    "background_asset_key": "gallery_main_stylized_v4",
     "anchor_ref": "m15_tool_a",
     "x_pct": 0.557,
     "y_pct": 0.833,
@@ -1779,7 +1779,7 @@
     "z_layer": "front"
   },
   {
-    "background_asset_key": "gallery_main_stylized",
+    "background_asset_key": "gallery_main_stylized_v4",
     "anchor_ref": "m15_tool_b",
     "x_pct": 0.184,
     "y_pct": 0.609,
@@ -2325,7 +2325,7 @@
 
   {"_comment": "=== M15 mobile overrides - scale 3.3/1.4 → 1.8/1.0 ==="},
   {
-    "background_asset_key": "gallery_main_stylized",
+    "background_asset_key": "gallery_main_stylized_v4",
     "anchor_ref": "m15_tool_a_mobile",
     "x_pct": 0.557,
     "y_pct": 0.83,
@@ -2333,7 +2333,7 @@
     "z_layer": "front"
   },
   {
-    "background_asset_key": "gallery_main_stylized",
+    "background_asset_key": "gallery_main_stylized_v4",
     "anchor_ref": "m15_tool_b_mobile",
     "x_pct": 0.22,
     "y_pct": 0.62,

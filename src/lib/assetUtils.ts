@@ -29,6 +29,7 @@ import galleryMission11aBg from '@/assets/backgrounds/gallery_mission11a_bg.webp
 import galleryMission11bBg from '@/assets/backgrounds/gallery_mission11b_bg.webp';
 import galleryMission13aBg from '@/assets/backgrounds/gallery_mission13a_bg.webp';
 import galleryMission13bBg from '@/assets/backgrounds/gallery_mission13b_bg.webp';
+import galleryMainStylizedV4 from '@/assets/backgrounds/gallery_main_stylized_v4.webp';
 import galleryMobileWideBg from '@/assets/backgrounds/gallery_main_mobile_wide.webp';
 import galleryMainDesktopBg from '@/assets/backgrounds/gallery_main_desktop.webp';
 
@@ -187,6 +188,7 @@ const backgroundAssets: Record<string, string> = {
   
   // Mission 01 Tool B result / Mission 02 (if B chosen) / M09, M12: main studio (finished)
   gallery_main_stylized: galleryMainStylized,
+  gallery_main_stylized_v4: galleryMainStylizedV4,
   
   // Mission 01 Tool A result / Mission 02 (if A chosen): white walls (after paint)
   studio_in_gallery_wall_bg: galleryMainStylizedWhite,
@@ -250,6 +252,7 @@ const panoramicBackgrounds: Record<string, string> = {
   gallery_main_boxes_v1: galleryBoxesBg,
   // Main studio (finished)
   gallery_main_stylized: galleryMainStylized,
+  gallery_main_stylized_v4: galleryMainStylizedV4,
   // White walls (Mission 02 if Tool A was chosen)
   studio_in_gallery_wall_bg: galleryMainStylizedWhite,
   gallery_main_stylized_white: galleryMainStylizedWhite,

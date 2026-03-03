@@ -366,7 +366,7 @@
     "mission_id": "studio_15",
     "sequence": 15,
     "view": "in",
-    "bg_override": "gallery_main_stylized",
+    "bg_override": "gallery_main_stylized_v4",
     "task_heb": "עיתונאית ממגזין עיצוב מגיעה מחר, והיא מחפשת את הדבר שיפתח את הכתבה שלה עלינו. מה נראה לה קודם?",
     "options": [
       {
