@@ -924,10 +924,12 @@ export function VisualPlayScreen({
       timeoutsRef.current.push(showToolId);
     } else {
       // M11 Tool B, M13, M15: tools are baked into their backgrounds — skip rendering the prop
+      // M3 mobile: tools are baked into portrait mobile backgrounds
       const isM11BakedB = mission.mission_id === 'studio_11' && variant === 'b';
       const isM13Baked = mission.mission_id === 'studio_13';
       const isM15Baked = mission.mission_id === 'studio_15';
-      if (!isM11BakedB && !isM13Baked && !isM15Baked) {
+      const isM3MobileBaked = mission.mission_id === 'studio_03' && isMobile;
+      if (!isM11BakedB && !isM13Baked && !isM15Baked && !isM3MobileBaked) {
         setLocalPlacement({
           missionId: mission.mission_id,
           key: variant,
@@ -989,6 +991,15 @@ export function VisualPlayScreen({
     if (isMission10 || isMission13 || isMission15) {
       const targetBg = getTargetBgForOption(option);
       setLocalBgOverride({ ...targetBg, missionId: mission.mission_id });
+    }
+
+    // Mission 03 mobile: Switch to baked portrait background on tool selection
+    if (mission.mission_id === 'studio_03' && isMobile) {
+      const m3MobileBgKey = variant === 'a' ? 'gallery_mission3a_mobile_bg' : 'gallery_mission3b_mobile_bg';
+      const m3MobileBgImage = getBackgroundByName(m3MobileBgKey);
+      if (m3MobileBgImage) {
+        setLocalBgOverride({ key: m3MobileBgKey, image: m3MobileBgImage, missionId: mission.mission_id });
+      }
     }
 
     // Tie-breaker missions with per-tool bg (T4, T7, T8): switch bg on tool placement
@@ -1308,8 +1319,10 @@ export function VisualPlayScreen({
     // Add current local placement (tool being placed in this mission)
     // M10: skip tool rendering — everything is baked into the per-tool background
     // M11 Tool B: skip — baked into gallery_mission11b_bg
+    // M3 mobile: skip — baked into portrait mobile backgrounds
     const isM11BakedB = localPlacement?.missionId === 'studio_11' && localPlacement?.key === 'b';
-    if (localPlacement && localPlacement.missionId !== 'studio_10' && !isM11BakedB) {
+    const isM3MobileBaked = localPlacement?.missionId === 'studio_03' && isMobile;
+    if (localPlacement && localPlacement.missionId !== 'studio_10' && !isM11BakedB && !isM3MobileBaked) {
       placements.push({
         missionId: localPlacement.missionId,
         key: localPlacement.key as 'a' | 'b',

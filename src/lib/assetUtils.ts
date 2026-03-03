@@ -38,6 +38,9 @@ import galleryMainDesktopBg from '@/assets/backgrounds/gallery_main_desktop.webp
 // Mobile portrait backgrounds (3072x4096)
 import galleryCrackedWallsMobile from '@/assets/backgrounds/gallery_main_stylized_v5_mobile.webp';
 import galleryBoxesMobile from '@/assets/backgrounds/gallery_main_boxes_v1_mobile.webp';
+import galleryMission3MobileBg from '@/assets/backgrounds/gallery_mission3_mobile_bg.webp';
+import galleryMission3aMobileBg from '@/assets/backgrounds/gallery_mission3a_mobile_bg.webp';
+import galleryMission3bMobileBg from '@/assets/backgrounds/gallery_mission3b_mobile_bg.webp';
 
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
@@ -248,6 +251,10 @@ const backgroundAssets: Record<string, string> = {
   // Mission 13 backgrounds
   gallery_mission13a_bg: galleryMission13aBg,
   gallery_mission13b_bg: galleryMission13bBg,
+  
+  // Mission 03 mobile baked backgrounds (portrait, mobile-only)
+  gallery_mission3a_mobile_bg: galleryMission3aMobileBg,
+  gallery_mission3b_mobile_bg: galleryMission3bMobileBg,
 };
 
 // Wide panoramic backgrounds for mobile panning (key -> asset)
@@ -301,6 +308,12 @@ const mobilePortraitBackgrounds: Record<string, string> = {
   studio_in_gallery_bg: galleryCrackedWallsMobile,
   // Mission 02: boxes
   gallery_main_boxes_v1: galleryBoxesMobile,
+  // Mission 03: doorway park view
+  studio_doorway_park_view_bg: galleryMission3MobileBg,
+  studio_doorway_park_view_v5: galleryMission3MobileBg,
+  // Mission 03 baked results (mobile only)
+  gallery_mission3a_mobile_bg: galleryMission3aMobileBg,
+  gallery_mission3b_mobile_bg: galleryMission3bMobileBg,
 };
 
 export function getMobilePortraitBackground(bgKey: string): string | null {
