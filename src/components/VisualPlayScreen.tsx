@@ -269,14 +269,14 @@ export function VisualPlayScreen({
       return 'studio_exterior_bg';
     }
     
-    // Mission 11: Use M11-specific background based on M10's choice (key, not nextBgOverride)
-    // M10 result bg (gallery_mission10a/b_bg) is visible briefly after M10 pick,
-    // then crossfades to M11's own bg when M11 loads.
+    // Mission 11: Inherit M10's RESULT background (gallery_mission10a/b_bg).
+    // The speech bubble appears on top of M10's result scene.
+    // Only after tool selection does the bg change to gallery_mission11a/b_bg.
     if (mission.phase === 'main' && mission.mission_id === 'studio_11') {
       const m10Pick = placedProps.find(p => p.missionId === 'studio_10');
-      if (m10Pick?.key === 'a') return 'gallery_mission11a_bg';
-      if (m10Pick?.key === 'b') return 'gallery_mission11b_bg';
-      return 'gallery_mission11a_bg'; // fallback
+      if (m10Pick?.key === 'a') return 'gallery_mission10a_bg';
+      if (m10Pick?.key === 'b') return 'gallery_mission10b_bg';
+      return 'gallery_mission10a_bg'; // fallback
     }
     
     // Mission 07: use mission-defined background (entrance view) as base scene.
