@@ -1841,8 +1841,8 @@ export function VisualPlayScreen({
         if (prop.missionId === 'studio_11' && prop.key === 'b') {
           return null;
         }
-        // Mission 12: all props are baked into the background - never render them
-        if (prop.missionId === 'studio_12') {
+        // Mission 13: all props are baked into the background - never render them
+        if (prop.missionId === 'studio_13') {
           return null;
         }
 
