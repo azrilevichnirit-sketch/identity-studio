@@ -1837,6 +1837,11 @@ export function VisualPlayScreen({
   const placedPropsElement = (
     <>
       {displayedPlacement.flatMap((prop, propIdx) => {
+        // Mission 11 Tool B is baked into the background image - never render it as a prop
+        if (prop.missionId === 'studio_11' && prop.key === 'b') {
+          return null;
+        }
+
         const assetName = prop.assetName || `${prop.missionId.replace('studio_', 'studio_')}_${prop.key}`;
         // Mission 5 tool A: use animated GIF for placed prop
         const toolImg = assetName === 'studio_05_a'
