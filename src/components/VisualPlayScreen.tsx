@@ -286,7 +286,12 @@ export function VisualPlayScreen({
       return 'studio_in_storage_bg';
     }
     
-    // Mission 10: Back to workshop (like M08)
+    // Mission 08: Dedicated gallery background
+    if (mission.phase === 'main' && mission.mission_id === 'studio_08') {
+      return 'gallery_mission8_bg';
+    }
+    
+    // Mission 10: Back to workshop
     if (mission.phase === 'main' && mission.mission_id === 'studio_10') {
       return 'studio_in_workshop_bg';
     }
@@ -349,6 +354,8 @@ export function VisualPlayScreen({
     mission.phase === 'main' && mission.mission_id === 'studio_04';
   const isMission6BgLocked =
     mission.phase === 'main' && mission.mission_id === 'studio_06';
+  const isMission8BgLocked =
+    mission.phase === 'main' && mission.mission_id === 'studio_08';
   const isCrackedWallsLocked =
     mission.phase === 'main' && mission.mission_id === 'studio_01';
   const isExteriorLocked =
@@ -358,7 +365,7 @@ export function VisualPlayScreen({
   const isTieBreakerLocked = mission.phase === 'tb' && !toolEditMode;
   const isWorkshopLocked =
     mission.phase === 'main' &&
-    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission && !isMission4BgLocked && !isMission6BgLocked) &&
+    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission && !isMission4BgLocked && !isMission6BgLocked && !isMission8BgLocked) &&
     (!mission.bg_override || mission.bg_override === 'studio_in_workshop_bg');
 
   const taskText = mission.task_heb || `MISSING: task_heb`;
@@ -502,6 +509,8 @@ export function VisualPlayScreen({
     ? 'gallery_mission4_bg'
     : isMission6BgLocked
     ? 'gallery_mission6_bg'
+    : isMission8BgLocked
+    ? 'gallery_mission8_bg'
     : isCrackedWallsLocked
     ? (mission.bg_override || 'studio_entry_inside_bg')
     : isExteriorLocked
@@ -528,6 +537,8 @@ export function VisualPlayScreen({
     ? (getBackgroundByName('gallery_mission4_bg') || displayBg)
     : isMission6BgLocked
     ? (getBackgroundByName('gallery_mission6_bg') || displayBg)
+    : isMission8BgLocked
+    ? (getBackgroundByName('gallery_mission8_bg') || displayBg)
     : isCrackedWallsLocked
     ? (getBackgroundByName(mission.bg_override || 'studio_entry_inside_bg') || displayBg)
     : isExteriorLocked
