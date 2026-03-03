@@ -272,10 +272,7 @@ export function VisualPlayScreen({
       if (m10Pick?.key === 'a') {
         return 'gallery_mission11a_bg';
       }
-      if (m10Pick?.nextBgOverride) {
-        return m10Pick.nextBgOverride;
-      }
-      return 'gallery_mission10_bg'; // fallback
+      return 'gallery_mission11b_bg';
     }
     
     // Mission 07: use mission-defined background (entrance view) as base scene.
@@ -1240,7 +1237,9 @@ export function VisualPlayScreen({
     
     // Add current local placement (tool being placed in this mission)
     // M10: skip tool rendering — everything is baked into the per-tool background
-    if (localPlacement && localPlacement.missionId !== 'studio_10') {
+    // M11 Tool B: skip — baked into gallery_mission11b_bg
+    const isM11BakedB = localPlacement?.missionId === 'studio_11' && localPlacement?.key === 'b';
+    if (localPlacement && localPlacement.missionId !== 'studio_10' && !isM11BakedB) {
       placements.push({
         missionId: localPlacement.missionId,
         key: localPlacement.key as 'a' | 'b',
