@@ -929,7 +929,8 @@ export function VisualPlayScreen({
       const isM13Baked = mission.mission_id === 'studio_13';
       const isM15Baked = mission.mission_id === 'studio_15';
       const isM3MobileBaked = mission.mission_id === 'studio_03' && isMobile;
-      if (!isM11BakedB && !isM13Baked && !isM15Baked && !isM3MobileBaked) {
+      const isM4MobileBaked = mission.mission_id === 'studio_04' && isMobile;
+      if (!isM11BakedB && !isM13Baked && !isM15Baked && !isM3MobileBaked && !isM4MobileBaked) {
         setLocalPlacement({
           missionId: mission.mission_id,
           key: variant,
@@ -999,6 +1000,21 @@ export function VisualPlayScreen({
       const m3MobileBgImage = getBackgroundByName(m3MobileBgKey);
       if (m3MobileBgImage) {
         setLocalBgOverride({ key: m3MobileBgKey, image: m3MobileBgImage, missionId: mission.mission_id });
+      }
+    }
+
+    // Mission 04 mobile: Switch to baked portrait background on tool selection
+    // Tool B has gender-specific backgrounds (male/female avatar baked in)
+    if (mission.mission_id === 'studio_04' && isMobile) {
+      let m4MobileBgKey: string;
+      if (variant === 'a') {
+        m4MobileBgKey = 'gallery_mission4a_mobile_bg';
+      } else {
+        m4MobileBgKey = avatarGender === 'female' ? 'gallery_mission4b_f_mobile_bg' : 'gallery_mission4b_m_mobile_bg';
+      }
+      const m4MobileBgImage = getBackgroundByName(m4MobileBgKey);
+      if (m4MobileBgImage) {
+        setLocalBgOverride({ key: m4MobileBgKey, image: m4MobileBgImage, missionId: mission.mission_id });
       }
     }
 
@@ -1320,9 +1336,11 @@ export function VisualPlayScreen({
     // M10: skip tool rendering — everything is baked into the per-tool background
     // M11 Tool B: skip — baked into gallery_mission11b_bg
     // M3 mobile: skip — baked into portrait mobile backgrounds
+    // M4 mobile: skip — baked into portrait mobile backgrounds
     const isM11BakedB = localPlacement?.missionId === 'studio_11' && localPlacement?.key === 'b';
     const isM3MobileBaked = localPlacement?.missionId === 'studio_03' && isMobile;
-    if (localPlacement && localPlacement.missionId !== 'studio_10' && !isM11BakedB && !isM3MobileBaked) {
+    const isM4MobileBaked = localPlacement?.missionId === 'studio_04' && isMobile;
+    if (localPlacement && localPlacement.missionId !== 'studio_10' && !isM11BakedB && !isM3MobileBaked && !isM4MobileBaked) {
       placements.push({
         missionId: localPlacement.missionId,
         key: localPlacement.key as 'a' | 'b',

@@ -41,6 +41,10 @@ import galleryBoxesMobile from '@/assets/backgrounds/gallery_main_boxes_v1_mobil
 import galleryMission3MobileBg from '@/assets/backgrounds/gallery_mission3_mobile_bg.webp';
 import galleryMission3aMobileBg from '@/assets/backgrounds/gallery_mission3a_mobile_bg.webp';
 import galleryMission3bMobileBg from '@/assets/backgrounds/gallery_mission3b_mobile_bg.webp';
+import galleryMission4MobileBg from '@/assets/backgrounds/gallery_mission4_mobile_bg.webp';
+import galleryMission4aMobileBg from '@/assets/backgrounds/gallery_mission4a_mobile_bg.webp';
+import galleryMission4bMMobileBg from '@/assets/backgrounds/gallery_mission4b_m_mobile_bg.webp';
+import galleryMission4bFMobileBg from '@/assets/backgrounds/gallery_mission4b_f_mobile_bg.webp';
 
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
@@ -255,6 +259,12 @@ const backgroundAssets: Record<string, string> = {
   // Mission 03 mobile baked backgrounds (portrait, mobile-only)
   gallery_mission3a_mobile_bg: galleryMission3aMobileBg,
   gallery_mission3b_mobile_bg: galleryMission3bMobileBg,
+  
+  // Mission 04 mobile baked backgrounds (portrait, mobile-only)
+  gallery_mission4_mobile_bg: galleryMission4MobileBg,
+  gallery_mission4a_mobile_bg: galleryMission4aMobileBg,
+  gallery_mission4b_m_mobile_bg: galleryMission4bMMobileBg,
+  gallery_mission4b_f_mobile_bg: galleryMission4bFMobileBg,
 };
 
 // Wide panoramic backgrounds for mobile panning (key -> asset)
@@ -314,6 +324,12 @@ const mobilePortraitBackgrounds: Record<string, string> = {
   // Mission 03 baked results (mobile only)
   gallery_mission3a_mobile_bg: galleryMission3aMobileBg,
   gallery_mission3b_mobile_bg: galleryMission3bMobileBg,
+  // Mission 04: base + baked results (mobile only)
+  gallery_mission4_bg: galleryMission4MobileBg,
+  gallery_mission4_mobile_bg: galleryMission4MobileBg,
+  gallery_mission4a_mobile_bg: galleryMission4aMobileBg,
+  gallery_mission4b_m_mobile_bg: galleryMission4bMMobileBg,
+  gallery_mission4b_f_mobile_bg: galleryMission4bFMobileBg,
 };
 
 export function getMobilePortraitBackground(bgKey: string): string | null {
