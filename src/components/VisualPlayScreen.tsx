@@ -269,10 +269,12 @@ export function VisualPlayScreen({
       return 'studio_exterior_bg';
     }
     
-    // Mission 11: Inherit M10's RESULT background (gallery_mission10a/b_bg).
-    // The speech bubble appears on top of M10's result scene.
-    // Only after tool selection does the bg change to gallery_mission11a/b_bg.
+    // Mission 11: starts on M10 result (10a/10b), then switches to M11 result (11a/11b) right after pick.
     if (mission.phase === 'main' && mission.mission_id === 'studio_11') {
+      const m11LocalPick = localPlacement?.missionId === 'studio_11' ? localPlacement.key : null;
+      if (m11LocalPick === 'a') return 'gallery_mission11a_bg';
+      if (m11LocalPick === 'b') return 'gallery_mission11b_bg';
+
       const m10Pick = placedProps.find(p => p.missionId === 'studio_10');
       if (m10Pick?.key === 'a') return 'gallery_mission10a_bg';
       if (m10Pick?.key === 'b') return 'gallery_mission10b_bg';
@@ -318,7 +320,7 @@ export function VisualPlayScreen({
     }
 
     return undefined;
-  }, [mission.phase, mission.sequence, mission.mission_id, mission.view, mission.bg_override, hasPaintedWalls, toolEditMode, placedProps]);
+  }, [mission.phase, mission.sequence, mission.mission_id, mission.view, mission.bg_override, hasPaintedWalls, toolEditMode, placedProps, localPlacement]);
 
   const currentBg = useMemo(() => getBackgroundForMission(mission, previousBgOverride), [mission, previousBgOverride]);
   const currentBgKey = useMemo(() => getBackgroundKey(mission, previousBgOverride), [mission, previousBgOverride]);
@@ -1011,10 +1013,10 @@ export function VisualPlayScreen({
       : isMission01ToolB ? 1600 
       : isMission02 ? 1600
       : isMission03ToolB ? 3600  // tables appear first, then visitors fade-in + viewing time
-      : (isMission11ToolA || isMission11ToolB) ? 2600  // extra time for avatar/crowd appear after tool
+      : (isMission11ToolA || isMission11ToolB) ? 2200  // keep brief viewing time for M11 branch result
       : (isMission07 || isMission11) ? 2200
       : isMission06ToolA ? 2400  // extra time for prop spawn + tool appear
-      : (mission.mission_id === 'studio_10') ? 3200  // ensure player sees per-tool bg before M11
+      : (mission.mission_id === 'studio_10') ? 1500  // faster handoff so M11 bubble appears quickly
       : isMission05ToolA ? 2400  // extra 1s viewing time for M05 tool A
       : isMission05ToolB ? 2900  // visitors fade-in + 1.5s viewing time
       : isMission08ToolB ? 2900  // visitors fade-in + 1.5s viewing time
@@ -1749,9 +1751,9 @@ export function VisualPlayScreen({
       }
     }
 
-    // Mission 11 Tool A: single placement using anchor map coordinates
+    // Mission 11 Tool A: single placement on M11-A background
     if (prop.missionId === 'studio_11' && prop.key === 'a') {
-      const anchorPos = getAnchorPosition('studio_in_workshop_bg', 'm11_tool_a');
+      const anchorPos = getAnchorPosition('gallery_mission11a_bg', 'm11_tool_a');
       if (anchorPos) {
         return [{ 
           anchor: 'm11_tool_a' as AnchorRef, 
@@ -1765,9 +1767,9 @@ export function VisualPlayScreen({
       }
     }
 
-    // Mission 11 Tool B: placed in Gallery Wide (different background!)
+    // Mission 11 Tool B: baked in background (only used for calibration fallback anchors)
     if (prop.missionId === 'studio_11' && prop.key === 'b') {
-      const anchorPos = getAnchorPosition('gallery_main_mobile_wide', 'm11_tool_b');
+      const anchorPos = getAnchorPosition('gallery_mission11b_bg', 'm11_tool_b');
       if (anchorPos) {
         return [{ 
           anchor: 'm11_tool_b' as AnchorRef, 
@@ -2180,8 +2182,8 @@ export function VisualPlayScreen({
         const avatarImg = getAvatarImage(avatarGender, 'idle');
         if (!avatarImg) return null;
         
-        // Mission 11 Avatar is calibrated on workshop background only (Tool A branch)
-        const avatarAnchor = getAnchorPosition('studio_in_workshop_bg', 'm11_avatar' as AnchorRef);
+        // Mission 11 Avatar is calibrated on M11-A result background
+        const avatarAnchor = getAnchorPosition('gallery_mission11a_bg', 'm11_avatar' as AnchorRef);
         const avatarPos = avatarAnchor || { x: 50, y: 85, scale: 2.0, z_layer: 'front', flipX: false };
         
         return (
@@ -2227,8 +2229,8 @@ export function VisualPlayScreen({
         
         if (!m11ToolBPlaced || m11ToolAPlaced || !isOnM11) return null;
         
-        // Mission 11 Crowd is calibrated on gallery_main_mobile_wide only (Tool B branch)
-        const crowdAnchor = getAnchorPosition('gallery_main_mobile_wide', 'm11_crowd' as AnchorRef);
+        // Mission 11 Crowd is calibrated on M11-B result background only (Tool B branch)
+        const crowdAnchor = getAnchorPosition('gallery_mission11b_bg', 'm11_crowd' as AnchorRef);
         const crowdPos = crowdAnchor || { x: 50, y: 80, scale: 2.0, z_layer: 'back', flipX: false };
         
         return (
@@ -2554,13 +2556,13 @@ export function VisualPlayScreen({
       return (
         <>
           <Mission11CalibrationEditor mission={mission} onBackgroundChange={handleM7BackgroundChange} />
-          {avatarImage && lockedBgKey === 'studio_in_workshop_bg' && (
-            <VisitorCalibrationEditor bgKey="studio_in_workshop_bg" title="M11 Avatar (Tool A)" panelClassName="top-[290px] right-4" visitors={[
+          {avatarImage && lockedBgKey === 'gallery_mission11a_bg' && (
+            <VisitorCalibrationEditor bgKey="gallery_mission11a_bg" title="M11 Avatar (Tool A)" panelClassName="top-[290px] right-4" visitors={[
               { id: 'm11_avatar', img: avatarImage, label: 'אווטר' },
             ]} />
           )}
-          {lockedBgKey === 'gallery_main_mobile_wide' && (
-            <VisitorCalibrationEditor bgKey="gallery_main_mobile_wide" title="M11 Crowd (Tool B)" panelClassName="top-[290px] right-4" visitors={[
+          {lockedBgKey === 'gallery_mission11b_bg' && (
+            <VisitorCalibrationEditor bgKey="gallery_mission11b_bg" title="M11 Crowd (Tool B)" panelClassName="top-[290px] right-4" visitors={[
               { id: 'm11_crowd', img: m11CrowdAsset, label: 'קהל' },
             ]} />
           )}
