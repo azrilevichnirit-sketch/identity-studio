@@ -351,7 +351,17 @@ export function preloadBackground(bgName: string): void {
   const bg = backgroundAssets[bgName];
   if (bg) {
     const img = new Image();
+    img.onload = () => {
+      import('@/components/BackgroundCrossfade').then(({ markPreloaded }) => {
+        markPreloaded(bg);
+      }).catch(() => {});
+    };
     img.src = bg;
+    if (img.complete && img.naturalWidth > 0) {
+      import('@/components/BackgroundCrossfade').then(({ markPreloaded }) => {
+        markPreloaded(bg);
+      }).catch(() => {});
+    }
   }
 }
 

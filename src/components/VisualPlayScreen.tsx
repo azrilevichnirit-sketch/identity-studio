@@ -192,6 +192,10 @@ export function VisualPlayScreen({
       preloadBackground('gallery_mission11a_bg');
       preloadBackground('gallery_mission11b_bg');
     }
+    if (mission.mission_id === 'studio_13' || mission.mission_id === 'studio_12') {
+      preloadBackground('gallery_mission13a_bg');
+      preloadBackground('gallery_mission13b_bg');
+    }
   }, [mission.mission_id]);
 
   // Track if we're transitioning from Mission 7 (need to preserve bg during fixation)
@@ -613,6 +617,7 @@ export function VisualPlayScreen({
     : isWorkshopLocked && !isCalibrationBgOverrideMode
     ? (getBackgroundByName('studio_in_workshop_bg') || displayBg)
     : displayBg;
+
 
 
   // ==================== MOBILE PANORAMIC PANNING ====================
@@ -1041,7 +1046,7 @@ export function VisualPlayScreen({
       : (isMission07 || isMission11) ? 2200
       : isMission06ToolA ? 2400  // extra time for prop spawn + tool appear
       : (mission.mission_id === 'studio_10') ? 1500  // faster handoff so M11 bubble appears quickly
-      : isMission13 ? 1500  // baked bg crossfade + brief viewing
+      : isMission13 ? 2200  // baked bg crossfade (800ms) + viewing time
       : isMission05ToolA ? 2400  // extra 1s viewing time for M05 tool A
       : isMission05ToolB ? 2900  // visitors fade-in + 1.5s viewing time
       : isMission08ToolB ? 2900  // visitors fade-in + 1.5s viewing time
