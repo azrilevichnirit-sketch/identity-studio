@@ -1690,19 +1690,19 @@
   {
     "background_asset_key": "studio_in_storage_bg",
     "anchor_ref": "m14_tool_a",
-    "x_pct": 0.504,
-    "y_pct": 0.877,
+    "x_pct": 0.472,
+    "y_pct": 0.912,
     "scale": 1.5,
-    "z_layer": "front"
+    "z_layer": "front",
+    "flipX": true
   },
   {
     "background_asset_key": "studio_in_storage_bg",
     "anchor_ref": "m14_tool_b",
-    "x_pct": 0.656,
-    "y_pct": 0.902,
+    "x_pct": 0.38,
+    "y_pct": 0.863,
     "scale": 2.5,
-    "z_layer": "front",
-    "flipX": true
+    "z_layer": "front"
   },
   {
     "background_asset_key": "studio_in_storage_bg",
@@ -2466,19 +2466,19 @@
   {
     "background_asset_key": "studio_in_storage_bg",
     "anchor_ref": "m14_tool_a_mobile",
-    "x_pct": 0.504,
-    "y_pct": 0.877,
+    "x_pct": 0.472,
+    "y_pct": 0.912,
     "scale": 1.5,
-    "z_layer": "front"
+    "z_layer": "front",
+    "flipX": true
   },
   {
     "background_asset_key": "studio_in_storage_bg",
     "anchor_ref": "m14_tool_b_mobile",
-    "x_pct": 0.656,
-    "y_pct": 0.902,
+    "x_pct": 0.38,
+    "y_pct": 0.863,
     "scale": 2.5,
-    "z_layer": "front",
-    "flipX": true
+    "z_layer": "front"
   },
 
   {"_comment": "M08 avatar mobile override REMOVED — position identical to desktop, viewport-relative handles scale"},
