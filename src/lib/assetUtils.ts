@@ -16,7 +16,7 @@ import galleryMainStylized from '@/assets/backgrounds/gallery_main_stylized.webp
 import galleryMainStylizedWhite from '@/assets/backgrounds/gallery_main_stylized_white_v1.webp';
 import studioWorkshopBg from '@/assets/backgrounds/studio_in_workshop_v3.webp';
 import studioExteriorBg from '@/assets/backgrounds/studio_exterior_park_stylized_v3.webp';
-import studioEntranceViewBg from '@/assets/backgrounds/studio_entrance_view_stylized_v7.webp';
+import studioEntranceViewBg from '@/assets/backgrounds/studio_entrance_view_stylized_v8.webp';
 import studioStorageBg from '@/assets/backgrounds/studio_in_storage_v2.webp';
 import studioDoorwayParkBg from '@/assets/backgrounds/studio_doorway_park_view_v5.webp';
 import galleryMission4Bg from '@/assets/backgrounds/gallery_mission4_bg.webp';
