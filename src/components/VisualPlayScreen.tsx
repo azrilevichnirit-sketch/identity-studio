@@ -2380,23 +2380,8 @@ export function VisualPlayScreen({
       </span>
     ) : null;
 
-    if (!isTabletOrMobile) {
-      // Desktop: no line breaks
-      return <>{missionPrefix}{taskText}</>;
-    }
-    // Tablet/Mobile: split after commas
-    const textParts = taskText.split(',').map((part, index, arr) => (
-      <span key={index}>
-        {part.trim()}
-        {index < arr.length - 1 && (
-          <>
-            ,
-            <br />
-          </>
-        )}
-      </span>
-    ));
-    return <>{missionPrefix}{textParts}</>;
+    // All viewports: natural text flow, no forced line breaks
+    return <>{missionPrefix}{taskText}</>;
   }, [taskText, isTabletOrMobile, missionDisplayNumber]);
 
   const speechBubbleElement = (
