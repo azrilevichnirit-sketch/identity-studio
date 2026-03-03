@@ -268,10 +268,9 @@ export function VisualPlayScreen({
       return 'studio_in_workshop_bg';
     }
     
-    // Mission 07: Use workshop background ONLY when not in calibration mode
-    // (Calibration mode handles its own background switching)
+    // Mission 07: use mission-defined background (entrance view) as base scene.
     if (mission.phase === 'main' && mission.mission_id === 'studio_07') {
-      return 'studio_in_workshop_bg';
+      return mission.bg_override || 'studio_in_entrance_view_bg';
     }
     
     // Mission 09: Doorway park view
