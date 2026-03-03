@@ -183,11 +183,12 @@ export function VisualPlayScreen({
     }
   }, [avatarGender]);
 
-  // Mission 10: prewarm per-tool result backgrounds so swap is visible immediately
+  // Mission 10: prewarm the backgrounds that can appear immediately after selection
+  // so the player never sees a black frame during the M10 -> M11 transition.
   useEffect(() => {
     if (mission.mission_id === 'studio_10') {
-      preloadBackground('gallery_mission10a_bg');
-      preloadBackground('gallery_mission10b_bg');
+      preloadBackground('gallery_mission11a_bg');
+      preloadBackground('gallery_mission11b_bg');
     }
   }, [mission.mission_id]);
 
@@ -418,17 +419,10 @@ export function VisualPlayScreen({
       const targetBgImage = getBackgroundByName(targetBgKey) || currentBg;
       return { key: targetBgKey, image: targetBgImage };
     }
-    // Mission 10: Tool-specific backgrounds
-    // Tool A -> gallery_mission10a_bg, Tool B -> gallery_mission10b_bg (fallback to base)
-    if (mission.mission_id === 'studio_10') {
-      const targetBgKey = option.key === 'a' ? 'gallery_mission10a_bg' : 'gallery_mission10b_bg';
-      const targetBgImage = getBackgroundByName(targetBgKey) || currentBg;
-      return { key: targetBgKey, image: targetBgImage };
-    }
-    // Mission 11: Tool-specific destination rooms
-    // Tool A -> Exterior (festival), Tool B -> Gallery (expansion plan)
-    if (mission.mission_id === 'studio_11') {
-      const targetBgKey = option.key === 'a' ? 'studio_in_workshop_bg' : 'gallery_main_mobile_wide';
+    // Mission 10/11: Tool-specific backgrounds are data-driven via next_bg_override
+    // (prevents hardcoded mismatches and visual jumps between missions)
+    if (mission.mission_id === 'studio_10' || mission.mission_id === 'studio_11') {
+      const targetBgKey = option.next_bg_override || currentBgKey;
       const targetBgImage = getBackgroundByName(targetBgKey) || currentBg;
       return { key: targetBgKey, image: targetBgImage };
     }
@@ -700,10 +694,9 @@ export function VisualPlayScreen({
        }
      }
 
-     // SPECIAL CASE: Mission 11 - tool-specific destination rooms
-     // Tool A -> studio_in_workshop_bg, Tool B -> gallery_main_mobile_wide
+     // SPECIAL CASE: Mission 11 - place using the option's destination background
      if (mission.mission_id === 'studio_11') {
-       const targetBgKey = variant === 'a' ? 'studio_in_workshop_bg' : 'gallery_main_mobile_wide';
+       const targetBgKey = option.next_bg_override || currentBgKey;
        let anchorPos = getAnchorPosition(targetBgKey, preferredAnchorRef);
        if (!anchorPos) {
          anchorPos = getAnchorPosition(targetBgKey, fallbackAnchorRef);
