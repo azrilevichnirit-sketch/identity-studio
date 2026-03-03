@@ -35,6 +35,9 @@ import galleryMission15bBg from '@/assets/backgrounds/gallery_mission15b_bg.webp
 import galleryMobileWideBg from '@/assets/backgrounds/gallery_main_mobile_wide.webp';
 import galleryMainDesktopBg from '@/assets/backgrounds/gallery_main_desktop.webp';
 
+// Mobile portrait backgrounds (3072x4096)
+import galleryCrackedWallsMobile from '@/assets/backgrounds/gallery_main_stylized_v5_mobile.webp';
+
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
 import femaleWalk from '@/assets/avatars/studio_avatar_female_walk.webp';
@@ -285,6 +288,20 @@ const panoramicBackgrounds: Record<string, string> = {
 
 export function getPanoramicBackground(bgKey: string): string | null {
   return panoramicBackgrounds[bgKey] || null;
+}
+
+// Portrait mobile backgrounds (3072x4096) — used instead of panoramic on mobile
+// When a portrait version exists, the mobile view uses it directly (no panning needed)
+const mobilePortraitBackgrounds: Record<string, string> = {
+  // Mission 01: cracked walls portrait
+  studio_entry_inside_bg: galleryCrackedWallsMobile,
+  gallery_main_stylized_v3: galleryCrackedWallsMobile,
+  studio_front_bg: galleryCrackedWallsMobile,
+  studio_in_gallery_bg: galleryCrackedWallsMobile,
+};
+
+export function getMobilePortraitBackground(bgKey: string): string | null {
+  return mobilePortraitBackgrounds[bgKey] || null;
 }
 
 // Fallback background mapping - Mission 01 uses CRACKED WALLS, exterior for "out" view
