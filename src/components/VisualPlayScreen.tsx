@@ -363,9 +363,11 @@ export function VisualPlayScreen({
   // Missions with explicit bg_override that are NOT workshop: M06 (doorway), M09/M12 (gallery), tie-breakers
   const isGalleryMission = ((mission.mission_id === 'studio_09' || mission.mission_id === 'studio_12' || mission.mission_id === 'studio_13' || mission.mission_id === 'studio_15') && mission.bg_override) || mission.mission_id === 'studio_14' || mission.phase === 'tb';
   const isTieBreakerLocked = mission.phase === 'tb' && !toolEditMode;
+  const isMission10BgLocked =
+    mission.phase === 'main' && mission.mission_id === 'studio_10';
   const isWorkshopLocked =
     mission.phase === 'main' &&
-    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission && !isMission4BgLocked && !isMission6BgLocked && !isMission8BgLocked) &&
+    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission && !isMission4BgLocked && !isMission6BgLocked && !isMission8BgLocked && !isMission10BgLocked) &&
     (!mission.bg_override || mission.bg_override === 'studio_in_workshop_bg');
 
   const taskText = mission.task_heb || `MISSING: task_heb`;
@@ -407,7 +409,7 @@ export function VisualPlayScreen({
       return { key: targetBgKey, image: targetBgImage };
     }
     // Workshop missions (M03+, except M07, exterior, M09, M12, or missions with non-workshop bg_override)
-    if (mission.phase === 'main' && (mission.mission_id === 'studio_03' || mission.sequence >= 3) && mission.mission_id !== 'studio_07' && !isGalleryMission && (!mission.bg_override || mission.bg_override === 'studio_in_workshop_bg')) {
+    if (mission.phase === 'main' && (mission.mission_id === 'studio_03' || mission.sequence >= 3) && mission.mission_id !== 'studio_07' && mission.mission_id !== 'studio_10' && !isGalleryMission && (!mission.bg_override || mission.bg_override === 'studio_in_workshop_bg')) {
       const lockedKey = 'studio_in_workshop_bg';
       const lockedImage = getBackgroundByName(lockedKey) || currentBg;
       return { key: lockedKey, image: lockedImage };
@@ -511,6 +513,8 @@ export function VisualPlayScreen({
     ? 'gallery_mission6_bg'
     : isMission8BgLocked
     ? 'gallery_mission8_bg'
+    : isMission10BgLocked
+    ? 'gallery_mission10_bg'
     : isCrackedWallsLocked
     ? (mission.bg_override || 'studio_entry_inside_bg')
     : isExteriorLocked
@@ -539,6 +543,8 @@ export function VisualPlayScreen({
     ? (getBackgroundByName('gallery_mission6_bg') || displayBg)
     : isMission8BgLocked
     ? (getBackgroundByName('gallery_mission8_bg') || displayBg)
+    : isMission10BgLocked
+    ? (getBackgroundByName('gallery_mission10_bg') || displayBg)
     : isCrackedWallsLocked
     ? (getBackgroundByName(mission.bg_override || 'studio_entry_inside_bg') || displayBg)
     : isExteriorLocked
@@ -1256,7 +1262,7 @@ export function VisualPlayScreen({
       <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 5 }}>
         {sceneExtras.map((extra) => {
           // Pin extras to their calibrated background regardless of visual overrides.
-          const calibratedBgKey = extra.anchorRef.startsWith('m10_') ? 'studio_in_workshop_bg'
+          const calibratedBgKey = extra.anchorRef.startsWith('m10_') ? 'gallery_mission10_bg'
             : lockedBgKey;
           const anchorPos = getAnchorPosition(calibratedBgKey, extra.anchorRef);
           if (!anchorPos) {
