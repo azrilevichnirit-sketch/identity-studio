@@ -1841,6 +1841,10 @@ export function VisualPlayScreen({
         if (prop.missionId === 'studio_11' && prop.key === 'b') {
           return null;
         }
+        // Mission 12: all props are baked into the background - never render them
+        if (prop.missionId === 'studio_12') {
+          return null;
+        }
 
         const assetName = prop.assetName || `${prop.missionId.replace('studio_', 'studio_')}_${prop.key}`;
         // Mission 5 tool A: use animated GIF for placed prop
