@@ -322,7 +322,8 @@
         "holland_code": "a",
         "asset": "studio_13_a",
         "tooltip_heb": "טאבלט עם יצירות",
-        "view": "in"
+        "view": "in",
+        "next_bg_override": "gallery_mission13a_bg"
       },
       {
         "key": "b",
