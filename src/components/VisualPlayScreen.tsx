@@ -291,9 +291,9 @@ export function VisualPlayScreen({
       return 'gallery_mission8_bg';
     }
     
-    // Mission 10: Back to workshop
+    // Mission 10: Dedicated workshop background
     if (mission.phase === 'main' && mission.mission_id === 'studio_10') {
-      return 'studio_in_workshop_bg';
+      return 'gallery_mission10_bg';
     }
     
     // Mission 03+ (except exterior, M07, M09, M10): use bg_override from quest data or fallback to workshop
@@ -1652,7 +1652,7 @@ export function VisualPlayScreen({
 
     // Mission 10 Tool A: single placement using anchor map coordinates
     if (prop.missionId === 'studio_10' && prop.key === 'a') {
-      const anchorPos = getAnchorPosition('studio_in_workshop_bg', 'm10_tool_a');
+      const anchorPos = getAnchorPosition('gallery_mission10_bg', 'm10_tool_a');
       if (anchorPos) {
         return [{ 
           anchor: 'm10_tool_a' as AnchorRef, 
@@ -1668,7 +1668,7 @@ export function VisualPlayScreen({
 
     // Mission 10 Tool B: single placement using anchor map coordinates
     if (prop.missionId === 'studio_10' && prop.key === 'b') {
-      const anchorPos = getAnchorPosition('studio_in_workshop_bg', 'm10_tool_b');
+      const anchorPos = getAnchorPosition('gallery_mission10_bg', 'm10_tool_b');
       if (anchorPos) {
         return [{ 
           anchor: 'm10_tool_b' as AnchorRef, 
@@ -2555,7 +2555,7 @@ export function VisualPlayScreen({
               setExtraOverrides(prev => ({ ...prev, [extraId]: { x, y, scale } }));
             }}
           />
-          <VisitorCalibrationEditor bgKey="studio_in_workshop_bg" title="M10 Staff" visitors={[
+          <VisitorCalibrationEditor bgKey="gallery_mission10_bg" title="M10 Staff" visitors={[
             { id: 'm10_extra_staff', img: femaleStaffSittingImg, label: 'יושבת (כלי A)' },
             { id: 'm10_extra_staff_b', img: femaleStaffStandingImg, label: 'עומדת (כלי B)' },
           ]} />
