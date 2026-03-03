@@ -401,6 +401,13 @@ export function VisualPlayScreen({
       const targetBgImage = getBackgroundByName(targetBgKey) || currentBg;
       return { key: targetBgKey, image: targetBgImage };
     }
+    // Mission 10: Tool-specific backgrounds
+    // Tool A -> gallery_mission10a_bg, Tool B -> gallery_mission10b_bg (fallback to base)
+    if (mission.mission_id === 'studio_10') {
+      const targetBgKey = option.key === 'a' ? 'gallery_mission10a_bg' : 'gallery_mission10_bg';
+      const targetBgImage = getBackgroundByName(targetBgKey) || currentBg;
+      return { key: targetBgKey, image: targetBgImage };
+    }
     // Mission 11: Tool-specific destination rooms
     // Tool A -> Exterior (festival), Tool B -> Gallery (expansion plan)
     if (mission.mission_id === 'studio_11') {
@@ -440,6 +447,16 @@ export function VisualPlayScreen({
 
     // Mission 07: SHOW background preview during drag (room transition!)
     if (mission.mission_id === 'studio_07') {
+      const option = activeToolVariant === 'a' ? optionA : optionB;
+      const target = getTargetBgForOption(option);
+      if (target.key !== currentBgKey) {
+        return target;
+      }
+      return null;
+    }
+
+    // Mission 10: SHOW background preview during drag (tool-specific bg!)
+    if (mission.mission_id === 'studio_10') {
       const option = activeToolVariant === 'a' ? optionA : optionB;
       const target = getTargetBgForOption(option);
       if (target.key !== currentBgKey) {
@@ -490,8 +507,9 @@ export function VisualPlayScreen({
   // BUT: M7/M11 calibration mode FULLY overrides all locks - uses m7CalibrationBg directly
   // ALSO: M7/M11 during drag/carry uses dragPreviewBg to show the destination room
   const isM7DragActive = mission.mission_id === 'studio_07' && activeToolVariant && dragPreviewBg;
+  const isM10DragActive = mission.mission_id === 'studio_10' && activeToolVariant && dragPreviewBg;
   const isM11DragActive = mission.mission_id === 'studio_11' && activeToolVariant && dragPreviewBg;
-  const isBgSwitchingDragActive = isM7DragActive || isM11DragActive;
+  const isBgSwitchingDragActive = isM7DragActive || isM10DragActive || isM11DragActive;
   // IMPORTANT: scopedLocalBgOverride must be able to override the workshop lock.
   // This is required for Mission 7/11 post-drop “fixation” where the background
   // switches rooms and must remain there until mission advance.
