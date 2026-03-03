@@ -196,6 +196,10 @@ export function VisualPlayScreen({
       preloadBackground('gallery_mission13a_bg');
       preloadBackground('gallery_mission13b_bg');
     }
+    if (mission.mission_id === 'studio_15' || mission.mission_id === 'studio_14') {
+      preloadBackground('gallery_mission15a_bg');
+      preloadBackground('gallery_mission15b_bg');
+    }
   }, [mission.mission_id]);
 
   // Track if we're transitioning from Mission 7 (need to preserve bg during fixation)
@@ -393,9 +397,11 @@ export function VisualPlayScreen({
     mission.phase === 'main' && mission.mission_id === 'studio_12';
   const isMission13BgLocked =
     mission.phase === 'main' && mission.mission_id === 'studio_13';
+  const isMission15BgLocked =
+    mission.phase === 'main' && mission.mission_id === 'studio_15';
   const isWorkshopLocked =
     mission.phase === 'main' &&
-    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission && !isMission4BgLocked && !isMission6BgLocked && !isMission8BgLocked && !isMission10BgLocked && !isMission11BgLocked && !isMission12BgLocked && !isMission13BgLocked) &&
+    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission && !isMission4BgLocked && !isMission6BgLocked && !isMission8BgLocked && !isMission10BgLocked && !isMission11BgLocked && !isMission12BgLocked && !isMission13BgLocked && !isMission15BgLocked) &&
     (!mission.bg_override || mission.bg_override === 'studio_in_workshop_bg');
 
   const taskText = mission.task_heb || `MISSING: task_heb`;
@@ -566,6 +572,10 @@ export function VisualPlayScreen({
     ? scopedLocalBgOverride.key
     : isMission13BgLocked
     ? 'gallery_main_stylized'
+    : isMission15BgLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.key
+    : isMission15BgLocked
+    ? 'gallery_main_stylized_v4'
     : isCrackedWallsLocked
     ? (mission.bg_override || 'studio_entry_inside_bg')
     : isExteriorLocked
@@ -608,6 +618,10 @@ export function VisualPlayScreen({
     ? scopedLocalBgOverride.image
     : isMission13BgLocked
     ? (getBackgroundByName('gallery_main_stylized') || displayBg)
+    : isMission15BgLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.image
+    : isMission15BgLocked
+    ? (getBackgroundByName('gallery_main_stylized_v4') || displayBg)
     : isCrackedWallsLocked
     ? (getBackgroundByName(mission.bg_override || 'studio_entry_inside_bg') || displayBg)
     : isExteriorLocked
@@ -959,7 +973,8 @@ export function VisualPlayScreen({
     // Mission 10 & 13: Lock the background to the tool-specific result bg on placement
     const isMission10 = mission.mission_id === 'studio_10';
     const isMission13 = mission.mission_id === 'studio_13';
-    if (isMission10 || isMission13) {
+    const isMission15 = mission.mission_id === 'studio_15';
+    if (isMission10 || isMission13 || isMission15) {
       const targetBg = getTargetBgForOption(option);
       setLocalBgOverride({ ...targetBg, missionId: mission.mission_id });
     }
@@ -1047,6 +1062,7 @@ export function VisualPlayScreen({
       : isMission06ToolA ? 2400  // extra time for prop spawn + tool appear
       : (mission.mission_id === 'studio_10') ? 1500  // faster handoff so M11 bubble appears quickly
       : isMission13 ? 2200  // baked bg crossfade (800ms) + viewing time
+      : isMission15 ? 2200  // baked bg crossfade + viewing time
       : isMission05ToolA ? 2400  // extra 1s viewing time for M05 tool A
       : isMission05ToolB ? 2900  // visitors fade-in + 1.5s viewing time
       : isMission08ToolB ? 2900  // visitors fade-in + 1.5s viewing time
@@ -1350,7 +1366,7 @@ export function VisualPlayScreen({
   const sceneExtrasElement = useMemo(() => {
     // Hide actual extras when calibration editor is active (it renders its own copies)
     // Mission 13 uses baked-in props in the background, so never render scene extras there.
-    if (mission.mission_id === 'studio_13' || sceneExtras.length === 0 || toolEditMode) return null;
+    if (mission.mission_id === 'studio_13' || mission.mission_id === 'studio_15' || sceneExtras.length === 0 || toolEditMode) return null;
     
     return (
       <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 5 }}>
@@ -1862,6 +1878,10 @@ export function VisualPlayScreen({
         }
         // Mission 13: all props are baked into the background - never render them
         if (prop.missionId === 'studio_13') {
+          return null;
+        }
+        // Mission 15: all props are baked into the background - never render them
+        if (prop.missionId === 'studio_15') {
           return null;
         }
 

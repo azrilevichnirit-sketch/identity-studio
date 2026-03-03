@@ -170,6 +170,8 @@ const BG_KEY_ALIASES: Record<string, string[]> = {
   gallery_mission11a_bg: ['studio_in_workshop_bg', 'studio_in_workshop_v3'],
   gallery_mission11b_bg: ['gallery_main_desktop', 'studio_in_gallery_bg'],
   gallery_main_stylized_v4: ['gallery_main_stylized'],
+  gallery_mission15a_bg: ['gallery_main_stylized_v4', 'gallery_main_stylized'],
+  gallery_mission15b_bg: ['gallery_main_stylized_v4', 'gallery_main_stylized'],
 };
 
 function getBgKeyCandidates(bgKey: string): string[] {
