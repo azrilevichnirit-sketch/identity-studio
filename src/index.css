@@ -1451,11 +1451,15 @@
     transform: none;
   }
 
-  /* Mobile: panel styling */
+  /* Mobile: panel styling - more transparent to let background show through */
   .mobile-layout .layout-tool-panel-inner {
     padding: 6px 8px;
     border-radius: 10px;
     gap: 0;
+    background: hsl(var(--toolpanel-bg) / 0.30);
+    backdrop-filter: blur(8px);
+    border: 1px solid hsl(var(--toolpanel-border) / 0.06);
+    box-shadow: 0 6px 20px -12px hsl(0 0% 0% / 0.50);
     transition: opacity 180ms ease, transform 180ms ease;
     will-change: opacity, transform;
   }
