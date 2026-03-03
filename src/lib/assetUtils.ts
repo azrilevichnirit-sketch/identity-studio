@@ -24,6 +24,7 @@ import galleryMission6Bg from '@/assets/backgrounds/gallery_mission6_bg.webp';
 import galleryMission8Bg from '@/assets/backgrounds/gallery_mission8_bg.webp';
 import galleryMission10Bg from '@/assets/backgrounds/gallery_mission10_bg.webp';
 import galleryMission10aBg from '@/assets/backgrounds/gallery_mission10a_bg.webp';
+import galleryMission10bBg from '@/assets/backgrounds/gallery_mission10b_bg.webp';
 import galleryMobileWideBg from '@/assets/backgrounds/gallery_main_mobile_wide.webp';
 import galleryMainDesktopBg from '@/assets/backgrounds/gallery_main_desktop.webp';
 
@@ -218,6 +219,7 @@ const backgroundAssets: Record<string, string> = {
   // Mission 10 backgrounds
   gallery_mission10_bg: galleryMission10Bg,
   gallery_mission10a_bg: galleryMission10aBg,
+  gallery_mission10b_bg: galleryMission10bBg,
   
   // Gallery mobile wide (Mission 11 Tool B destination)
   gallery_main_mobile_wide: galleryMobileWideBg,
@@ -253,6 +255,7 @@ const panoramicBackgrounds: Record<string, string> = {
   gallery_mission8_bg: galleryMission8Bg,
   gallery_mission10_bg: galleryMission10Bg,
   gallery_mission10a_bg: galleryMission10aBg,
+  gallery_mission10b_bg: galleryMission10bBg,
   gallery_main_mobile_wide: galleryMobileWideBg,
   gallery_main_desktop: galleryMainDesktopBg,
 };
