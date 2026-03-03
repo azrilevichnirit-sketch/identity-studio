@@ -9,8 +9,8 @@ import type { AvatarGender, Mission } from '@/types/identity';
 // 4. Mission 03, 04, 06, 07, 08, 10, 11: workshop - studio_in_workshop_v3
 // 5. Mission 05: exterior park - studio_exterior_park_stylized_v3
 // 6. Mission 07 entrance view: gallery looking outside - studio_entrance_view_stylized_v7
-// IMPORTANT: Mission 1 starts with CRACKED WALLS (v3), not the finished studio!
-import galleryCrackedWalls from '@/assets/backgrounds/gallery_main_stylized_v3.webp';
+// IMPORTANT: Mission 1 starts with CRACKED WALLS (v5), not the finished studio!
+import galleryCrackedWalls from '@/assets/backgrounds/gallery_main_stylized_v5.webp';
 import galleryBoxesBg from '@/assets/backgrounds/gallery_main_boxes_v1.webp';
 import galleryMainStylized from '@/assets/backgrounds/gallery_main_stylized.webp';
 import galleryMainStylizedWhite from '@/assets/backgrounds/gallery_main_stylized_white_v1.webp';
