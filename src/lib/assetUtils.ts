@@ -26,6 +26,7 @@ import galleryMission10Bg from '@/assets/backgrounds/gallery_mission10_bg.webp';
 import galleryMission10aBg from '@/assets/backgrounds/gallery_mission10a_bg.webp';
 import galleryMission10bBg from '@/assets/backgrounds/gallery_mission10b_bg.webp';
 import galleryMission11aBg from '@/assets/backgrounds/gallery_mission11a_bg.webp';
+import galleryMission11bBg from '@/assets/backgrounds/gallery_mission11b_bg.webp';
 import galleryMobileWideBg from '@/assets/backgrounds/gallery_main_mobile_wide.webp';
 import galleryMainDesktopBg from '@/assets/backgrounds/gallery_main_desktop.webp';
 
@@ -222,8 +223,9 @@ const backgroundAssets: Record<string, string> = {
   gallery_mission10a_bg: galleryMission10aBg,
   gallery_mission10b_bg: galleryMission10bBg,
   
-  // Mission 11 background (Tool A from M10)
+  // Mission 11 backgrounds
   gallery_mission11a_bg: galleryMission11aBg,
+  gallery_mission11b_bg: galleryMission11bBg,
   
   // Gallery mobile wide (Mission 11 Tool B destination)
   gallery_main_mobile_wide: galleryMobileWideBg,
