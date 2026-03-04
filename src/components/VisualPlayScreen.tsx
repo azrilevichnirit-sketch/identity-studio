@@ -585,7 +585,7 @@ export function VisualPlayScreen({
     : isMission8BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isMission8BgLocked
-    ? 'gallery_mission8_bg'
+    ? (isMobile ? 'gallery_mission8_bg' : 'gallery_mission8_desk_bg')
     : isMission10BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isMission10BgLocked
@@ -639,7 +639,7 @@ export function VisualPlayScreen({
     : isMission8BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isMission8BgLocked
-    ? (getBackgroundByName('gallery_mission8_bg') || displayBg)
+    ? (getBackgroundByName(isMobile ? 'gallery_mission8_bg' : 'gallery_mission8_desk_bg') || displayBg)
     : isMission10BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isMission10BgLocked
@@ -971,8 +971,8 @@ export function VisualPlayScreen({
       const isM5MobileBakedB = mission.mission_id === 'studio_05' && variant === 'b' && isMobile;
       const isM6MobileBaked = mission.mission_id === 'studio_06' && isMobile;
       const isM7Baked = mission.mission_id === 'studio_07';
-      const isM8MobileBaked = mission.mission_id === 'studio_08' && isMobile;
-      if (!isM11BakedB && !isM13Baked && !isM15Baked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7Baked && !isM8MobileBaked) {
+      const isM8Baked = mission.mission_id === 'studio_08';
+      if (!isM11BakedB && !isM13Baked && !isM15Baked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7Baked && !isM8Baked) {
         setLocalPlacement({
           missionId: mission.mission_id,
           key: variant,
@@ -1097,17 +1097,26 @@ export function VisualPlayScreen({
       }
     }
 
-    // Mission 08 mobile: Switch to gender-specific baked portrait background on tool selection
-    if (mission.mission_id === 'studio_08' && isMobile) {
-      let m8MobileBgKey: string;
-      if (variant === 'a') {
-        m8MobileBgKey = avatarGender === 'female' ? 'gallery_mission8a_f_mobile_bg' : 'gallery_mission8a_m_mobile_bg';
+    // Mission 08: Switch to gender-specific baked background on tool selection (mobile + desktop)
+    if (mission.mission_id === 'studio_08') {
+      let m8BgKey: string;
+      if (isMobile) {
+        if (variant === 'a') {
+          m8BgKey = avatarGender === 'female' ? 'gallery_mission8a_f_mobile_bg' : 'gallery_mission8a_m_mobile_bg';
+        } else {
+          m8BgKey = avatarGender === 'female' ? 'gallery_mission8b_f_mobile_bg' : 'gallery_mission8b_m_mobile_bg';
+        }
       } else {
-        m8MobileBgKey = avatarGender === 'female' ? 'gallery_mission8b_f_mobile_bg' : 'gallery_mission8b_m_mobile_bg';
+        // Desktop: gender-specific baked backgrounds
+        if (variant === 'a') {
+          m8BgKey = avatarGender === 'female' ? 'gallery_mission8a_f_desk_bg' : 'gallery_mission8a_m_desk_bg';
+        } else {
+          m8BgKey = avatarGender === 'female' ? 'gallery_mission8b_f_desk_bg' : 'gallery_mission8b_m_desk_bg';
+        }
       }
-      const m8MobileBgImage = getBackgroundByName(m8MobileBgKey);
-      if (m8MobileBgImage) {
-        setLocalBgOverride({ key: m8MobileBgKey, image: m8MobileBgImage, missionId: mission.mission_id });
+      const m8BgImage = getBackgroundByName(m8BgKey);
+      if (m8BgImage) {
+        setLocalBgOverride({ key: m8BgKey, image: m8BgImage, missionId: mission.mission_id });
       }
     }
 
@@ -2023,6 +2032,10 @@ export function VisualPlayScreen({
         if (prop.missionId === 'studio_15') {
           return null;
         }
+        // Mission 08: all props are baked into the background - never render them
+        if (prop.missionId === 'studio_08') {
+          return null;
+        }
 
         const assetName = prop.assetName || `${prop.missionId.replace('studio_', 'studio_')}_${prop.key}`;
         // Mission 5 tool A: use animated GIF for placed prop
@@ -2177,8 +2190,8 @@ export function VisualPlayScreen({
         const isOnM08 = mission.mission_id === 'studio_08';
         
         if (!m08ToolBPlaced || !isOnM08) return null;
-        // On mobile, visitors + avatar are baked into the portrait background
-        if (isMobile) return null;
+        // Visitors + avatar are baked into the background (both mobile and desktop)
+        return null;
         
         const visitors = [
           { img: visitorM08_01, anchor: 'm08_visitor_01' },
