@@ -1063,7 +1063,19 @@ export function VisualPlayScreen({
     // so it does NOT snap back to the workshop before advancing to Mission 12.
     const isMission11 = mission.mission_id === 'studio_11';
     if (isMission11) {
-      if (!isMobile && variant === 'a') {
+      if (isMobile) {
+        // Mobile: use gender-specific baked portrait backgrounds
+        let m11MobileBgKey: string;
+        if (variant === 'a') {
+          m11MobileBgKey = avatarGender === 'female' ? 'gallery_mission11a_f_mobile_bg' : 'gallery_mission11a_m_mobile_bg';
+        } else {
+          m11MobileBgKey = 'gallery_mission11b_mobile_bg';
+        }
+        const m11MobileBgImage = getBackgroundByName(m11MobileBgKey);
+        if (m11MobileBgImage) {
+          setLocalBgOverride({ key: m11MobileBgKey, image: m11MobileBgImage, missionId: mission.mission_id });
+        }
+      } else if (variant === 'a') {
         // Desktop Tool A: use gender-specific baked backgrounds
         const m11DeskBgKey = avatarGender === 'female' ? 'gallery_mission11a_f_desk_bg' : 'gallery_mission11a_m_desk_bg';
         const m11DeskBgImage = getBackgroundByName(m11DeskBgKey);
