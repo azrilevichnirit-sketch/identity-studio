@@ -1095,13 +1095,9 @@ export function VisualPlayScreen({
       }
     }
 
-    // Mission 10 & 13: Lock the background to the tool-specific result bg on placement
-    const isMission10 = mission.mission_id === 'studio_10';
-    const isMission13 = mission.mission_id === 'studio_13';
-    const isMission15 = mission.mission_id === 'studio_15';
-    if (isMission10 || isMission13 || isMission15) {
-      if (isMission10 && isMobile) {
-        // Mobile: use baked portrait backgrounds
+    // Mission 10: Lock the background to the tool-specific result bg on placement
+    if (mission.mission_id === 'studio_10') {
+      if (isMobile) {
         const m10MobileBgKey = variant === 'a' ? 'gallery_mission10a_mobile_bg' : 'gallery_mission10b_mobile_bg';
         const m10MobileBgImage = getBackgroundByName(m10MobileBgKey);
         if (m10MobileBgImage) {
@@ -1110,6 +1106,24 @@ export function VisualPlayScreen({
       } else {
         const targetBg = getTargetBgForOption(option);
         setLocalBgOverride({ ...targetBg, missionId: mission.mission_id });
+      }
+    }
+
+    // Mission 13: Switch to baked background on tool selection (desktop and mobile)
+    if (mission.mission_id === 'studio_13') {
+      const m13BgKey = variant === 'a' ? 'gallery_mission13a_bg' : 'gallery_mission13b_bg';
+      const m13BgImage = getBackgroundByName(m13BgKey);
+      if (m13BgImage) {
+        setLocalBgOverride({ key: m13BgKey, image: m13BgImage, missionId: mission.mission_id });
+      }
+    }
+
+    // Mission 15: Switch to baked background on tool selection
+    if (mission.mission_id === 'studio_15') {
+      const m15BgKey = variant === 'a' ? 'gallery_mission15a_bg' : 'gallery_mission15b_bg';
+      const m15BgImage = getBackgroundByName(m15BgKey);
+      if (m15BgImage) {
+        setLocalBgOverride({ key: m15BgKey, image: m15BgImage, missionId: mission.mission_id });
       }
     }
 
@@ -1279,8 +1293,8 @@ export function VisualPlayScreen({
       : (isMission07 || isMission11) ? 2200
       : isMission06ToolA ? 2400  // extra time for prop spawn + tool appear
       : (mission.mission_id === 'studio_10') ? 1500  // faster handoff so M11 bubble appears quickly
-      : isMission13 ? 2200  // baked bg crossfade (800ms) + viewing time
-      : isMission15 ? 2200  // baked bg crossfade + viewing time
+      : (mission.mission_id === 'studio_13') ? 2200  // baked bg crossfade (800ms) + viewing time
+      : (mission.mission_id === 'studio_15') ? 2200  // baked bg crossfade + viewing time
       : isMission05ToolA ? 2400  // extra 1s viewing time for M05 tool A
       : isMission05ToolB ? 2900  // visitors fade-in + 1.5s viewing time
       : isMission08ToolB ? 2900  // visitors fade-in + 1.5s viewing time
