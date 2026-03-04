@@ -1563,6 +1563,9 @@ export function VisualPlayScreen({
     // Hide actual extras when calibration editor is active (it renders its own copies)
     // Mission 13 uses baked-in props in the background, so never render scene extras there.
     if (mission.mission_id === 'studio_13' || mission.mission_id === 'studio_15' || sceneExtras.length === 0 || toolEditMode) return null;
+    // Mission 11: suppress scene extras once a tool is placed (baked into background)
+    const isM11Baked = mission.mission_id === 'studio_11' && localPlacement?.missionId === 'studio_11';
+    if (isM11Baked) return null;
     
     return (
       <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 5 }}>
