@@ -578,6 +578,8 @@ export function VisualPlayScreen({
     ? scopedLocalBgOverride.key
     : isMission4BgLocked
     ? 'gallery_mission4_bg'
+    : isMission6BgLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.key
     : isMission6BgLocked
     ? 'gallery_mission6_bg'
     : isMission8BgLocked
@@ -628,6 +630,8 @@ export function VisualPlayScreen({
     ? scopedLocalBgOverride.image
     : isMission4BgLocked
     ? (getBackgroundByName('gallery_mission4_bg') || displayBg)
+    : isMission6BgLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.image
     : isMission6BgLocked
     ? (getBackgroundByName('gallery_mission6_bg') || displayBg)
     : isMission8BgLocked
@@ -961,7 +965,8 @@ export function VisualPlayScreen({
       const isM3MobileBaked = mission.mission_id === 'studio_03' && isMobile;
       const isM4MobileBaked = mission.mission_id === 'studio_04' && isMobile;
       const isM5MobileBakedB = mission.mission_id === 'studio_05' && variant === 'b' && isMobile;
-      if (!isM11BakedB && !isM13Baked && !isM15Baked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB) {
+      const isM6MobileBaked = mission.mission_id === 'studio_06' && isMobile;
+      if (!isM11BakedB && !isM13Baked && !isM15Baked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked) {
         setLocalPlacement({
           missionId: mission.mission_id,
           key: variant,
@@ -1055,6 +1060,15 @@ export function VisualPlayScreen({
       const m5MobileBgImage = getBackgroundByName(m5MobileBgKey);
       if (m5MobileBgImage) {
         setLocalBgOverride({ key: m5MobileBgKey, image: m5MobileBgImage, missionId: mission.mission_id });
+      }
+    }
+
+    // Mission 06 mobile: both tools switch to baked portrait backgrounds
+    if (mission.mission_id === 'studio_06' && isMobile) {
+      const m6MobileBgKey = variant === 'a' ? 'gallery_mission6a_mobile_bg' : 'gallery_mission6b_mobile_bg';
+      const m6MobileBgImage = getBackgroundByName(m6MobileBgKey);
+      if (m6MobileBgImage) {
+        setLocalBgOverride({ key: m6MobileBgKey, image: m6MobileBgImage, missionId: mission.mission_id });
       }
     }
 
@@ -1381,7 +1395,8 @@ export function VisualPlayScreen({
     const isM3MobileBaked = localPlacement?.missionId === 'studio_03' && isMobile;
     const isM4MobileBaked = localPlacement?.missionId === 'studio_04' && isMobile;
     const isM5MobileBakedB = localPlacement?.missionId === 'studio_05' && localPlacement?.key === 'b' && isMobile;
-    if (localPlacement && localPlacement.missionId !== 'studio_10' && !isM11BakedB && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB) {
+    const isM6MobileBaked = localPlacement?.missionId === 'studio_06' && isMobile;
+    if (localPlacement && localPlacement.missionId !== 'studio_10' && !isM11BakedB && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked) {
       placements.push({
         missionId: localPlacement.missionId,
         key: localPlacement.key as 'a' | 'b',
