@@ -203,6 +203,9 @@ export function VisualPlayScreen({
       preloadBackground('gallery_mission15b_bg');
       preloadBackground('gallery_mission14a_desk_bg');
       preloadBackground('gallery_mission14b_desk_bg');
+      preloadBackground('gallery_mission14_mobile_bg');
+      preloadBackground('gallery_mission14a_mobile_bg');
+      preloadBackground('gallery_mission14b_mobile_bg');
     }
   }, [mission.mission_id]);
 
@@ -324,9 +327,10 @@ export function VisualPlayScreen({
       return 'gallery_main_stylized';
     }
     
-    // Mission 14: Storage room
+    // Mission 14: Storage room (mobile uses dedicated portrait bg)
     if (mission.phase === 'main' && mission.mission_id === 'studio_14') {
-      return 'studio_in_storage_bg';
+      const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 821;
+      return isDesktop ? 'studio_in_storage_bg' : 'gallery_mission14_mobile_bg';
     }
     
     // Mission 08: Dedicated gallery background
@@ -1138,9 +1142,11 @@ export function VisualPlayScreen({
       }
     }
 
-    // Mission 14: Switch to baked desktop background on tool selection
+    // Mission 14: Switch to baked background on tool selection (desktop and mobile)
     if (mission.mission_id === 'studio_14') {
-      const m14BgKey = variant === 'a' ? 'gallery_mission14a_desk_bg' : 'gallery_mission14b_desk_bg';
+      const m14BgKey = isMobile
+        ? (variant === 'a' ? 'gallery_mission14a_mobile_bg' : 'gallery_mission14b_mobile_bg')
+        : (variant === 'a' ? 'gallery_mission14a_desk_bg' : 'gallery_mission14b_desk_bg');
       const m14BgImage = getBackgroundByName(m14BgKey);
       if (m14BgImage) {
         setLocalBgOverride({ key: m14BgKey, image: m14BgImage, missionId: mission.mission_id });

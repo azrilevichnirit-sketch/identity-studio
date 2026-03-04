@@ -36,6 +36,10 @@ import galleryMission13bMobileBg from '@/assets/backgrounds/gallery_mission13b_m
 // Mission 14 desktop baked backgrounds
 import galleryMission14aDeskBg from '@/assets/backgrounds/gallery_mission14a_desk_bg.webp';
 import galleryMission14bDeskBg from '@/assets/backgrounds/gallery_mission14b_desk_bg.webp';
+// Mission 14 mobile baked backgrounds
+import galleryMission14MobileBg from '@/assets/backgrounds/gallery_mission14_mobile_bg.webp';
+import galleryMission14aMobileBg from '@/assets/backgrounds/gallery_mission14a_mobile_bg.webp';
+import galleryMission14bMobileBg from '@/assets/backgrounds/gallery_mission14b_mobile_bg.webp';
 import galleryMainStylizedV4 from '@/assets/backgrounds/gallery_main_stylized_v4.webp';
 import galleryMission15aBg from '@/assets/backgrounds/gallery_mission15a_bg.webp';
 import galleryMission15bBg from '@/assets/backgrounds/gallery_mission15b_bg.webp';
@@ -268,6 +272,10 @@ const backgroundAssets: Record<string, string> = {
   // Mission 14 desktop baked backgrounds
   gallery_mission14a_desk_bg: galleryMission14aDeskBg,
   gallery_mission14b_desk_bg: galleryMission14bDeskBg,
+  // Mission 14 mobile baked backgrounds
+  gallery_mission14_mobile_bg: galleryMission14MobileBg,
+  gallery_mission14a_mobile_bg: galleryMission14aMobileBg,
+  gallery_mission14b_mobile_bg: galleryMission14bMobileBg,
   
   // Mission 07: gallery looking outside
   studio_in_entrance_view_bg: studioEntranceViewBg,
