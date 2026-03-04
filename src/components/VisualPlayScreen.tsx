@@ -966,7 +966,8 @@ export function VisualPlayScreen({
       const isM4MobileBaked = mission.mission_id === 'studio_04' && isMobile;
       const isM5MobileBakedB = mission.mission_id === 'studio_05' && variant === 'b' && isMobile;
       const isM6MobileBaked = mission.mission_id === 'studio_06' && isMobile;
-      if (!isM11BakedB && !isM13Baked && !isM15Baked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked) {
+      const isM7MobileBaked = mission.mission_id === 'studio_07' && isMobile;
+      if (!isM11BakedB && !isM13Baked && !isM15Baked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7MobileBaked) {
         setLocalPlacement({
           missionId: mission.mission_id,
           key: variant,
@@ -1007,10 +1008,19 @@ export function VisualPlayScreen({
     // This keeps the tool visible on its destination room during the fixation animation
     const isMission07 = mission.mission_id === 'studio_07';
     if (isMission07) {
-      const targetBg = getTargetBgForOption(option);
-      setLocalBgOverride({ ...targetBg, missionId: mission.mission_id });
+      if (isMobile) {
+        // Mobile: switch to baked portrait background (tool + props pre-rendered)
+        const m7MobileBgKey = variant === 'a' ? 'gallery_mission7a_mobile_bg' : 'gallery_mission7b_mobile_bg';
+        const m7MobileBgImage = getBackgroundByName(m7MobileBgKey);
+        if (m7MobileBgImage) {
+          setLocalBgOverride({ key: m7MobileBgKey, image: m7MobileBgImage, missionId: mission.mission_id });
+        }
+      } else {
+        const targetBg = getTargetBgForOption(option);
+        setLocalBgOverride({ ...targetBg, missionId: mission.mission_id });
+      }
       // Mark that we're in a M7 transition - prevents immediate bg clear on mission change
-      m7TransitionRef.current = { active: true, bgKey: targetBg.key };
+      m7TransitionRef.current = { active: true, bgKey: isMobile ? (variant === 'a' ? 'gallery_mission7a_mobile_bg' : 'gallery_mission7b_mobile_bg') : getTargetBgForOption(option).key };
     }
 
     // Mission 11: Lock the background to the tool-specific destination room on placement
@@ -1396,7 +1406,8 @@ export function VisualPlayScreen({
     const isM4MobileBaked = localPlacement?.missionId === 'studio_04' && isMobile;
     const isM5MobileBakedB = localPlacement?.missionId === 'studio_05' && localPlacement?.key === 'b' && isMobile;
     const isM6MobileBaked = localPlacement?.missionId === 'studio_06' && isMobile;
-    if (localPlacement && localPlacement.missionId !== 'studio_10' && !isM11BakedB && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked) {
+    const isM7MobileBaked = localPlacement?.missionId === 'studio_07' && isMobile;
+    if (localPlacement && localPlacement.missionId !== 'studio_10' && !isM11BakedB && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7MobileBaked) {
       placements.push({
         missionId: localPlacement.missionId,
         key: localPlacement.key as 'a' | 'b',
