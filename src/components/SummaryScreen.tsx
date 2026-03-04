@@ -187,8 +187,8 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
           style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 100px)' }}
         >
           {/* Logo */}
-          <div className="flex justify-end pt-4 px-4 md:px-8 w-full">
-            <img src={logoKinneret} alt="Kinneret Academy" className="h-16 md:h-20 object-contain" />
+          <div className="flex justify-start pt-4 px-4 md:px-8 w-full">
+            <img src={logoKinneret} alt="Kinneret Academy" className="h-20 md:h-24 object-contain" />
           </div>
 
           {/* Main card */}
@@ -246,32 +246,49 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
                 {/* Program accordions - each in its own card */}
                 {parsed.sections.length > 0 && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {parsed.sections.map((section, idx) => (
-                      <Accordion key={idx} type="multiple">
-                        <AccordionItem
-                          value={`program-${idx}`}
-                          className="border rounded-xl px-4 bg-white shadow-sm"
-                        >
-                          <AccordionTrigger className="text-right hover:no-underline py-4">
-                            <div className="flex flex-col items-start gap-1 text-right w-full">
-                              <span className="font-bold text-base" style={{ color: '#222' }}>
-                                {section.title}
-                              </span>
-                              <span className="text-sm text-gray-500 line-clamp-1">
-                                {section.subtitle}
-                              </span>
-                            </div>
-                          </AccordionTrigger>
-                          <AccordionContent>
-                            <div className="prose prose-sm max-w-none" style={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
-                              <ReactMarkdown components={MD_COMPONENTS}>
-                                {section.content}
-                              </ReactMarkdown>
-                            </div>
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
-                    ))}
+                    {parsed.sections.map((section, idx) => {
+                      // Skip section if its title is the same as the section header (already shown above)
+                      const isSameAsHeader = section.title === parsed.sectionHeader;
+                      const displayTitle = isSameAsHeader ? section.subtitle : section.title;
+                      const displaySubtitle = isSameAsHeader ? '' : section.subtitle;
+
+                      // Strip the first line from content if it matches the title (avoid duplicate)
+                      const contentLines = section.content.split('\n');
+                      const firstContentLine = contentLines.find(l => l.trim().length > 0) || '';
+                      const strippedFirst = firstContentLine.replace(/^[#*\->\s]+/, '').replace(/\*\*/g, '').replace(/\*/g, '').trim();
+                      const filteredContent = (strippedFirst === displayTitle)
+                        ? contentLines.slice(contentLines.indexOf(firstContentLine) + 1).join('\n').trim()
+                        : section.content;
+
+                      return (
+                        <Accordion key={idx} type="multiple">
+                          <AccordionItem
+                            value={`program-${idx}`}
+                            className="border rounded-xl px-4 bg-white shadow-sm"
+                          >
+                            <AccordionTrigger className="text-right hover:no-underline py-4">
+                              <div className="flex flex-col items-start gap-1 text-right w-full">
+                                <span className="font-bold text-base" style={{ color: '#222' }}>
+                                  {displayTitle}
+                                </span>
+                                {displaySubtitle && (
+                                  <span className="text-sm text-gray-500 line-clamp-1">
+                                    {displaySubtitle}
+                                  </span>
+                                )}
+                              </div>
+                            </AccordionTrigger>
+                            <AccordionContent>
+                              <div className="prose prose-sm max-w-none" style={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
+                                <ReactMarkdown components={MD_COMPONENTS}>
+                                  {filteredContent}
+                                </ReactMarkdown>
+                              </div>
+                            </AccordionContent>
+                          </AccordionItem>
+                        </Accordion>
+                      );
+                    })}
                   </div>
                 )}
               </div>
