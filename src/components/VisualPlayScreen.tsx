@@ -582,6 +582,8 @@ export function VisualPlayScreen({
     ? scopedLocalBgOverride.key
     : isMission6BgLocked
     ? 'gallery_mission6_bg'
+    : isMission8BgLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.key
     : isMission8BgLocked
     ? 'gallery_mission8_bg'
     : isMission10BgLocked && scopedLocalBgOverride
@@ -634,6 +636,8 @@ export function VisualPlayScreen({
     ? scopedLocalBgOverride.image
     : isMission6BgLocked
     ? (getBackgroundByName('gallery_mission6_bg') || displayBg)
+    : isMission8BgLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.image
     : isMission8BgLocked
     ? (getBackgroundByName('gallery_mission8_bg') || displayBg)
     : isMission10BgLocked && scopedLocalBgOverride
