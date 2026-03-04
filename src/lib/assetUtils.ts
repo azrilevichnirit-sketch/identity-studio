@@ -67,6 +67,10 @@ import galleryMission8bFMobileBg from '@/assets/backgrounds/gallery_mission8b_f_
 import galleryMission9MobileBg from '@/assets/backgrounds/gallery_mission9_mobile_bg.webp';
 import galleryMission9aMobileBg from '@/assets/backgrounds/gallery_mission9a_mobile_bg.webp';
 import galleryMission9bMobileBg from '@/assets/backgrounds/gallery_mission9b_mobile_bg.webp';
+// Mission 10 mobile baked backgrounds
+import galleryMission10MobileBg from '@/assets/backgrounds/gallery_mission10_mobile_bg.webp';
+import galleryMission10aMobileBg from '@/assets/backgrounds/gallery_mission10a_mobile_bg.webp';
+import galleryMission10bMobileBg from '@/assets/backgrounds/gallery_mission10b_mobile_bg.webp';
 // Mission 08 desktop baked backgrounds
 import galleryMission8DeskBg from '@/assets/backgrounds/gallery_mission8_desk_bg.webp';
 import galleryMission8aMDeskBg from '@/assets/backgrounds/gallery_mission8a_m_desk_bg.webp';
@@ -321,6 +325,10 @@ const backgroundAssets: Record<string, string> = {
    gallery_mission9_mobile_bg: galleryMission9MobileBg,
    gallery_mission9a_mobile_bg: galleryMission9aMobileBg,
    gallery_mission9b_mobile_bg: galleryMission9bMobileBg,
+   // Mission 10 mobile baked backgrounds
+   gallery_mission10_mobile_bg: galleryMission10MobileBg,
+   gallery_mission10a_mobile_bg: galleryMission10aMobileBg,
+   gallery_mission10b_mobile_bg: galleryMission10bMobileBg,
 };
 
 // Wide panoramic backgrounds for mobile panning (key -> asset)
@@ -414,6 +422,11 @@ const mobilePortraitBackgrounds: Record<string, string> = {
    gallery_mission9_mobile_bg: galleryMission9MobileBg,
    gallery_mission9a_mobile_bg: galleryMission9aMobileBg,
    gallery_mission9b_mobile_bg: galleryMission9bMobileBg,
+   // Mission 10: base portrait + baked results (mobile only)
+   gallery_mission10_bg: galleryMission10MobileBg,
+   gallery_mission10_mobile_bg: galleryMission10MobileBg,
+   gallery_mission10a_mobile_bg: galleryMission10aMobileBg,
+   gallery_mission10b_mobile_bg: galleryMission10bMobileBg,
 };
 
 export function getMobilePortraitBackground(bgKey: string): string | null {
