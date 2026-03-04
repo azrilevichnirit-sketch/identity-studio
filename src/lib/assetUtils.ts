@@ -47,6 +47,9 @@ import galleryMission4bMMobileBg from '@/assets/backgrounds/gallery_mission4b_m_
 import galleryMission4bFMobileBg from '@/assets/backgrounds/gallery_mission4b_f_mobile_bg.webp';
 import galleryMission5MobileBg from '@/assets/backgrounds/gallery_mission5_mobile_bg.webp';
 import galleryMission5bMobileBg from '@/assets/backgrounds/gallery_mission5b_mobile_bg.webp';
+import galleryMission6MobileBg from '@/assets/backgrounds/gallery_mission6_mobile_bg.webp';
+import galleryMission6aMobileBg from '@/assets/backgrounds/gallery_mission6a_mobile_bg.webp';
+import galleryMission6bMobileBg from '@/assets/backgrounds/gallery_mission6b_mobile_bg.webp';
 
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
@@ -269,6 +272,10 @@ const backgroundAssets: Record<string, string> = {
   gallery_mission4b_f_mobile_bg: galleryMission4bFMobileBg,
   // Mission 05 mobile baked backgrounds
   gallery_mission5b_mobile_bg: galleryMission5bMobileBg,
+  // Mission 06 mobile baked backgrounds
+  gallery_mission6_mobile_bg: galleryMission6MobileBg,
+  gallery_mission6a_mobile_bg: galleryMission6aMobileBg,
+  gallery_mission6b_mobile_bg: galleryMission6bMobileBg,
 };
 
 // Wide panoramic backgrounds for mobile panning (key -> asset)
@@ -341,6 +348,11 @@ const mobilePortraitBackgrounds: Record<string, string> = {
   studio_exterior_bg: galleryMission5MobileBg,
   studio_exterior_park_bg: galleryMission5MobileBg,
   gallery_mission5b_mobile_bg: galleryMission5bMobileBg,
+  // Mission 06: base portrait + baked results (mobile only)
+  gallery_mission6_bg: galleryMission6MobileBg,
+  gallery_mission6_mobile_bg: galleryMission6MobileBg,
+  gallery_mission6a_mobile_bg: galleryMission6aMobileBg,
+  gallery_mission6b_mobile_bg: galleryMission6bMobileBg,
 };
 
 export function getMobilePortraitBackground(bgKey: string): string | null {
