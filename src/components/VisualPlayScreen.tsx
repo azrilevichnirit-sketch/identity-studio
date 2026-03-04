@@ -602,6 +602,8 @@ export function VisualPlayScreen({
     ? 'gallery_main_stylized_v4'
     : isCrackedWallsLocked
     ? (mission.bg_override || 'studio_entry_inside_bg')
+    : isExteriorLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.key
     : isExteriorLocked
     ? 'studio_exterior_bg'
     : scopedLocalBgOverride
@@ -650,6 +652,8 @@ export function VisualPlayScreen({
     ? (getBackgroundByName('gallery_main_stylized_v4') || displayBg)
     : isCrackedWallsLocked
     ? (getBackgroundByName(mission.bg_override || 'studio_entry_inside_bg') || displayBg)
+    : isExteriorLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.image
     : isExteriorLocked
     ? (getBackgroundByName('studio_exterior_bg') || displayBg)
     : scopedLocalBgOverride
