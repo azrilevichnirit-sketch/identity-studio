@@ -74,6 +74,10 @@ import galleryMission10bMobileBg from '@/assets/backgrounds/gallery_mission10b_m
 // Mission 11 desktop baked backgrounds (Tool A only, gender-specific)
 import galleryMission11aFDeskBg from '@/assets/backgrounds/gallery_mission11a_f_desk_bg.webp';
 import galleryMission11aMDeskBg from '@/assets/backgrounds/gallery_mission11a_m_desk_bg.webp';
+// Mission 11 mobile baked backgrounds
+import galleryMission11aFMobileBg from '@/assets/backgrounds/gallery_mission11a_f_mobile_bg.webp';
+import galleryMission11aMMobileBg from '@/assets/backgrounds/gallery_mission11a_m_mobile_bg.webp';
+import galleryMission11bMobileBg from '@/assets/backgrounds/gallery_mission11b_mobile_bg.webp';
 // Mission 08 desktop baked backgrounds
 import galleryMission8DeskBg from '@/assets/backgrounds/gallery_mission8_desk_bg.webp';
 import galleryMission8aMDeskBg from '@/assets/backgrounds/gallery_mission8a_m_desk_bg.webp';
@@ -287,6 +291,9 @@ const backgroundAssets: Record<string, string> = {
   gallery_mission11b_bg: galleryMission11bBg,
   gallery_mission11a_f_desk_bg: galleryMission11aFDeskBg,
   gallery_mission11a_m_desk_bg: galleryMission11aMDeskBg,
+  gallery_mission11a_f_mobile_bg: galleryMission11aFMobileBg,
+  gallery_mission11a_m_mobile_bg: galleryMission11aMMobileBg,
+  gallery_mission11b_mobile_bg: galleryMission11bMobileBg,
   
   // Gallery mobile wide (Mission 11 Tool B destination)
   gallery_main_mobile_wide: galleryMobileWideBg,
@@ -432,6 +439,10 @@ const mobilePortraitBackgrounds: Record<string, string> = {
    gallery_mission10_mobile_bg: galleryMission10MobileBg,
    gallery_mission10a_mobile_bg: galleryMission10aMobileBg,
    gallery_mission10b_mobile_bg: galleryMission10bMobileBg,
+   // Mission 11: gender-specific Tool A + Tool B (mobile only)
+   gallery_mission11a_f_mobile_bg: galleryMission11aFMobileBg,
+   gallery_mission11a_m_mobile_bg: galleryMission11aMMobileBg,
+   gallery_mission11b_mobile_bg: galleryMission11bMobileBg,
 };
 
 export function getMobilePortraitBackground(bgKey: string): string | null {

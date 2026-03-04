@@ -281,12 +281,16 @@ export function VisualPlayScreen({
     if (mission.phase === 'main' && mission.mission_id === 'studio_11') {
       const m11LocalPick = localPlacement?.missionId === 'studio_11' ? localPlacement.key : null;
       if (m11LocalPick === 'a') {
-        if (typeof window !== 'undefined' && window.innerWidth >= 821) {
+        const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 821;
+        if (isDesktop) {
           return avatarGender === 'female' ? 'gallery_mission11a_f_desk_bg' : 'gallery_mission11a_m_desk_bg';
         }
-        return 'gallery_mission11a_bg';
+        return avatarGender === 'female' ? 'gallery_mission11a_f_mobile_bg' : 'gallery_mission11a_m_mobile_bg';
       }
-      if (m11LocalPick === 'b') return 'gallery_mission11b_bg';
+      if (m11LocalPick === 'b') {
+        const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 821;
+        return isDesktop ? 'gallery_mission11b_bg' : 'gallery_mission11b_mobile_bg';
+      }
 
       const m10Pick = placedProps.find(p => p.missionId === 'studio_10');
       if (m10Pick?.key === 'a') return 'gallery_mission10a_bg';
