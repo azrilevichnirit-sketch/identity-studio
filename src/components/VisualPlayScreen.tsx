@@ -2466,7 +2466,7 @@ export function VisualPlayScreen({
           || displayedPlacement.some(p => p.missionId === 'studio_11' && p.key === 'b');
         const isOnM11 = mission.mission_id === 'studio_11';
         
-        if (!m11ToolAPlaced || m11ToolBPlaced || !isOnM11) return null;
+        if (!m11ToolAPlaced || m11ToolBPlaced || !isOnM11 || isMobile) return null;
         
         const avatarImg = getAvatarImage(avatarGender, 'idle');
         if (!avatarImg) return null;
