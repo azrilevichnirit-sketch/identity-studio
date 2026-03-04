@@ -1113,12 +1113,14 @@ export function VisualPlayScreen({
       }
     }
 
-    // Mission 12 mobile: Switch to baked portrait background on tool selection
-    if (mission.mission_id === 'studio_12' && isMobile) {
-      const m12MobileBgKey = variant === 'a' ? 'gallery_mission12a_mobile_bg' : 'gallery_mission12b_mobile_bg';
-      const m12MobileBgImage = getBackgroundByName(m12MobileBgKey);
-      if (m12MobileBgImage) {
-        setLocalBgOverride({ key: m12MobileBgKey, image: m12MobileBgImage, missionId: mission.mission_id });
+    // Mission 12: Switch to baked background on tool selection (both mobile and desktop)
+    if (mission.mission_id === 'studio_12') {
+      const m12BgKey = isMobile
+        ? (variant === 'a' ? 'gallery_mission12a_mobile_bg' : 'gallery_mission12b_mobile_bg')
+        : (variant === 'a' ? 'gallery_mission12a_desk_bg' : 'gallery_mission12b_desk_bg');
+      const m12BgImage = getBackgroundByName(m12BgKey);
+      if (m12BgImage) {
+        setLocalBgOverride({ key: m12BgKey, image: m12BgImage, missionId: mission.mission_id });
       }
     }
 
@@ -1598,8 +1600,10 @@ export function VisualPlayScreen({
     return (
       <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 5 }}>
         {sceneExtras.map((extra) => {
-          // Mission 09/10/12 mobile: scene extras are baked into portrait backgrounds
-          if ((mission.mission_id === 'studio_09' || mission.mission_id === 'studio_10' || mission.mission_id === 'studio_12') && isMobile) return null;
+          // Mission 09/10 mobile: scene extras are baked into portrait backgrounds
+          if ((mission.mission_id === 'studio_09' || mission.mission_id === 'studio_10') && isMobile) return null;
+          // Mission 12: scene extras are baked into backgrounds (both mobile and desktop)
+          if (mission.mission_id === 'studio_12') return null;
           // Pin extras to their calibrated background regardless of visual overrides.
           const calibratedBgKey = extra.anchorRef.startsWith('m10_') ? 'gallery_mission10_bg'
             : lockedBgKey;
@@ -2121,8 +2125,8 @@ export function VisualPlayScreen({
         if (prop.missionId === 'studio_09' && isMobile) {
           return null;
         }
-        // Mission 12 mobile: all props are baked into the portrait background
-        if (prop.missionId === 'studio_12' && isMobile) {
+        // Mission 12: all props are baked into the background
+        if (prop.missionId === 'studio_12') {
           return null;
         }
 
