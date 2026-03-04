@@ -983,7 +983,7 @@ export function VisualPlayScreen({
       // M11 Tool B, M13, M15: tools are baked into their backgrounds — skip rendering the prop
       // M3 mobile: tools are baked into portrait mobile backgrounds
       const isM11BakedB = mission.mission_id === 'studio_11' && variant === 'b';
-      const isM11BakedADesk = mission.mission_id === 'studio_11' && variant === 'a' && !isMobile;
+      const isM11BakedA = mission.mission_id === 'studio_11' && variant === 'a';
       const isM13Baked = mission.mission_id === 'studio_13';
       const isM15Baked = mission.mission_id === 'studio_15';
       const isM3MobileBaked = mission.mission_id === 'studio_03' && isMobile;
@@ -993,7 +993,7 @@ export function VisualPlayScreen({
       const isM7Baked = mission.mission_id === 'studio_07';
       const isM8Baked = mission.mission_id === 'studio_08';
       const isM9MobileBaked = mission.mission_id === 'studio_09' && isMobile;
-      if (!isM11BakedB && !isM11BakedADesk && !isM13Baked && !isM15Baked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7Baked && !isM8Baked && !isM9MobileBaked) {
+      if (!isM11BakedB && !isM11BakedA && !isM13Baked && !isM15Baked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7Baked && !isM8Baked && !isM9MobileBaked) {
         setLocalPlacement({
           missionId: mission.mission_id,
           key: variant,
@@ -1491,13 +1491,13 @@ export function VisualPlayScreen({
     // M3 mobile: skip — baked into portrait mobile backgrounds
     // M4 mobile: skip — baked into portrait mobile backgrounds
     const isM11BakedB = localPlacement?.missionId === 'studio_11' && localPlacement?.key === 'b';
-    const isM11BakedADesk = localPlacement?.missionId === 'studio_11' && localPlacement?.key === 'a' && !isMobile;
+    const isM11BakedA = localPlacement?.missionId === 'studio_11' && localPlacement?.key === 'a';
     const isM3MobileBaked = localPlacement?.missionId === 'studio_03' && isMobile;
     const isM4MobileBaked = localPlacement?.missionId === 'studio_04' && isMobile;
     const isM5MobileBakedB = localPlacement?.missionId === 'studio_05' && localPlacement?.key === 'b' && isMobile;
     const isM6MobileBaked = localPlacement?.missionId === 'studio_06' && isMobile;
     const isM7MobileBaked = localPlacement?.missionId === 'studio_07' && isMobile;
-    if (localPlacement && localPlacement.missionId !== 'studio_10' && !isM11BakedB && !isM11BakedADesk && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7MobileBaked) {
+    if (localPlacement && localPlacement.missionId !== 'studio_10' && !isM11BakedB && !isM11BakedA && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7MobileBaked) {
       placements.push({
         missionId: localPlacement.missionId,
         key: localPlacement.key as 'a' | 'b',
