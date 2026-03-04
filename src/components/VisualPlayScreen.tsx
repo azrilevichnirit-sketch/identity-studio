@@ -2595,7 +2595,7 @@ export function VisualPlayScreen({
           || displayedPlacement.some(p => p.missionId === 'studio_11' && p.key === 'a');
         const isOnM11 = mission.mission_id === 'studio_11';
         
-        if (!m11ToolBPlaced || m11ToolAPlaced || !isOnM11) return null;
+        if (!m11ToolBPlaced || m11ToolAPlaced || !isOnM11 || isMobile) return null;
         
         // Mission 11 Crowd is calibrated on M11-B result background only (Tool B branch)
         const crowdAnchor = getAnchorPosition('gallery_mission11b_bg', 'm11_crowd' as AnchorRef);
