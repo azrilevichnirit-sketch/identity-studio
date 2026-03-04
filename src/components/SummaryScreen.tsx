@@ -247,18 +247,10 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
                 {parsed.sections.length > 0 && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {parsed.sections.map((section, idx) => {
-                      // Skip section if its title is the same as the section header (already shown above)
+                      // If section title equals the section header, use subtitle as the display title
                       const isSameAsHeader = section.title === parsed.sectionHeader;
                       const displayTitle = isSameAsHeader ? section.subtitle : section.title;
                       const displaySubtitle = isSameAsHeader ? '' : section.subtitle;
-
-                      // Strip the first line from content if it matches the title (avoid duplicate)
-                      const contentLines = section.content.split('\n');
-                      const firstContentLine = contentLines.find(l => l.trim().length > 0) || '';
-                      const strippedFirst = firstContentLine.replace(/^[#*\->\s]+/, '').replace(/\*\*/g, '').replace(/\*/g, '').trim();
-                      const filteredContent = (strippedFirst === displayTitle)
-                        ? contentLines.slice(contentLines.indexOf(firstContentLine) + 1).join('\n').trim()
-                        : section.content;
 
                       return (
                         <Accordion key={idx} type="multiple">
@@ -281,7 +273,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
                             <AccordionContent>
                               <div className="prose prose-sm max-w-none" style={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
                                 <ReactMarkdown components={MD_COMPONENTS}>
-                                  {filteredContent}
+                                  {section.content}
                                 </ReactMarkdown>
                               </div>
                             </AccordionContent>
