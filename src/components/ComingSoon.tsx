@@ -1,4 +1,4 @@
-import studioEntranceBg from '@/assets/backgrounds/studio_in_entrance_view_bg.webp';
+import studioEntranceBg from '@/assets/backgrounds/studio_entrance_view_stylized_v8.webp';
 import { ArrowRight } from 'lucide-react';
 
 interface ComingSoonProps {
