@@ -1011,6 +1011,9 @@ export function VisualPlayScreen({
     } else {
       // M11 Tool B, M13, M15: tools are baked into their backgrounds — skip rendering the prop
       // M3 mobile: tools are baked into portrait mobile backgrounds
+      const missionNum = Number(mission.mission_id.replace('studio_', ''));
+      const isDesktopBakedMainMission =
+        !isMobile && mission.phase === 'main' && missionNum >= 3 && missionNum <= 15;
       const isM11BakedB = mission.mission_id === 'studio_11' && variant === 'b';
       const isM11BakedA = mission.mission_id === 'studio_11' && variant === 'a';
       const isM13Baked = mission.mission_id === 'studio_13';
@@ -1025,7 +1028,7 @@ export function VisualPlayScreen({
       const isM7Baked = mission.mission_id === 'studio_07';
       const isM8Baked = mission.mission_id === 'studio_08';
       const isM9MobileBaked = mission.mission_id === 'studio_09' && isMobile;
-      if (!isM11BakedB && !isM11BakedA && !isM13Baked && !isM15Baked && !isM14Baked && !isM12Baked && !isM10Baked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7Baked && !isM8Baked && !isM9MobileBaked) {
+      if (!isDesktopBakedMainMission && !isM11BakedB && !isM11BakedA && !isM13Baked && !isM15Baked && !isM14Baked && !isM12Baked && !isM10Baked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7Baked && !isM8Baked && !isM9MobileBaked) {
         setLocalPlacement({
           missionId: mission.mission_id,
           key: variant,
@@ -1251,6 +1254,15 @@ export function VisualPlayScreen({
       const m9MobileBgImage = getBackgroundByName(m9MobileBgKey);
       if (m9MobileBgImage) {
         setLocalBgOverride({ key: m9MobileBgKey, image: m9MobileBgImage, missionId: mission.mission_id });
+      }
+    }
+
+    // Desktop missions 03/04/05/06/09: switch by player's option background override
+    if (!isMobile && mission.phase === 'main' && ['studio_03', 'studio_04', 'studio_05', 'studio_06', 'studio_09'].includes(mission.mission_id)) {
+      const desktopBgKey = option.next_bg_override || mission.bg_override;
+      const desktopBgImage = desktopBgKey ? getBackgroundByName(desktopBgKey) : null;
+      if (desktopBgKey && desktopBgImage) {
+        setLocalBgOverride({ key: desktopBgKey, image: desktopBgImage, missionId: mission.mission_id });
       }
     }
 
@@ -1575,6 +1587,8 @@ export function VisualPlayScreen({
     // M4 mobile: skip — baked into portrait mobile backgrounds
     const isM11BakedB = localPlacement?.missionId === 'studio_11' && localPlacement?.key === 'b';
     const isM11BakedA = localPlacement?.missionId === 'studio_11' && localPlacement?.key === 'a';
+    const localMissionNum = localPlacement ? Number(localPlacement.missionId.replace('studio_', '')) : Number.NaN;
+    const isDesktopBakedMainMission = !isMobile && localMissionNum >= 3 && localMissionNum <= 15;
     const isM3MobileBaked = localPlacement?.missionId === 'studio_03' && isMobile;
     const isM4MobileBaked = localPlacement?.missionId === 'studio_04' && isMobile;
     const isM5MobileBakedB = localPlacement?.missionId === 'studio_05' && localPlacement?.key === 'b' && isMobile;
@@ -1586,7 +1600,7 @@ export function VisualPlayScreen({
     const isM13Baked = localPlacement?.missionId === 'studio_13';
     const isM14Baked = localPlacement?.missionId === 'studio_14';
     const isM15Baked = localPlacement?.missionId === 'studio_15';
-    const isBakedMission = isM11BakedB || isM11BakedA || isM3MobileBaked || isM4MobileBaked || isM5MobileBakedB || isM6MobileBaked || isM7Baked || isM8Baked || isM9MobileBaked || isM12Baked || isM13Baked || isM14Baked || isM15Baked;
+    const isBakedMission = isDesktopBakedMainMission || isM11BakedB || isM11BakedA || isM3MobileBaked || isM4MobileBaked || isM5MobileBakedB || isM6MobileBaked || isM7Baked || isM8Baked || isM9MobileBaked || isM12Baked || isM13Baked || isM14Baked || isM15Baked;
     if (localPlacement && localPlacement.missionId !== 'studio_10' && !isBakedMission) {
       placements.push({
         missionId: localPlacement.missionId,
