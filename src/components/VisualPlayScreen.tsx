@@ -595,7 +595,7 @@ export function VisualPlayScreen({
     : isMission10BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isMission10BgLocked
-    ? 'gallery_mission10_bg'
+    ? (isMobile ? 'gallery_mission10_mobile_bg' : 'gallery_mission10_bg')
     : isMission11BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isMission11BgLocked
@@ -653,7 +653,7 @@ export function VisualPlayScreen({
     : isMission10BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isMission10BgLocked
-    ? (getBackgroundByName('gallery_mission10_bg') || displayBg)
+    ? (getBackgroundByName(isMobile ? 'gallery_mission10_mobile_bg' : 'gallery_mission10_bg') || displayBg)
     : isMission11BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isMission11BgLocked
@@ -1062,8 +1062,17 @@ export function VisualPlayScreen({
     const isMission13 = mission.mission_id === 'studio_13';
     const isMission15 = mission.mission_id === 'studio_15';
     if (isMission10 || isMission13 || isMission15) {
-      const targetBg = getTargetBgForOption(option);
-      setLocalBgOverride({ ...targetBg, missionId: mission.mission_id });
+      if (isMission10 && isMobile) {
+        // Mobile: use baked portrait backgrounds
+        const m10MobileBgKey = variant === 'a' ? 'gallery_mission10a_mobile_bg' : 'gallery_mission10b_mobile_bg';
+        const m10MobileBgImage = getBackgroundByName(m10MobileBgKey);
+        if (m10MobileBgImage) {
+          setLocalBgOverride({ key: m10MobileBgKey, image: m10MobileBgImage, missionId: mission.mission_id });
+        }
+      } else {
+        const targetBg = getTargetBgForOption(option);
+        setLocalBgOverride({ ...targetBg, missionId: mission.mission_id });
+      }
     }
 
     // Mission 03 mobile: Switch to baked portrait background on tool selection
@@ -1539,8 +1548,8 @@ export function VisualPlayScreen({
     return (
       <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 5 }}>
         {sceneExtras.map((extra) => {
-          // Mission 09 mobile: scene extras (crowd) are baked into portrait backgrounds
-          if (mission.mission_id === 'studio_09' && isMobile) return null;
+          // Mission 09/10 mobile: scene extras are baked into portrait backgrounds
+          if ((mission.mission_id === 'studio_09' || mission.mission_id === 'studio_10') && isMobile) return null;
           // Pin extras to their calibrated background regardless of visual overrides.
           const calibratedBgKey = extra.anchorRef.startsWith('m10_') ? 'gallery_mission10_bg'
             : lockedBgKey;
