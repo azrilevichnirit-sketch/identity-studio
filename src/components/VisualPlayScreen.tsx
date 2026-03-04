@@ -201,6 +201,8 @@ export function VisualPlayScreen({
     if (mission.mission_id === 'studio_15' || mission.mission_id === 'studio_14') {
       preloadBackground('gallery_mission15a_bg');
       preloadBackground('gallery_mission15b_bg');
+      preloadBackground('gallery_mission14a_desk_bg');
+      preloadBackground('gallery_mission14b_desk_bg');
     }
   }, [mission.mission_id]);
 
@@ -436,11 +438,13 @@ export function VisualPlayScreen({
     mission.phase === 'main' && mission.mission_id === 'studio_12';
   const isMission13BgLocked =
     mission.phase === 'main' && mission.mission_id === 'studio_13';
+  const isMission14BgLocked =
+    mission.phase === 'main' && mission.mission_id === 'studio_14';
   const isMission15BgLocked =
     mission.phase === 'main' && mission.mission_id === 'studio_15';
   const isWorkshopLocked =
     mission.phase === 'main' &&
-    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission && !isMission4BgLocked && !isMission6BgLocked && !isMission8BgLocked && !isMission9BgLocked && !isMission10BgLocked && !isMission11BgLocked && !isMission12BgLocked && !isMission13BgLocked && !isMission15BgLocked) &&
+    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission && !isMission4BgLocked && !isMission6BgLocked && !isMission8BgLocked && !isMission9BgLocked && !isMission10BgLocked && !isMission11BgLocked && !isMission12BgLocked && !isMission13BgLocked && !isMission14BgLocked && !isMission15BgLocked) &&
     (!mission.bg_override || mission.bg_override === 'studio_in_workshop_bg');
 
   const taskText = mission.task_heb || `MISSING: task_heb`;
@@ -623,6 +627,10 @@ export function VisualPlayScreen({
     ? scopedLocalBgOverride.key
     : isMission13BgLocked
     ? (isMobile ? 'gallery_mission13_mobile_bg' : 'gallery_main_stylized')
+    : isMission14BgLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.key
+    : isMission14BgLocked
+    ? 'studio_in_storage_bg'
     : isMission15BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isMission15BgLocked
@@ -683,6 +691,10 @@ export function VisualPlayScreen({
     ? scopedLocalBgOverride.image
     : isMission13BgLocked
     ? (getBackgroundByName(isMobile ? 'gallery_mission13_mobile_bg' : 'gallery_main_stylized') || displayBg)
+    : isMission14BgLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.image
+    : isMission14BgLocked
+    ? (getBackgroundByName('studio_in_storage_bg') || displayBg)
     : isMission15BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isMission15BgLocked
@@ -698,7 +710,6 @@ export function VisualPlayScreen({
     : isWorkshopLocked && !isCalibrationBgOverrideMode
     ? (getBackgroundByName('studio_in_workshop_bg') || displayBg)
     : displayBg;
-
 
   // ==================== MOBILE PORTRAIT BACKGROUNDS ====================
   // If a native portrait (3072x4096) background exists for the current bg key,
@@ -996,6 +1007,7 @@ export function VisualPlayScreen({
       const isM11BakedA = mission.mission_id === 'studio_11' && variant === 'a';
       const isM13Baked = mission.mission_id === 'studio_13';
       const isM15Baked = mission.mission_id === 'studio_15';
+      const isM14Baked = mission.mission_id === 'studio_14';
       const isM3MobileBaked = mission.mission_id === 'studio_03' && isMobile;
       const isM4MobileBaked = mission.mission_id === 'studio_04' && isMobile;
       const isM5MobileBakedB = mission.mission_id === 'studio_05' && variant === 'b' && isMobile;
@@ -1003,7 +1015,7 @@ export function VisualPlayScreen({
       const isM7Baked = mission.mission_id === 'studio_07';
       const isM8Baked = mission.mission_id === 'studio_08';
       const isM9MobileBaked = mission.mission_id === 'studio_09' && isMobile;
-      if (!isM11BakedB && !isM11BakedA && !isM13Baked && !isM15Baked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7Baked && !isM8Baked && !isM9MobileBaked) {
+      if (!isM11BakedB && !isM11BakedA && !isM13Baked && !isM15Baked && !isM14Baked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7Baked && !isM8Baked && !isM9MobileBaked) {
         setLocalPlacement({
           missionId: mission.mission_id,
           key: variant,
@@ -1123,6 +1135,15 @@ export function VisualPlayScreen({
       const m13BgImage = getBackgroundByName(m13BgKey);
       if (m13BgImage) {
         setLocalBgOverride({ key: m13BgKey, image: m13BgImage, missionId: mission.mission_id });
+      }
+    }
+
+    // Mission 14: Switch to baked desktop background on tool selection
+    if (mission.mission_id === 'studio_14') {
+      const m14BgKey = variant === 'a' ? 'gallery_mission14a_desk_bg' : 'gallery_mission14b_desk_bg';
+      const m14BgImage = getBackgroundByName(m14BgKey);
+      if (m14BgImage) {
+        setLocalBgOverride({ key: m14BgKey, image: m14BgImage, missionId: mission.mission_id });
       }
     }
 
@@ -1302,6 +1323,7 @@ export function VisualPlayScreen({
       : isMission06ToolA ? 2400  // extra time for prop spawn + tool appear
       : (mission.mission_id === 'studio_10') ? 1500  // faster handoff so M11 bubble appears quickly
       : (mission.mission_id === 'studio_13') ? 2200  // baked bg crossfade (800ms) + viewing time
+      : (mission.mission_id === 'studio_14') ? 2200  // baked bg crossfade + viewing time
       : (mission.mission_id === 'studio_15') ? 2200  // baked bg crossfade + viewing time
       : isMission05ToolA ? 2400  // extra 1s viewing time for M05 tool A
       : isMission05ToolB ? 2900  // visitors fade-in + 1.5s viewing time
@@ -1343,7 +1365,6 @@ export function VisualPlayScreen({
     // Immediately place the tool - no dragging required
     completePlacement(variant);
   }, [completePlacement]);
-
 
   const handleStagePointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     if (!(isMobile && isPanoramic)) return;
@@ -1614,7 +1635,7 @@ export function VisualPlayScreen({
   const sceneExtrasElement = useMemo(() => {
     // Hide actual extras when calibration editor is active (it renders its own copies)
     // Mission 13 uses baked-in props in the background, so never render scene extras there.
-    if (mission.mission_id === 'studio_13' || mission.mission_id === 'studio_15' || sceneExtras.length === 0 || toolEditMode) return null;
+    if (mission.mission_id === 'studio_13' || mission.mission_id === 'studio_14' || mission.mission_id === 'studio_15' || sceneExtras.length === 0 || toolEditMode) return null;
     // Mission 11: suppress scene extras once a tool is placed (baked into background)
     const isM11Baked = mission.mission_id === 'studio_11' && localPlacement?.missionId === 'studio_11';
     if (isM11Baked) return null;
@@ -2137,6 +2158,10 @@ export function VisualPlayScreen({
         }
         // Mission 15: all props are baked into the background - never render them
         if (prop.missionId === 'studio_15') {
+          return null;
+        }
+        // Mission 14: all props are baked into the background - never render them
+        if (prop.missionId === 'studio_14') {
           return null;
         }
         // Mission 08: all props are baked into the background - never render them

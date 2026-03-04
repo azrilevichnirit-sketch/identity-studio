@@ -33,6 +33,9 @@ import galleryMission13bBg from '@/assets/backgrounds/gallery_mission13b_bg.webp
 import galleryMission13MobileBg from '@/assets/backgrounds/gallery_mission13_mobile_bg.webp';
 import galleryMission13aMobileBg from '@/assets/backgrounds/gallery_mission13a_mobile_bg.webp';
 import galleryMission13bMobileBg from '@/assets/backgrounds/gallery_mission13b_mobile_bg.webp';
+// Mission 14 desktop baked backgrounds
+import galleryMission14aDeskBg from '@/assets/backgrounds/gallery_mission14a_desk_bg.webp';
+import galleryMission14bDeskBg from '@/assets/backgrounds/gallery_mission14b_desk_bg.webp';
 import galleryMainStylizedV4 from '@/assets/backgrounds/gallery_main_stylized_v4.webp';
 import galleryMission15aBg from '@/assets/backgrounds/gallery_mission15a_bg.webp';
 import galleryMission15bBg from '@/assets/backgrounds/gallery_mission15b_bg.webp';
@@ -260,8 +263,11 @@ const backgroundAssets: Record<string, string> = {
   gallery_main_stylized_white: galleryMainStylizedWhite,
   gallery_main_stylized_white_v1: galleryMainStylizedWhite,
   
-  // Storage room (Mission 07 Tool A destination)
+  // Storage room (Mission 07 Tool A destination, Mission 14 base)
   studio_in_storage_bg: studioStorageBg,
+  // Mission 14 desktop baked backgrounds
+  gallery_mission14a_desk_bg: galleryMission14aDeskBg,
+  gallery_mission14b_desk_bg: galleryMission14bDeskBg,
   
   // Mission 07: gallery looking outside
   studio_in_entrance_view_bg: studioEntranceViewBg,
