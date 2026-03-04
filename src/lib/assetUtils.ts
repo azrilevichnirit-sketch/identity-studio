@@ -50,6 +50,10 @@ import galleryMission5bMobileBg from '@/assets/backgrounds/gallery_mission5b_mob
 import galleryMission6MobileBg from '@/assets/backgrounds/gallery_mission6_mobile_bg.webp';
 import galleryMission6aMobileBg from '@/assets/backgrounds/gallery_mission6a_mobile_bg.webp';
 import galleryMission6bMobileBg from '@/assets/backgrounds/gallery_mission6b_mobile_bg.webp';
+// Mission 07 mobile portrait backgrounds
+import galleryMission7MobileBg from '@/assets/backgrounds/gallery_mission7_mobile_bg.webp';
+import galleryMission7aMobileBg from '@/assets/backgrounds/gallery_mission7a_mobile_bg.webp';
+import galleryMission7bMobileBg from '@/assets/backgrounds/gallery_mission7b_mobile_bg.webp';
 
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
@@ -274,8 +278,12 @@ const backgroundAssets: Record<string, string> = {
   gallery_mission5b_mobile_bg: galleryMission5bMobileBg,
   // Mission 06 mobile baked backgrounds
   gallery_mission6_mobile_bg: galleryMission6MobileBg,
-  gallery_mission6a_mobile_bg: galleryMission6aMobileBg,
-  gallery_mission6b_mobile_bg: galleryMission6bMobileBg,
+   gallery_mission6a_mobile_bg: galleryMission6aMobileBg,
+   gallery_mission6b_mobile_bg: galleryMission6bMobileBg,
+   // Mission 07 mobile baked backgrounds
+   gallery_mission7_mobile_bg: galleryMission7MobileBg,
+   gallery_mission7a_mobile_bg: galleryMission7aMobileBg,
+   gallery_mission7b_mobile_bg: galleryMission7bMobileBg,
 };
 
 // Wide panoramic backgrounds for mobile panning (key -> asset)
@@ -353,6 +361,11 @@ const mobilePortraitBackgrounds: Record<string, string> = {
   gallery_mission6_mobile_bg: galleryMission6MobileBg,
   gallery_mission6a_mobile_bg: galleryMission6aMobileBg,
   gallery_mission6b_mobile_bg: galleryMission6bMobileBg,
+  // Mission 07: base portrait + baked results (mobile only)
+  studio_in_entrance_view_bg: galleryMission7MobileBg,
+  gallery_mission7_mobile_bg: galleryMission7MobileBg,
+  gallery_mission7a_mobile_bg: galleryMission7aMobileBg,
+  gallery_mission7b_mobile_bg: galleryMission7bMobileBg,
 };
 
 export function getMobilePortraitBackground(bgKey: string): string | null {
