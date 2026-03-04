@@ -3,7 +3,7 @@ import type { AvatarGender } from '@/types/identity';
 import { getAvatarImage } from '@/lib/assetUtils';
 import galleryBg from '@/assets/backgrounds/gallery_main_stylized_v5.webp';
 // Preload the intro screen background to prevent black flash during transition
-import introScreenBg from '@/assets/backgrounds/gallery_main_stylized_v3.webp';
+import introScreenBg from '@/assets/backgrounds/gallery_main_stylized_v5.webp';
 import { GameStage } from './GameStage';
 
 interface AvatarSelectProps {
