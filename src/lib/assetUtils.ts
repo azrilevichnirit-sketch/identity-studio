@@ -43,6 +43,10 @@ import galleryMission14bMobileBg from '@/assets/backgrounds/gallery_mission14b_m
 import galleryMainStylizedV4 from '@/assets/backgrounds/gallery_main_stylized_v4.webp';
 import galleryMission15aBg from '@/assets/backgrounds/gallery_mission15a_bg.webp';
 import galleryMission15bBg from '@/assets/backgrounds/gallery_mission15b_bg.webp';
+// Mission 15 mobile baked backgrounds
+import galleryMission15MobileBg from '@/assets/backgrounds/gallery_mission15_mobile_bg.webp';
+import galleryMission15aMobileBg from '@/assets/backgrounds/gallery_mission15a_mobile_bg.webp';
+import galleryMission15bMobileBg from '@/assets/backgrounds/gallery_mission15b_mobile_bg.webp';
 import galleryMobileWideBg from '@/assets/backgrounds/gallery_main_mobile_wide.webp';
 import galleryMainDesktopBg from '@/assets/backgrounds/gallery_main_desktop.webp';
 
@@ -261,6 +265,10 @@ const backgroundAssets: Record<string, string> = {
   gallery_main_stylized_v4: galleryMainStylizedV4,
   gallery_mission15a_bg: galleryMission15aBg,
   gallery_mission15b_bg: galleryMission15bBg,
+  // Mission 15 mobile baked backgrounds
+  gallery_mission15_mobile_bg: galleryMission15MobileBg,
+  gallery_mission15a_mobile_bg: galleryMission15aMobileBg,
+  gallery_mission15b_mobile_bg: galleryMission15bMobileBg,
   
   // Mission 01 Tool A result / Mission 02 (if A chosen): white walls (after paint)
   studio_in_gallery_wall_bg: galleryMainStylizedWhite,
