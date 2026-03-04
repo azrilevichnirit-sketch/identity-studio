@@ -29,6 +29,10 @@ import galleryMission11aBg from '@/assets/backgrounds/gallery_mission11a_bg.webp
 import galleryMission11bBg from '@/assets/backgrounds/gallery_mission11b_bg.webp';
 import galleryMission13aBg from '@/assets/backgrounds/gallery_mission13a_bg.webp';
 import galleryMission13bBg from '@/assets/backgrounds/gallery_mission13b_bg.webp';
+// Mission 13 mobile baked backgrounds
+import galleryMission13MobileBg from '@/assets/backgrounds/gallery_mission13_mobile_bg.webp';
+import galleryMission13aMobileBg from '@/assets/backgrounds/gallery_mission13a_mobile_bg.webp';
+import galleryMission13bMobileBg from '@/assets/backgrounds/gallery_mission13b_mobile_bg.webp';
 import galleryMainStylizedV4 from '@/assets/backgrounds/gallery_main_stylized_v4.webp';
 import galleryMission15aBg from '@/assets/backgrounds/gallery_mission15a_bg.webp';
 import galleryMission15bBg from '@/assets/backgrounds/gallery_mission15b_bg.webp';
@@ -318,6 +322,9 @@ const backgroundAssets: Record<string, string> = {
   // Mission 13 backgrounds
   gallery_mission13a_bg: galleryMission13aBg,
   gallery_mission13b_bg: galleryMission13bBg,
+  gallery_mission13_mobile_bg: galleryMission13MobileBg,
+  gallery_mission13a_mobile_bg: galleryMission13aMobileBg,
+  gallery_mission13b_mobile_bg: galleryMission13bMobileBg,
   
   // Mission 03 mobile baked backgrounds (portrait, mobile-only)
   gallery_mission3a_mobile_bg: galleryMission3aMobileBg,

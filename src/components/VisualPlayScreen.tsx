@@ -195,6 +195,8 @@ export function VisualPlayScreen({
     if (mission.mission_id === 'studio_13' || mission.mission_id === 'studio_12') {
       preloadBackground('gallery_mission13a_bg');
       preloadBackground('gallery_mission13b_bg');
+      preloadBackground('gallery_mission13a_mobile_bg');
+      preloadBackground('gallery_mission13b_mobile_bg');
     }
     if (mission.mission_id === 'studio_15' || mission.mission_id === 'studio_14') {
       preloadBackground('gallery_mission15a_bg');
@@ -312,7 +314,11 @@ export function VisualPlayScreen({
     if (mission.phase === 'main' && mission.mission_id === 'studio_12') {
       return 'gallery_main_desktop';
     }
-    if (mission.phase === 'main' && (mission.mission_id === 'studio_13' || mission.mission_id === 'studio_15')) {
+    if (mission.phase === 'main' && mission.mission_id === 'studio_13') {
+      const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 821;
+      return isDesktop ? 'gallery_main_stylized' : 'gallery_mission13_mobile_bg';
+    }
+    if (mission.phase === 'main' && mission.mission_id === 'studio_15') {
       return 'gallery_main_stylized';
     }
     
@@ -616,7 +622,7 @@ export function VisualPlayScreen({
     : isMission13BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isMission13BgLocked
-    ? 'gallery_main_stylized'
+    ? (isMobile ? 'gallery_mission13_mobile_bg' : 'gallery_main_stylized')
     : isMission15BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isMission15BgLocked
@@ -676,7 +682,7 @@ export function VisualPlayScreen({
     : isMission13BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isMission13BgLocked
-    ? (getBackgroundByName('gallery_main_stylized') || displayBg)
+    ? (getBackgroundByName(isMobile ? 'gallery_mission13_mobile_bg' : 'gallery_main_stylized') || displayBg)
     : isMission15BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isMission15BgLocked
@@ -1111,7 +1117,9 @@ export function VisualPlayScreen({
 
     // Mission 13: Switch to baked background on tool selection (desktop and mobile)
     if (mission.mission_id === 'studio_13') {
-      const m13BgKey = variant === 'a' ? 'gallery_mission13a_bg' : 'gallery_mission13b_bg';
+      const m13BgKey = isMobile
+        ? (variant === 'a' ? 'gallery_mission13a_mobile_bg' : 'gallery_mission13b_mobile_bg')
+        : (variant === 'a' ? 'gallery_mission13a_bg' : 'gallery_mission13b_bg');
       const m13BgImage = getBackgroundByName(m13BgKey);
       if (m13BgImage) {
         setLocalBgOverride({ key: m13BgKey, image: m13BgImage, missionId: mission.mission_id });
