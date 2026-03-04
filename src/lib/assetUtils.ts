@@ -437,7 +437,9 @@ const mobilePortraitBackgrounds: Record<string, string> = {
    // Mission 10: base portrait + baked results (mobile only)
    gallery_mission10_bg: galleryMission10MobileBg,
    gallery_mission10_mobile_bg: galleryMission10MobileBg,
+   gallery_mission10a_bg: galleryMission10aMobileBg,
    gallery_mission10a_mobile_bg: galleryMission10aMobileBg,
+   gallery_mission10b_bg: galleryMission10bMobileBg,
    gallery_mission10b_mobile_bg: galleryMission10bMobileBg,
    // Mission 11: gender-specific Tool A + Tool B (mobile only)
    gallery_mission11a_f_mobile_bg: galleryMission11aFMobileBg,
