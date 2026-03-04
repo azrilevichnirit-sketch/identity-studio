@@ -800,7 +800,7 @@
   margin: 0;
   padding: 0;
   direction: ltr; /* Neutralize RTL for absolute positioning of tools/props */
-  background: hsl(30 20% 15%); /* Warm dark fallback to prevent black flash before bg loads */
+  background: transparent;
 }
 
 /* Background layer - covers entire stage */
