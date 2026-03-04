@@ -404,6 +404,8 @@ export function VisualPlayScreen({
     mission.phase === 'main' && mission.mission_id === 'studio_06';
   const isMission8BgLocked =
     mission.phase === 'main' && mission.mission_id === 'studio_08';
+  const isMission9BgLocked =
+    mission.phase === 'main' && mission.mission_id === 'studio_09';
   const isCrackedWallsLocked =
     mission.phase === 'main' && mission.mission_id === 'studio_01';
   const isExteriorLocked =
@@ -423,7 +425,7 @@ export function VisualPlayScreen({
     mission.phase === 'main' && mission.mission_id === 'studio_15';
   const isWorkshopLocked =
     mission.phase === 'main' &&
-    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission && !isMission4BgLocked && !isMission6BgLocked && !isMission8BgLocked && !isMission10BgLocked && !isMission11BgLocked && !isMission12BgLocked && !isMission13BgLocked && !isMission15BgLocked) &&
+    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission && !isMission4BgLocked && !isMission6BgLocked && !isMission8BgLocked && !isMission9BgLocked && !isMission10BgLocked && !isMission11BgLocked && !isMission12BgLocked && !isMission13BgLocked && !isMission15BgLocked) &&
     (!mission.bg_override || mission.bg_override === 'studio_in_workshop_bg');
 
   const taskText = mission.task_heb || `MISSING: task_heb`;
@@ -586,6 +588,10 @@ export function VisualPlayScreen({
     ? scopedLocalBgOverride.key
     : isMission8BgLocked
     ? (isMobile ? 'gallery_mission8_bg' : 'gallery_mission8_desk_bg')
+    : isMission9BgLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.key
+    : isMission9BgLocked
+    ? (isMobile ? 'gallery_mission9_mobile_bg' : 'studio_doorway_park_view_bg')
     : isMission10BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isMission10BgLocked
@@ -640,6 +646,10 @@ export function VisualPlayScreen({
     ? scopedLocalBgOverride.image
     : isMission8BgLocked
     ? (getBackgroundByName(isMobile ? 'gallery_mission8_bg' : 'gallery_mission8_desk_bg') || displayBg)
+    : isMission9BgLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.image
+    : isMission9BgLocked
+    ? (getBackgroundByName(isMobile ? 'gallery_mission9_mobile_bg' : 'studio_doorway_park_view_bg') || displayBg)
     : isMission10BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isMission10BgLocked
@@ -972,7 +982,8 @@ export function VisualPlayScreen({
       const isM6MobileBaked = mission.mission_id === 'studio_06' && isMobile;
       const isM7Baked = mission.mission_id === 'studio_07';
       const isM8Baked = mission.mission_id === 'studio_08';
-      if (!isM11BakedB && !isM13Baked && !isM15Baked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7Baked && !isM8Baked) {
+      const isM9MobileBaked = mission.mission_id === 'studio_09' && isMobile;
+      if (!isM11BakedB && !isM13Baked && !isM15Baked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7Baked && !isM8Baked && !isM9MobileBaked) {
         setLocalPlacement({
           missionId: mission.mission_id,
           key: variant,
@@ -1117,6 +1128,15 @@ export function VisualPlayScreen({
       const m8BgImage = getBackgroundByName(m8BgKey);
       if (m8BgImage) {
         setLocalBgOverride({ key: m8BgKey, image: m8BgImage, missionId: mission.mission_id });
+      }
+    }
+
+    // Mission 09 mobile: Switch to baked portrait background on tool selection
+    if (mission.mission_id === 'studio_09' && isMobile) {
+      const m9MobileBgKey = variant === 'a' ? 'gallery_mission9a_mobile_bg' : 'gallery_mission9b_mobile_bg';
+      const m9MobileBgImage = getBackgroundByName(m9MobileBgKey);
+      if (m9MobileBgImage) {
+        setLocalBgOverride({ key: m9MobileBgKey, image: m9MobileBgImage, missionId: mission.mission_id });
       }
     }
 
@@ -1519,6 +1539,8 @@ export function VisualPlayScreen({
     return (
       <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 5 }}>
         {sceneExtras.map((extra) => {
+          // Mission 09 mobile: scene extras (crowd) are baked into portrait backgrounds
+          if (mission.mission_id === 'studio_09' && isMobile) return null;
           // Pin extras to their calibrated background regardless of visual overrides.
           const calibratedBgKey = extra.anchorRef.startsWith('m10_') ? 'gallery_mission10_bg'
             : lockedBgKey;
@@ -2034,6 +2056,10 @@ export function VisualPlayScreen({
         }
         // Mission 08: all props are baked into the background - never render them
         if (prop.missionId === 'studio_08') {
+          return null;
+        }
+        // Mission 09 mobile: all props are baked into the portrait background
+        if (prop.missionId === 'studio_09' && isMobile) {
           return null;
         }
 

@@ -63,6 +63,10 @@ import galleryMission8aMMobileBg from '@/assets/backgrounds/gallery_mission8a_m_
 import galleryMission8aFMobileBg from '@/assets/backgrounds/gallery_mission8a_f_mobile_bg.webp';
 import galleryMission8bMMobileBg from '@/assets/backgrounds/gallery_mission8b_m_mobile_bg.webp';
 import galleryMission8bFMobileBg from '@/assets/backgrounds/gallery_mission8b_f_mobile_bg.webp';
+// Mission 09 mobile baked backgrounds
+import galleryMission9MobileBg from '@/assets/backgrounds/gallery_mission9_mobile_bg.webp';
+import galleryMission9aMobileBg from '@/assets/backgrounds/gallery_mission9a_mobile_bg.webp';
+import galleryMission9bMobileBg from '@/assets/backgrounds/gallery_mission9b_mobile_bg.webp';
 // Mission 08 desktop baked backgrounds
 import galleryMission8DeskBg from '@/assets/backgrounds/gallery_mission8_desk_bg.webp';
 import galleryMission8aMDeskBg from '@/assets/backgrounds/gallery_mission8a_m_desk_bg.webp';
@@ -312,7 +316,11 @@ const backgroundAssets: Record<string, string> = {
    gallery_mission8a_m_mobile_bg: galleryMission8aMMobileBg,
    gallery_mission8a_f_mobile_bg: galleryMission8aFMobileBg,
    gallery_mission8b_m_mobile_bg: galleryMission8bMMobileBg,
-   gallery_mission8b_f_mobile_bg: galleryMission8bFMobileBg,
+    gallery_mission8b_f_mobile_bg: galleryMission8bFMobileBg,
+   // Mission 09 mobile baked backgrounds
+   gallery_mission9_mobile_bg: galleryMission9MobileBg,
+   gallery_mission9a_mobile_bg: galleryMission9aMobileBg,
+   gallery_mission9b_mobile_bg: galleryMission9bMobileBg,
 };
 
 // Wide panoramic backgrounds for mobile panning (key -> asset)
@@ -401,7 +409,11 @@ const mobilePortraitBackgrounds: Record<string, string> = {
    gallery_mission8a_m_mobile_bg: galleryMission8aMMobileBg,
    gallery_mission8a_f_mobile_bg: galleryMission8aFMobileBg,
    gallery_mission8b_m_mobile_bg: galleryMission8bMMobileBg,
-   gallery_mission8b_f_mobile_bg: galleryMission8bFMobileBg,
+    gallery_mission8b_f_mobile_bg: galleryMission8bFMobileBg,
+   // Mission 09: base portrait + baked results (mobile only)
+   gallery_mission9_mobile_bg: galleryMission9MobileBg,
+   gallery_mission9a_mobile_bg: galleryMission9aMobileBg,
+   gallery_mission9b_mobile_bg: galleryMission9bMobileBg,
 };
 
 export function getMobilePortraitBackground(bgKey: string): string | null {
