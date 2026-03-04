@@ -78,6 +78,10 @@ import galleryMission11aMDeskBg from '@/assets/backgrounds/gallery_mission11a_m_
 import galleryMission11aFMobileBg from '@/assets/backgrounds/gallery_mission11a_f_mobile_bg.webp';
 import galleryMission11aMMobileBg from '@/assets/backgrounds/gallery_mission11a_m_mobile_bg.webp';
 import galleryMission11bMobileBg from '@/assets/backgrounds/gallery_mission11b_mobile_bg.webp';
+// Mission 12 mobile baked backgrounds
+import galleryMission12MobileBg from '@/assets/backgrounds/gallery_mission12_mobile_bg.webp';
+import galleryMission12aMobileBg from '@/assets/backgrounds/gallery_mission12a_mobile_bg.webp';
+import galleryMission12bMobileBg from '@/assets/backgrounds/gallery_mission12b_mobile_bg.webp';
 // Mission 08 desktop baked backgrounds
 import galleryMission8DeskBg from '@/assets/backgrounds/gallery_mission8_desk_bg.webp';
 import galleryMission8aMDeskBg from '@/assets/backgrounds/gallery_mission8a_m_desk_bg.webp';
@@ -294,6 +298,10 @@ const backgroundAssets: Record<string, string> = {
   gallery_mission11a_f_mobile_bg: galleryMission11aFMobileBg,
   gallery_mission11a_m_mobile_bg: galleryMission11aMMobileBg,
   gallery_mission11b_mobile_bg: galleryMission11bMobileBg,
+  // Mission 12 mobile baked
+  gallery_mission12_mobile_bg: galleryMission12MobileBg,
+  gallery_mission12a_mobile_bg: galleryMission12aMobileBg,
+  gallery_mission12b_mobile_bg: galleryMission12bMobileBg,
   
   // Gallery mobile wide (Mission 11 Tool B destination)
   gallery_main_mobile_wide: galleryMobileWideBg,
@@ -445,6 +453,10 @@ const mobilePortraitBackgrounds: Record<string, string> = {
    gallery_mission11a_f_mobile_bg: galleryMission11aFMobileBg,
    gallery_mission11a_m_mobile_bg: galleryMission11aMMobileBg,
    gallery_mission11b_mobile_bg: galleryMission11bMobileBg,
+   // Mission 12
+   gallery_mission12_mobile_bg: galleryMission12MobileBg,
+   gallery_mission12a_mobile_bg: galleryMission12aMobileBg,
+   gallery_mission12b_mobile_bg: galleryMission12bMobileBg,
 };
 
 export function getMobilePortraitBackground(bgKey: string): string | null {
