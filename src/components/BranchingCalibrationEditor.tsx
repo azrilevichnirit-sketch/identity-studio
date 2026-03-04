@@ -6,7 +6,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import type { AnchorRef, Mission } from '@/types/identity';
 
 // Import all possible branching backgrounds
-import storageV2 from '@/assets/backgrounds/studio_in_storage_v2.webp';
+import storageV2 from '@/assets/backgrounds/studio_in_storage_v3.webp';
 import whiteWalls from '@/assets/backgrounds/gallery_main_stylized_white_v1.webp';
 import galleryStylized from '@/assets/backgrounds/gallery_main_stylized.webp';
 import exteriorPark from '@/assets/backgrounds/studio_exterior_park_stylized_v3.webp';
