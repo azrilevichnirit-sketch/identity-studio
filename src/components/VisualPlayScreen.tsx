@@ -280,7 +280,12 @@ export function VisualPlayScreen({
     // Mission 11: starts on M10 result (10a/10b), then switches to M11 result (11a/11b) right after pick.
     if (mission.phase === 'main' && mission.mission_id === 'studio_11') {
       const m11LocalPick = localPlacement?.missionId === 'studio_11' ? localPlacement.key : null;
-      if (m11LocalPick === 'a') return 'gallery_mission11a_bg';
+      if (m11LocalPick === 'a') {
+        if (!isMobile) {
+          return avatarGender === 'female' ? 'gallery_mission11a_f_desk_bg' : 'gallery_mission11a_m_desk_bg';
+        }
+        return 'gallery_mission11a_bg';
+      }
       if (m11LocalPick === 'b') return 'gallery_mission11b_bg';
 
       const m10Pick = placedProps.find(p => p.missionId === 'studio_10');
@@ -974,6 +979,7 @@ export function VisualPlayScreen({
       // M11 Tool B, M13, M15: tools are baked into their backgrounds — skip rendering the prop
       // M3 mobile: tools are baked into portrait mobile backgrounds
       const isM11BakedB = mission.mission_id === 'studio_11' && variant === 'b';
+      const isM11BakedADesk = mission.mission_id === 'studio_11' && variant === 'a' && !isMobile;
       const isM13Baked = mission.mission_id === 'studio_13';
       const isM15Baked = mission.mission_id === 'studio_15';
       const isM3MobileBaked = mission.mission_id === 'studio_03' && isMobile;
@@ -983,7 +989,7 @@ export function VisualPlayScreen({
       const isM7Baked = mission.mission_id === 'studio_07';
       const isM8Baked = mission.mission_id === 'studio_08';
       const isM9MobileBaked = mission.mission_id === 'studio_09' && isMobile;
-      if (!isM11BakedB && !isM13Baked && !isM15Baked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7Baked && !isM8Baked && !isM9MobileBaked) {
+      if (!isM11BakedB && !isM11BakedADesk && !isM13Baked && !isM15Baked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7Baked && !isM8Baked && !isM9MobileBaked) {
         setLocalPlacement({
           missionId: mission.mission_id,
           key: variant,
@@ -1053,8 +1059,20 @@ export function VisualPlayScreen({
     // so it does NOT snap back to the workshop before advancing to Mission 12.
     const isMission11 = mission.mission_id === 'studio_11';
     if (isMission11) {
-      const targetBg = getTargetBgForOption(option);
-      setLocalBgOverride({ ...targetBg, missionId: mission.mission_id });
+      if (!isMobile && variant === 'a') {
+        // Desktop Tool A: use gender-specific baked backgrounds
+        const m11DeskBgKey = avatarGender === 'female' ? 'gallery_mission11a_f_desk_bg' : 'gallery_mission11a_m_desk_bg';
+        const m11DeskBgImage = getBackgroundByName(m11DeskBgKey);
+        if (m11DeskBgImage) {
+          setLocalBgOverride({ key: m11DeskBgKey, image: m11DeskBgImage, missionId: mission.mission_id });
+        } else {
+          const targetBg = getTargetBgForOption(option);
+          setLocalBgOverride({ ...targetBg, missionId: mission.mission_id });
+        }
+      } else {
+        const targetBg = getTargetBgForOption(option);
+        setLocalBgOverride({ ...targetBg, missionId: mission.mission_id });
+      }
     }
 
     // Mission 10 & 13: Lock the background to the tool-specific result bg on placement
@@ -1469,12 +1487,13 @@ export function VisualPlayScreen({
     // M3 mobile: skip — baked into portrait mobile backgrounds
     // M4 mobile: skip — baked into portrait mobile backgrounds
     const isM11BakedB = localPlacement?.missionId === 'studio_11' && localPlacement?.key === 'b';
+    const isM11BakedADesk = localPlacement?.missionId === 'studio_11' && localPlacement?.key === 'a' && !isMobile;
     const isM3MobileBaked = localPlacement?.missionId === 'studio_03' && isMobile;
     const isM4MobileBaked = localPlacement?.missionId === 'studio_04' && isMobile;
     const isM5MobileBakedB = localPlacement?.missionId === 'studio_05' && localPlacement?.key === 'b' && isMobile;
     const isM6MobileBaked = localPlacement?.missionId === 'studio_06' && isMobile;
     const isM7MobileBaked = localPlacement?.missionId === 'studio_07' && isMobile;
-    if (localPlacement && localPlacement.missionId !== 'studio_10' && !isM11BakedB && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7MobileBaked) {
+    if (localPlacement && localPlacement.missionId !== 'studio_10' && !isM11BakedB && !isM11BakedADesk && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7MobileBaked) {
       placements.push({
         missionId: localPlacement.missionId,
         key: localPlacement.key as 'a' | 'b',
