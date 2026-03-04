@@ -62,6 +62,7 @@ import galleryMission4bMMobileBg from '@/assets/backgrounds/gallery_mission4b_m_
 import galleryMission4bFMobileBg from '@/assets/backgrounds/gallery_mission4b_f_mobile_bg.webp';
 import galleryMission5MobileBg from '@/assets/backgrounds/gallery_mission5_mobile_bg.webp';
 import galleryMission5bMobileBg from '@/assets/backgrounds/gallery_mission5b_mobile_bg.webp';
+import galleryMission5bDeskBg from '@/assets/backgrounds/gallery_mission5b_desk_bg.webp';
 import galleryMission6MobileBg from '@/assets/backgrounds/gallery_mission6_mobile_bg.webp';
 import galleryMission6aMobileBg from '@/assets/backgrounds/gallery_mission6a_mobile_bg.webp';
 import galleryMission6bMobileBg from '@/assets/backgrounds/gallery_mission6b_mobile_bg.webp';
@@ -357,8 +358,9 @@ const backgroundAssets: Record<string, string> = {
   gallery_mission4a_mobile_bg: galleryMission4aMobileBg,
   gallery_mission4b_m_mobile_bg: galleryMission4bMMobileBg,
   gallery_mission4b_f_mobile_bg: galleryMission4bFMobileBg,
-  // Mission 05 mobile baked backgrounds
+  // Mission 05 baked backgrounds
   gallery_mission5b_mobile_bg: galleryMission5bMobileBg,
+  gallery_mission5b_desk_bg: galleryMission5bDeskBg,
   // Mission 06 mobile baked backgrounds
   gallery_mission6_mobile_bg: galleryMission6MobileBg,
    gallery_mission6a_mobile_bg: galleryMission6aMobileBg,
