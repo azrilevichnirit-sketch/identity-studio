@@ -966,8 +966,8 @@ export function VisualPlayScreen({
       const isM4MobileBaked = mission.mission_id === 'studio_04' && isMobile;
       const isM5MobileBakedB = mission.mission_id === 'studio_05' && variant === 'b' && isMobile;
       const isM6MobileBaked = mission.mission_id === 'studio_06' && isMobile;
-      const isM7MobileBaked = mission.mission_id === 'studio_07' && isMobile;
-      if (!isM11BakedB && !isM13Baked && !isM15Baked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7MobileBaked) {
+      const isM7Baked = mission.mission_id === 'studio_07';
+      if (!isM11BakedB && !isM13Baked && !isM15Baked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7Baked) {
         setLocalPlacement({
           missionId: mission.mission_id,
           key: variant,
@@ -1016,11 +1016,21 @@ export function VisualPlayScreen({
           setLocalBgOverride({ key: m7MobileBgKey, image: m7MobileBgImage, missionId: mission.mission_id });
         }
       } else {
-        const targetBg = getTargetBgForOption(option);
-        setLocalBgOverride({ ...targetBg, missionId: mission.mission_id });
+        // Desktop: switch to baked desktop background (tool + props pre-rendered)
+        const m7DesktopBgKey = variant === 'a' ? 'gallery_mission7a_bg' : 'gallery_mission7b_bg';
+        const m7DesktopBgImage = getBackgroundByName(m7DesktopBgKey);
+        if (m7DesktopBgImage) {
+          setLocalBgOverride({ key: m7DesktopBgKey, image: m7DesktopBgImage, missionId: mission.mission_id });
+        } else {
+          const targetBg = getTargetBgForOption(option);
+          setLocalBgOverride({ ...targetBg, missionId: mission.mission_id });
+        }
       }
       // Mark that we're in a M7 transition - prevents immediate bg clear on mission change
-      m7TransitionRef.current = { active: true, bgKey: isMobile ? (variant === 'a' ? 'gallery_mission7a_mobile_bg' : 'gallery_mission7b_mobile_bg') : getTargetBgForOption(option).key };
+      const m7BgKey = isMobile
+        ? (variant === 'a' ? 'gallery_mission7a_mobile_bg' : 'gallery_mission7b_mobile_bg')
+        : (variant === 'a' ? 'gallery_mission7a_bg' : 'gallery_mission7b_bg');
+      m7TransitionRef.current = { active: true, bgKey: m7BgKey };
     }
 
     // Mission 11: Lock the background to the tool-specific destination room on placement

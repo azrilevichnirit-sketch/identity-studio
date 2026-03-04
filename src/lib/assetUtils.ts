@@ -54,6 +54,9 @@ import galleryMission6bMobileBg from '@/assets/backgrounds/gallery_mission6b_mob
 import galleryMission7MobileBg from '@/assets/backgrounds/gallery_mission7_mobile_bg.webp';
 import galleryMission7aMobileBg from '@/assets/backgrounds/gallery_mission7a_mobile_bg.webp';
 import galleryMission7bMobileBg from '@/assets/backgrounds/gallery_mission7b_mobile_bg.webp';
+// Mission 07 desktop baked backgrounds
+import galleryMission7aBg from '@/assets/backgrounds/gallery_mission7a_bg.webp';
+import galleryMission7bBg from '@/assets/backgrounds/gallery_mission7b_bg.webp';
 
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
@@ -284,6 +287,9 @@ const backgroundAssets: Record<string, string> = {
    gallery_mission7_mobile_bg: galleryMission7MobileBg,
    gallery_mission7a_mobile_bg: galleryMission7aMobileBg,
    gallery_mission7b_mobile_bg: galleryMission7bMobileBg,
+   // Mission 07 desktop baked backgrounds
+   gallery_mission7a_bg: galleryMission7aBg,
+   gallery_mission7b_bg: galleryMission7bBg,
 };
 
 // Wide panoramic backgrounds for mobile panning (key -> asset)
