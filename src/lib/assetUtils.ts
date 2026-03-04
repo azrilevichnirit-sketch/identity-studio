@@ -492,6 +492,18 @@ const mobilePortraitBackgrounds: Record<string, string> = {
    gallery_mission12_mobile_bg: galleryMission12MobileBg,
    gallery_mission12a_mobile_bg: galleryMission12aMobileBg,
    gallery_mission12b_mobile_bg: galleryMission12bMobileBg,
+   // Mission 13
+   gallery_mission13_mobile_bg: galleryMission13MobileBg,
+   gallery_mission13a_mobile_bg: galleryMission13aMobileBg,
+   gallery_mission13b_mobile_bg: galleryMission13bMobileBg,
+   // Mission 14
+   gallery_mission14_mobile_bg: galleryMission14MobileBg,
+   gallery_mission14a_mobile_bg: galleryMission14aMobileBg,
+   gallery_mission14b_mobile_bg: galleryMission14bMobileBg,
+   // Mission 15
+   gallery_mission15_mobile_bg: galleryMission15MobileBg,
+   gallery_mission15a_mobile_bg: galleryMission15aMobileBg,
+   gallery_mission15b_mobile_bg: galleryMission15bMobileBg,
 };
 
 export function getMobilePortraitBackground(bgKey: string): string | null {
