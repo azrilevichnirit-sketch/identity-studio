@@ -1467,7 +1467,6 @@
     box-shadow: 0 6px 20px -12px hsl(0 0% 0% / 0.50);
     transition: opacity 180ms ease, transform 180ms ease;
     will-change: opacity, transform;
-    animation: toolpanel-fadein 400ms ease-out both;
   }
 
   @keyframes toolpanel-fadein {
