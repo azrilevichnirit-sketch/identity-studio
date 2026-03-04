@@ -800,6 +800,7 @@
   margin: 0;
   padding: 0;
   direction: ltr; /* Neutralize RTL for absolute positioning of tools/props */
+  background: hsl(30 20% 15%); /* Warm dark fallback to prevent black flash before bg loads */
 }
 
 /* Background layer - covers entire stage */
@@ -1466,6 +1467,12 @@
     box-shadow: 0 6px 20px -12px hsl(0 0% 0% / 0.50);
     transition: opacity 180ms ease, transform 180ms ease;
     will-change: opacity, transform;
+    animation: toolpanel-fadein 400ms ease-out both;
+  }
+
+  @keyframes toolpanel-fadein {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   /* Mobile: after placement, briefly hide panel to reveal the placed tool */

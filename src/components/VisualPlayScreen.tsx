@@ -638,11 +638,11 @@ export function VisualPlayScreen({
     : isMission14BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isMission14BgLocked
-    ? 'studio_in_storage_bg'
+    ? (isMobile ? 'gallery_mission14_mobile_bg' : 'studio_in_storage_bg')
     : isMission15BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isMission15BgLocked
-    ? 'gallery_main_stylized_v4'
+    ? (isMobile ? 'gallery_mission15_mobile_bg' : 'gallery_main_stylized_v4')
     : isCrackedWallsLocked
     ? (mission.bg_override || 'studio_entry_inside_bg')
     : isExteriorLocked && scopedLocalBgOverride
@@ -702,11 +702,11 @@ export function VisualPlayScreen({
     : isMission14BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isMission14BgLocked
-    ? (getBackgroundByName('studio_in_storage_bg') || displayBg)
+    ? (getBackgroundByName(isMobile ? 'gallery_mission14_mobile_bg' : 'studio_in_storage_bg') || displayBg)
     : isMission15BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isMission15BgLocked
-    ? (getBackgroundByName('gallery_main_stylized_v4') || displayBg)
+    ? (getBackgroundByName(isMobile ? 'gallery_mission15_mobile_bg' : 'gallery_main_stylized_v4') || displayBg)
     : isCrackedWallsLocked
     ? (getBackgroundByName(mission.bg_override || 'studio_entry_inside_bg') || displayBg)
     : isExteriorLocked && scopedLocalBgOverride
