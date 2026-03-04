@@ -2173,6 +2173,8 @@ export function VisualPlayScreen({
         const isOnM08 = mission.mission_id === 'studio_08';
         
         if (!m08ToolBPlaced || !isOnM08) return null;
+        // On mobile, visitors + avatar are baked into the portrait background
+        if (isMobile) return null;
         
         const visitors = [
           { img: visitorM08_01, anchor: 'm08_visitor_01' },
