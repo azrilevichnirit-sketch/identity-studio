@@ -57,6 +57,12 @@ import galleryMission7bMobileBg from '@/assets/backgrounds/gallery_mission7b_mob
 // Mission 07 desktop baked backgrounds
 import galleryMission7aBg from '@/assets/backgrounds/gallery_mission7a_bg.webp';
 import galleryMission7bBg from '@/assets/backgrounds/gallery_mission7b_bg.webp';
+// Mission 08 mobile baked backgrounds
+import galleryMission8MobileBg from '@/assets/backgrounds/gallery_mission8_mobile_bg.webp';
+import galleryMission8aMMobileBg from '@/assets/backgrounds/gallery_mission8a_m_mobile_bg.webp';
+import galleryMission8aFMobileBg from '@/assets/backgrounds/gallery_mission8a_f_mobile_bg.webp';
+import galleryMission8bMMobileBg from '@/assets/backgrounds/gallery_mission8b_m_mobile_bg.webp';
+import galleryMission8bFMobileBg from '@/assets/backgrounds/gallery_mission8b_f_mobile_bg.webp';
 
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
@@ -290,6 +296,12 @@ const backgroundAssets: Record<string, string> = {
    // Mission 07 desktop baked backgrounds
    gallery_mission7a_bg: galleryMission7aBg,
    gallery_mission7b_bg: galleryMission7bBg,
+   // Mission 08 mobile baked backgrounds
+   gallery_mission8_mobile_bg: galleryMission8MobileBg,
+   gallery_mission8a_m_mobile_bg: galleryMission8aMMobileBg,
+   gallery_mission8a_f_mobile_bg: galleryMission8aFMobileBg,
+   gallery_mission8b_m_mobile_bg: galleryMission8bMMobileBg,
+   gallery_mission8b_f_mobile_bg: galleryMission8bFMobileBg,
 };
 
 // Wide panoramic backgrounds for mobile panning (key -> asset)
@@ -367,11 +379,18 @@ const mobilePortraitBackgrounds: Record<string, string> = {
   gallery_mission6_mobile_bg: galleryMission6MobileBg,
   gallery_mission6a_mobile_bg: galleryMission6aMobileBg,
   gallery_mission6b_mobile_bg: galleryMission6bMobileBg,
-  // Mission 07: base portrait + baked results (mobile only)
-  studio_in_entrance_view_bg: galleryMission7MobileBg,
-  gallery_mission7_mobile_bg: galleryMission7MobileBg,
-  gallery_mission7a_mobile_bg: galleryMission7aMobileBg,
-  gallery_mission7b_mobile_bg: galleryMission7bMobileBg,
+   // Mission 07: base portrait + baked results (mobile only)
+   studio_in_entrance_view_bg: galleryMission7MobileBg,
+   gallery_mission7_mobile_bg: galleryMission7MobileBg,
+   gallery_mission7a_mobile_bg: galleryMission7aMobileBg,
+   gallery_mission7b_mobile_bg: galleryMission7bMobileBg,
+   // Mission 08: base portrait + gender-specific baked results (mobile only)
+   gallery_mission8_bg: galleryMission8MobileBg,
+   gallery_mission8_mobile_bg: galleryMission8MobileBg,
+   gallery_mission8a_m_mobile_bg: galleryMission8aMMobileBg,
+   gallery_mission8a_f_mobile_bg: galleryMission8aFMobileBg,
+   gallery_mission8b_m_mobile_bg: galleryMission8bMMobileBg,
+   gallery_mission8b_f_mobile_bg: galleryMission8bFMobileBg,
 };
 
 export function getMobilePortraitBackground(bgKey: string): string | null {

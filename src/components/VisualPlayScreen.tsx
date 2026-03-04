@@ -967,7 +967,8 @@ export function VisualPlayScreen({
       const isM5MobileBakedB = mission.mission_id === 'studio_05' && variant === 'b' && isMobile;
       const isM6MobileBaked = mission.mission_id === 'studio_06' && isMobile;
       const isM7Baked = mission.mission_id === 'studio_07';
-      if (!isM11BakedB && !isM13Baked && !isM15Baked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7Baked) {
+      const isM8MobileBaked = mission.mission_id === 'studio_08' && isMobile;
+      if (!isM11BakedB && !isM13Baked && !isM15Baked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7Baked && !isM8MobileBaked) {
         setLocalPlacement({
           missionId: mission.mission_id,
           key: variant,
@@ -1089,6 +1090,20 @@ export function VisualPlayScreen({
       const m6MobileBgImage = getBackgroundByName(m6MobileBgKey);
       if (m6MobileBgImage) {
         setLocalBgOverride({ key: m6MobileBgKey, image: m6MobileBgImage, missionId: mission.mission_id });
+      }
+    }
+
+    // Mission 08 mobile: Switch to gender-specific baked portrait background on tool selection
+    if (mission.mission_id === 'studio_08' && isMobile) {
+      let m8MobileBgKey: string;
+      if (variant === 'a') {
+        m8MobileBgKey = avatarGender === 'female' ? 'gallery_mission8a_f_mobile_bg' : 'gallery_mission8a_m_mobile_bg';
+      } else {
+        m8MobileBgKey = avatarGender === 'female' ? 'gallery_mission8b_f_mobile_bg' : 'gallery_mission8b_m_mobile_bg';
+      }
+      const m8MobileBgImage = getBackgroundByName(m8MobileBgKey);
+      if (m8MobileBgImage) {
+        setLocalBgOverride({ key: m8MobileBgKey, image: m8MobileBgImage, missionId: mission.mission_id });
       }
     }
 
