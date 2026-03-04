@@ -1012,8 +1012,10 @@ export function VisualPlayScreen({
       // M11 Tool B, M13, M15: tools are baked into their backgrounds — skip rendering the prop
       // M3 mobile: tools are baked into portrait mobile backgrounds
       const missionNum = Number(mission.mission_id.replace('studio_', ''));
+      // M5 Tool A is dynamic (animated inflatable), so exclude it from desktop baked
       const isDesktopBakedMainMission =
-        !isMobile && mission.phase === 'main' && missionNum >= 3 && missionNum <= 15;
+        !isMobile && mission.phase === 'main' && missionNum >= 3 && missionNum <= 15
+        && !(mission.mission_id === 'studio_05' && variant === 'a');
       const isM11BakedB = mission.mission_id === 'studio_11' && variant === 'b';
       const isM11BakedA = mission.mission_id === 'studio_11' && variant === 'a';
       const isM13Baked = mission.mission_id === 'studio_13';
@@ -1207,12 +1209,12 @@ export function VisualPlayScreen({
       }
     }
 
-    // Mission 05 mobile: Tool B switches to baked portrait background (coffee cart + visitors baked in)
-    if (mission.mission_id === 'studio_05' && isMobile && variant === 'b') {
-      const m5MobileBgKey = 'gallery_mission5b_mobile_bg';
-      const m5MobileBgImage = getBackgroundByName(m5MobileBgKey);
-      if (m5MobileBgImage) {
-        setLocalBgOverride({ key: m5MobileBgKey, image: m5MobileBgImage, missionId: mission.mission_id });
+    // Mission 05 Tool B: baked background on both mobile and desktop
+    if (mission.mission_id === 'studio_05' && variant === 'b') {
+      const m5BgKey = isMobile ? 'gallery_mission5b_mobile_bg' : 'gallery_mission5b_desk_bg';
+      const m5BgImage = getBackgroundByName(m5BgKey);
+      if (m5BgImage) {
+        setLocalBgOverride({ key: m5BgKey, image: m5BgImage, missionId: mission.mission_id });
       }
     }
 
@@ -1588,10 +1590,12 @@ export function VisualPlayScreen({
     const isM11BakedB = localPlacement?.missionId === 'studio_11' && localPlacement?.key === 'b';
     const isM11BakedA = localPlacement?.missionId === 'studio_11' && localPlacement?.key === 'a';
     const localMissionNum = localPlacement ? Number(localPlacement.missionId.replace('studio_', '')) : Number.NaN;
-    const isDesktopBakedMainMission = !isMobile && localMissionNum >= 3 && localMissionNum <= 15;
+    // M5 Tool A is dynamic (animated inflatable), so exclude from desktop baked
+    const isDesktopBakedMainMission = !isMobile && localMissionNum >= 3 && localMissionNum <= 15
+      && !(localPlacement?.missionId === 'studio_05' && localPlacement?.key === 'a');
     const isM3MobileBaked = localPlacement?.missionId === 'studio_03' && isMobile;
     const isM4MobileBaked = localPlacement?.missionId === 'studio_04' && isMobile;
-    const isM5MobileBakedB = localPlacement?.missionId === 'studio_05' && localPlacement?.key === 'b' && isMobile;
+    const isM5BakedB = localPlacement?.missionId === 'studio_05' && localPlacement?.key === 'b';
     const isM6MobileBaked = localPlacement?.missionId === 'studio_06' && isMobile;
     const isM7Baked = localPlacement?.missionId === 'studio_07';
     const isM8Baked = localPlacement?.missionId === 'studio_08';
@@ -1600,7 +1604,7 @@ export function VisualPlayScreen({
     const isM13Baked = localPlacement?.missionId === 'studio_13';
     const isM14Baked = localPlacement?.missionId === 'studio_14';
     const isM15Baked = localPlacement?.missionId === 'studio_15';
-    const isBakedMission = isDesktopBakedMainMission || isM11BakedB || isM11BakedA || isM3MobileBaked || isM4MobileBaked || isM5MobileBakedB || isM6MobileBaked || isM7Baked || isM8Baked || isM9MobileBaked || isM12Baked || isM13Baked || isM14Baked || isM15Baked;
+    const isBakedMission = isDesktopBakedMainMission || isM11BakedB || isM11BakedA || isM3MobileBaked || isM4MobileBaked || isM5BakedB || isM6MobileBaked || isM7Baked || isM8Baked || isM9MobileBaked || isM12Baked || isM13Baked || isM14Baked || isM15Baked;
     if (localPlacement && localPlacement.missionId !== 'studio_10' && !isBakedMission) {
       placements.push({
         missionId: localPlacement.missionId,
