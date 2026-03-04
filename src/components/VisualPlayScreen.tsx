@@ -281,7 +281,7 @@ export function VisualPlayScreen({
     if (mission.phase === 'main' && mission.mission_id === 'studio_11') {
       const m11LocalPick = localPlacement?.missionId === 'studio_11' ? localPlacement.key : null;
       if (m11LocalPick === 'a') {
-        if (!isMobile) {
+        if (typeof window !== 'undefined' && window.innerWidth >= 821) {
           return avatarGender === 'female' ? 'gallery_mission11a_f_desk_bg' : 'gallery_mission11a_m_desk_bg';
         }
         return 'gallery_mission11a_bg';
