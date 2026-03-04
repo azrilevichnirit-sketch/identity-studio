@@ -956,7 +956,8 @@ export function VisualPlayScreen({
       const isM15Baked = mission.mission_id === 'studio_15';
       const isM3MobileBaked = mission.mission_id === 'studio_03' && isMobile;
       const isM4MobileBaked = mission.mission_id === 'studio_04' && isMobile;
-      if (!isM11BakedB && !isM13Baked && !isM15Baked && !isM3MobileBaked && !isM4MobileBaked) {
+      const isM5MobileBakedB = mission.mission_id === 'studio_05' && variant === 'b' && isMobile;
+      if (!isM11BakedB && !isM13Baked && !isM15Baked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB) {
         setLocalPlacement({
           missionId: mission.mission_id,
           key: variant,
@@ -1041,6 +1042,15 @@ export function VisualPlayScreen({
       const m4MobileBgImage = getBackgroundByName(m4MobileBgKey);
       if (m4MobileBgImage) {
         setLocalBgOverride({ key: m4MobileBgKey, image: m4MobileBgImage, missionId: mission.mission_id });
+      }
+    }
+
+    // Mission 05 mobile: Tool B switches to baked portrait background (coffee cart + visitors baked in)
+    if (mission.mission_id === 'studio_05' && isMobile && variant === 'b') {
+      const m5MobileBgKey = 'gallery_mission5b_mobile_bg';
+      const m5MobileBgImage = getBackgroundByName(m5MobileBgKey);
+      if (m5MobileBgImage) {
+        setLocalBgOverride({ key: m5MobileBgKey, image: m5MobileBgImage, missionId: mission.mission_id });
       }
     }
 
@@ -1366,7 +1376,8 @@ export function VisualPlayScreen({
     const isM11BakedB = localPlacement?.missionId === 'studio_11' && localPlacement?.key === 'b';
     const isM3MobileBaked = localPlacement?.missionId === 'studio_03' && isMobile;
     const isM4MobileBaked = localPlacement?.missionId === 'studio_04' && isMobile;
-    if (localPlacement && localPlacement.missionId !== 'studio_10' && !isM11BakedB && !isM3MobileBaked && !isM4MobileBaked) {
+    const isM5MobileBakedB = localPlacement?.missionId === 'studio_05' && localPlacement?.key === 'b' && isMobile;
+    if (localPlacement && localPlacement.missionId !== 'studio_10' && !isM11BakedB && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB) {
       placements.push({
         missionId: localPlacement.missionId,
         key: localPlacement.key as 'a' | 'b',
@@ -2253,6 +2264,8 @@ export function VisualPlayScreen({
         const isOnM05 = mission.mission_id === 'studio_05';
         
         if (!m05ToolBPlaced || !isOnM05) return null;
+        // On mobile, visitors are baked into the portrait background
+        if (isMobile) return null;
         
         const visitors = [
           { img: visitorM05_01, anchor: 'm05_visitor_01' },
