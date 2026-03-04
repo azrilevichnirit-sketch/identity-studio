@@ -63,6 +63,12 @@ import galleryMission8aMMobileBg from '@/assets/backgrounds/gallery_mission8a_m_
 import galleryMission8aFMobileBg from '@/assets/backgrounds/gallery_mission8a_f_mobile_bg.webp';
 import galleryMission8bMMobileBg from '@/assets/backgrounds/gallery_mission8b_m_mobile_bg.webp';
 import galleryMission8bFMobileBg from '@/assets/backgrounds/gallery_mission8b_f_mobile_bg.webp';
+// Mission 08 desktop baked backgrounds
+import galleryMission8DeskBg from '@/assets/backgrounds/gallery_mission8_desk_bg.webp';
+import galleryMission8aMDeskBg from '@/assets/backgrounds/gallery_mission8a_m_desk_bg.webp';
+import galleryMission8aFDeskBg from '@/assets/backgrounds/gallery_mission8a_f_desk_bg.webp';
+import galleryMission8bMDeskBg from '@/assets/backgrounds/gallery_mission8b_m_desk_bg.webp';
+import galleryMission8bFDeskBg from '@/assets/backgrounds/gallery_mission8b_f_desk_bg.webp';
 
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
@@ -254,6 +260,11 @@ const backgroundAssets: Record<string, string> = {
   
   // Mission 08 background
   gallery_mission8_bg: galleryMission8Bg,
+  gallery_mission8_desk_bg: galleryMission8DeskBg,
+  gallery_mission8a_m_desk_bg: galleryMission8aMDeskBg,
+  gallery_mission8a_f_desk_bg: galleryMission8aFDeskBg,
+  gallery_mission8b_m_desk_bg: galleryMission8bMDeskBg,
+  gallery_mission8b_f_desk_bg: galleryMission8bFDeskBg,
   
   // Mission 10 backgrounds
   gallery_mission10_bg: galleryMission10Bg,
