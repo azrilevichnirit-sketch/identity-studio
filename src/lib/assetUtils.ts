@@ -107,6 +107,19 @@ import galleryMission8aMDeskBg from '@/assets/backgrounds/gallery_mission8a_m_de
 import galleryMission8aFDeskBg from '@/assets/backgrounds/gallery_mission8a_f_desk_bg.webp';
 import galleryMission8bMDeskBg from '@/assets/backgrounds/gallery_mission8b_m_desk_bg.webp';
 import galleryMission8bFDeskBg from '@/assets/backgrounds/gallery_mission8b_f_desk_bg.webp';
+// Mission 03 desktop baked backgrounds
+import galleryMission3aDeskBg from '@/assets/backgrounds/gallery_mission3a_desk_bg.webp';
+import galleryMission3bDeskBg from '@/assets/backgrounds/gallery_mission3b_desk_bg.webp';
+// Mission 04 desktop baked backgrounds
+import galleryMission4aDeskBg from '@/assets/backgrounds/gallery_mission4a_desk_bg.webp';
+import galleryMission4bMDeskBg from '@/assets/backgrounds/gallery_mission4b_m_desk_bg.webp';
+import galleryMission4bFDeskBg from '@/assets/backgrounds/gallery_mission4b_f_desk_bg.webp';
+// Mission 06 desktop baked backgrounds
+import galleryMission6aDeskBg from '@/assets/backgrounds/gallery_mission6a_desk_bg.webp';
+import galleryMission6bDeskBg from '@/assets/backgrounds/gallery_mission6b_desk_bg.webp';
+// Mission 09 desktop baked backgrounds
+import galleryMission9aDeskBg from '@/assets/backgrounds/gallery_mission9a_desk_bg.webp';
+import galleryMission9bDeskBg from '@/assets/backgrounds/gallery_mission9b_desk_bg.webp';
 
 // Avatar imports
 import femaleIdle from '@/assets/avatars/studio_avatar_female_idle.webp';
@@ -382,6 +395,19 @@ const backgroundAssets: Record<string, string> = {
    gallery_mission9_mobile_bg: galleryMission9MobileBg,
    gallery_mission9a_mobile_bg: galleryMission9aMobileBg,
    gallery_mission9b_mobile_bg: galleryMission9bMobileBg,
+   // Mission 03 desktop baked backgrounds
+   gallery_mission3a_desk_bg: galleryMission3aDeskBg,
+   gallery_mission3b_desk_bg: galleryMission3bDeskBg,
+   // Mission 04 desktop baked backgrounds
+   gallery_mission4a_desk_bg: galleryMission4aDeskBg,
+   gallery_mission4b_m_desk_bg: galleryMission4bMDeskBg,
+   gallery_mission4b_f_desk_bg: galleryMission4bFDeskBg,
+   // Mission 06 desktop baked backgrounds
+   gallery_mission6a_desk_bg: galleryMission6aDeskBg,
+   gallery_mission6b_desk_bg: galleryMission6bDeskBg,
+   // Mission 09 desktop baked backgrounds
+   gallery_mission9a_desk_bg: galleryMission9aDeskBg,
+   gallery_mission9b_desk_bg: galleryMission9bDeskBg,
    // Mission 10 mobile baked backgrounds
    gallery_mission10_mobile_bg: galleryMission10MobileBg,
    gallery_mission10a_mobile_bg: galleryMission10aMobileBg,

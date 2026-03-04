@@ -1186,85 +1186,55 @@ export function VisualPlayScreen({
       }
     }
 
-    if (mission.mission_id === 'studio_03' && isMobile) {
-      const m3MobileBgKey = variant === 'a' ? 'gallery_mission3a_mobile_bg' : 'gallery_mission3b_mobile_bg';
-      const m3MobileBgImage = getBackgroundByName(m3MobileBgKey);
-      if (m3MobileBgImage) {
-        setLocalBgOverride({ key: m3MobileBgKey, image: m3MobileBgImage, missionId: mission.mission_id });
+    // Mission 03: baked backgrounds on both mobile and desktop
+    if (mission.mission_id === 'studio_03') {
+      const m3BgKey = isMobile
+        ? (variant === 'a' ? 'gallery_mission3a_mobile_bg' : 'gallery_mission3b_mobile_bg')
+        : (variant === 'a' ? 'gallery_mission3a_desk_bg' : 'gallery_mission3b_desk_bg');
+      const m3BgImage = getBackgroundByName(m3BgKey);
+      if (m3BgImage) {
+        setLocalBgOverride({ key: m3BgKey, image: m3BgImage, missionId: mission.mission_id });
       }
     }
 
-    // Mission 04 mobile: Switch to baked portrait background on tool selection
+    // Mission 04: baked backgrounds on both mobile and desktop
     // Tool B has gender-specific backgrounds (male/female avatar baked in)
-    if (mission.mission_id === 'studio_04' && isMobile) {
-      let m4MobileBgKey: string;
+    if (mission.mission_id === 'studio_04') {
+      let m4BgKey: string;
       if (variant === 'a') {
-        m4MobileBgKey = 'gallery_mission4a_mobile_bg';
+        m4BgKey = isMobile ? 'gallery_mission4a_mobile_bg' : 'gallery_mission4a_desk_bg';
       } else {
-        m4MobileBgKey = avatarGender === 'female' ? 'gallery_mission4b_f_mobile_bg' : 'gallery_mission4b_m_mobile_bg';
-      }
-      const m4MobileBgImage = getBackgroundByName(m4MobileBgKey);
-      if (m4MobileBgImage) {
-        setLocalBgOverride({ key: m4MobileBgKey, image: m4MobileBgImage, missionId: mission.mission_id });
-      }
-    }
-
-    // Mission 05 Tool B: baked background on both mobile and desktop
-    if (mission.mission_id === 'studio_05' && variant === 'b') {
-      const m5BgKey = isMobile ? 'gallery_mission5b_mobile_bg' : 'gallery_mission5b_desk_bg';
-      const m5BgImage = getBackgroundByName(m5BgKey);
-      if (m5BgImage) {
-        setLocalBgOverride({ key: m5BgKey, image: m5BgImage, missionId: mission.mission_id });
-      }
-    }
-
-    // Mission 06 mobile: both tools switch to baked portrait backgrounds
-    if (mission.mission_id === 'studio_06' && isMobile) {
-      const m6MobileBgKey = variant === 'a' ? 'gallery_mission6a_mobile_bg' : 'gallery_mission6b_mobile_bg';
-      const m6MobileBgImage = getBackgroundByName(m6MobileBgKey);
-      if (m6MobileBgImage) {
-        setLocalBgOverride({ key: m6MobileBgKey, image: m6MobileBgImage, missionId: mission.mission_id });
-      }
-    }
-
-    // Mission 08: Switch to gender-specific baked background on tool selection (mobile + desktop)
-    if (mission.mission_id === 'studio_08') {
-      let m8BgKey: string;
-      if (isMobile) {
-        if (variant === 'a') {
-          m8BgKey = avatarGender === 'female' ? 'gallery_mission8a_f_mobile_bg' : 'gallery_mission8a_m_mobile_bg';
+        if (isMobile) {
+          m4BgKey = avatarGender === 'female' ? 'gallery_mission4b_f_mobile_bg' : 'gallery_mission4b_m_mobile_bg';
         } else {
-          m8BgKey = avatarGender === 'female' ? 'gallery_mission8b_f_mobile_bg' : 'gallery_mission8b_m_mobile_bg';
-        }
-      } else {
-        // Desktop: gender-specific baked backgrounds
-        if (variant === 'a') {
-          m8BgKey = avatarGender === 'female' ? 'gallery_mission8a_f_desk_bg' : 'gallery_mission8a_m_desk_bg';
-        } else {
-          m8BgKey = avatarGender === 'female' ? 'gallery_mission8b_f_desk_bg' : 'gallery_mission8b_m_desk_bg';
+          m4BgKey = avatarGender === 'female' ? 'gallery_mission4b_f_desk_bg' : 'gallery_mission4b_m_desk_bg';
         }
       }
-      const m8BgImage = getBackgroundByName(m8BgKey);
-      if (m8BgImage) {
-        setLocalBgOverride({ key: m8BgKey, image: m8BgImage, missionId: mission.mission_id });
+      const m4BgImage = getBackgroundByName(m4BgKey);
+      if (m4BgImage) {
+        setLocalBgOverride({ key: m4BgKey, image: m4BgImage, missionId: mission.mission_id });
       }
     }
 
-    // Mission 09 mobile: Switch to baked portrait background on tool selection
-    if (mission.mission_id === 'studio_09' && isMobile) {
-      const m9MobileBgKey = variant === 'a' ? 'gallery_mission9a_mobile_bg' : 'gallery_mission9b_mobile_bg';
-      const m9MobileBgImage = getBackgroundByName(m9MobileBgKey);
-      if (m9MobileBgImage) {
-        setLocalBgOverride({ key: m9MobileBgKey, image: m9MobileBgImage, missionId: mission.mission_id });
+    // Mission 06: baked backgrounds on both mobile and desktop
+    if (mission.mission_id === 'studio_06') {
+      const m6BgKey = isMobile
+        ? (variant === 'a' ? 'gallery_mission6a_mobile_bg' : 'gallery_mission6b_mobile_bg')
+        : (variant === 'a' ? 'gallery_mission6a_desk_bg' : 'gallery_mission6b_desk_bg');
+      const m6BgImage = getBackgroundByName(m6BgKey);
+      if (m6BgImage) {
+        setLocalBgOverride({ key: m6BgKey, image: m6BgImage, missionId: mission.mission_id });
       }
     }
 
-    // Desktop missions 03/04/05/06/09: switch by player's option background override
-    if (!isMobile && mission.phase === 'main' && ['studio_03', 'studio_04', 'studio_05', 'studio_06', 'studio_09'].includes(mission.mission_id)) {
-      const desktopBgKey = option.next_bg_override || mission.bg_override;
-      const desktopBgImage = desktopBgKey ? getBackgroundByName(desktopBgKey) : null;
-      if (desktopBgKey && desktopBgImage) {
-        setLocalBgOverride({ key: desktopBgKey, image: desktopBgImage, missionId: mission.mission_id });
+    // Mission 09: baked backgrounds on both mobile and desktop
+    if (mission.mission_id === 'studio_09') {
+      const m9BgKey = isMobile
+        ? (variant === 'a' ? 'gallery_mission9a_mobile_bg' : 'gallery_mission9b_mobile_bg')
+        : (variant === 'a' ? 'gallery_mission9a_desk_bg' : 'gallery_mission9b_desk_bg');
+      const m9BgImage = getBackgroundByName(m9BgKey);
+      if (m9BgImage) {
+        setLocalBgOverride({ key: m9BgKey, image: m9BgImage, missionId: mission.mission_id });
       }
     }
 
