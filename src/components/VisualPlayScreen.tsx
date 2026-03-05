@@ -1264,6 +1264,34 @@ export function VisualPlayScreen({
       }
     }
 
+    // Mission 05 Tool B: baked backgrounds on both mobile and desktop
+    // (Tool A is dynamic/animated - no bg switch)
+    if (mission.mission_id === 'studio_05' && variant === 'b') {
+      const m5BgKey = isMobile ? 'gallery_mission5b_mobile_bg' : 'gallery_mission5b_desk_bg';
+      const m5BgImage = getBackgroundByName(m5BgKey);
+      if (m5BgImage) {
+        setLocalBgOverride({ key: m5BgKey, image: m5BgImage, missionId: mission.mission_id });
+      }
+    }
+
+    // Mission 08: baked backgrounds on both mobile and desktop (gender-specific)
+    if (mission.mission_id === 'studio_08') {
+      let m8BgKey: string;
+      if (variant === 'a') {
+        m8BgKey = isMobile
+          ? (avatarGender === 'female' ? 'gallery_mission8a_f_mobile_bg' : 'gallery_mission8a_m_mobile_bg')
+          : (avatarGender === 'female' ? 'gallery_mission8a_f_desk_bg' : 'gallery_mission8a_m_desk_bg');
+      } else {
+        m8BgKey = isMobile
+          ? (avatarGender === 'female' ? 'gallery_mission8b_f_mobile_bg' : 'gallery_mission8b_m_mobile_bg')
+          : (avatarGender === 'female' ? 'gallery_mission8b_f_desk_bg' : 'gallery_mission8b_m_desk_bg');
+      }
+      const m8BgImage = getBackgroundByName(m8BgKey);
+      if (m8BgImage) {
+        setLocalBgOverride({ key: m8BgKey, image: m8BgImage, missionId: mission.mission_id });
+      }
+    }
+
     if (mission.phase === 'tb' && option.next_bg_override) {
       const bgImage = getBackgroundByName(option.next_bg_override);
       if (bgImage) {
