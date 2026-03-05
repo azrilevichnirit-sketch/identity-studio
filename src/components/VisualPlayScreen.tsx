@@ -1016,7 +1016,7 @@ export function VisualPlayScreen({
       const missionNum = Number(mission.mission_id.replace('studio_', ''));
       // M5 Tool A is dynamic (animated inflatable), so exclude it from desktop baked
       const isDesktopBakedMainMission =
-        !isMobile && mission.phase === 'main' && (missionNum === 1 || (missionNum >= 3 && missionNum <= 15))
+        !isMobile && mission.phase === 'main' && missionNum >= 1 && missionNum <= 15
         && !(mission.mission_id === 'studio_05' && variant === 'a');
       const isM11BakedB = mission.mission_id === 'studio_11' && variant === 'b';
       const isM11BakedA = mission.mission_id === 'studio_11' && variant === 'a';
@@ -1026,6 +1026,7 @@ export function VisualPlayScreen({
       const isM12Baked = mission.mission_id === 'studio_12';
       const isM10Baked = mission.mission_id === 'studio_10';
       const isM1MobileBaked = mission.mission_id === 'studio_01' && isMobile;
+      const isM2MobileBaked = mission.mission_id === 'studio_02' && isMobile;
       const isM3MobileBaked = mission.mission_id === 'studio_03' && isMobile;
       const isM4MobileBaked = mission.mission_id === 'studio_04' && isMobile;
       const isM5MobileBakedB = mission.mission_id === 'studio_05' && variant === 'b' && isMobile;
@@ -1033,7 +1034,7 @@ export function VisualPlayScreen({
       const isM7Baked = mission.mission_id === 'studio_07';
       const isM8Baked = mission.mission_id === 'studio_08';
       const isM9MobileBaked = mission.mission_id === 'studio_09' && isMobile;
-      if (!isDesktopBakedMainMission && !isM11BakedB && !isM11BakedA && !isM13Baked && !isM15Baked && !isM14Baked && !isM12Baked && !isM10Baked && !isM1MobileBaked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7Baked && !isM8Baked && !isM9MobileBaked) {
+      if (!isDesktopBakedMainMission && !isM11BakedB && !isM11BakedA && !isM13Baked && !isM15Baked && !isM14Baked && !isM12Baked && !isM10Baked && !isM1MobileBaked && !isM2MobileBaked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7Baked && !isM8Baked && !isM9MobileBaked) {
         setLocalPlacement({
           missionId: mission.mission_id,
           key: variant,
@@ -1249,6 +1250,17 @@ export function VisualPlayScreen({
       const m1BgImage = getBackgroundByName(m1BgKey);
       if (m1BgImage) {
         setLocalBgOverride({ key: m1BgKey, image: m1BgImage, missionId: mission.mission_id });
+      }
+    }
+
+    // Mission 02: baked backgrounds on both mobile and desktop
+    if (mission.mission_id === 'studio_02') {
+      const m2BgKey = isMobile
+        ? (variant === 'a' ? 'gallery_mission2a_mobile_bg' : 'gallery_mission2b_mobile_bg')
+        : (variant === 'a' ? 'gallery_mission2a_desk_bg' : 'gallery_mission2b_desk_bg');
+      const m2BgImage = getBackgroundByName(m2BgKey);
+      if (m2BgImage) {
+        setLocalBgOverride({ key: m2BgKey, image: m2BgImage, missionId: mission.mission_id });
       }
     }
 
@@ -1574,9 +1586,10 @@ export function VisualPlayScreen({
     const isM11BakedA = localPlacement?.missionId === 'studio_11' && localPlacement?.key === 'a';
     const localMissionNum = localPlacement ? Number(localPlacement.missionId.replace('studio_', '')) : Number.NaN;
     // M5 Tool A is dynamic (animated inflatable), so exclude from desktop baked
-    const isDesktopBakedMainMission = !isMobile && (localMissionNum === 1 || (localMissionNum >= 3 && localMissionNum <= 15))
+    const isDesktopBakedMainMission = !isMobile && localMissionNum >= 1 && localMissionNum <= 15
       && !(localPlacement?.missionId === 'studio_05' && localPlacement?.key === 'a');
     const isM1MobileBaked = localPlacement?.missionId === 'studio_01' && isMobile;
+    const isM2MobileBaked = localPlacement?.missionId === 'studio_02' && isMobile;
     const isM3MobileBaked = localPlacement?.missionId === 'studio_03' && isMobile;
     const isM4MobileBaked = localPlacement?.missionId === 'studio_04' && isMobile;
     const isM5BakedB = localPlacement?.missionId === 'studio_05' && localPlacement?.key === 'b';
@@ -1588,7 +1601,7 @@ export function VisualPlayScreen({
     const isM13Baked = localPlacement?.missionId === 'studio_13';
     const isM14Baked = localPlacement?.missionId === 'studio_14';
     const isM15Baked = localPlacement?.missionId === 'studio_15';
-    const isBakedMission = isDesktopBakedMainMission || isM11BakedB || isM11BakedA || isM1MobileBaked || isM3MobileBaked || isM4MobileBaked || isM5BakedB || isM6MobileBaked || isM7Baked || isM8Baked || isM9MobileBaked || isM12Baked || isM13Baked || isM14Baked || isM15Baked;
+    const isBakedMission = isDesktopBakedMainMission || isM11BakedB || isM11BakedA || isM1MobileBaked || isM2MobileBaked || isM3MobileBaked || isM4MobileBaked || isM5BakedB || isM6MobileBaked || isM7Baked || isM8Baked || isM9MobileBaked || isM12Baked || isM13Baked || isM14Baked || isM15Baked;
     if (localPlacement && localPlacement.missionId !== 'studio_10' && !isBakedMission) {
       placements.push({
         missionId: localPlacement.missionId,
