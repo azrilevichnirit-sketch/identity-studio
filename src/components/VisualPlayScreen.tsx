@@ -1016,7 +1016,7 @@ export function VisualPlayScreen({
       const missionNum = Number(mission.mission_id.replace('studio_', ''));
       // M5 Tool A is dynamic (animated inflatable), so exclude it from desktop baked
       const isDesktopBakedMainMission =
-        !isMobile && mission.phase === 'main' && missionNum >= 3 && missionNum <= 15
+        !isMobile && mission.phase === 'main' && (missionNum === 1 || (missionNum >= 3 && missionNum <= 15))
         && !(mission.mission_id === 'studio_05' && variant === 'a');
       const isM11BakedB = mission.mission_id === 'studio_11' && variant === 'b';
       const isM11BakedA = mission.mission_id === 'studio_11' && variant === 'a';
@@ -1241,9 +1241,11 @@ export function VisualPlayScreen({
       }
     }
 
-    // Mission 01: baked backgrounds on mobile only
-    if (mission.mission_id === 'studio_01' && isMobile) {
-      const m1BgKey = variant === 'a' ? 'gallery_mission1a_mobile_bg' : 'gallery_mission1b_mobile_bg';
+    // Mission 01: baked backgrounds on both mobile and desktop
+    if (mission.mission_id === 'studio_01') {
+      const m1BgKey = isMobile
+        ? (variant === 'a' ? 'gallery_mission1a_mobile_bg' : 'gallery_mission1b_mobile_bg')
+        : (variant === 'a' ? 'gallery_mission1a_desk_bg' : 'gallery_mission1b_desk_bg');
       const m1BgImage = getBackgroundByName(m1BgKey);
       if (m1BgImage) {
         setLocalBgOverride({ key: m1BgKey, image: m1BgImage, missionId: mission.mission_id });
@@ -1572,7 +1574,7 @@ export function VisualPlayScreen({
     const isM11BakedA = localPlacement?.missionId === 'studio_11' && localPlacement?.key === 'a';
     const localMissionNum = localPlacement ? Number(localPlacement.missionId.replace('studio_', '')) : Number.NaN;
     // M5 Tool A is dynamic (animated inflatable), so exclude from desktop baked
-    const isDesktopBakedMainMission = !isMobile && localMissionNum >= 3 && localMissionNum <= 15
+    const isDesktopBakedMainMission = !isMobile && (localMissionNum === 1 || (localMissionNum >= 3 && localMissionNum <= 15))
       && !(localPlacement?.missionId === 'studio_05' && localPlacement?.key === 'a');
     const isM1MobileBaked = localPlacement?.missionId === 'studio_01' && isMobile;
     const isM3MobileBaked = localPlacement?.missionId === 'studio_03' && isMobile;
