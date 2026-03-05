@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 
-import missionsMain from "@/data/missions_studio_main.json";
-import missionsTie from "@/data/studio_tie_v5.json";
+import studioQuests from "@/data/studio_quests_v5.json";
+import studioTie from "@/data/studio_tie_v6.json";
 import { getPanoramicBackground } from "@/lib/assetUtils";
 
 type AnyMission = {
@@ -12,7 +12,7 @@ type AnyMission = {
   }>;
 };
 
-function collectMissionBgKeys(missions: AnyMission[]) {
+function collectBgKeys(missions: AnyMission[]) {
   const keys = new Set<string>();
   for (const m of missions) {
     if (m.bg_override) keys.add(m.bg_override);
@@ -27,8 +27,8 @@ function collectMissionBgKeys(missions: AnyMission[]) {
 describe("mobile panning: panoramic background coverage", () => {
   it("covers all backgrounds referenced by missions", () => {
     const keys = new Set<string>([
-      ...collectMissionBgKeys(missionsMain as unknown as AnyMission[]),
-      ...collectMissionBgKeys(missionsTie as unknown as AnyMission[]),
+      ...collectBgKeys(studioQuests as unknown as AnyMission[]),
+      ...collectBgKeys(studioTie as unknown as AnyMission[]),
 
       // Explicit keys used by gameplay locks / fallbacks
       "studio_front_bg",
