@@ -99,6 +99,9 @@ import galleryMission9bMobileBg from '@/assets/backgrounds/gallery_mission9b_mob
 import galleryMission10MobileBg from '@/assets/backgrounds/gallery_mission10_mobile_bg.webp';
 import galleryMission10aMobileBg from '@/assets/backgrounds/gallery_mission10a_mobile_bg.webp';
 import galleryMission10bMobileBg from '@/assets/backgrounds/gallery_mission10b_mobile_bg.webp';
+// Mission 10 desktop baked backgrounds
+import galleryMission10aDeskBg from '@/assets/backgrounds/gallery_mission10a_desk_bg.webp';
+import galleryMission10bDeskBg from '@/assets/backgrounds/gallery_mission10b_desk_bg.webp';
 // Mission 11 desktop baked backgrounds (Tool A only, gender-specific)
 import galleryMission11aFDeskBg from '@/assets/backgrounds/gallery_mission11a_f_desk_bg.webp';
 import galleryMission11aMDeskBg from '@/assets/backgrounds/gallery_mission11a_m_desk_bg.webp';
@@ -344,6 +347,8 @@ const backgroundAssets: Record<string, string> = {
   gallery_mission10_bg: galleryMission10Bg,
   gallery_mission10a_bg: galleryMission10aBg,
   gallery_mission10b_bg: galleryMission10bBg,
+  gallery_mission10a_desk_bg: galleryMission10aDeskBg,
+  gallery_mission10b_desk_bg: galleryMission10bDeskBg,
   
   // Mission 11 backgrounds
   gallery_mission11a_bg: galleryMission11aBg,

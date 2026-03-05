@@ -1141,8 +1141,11 @@ export function VisualPlayScreen({
           setLocalBgOverride({ key: m10MobileBgKey, image: m10MobileBgImage, missionId: mission.mission_id });
         }
       } else {
-        const targetBg = getTargetBgForOption(option);
-        setLocalBgOverride({ ...targetBg, missionId: mission.mission_id });
+        const m10DeskBgKey = variant === 'a' ? 'gallery_mission10a_desk_bg' : 'gallery_mission10b_desk_bg';
+        const m10DeskBgImage = getBackgroundByName(m10DeskBgKey);
+        if (m10DeskBgImage) {
+          setLocalBgOverride({ key: m10DeskBgKey, image: m10DeskBgImage, missionId: mission.mission_id });
+        }
       }
     }
 
