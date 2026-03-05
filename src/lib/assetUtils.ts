@@ -52,6 +52,10 @@ import galleryMainDesktopBg from '@/assets/backgrounds/gallery_main_desktop.webp
 
 // Mobile portrait backgrounds (3072x4096)
 import galleryCrackedWallsMobile from '@/assets/backgrounds/gallery_main_stylized_v5_mobile.webp';
+// Mission 01 mobile baked backgrounds
+import galleryMission1MobileBg from '@/assets/backgrounds/gallery_mission1_mobile_bg.webp';
+import galleryMission1aMobileBg from '@/assets/backgrounds/gallery_mission1a_mobile_bg.webp';
+import galleryMission1bMobileBg from '@/assets/backgrounds/gallery_mission1b_mobile_bg.webp';
 import galleryBoxesMobile from '@/assets/backgrounds/gallery_main_boxes_v1_mobile.webp';
 import galleryMission3MobileBg from '@/assets/backgrounds/gallery_mission3_mobile_bg.webp';
 import galleryMission3aMobileBg from '@/assets/backgrounds/gallery_mission3a_mobile_bg.webp';
@@ -412,6 +416,10 @@ const backgroundAssets: Record<string, string> = {
    gallery_mission10_mobile_bg: galleryMission10MobileBg,
    gallery_mission10a_mobile_bg: galleryMission10aMobileBg,
    gallery_mission10b_mobile_bg: galleryMission10bMobileBg,
+   // Mission 01 mobile baked backgrounds
+   gallery_mission1_mobile_bg: galleryMission1MobileBg,
+   gallery_mission1a_mobile_bg: galleryMission1aMobileBg,
+   gallery_mission1b_mobile_bg: galleryMission1bMobileBg,
 };
 
 // Wide panoramic backgrounds for mobile panning (key -> asset)

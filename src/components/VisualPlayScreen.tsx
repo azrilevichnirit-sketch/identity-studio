@@ -267,8 +267,10 @@ export function VisualPlayScreen({
     }
     
     // Mission 01: ALWAYS start with cracked walls
+    // Mobile: use dedicated portrait baked background
     if (mission.phase === 'main' && mission.mission_id === 'studio_01') {
-      return 'gallery_main_stylized_v3'; // Cracked walls
+      const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 821;
+      return isDesktop ? 'gallery_main_stylized_v3' : 'gallery_mission1_mobile_bg';
     }
     
     // Mission 02: boxes/moving scene
@@ -1023,6 +1025,7 @@ export function VisualPlayScreen({
       const isM14Baked = mission.mission_id === 'studio_14';
       const isM12Baked = mission.mission_id === 'studio_12';
       const isM10Baked = mission.mission_id === 'studio_10';
+      const isM1MobileBaked = mission.mission_id === 'studio_01' && isMobile;
       const isM3MobileBaked = mission.mission_id === 'studio_03' && isMobile;
       const isM4MobileBaked = mission.mission_id === 'studio_04' && isMobile;
       const isM5MobileBakedB = mission.mission_id === 'studio_05' && variant === 'b' && isMobile;
@@ -1030,7 +1033,7 @@ export function VisualPlayScreen({
       const isM7Baked = mission.mission_id === 'studio_07';
       const isM8Baked = mission.mission_id === 'studio_08';
       const isM9MobileBaked = mission.mission_id === 'studio_09' && isMobile;
-      if (!isDesktopBakedMainMission && !isM11BakedB && !isM11BakedA && !isM13Baked && !isM15Baked && !isM14Baked && !isM12Baked && !isM10Baked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7Baked && !isM8Baked && !isM9MobileBaked) {
+      if (!isDesktopBakedMainMission && !isM11BakedB && !isM11BakedA && !isM13Baked && !isM15Baked && !isM14Baked && !isM12Baked && !isM10Baked && !isM1MobileBaked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7Baked && !isM8Baked && !isM9MobileBaked) {
         setLocalPlacement({
           missionId: mission.mission_id,
           key: variant,
@@ -1238,7 +1241,15 @@ export function VisualPlayScreen({
       }
     }
 
-    // Tie-breaker missions with per-tool bg (T4, T7, T8): switch bg on tool placement
+    // Mission 01: baked backgrounds on mobile only
+    if (mission.mission_id === 'studio_01' && isMobile) {
+      const m1BgKey = variant === 'a' ? 'gallery_mission1a_mobile_bg' : 'gallery_mission1b_mobile_bg';
+      const m1BgImage = getBackgroundByName(m1BgKey);
+      if (m1BgImage) {
+        setLocalBgOverride({ key: m1BgKey, image: m1BgImage, missionId: mission.mission_id });
+      }
+    }
+
     if (mission.phase === 'tb' && option.next_bg_override) {
       const bgImage = getBackgroundByName(option.next_bg_override);
       if (bgImage) {
@@ -1563,6 +1574,7 @@ export function VisualPlayScreen({
     // M5 Tool A is dynamic (animated inflatable), so exclude from desktop baked
     const isDesktopBakedMainMission = !isMobile && localMissionNum >= 3 && localMissionNum <= 15
       && !(localPlacement?.missionId === 'studio_05' && localPlacement?.key === 'a');
+    const isM1MobileBaked = localPlacement?.missionId === 'studio_01' && isMobile;
     const isM3MobileBaked = localPlacement?.missionId === 'studio_03' && isMobile;
     const isM4MobileBaked = localPlacement?.missionId === 'studio_04' && isMobile;
     const isM5BakedB = localPlacement?.missionId === 'studio_05' && localPlacement?.key === 'b';
@@ -1574,7 +1586,7 @@ export function VisualPlayScreen({
     const isM13Baked = localPlacement?.missionId === 'studio_13';
     const isM14Baked = localPlacement?.missionId === 'studio_14';
     const isM15Baked = localPlacement?.missionId === 'studio_15';
-    const isBakedMission = isDesktopBakedMainMission || isM11BakedB || isM11BakedA || isM3MobileBaked || isM4MobileBaked || isM5BakedB || isM6MobileBaked || isM7Baked || isM8Baked || isM9MobileBaked || isM12Baked || isM13Baked || isM14Baked || isM15Baked;
+    const isBakedMission = isDesktopBakedMainMission || isM11BakedB || isM11BakedA || isM1MobileBaked || isM3MobileBaked || isM4MobileBaked || isM5BakedB || isM6MobileBaked || isM7Baked || isM8Baked || isM9MobileBaked || isM12Baked || isM13Baked || isM14Baked || isM15Baked;
     if (localPlacement && localPlacement.missionId !== 'studio_10' && !isBakedMission) {
       placements.push({
         missionId: localPlacement.missionId,
