@@ -486,13 +486,19 @@ export function getPanoramicBackground(bgKey: string): string | null {
 // Portrait mobile backgrounds (3072x4096) — used instead of panoramic on mobile
 // When a portrait version exists, the mobile view uses it directly (no panning needed)
 const mobilePortraitBackgrounds: Record<string, string> = {
-  // Mission 01: cracked walls portrait
-  studio_entry_inside_bg: galleryCrackedWallsMobile,
-  gallery_main_stylized_v3: galleryCrackedWallsMobile,
-  studio_front_bg: galleryCrackedWallsMobile,
-  studio_in_gallery_bg: galleryCrackedWallsMobile,
-  // Mission 02: boxes
-  gallery_main_boxes_v1: galleryBoxesMobile,
+   // Mission 01: base portrait + baked results
+   gallery_main_stylized_v3: galleryCrackedWallsMobile,
+   gallery_main_stylized_v5: galleryCrackedWallsMobile,
+   studio_entry_inside_bg: galleryCrackedWallsMobile,
+   studio_front_bg: galleryCrackedWallsMobile,
+   studio_in_gallery_bg: galleryCrackedWallsMobile,
+   gallery_mission1_mobile_bg: galleryMission1MobileBg,
+   gallery_mission1a_mobile_bg: galleryMission1aMobileBg,
+   gallery_mission1b_mobile_bg: galleryMission1bMobileBg,
+   // Mission 02: base portrait + baked results
+   gallery_main_boxes_v1: galleryBoxesMobile,
+   gallery_mission2a_mobile_bg: galleryMission2aMobileBg,
+   gallery_mission2b_mobile_bg: galleryMission2bMobileBg,
   // Mission 03: doorway park view
   studio_doorway_park_view_bg: galleryMission3MobileBg,
   studio_doorway_park_view_v5: galleryMission3MobileBg,
