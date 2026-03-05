@@ -171,7 +171,7 @@
     "view": "in",
     "bg_override": "studio_in_workshop_bg",
     "zone_id": null,
-    "task_heb": "לקוח חדש רוצה יצירה שלא עשינו בעבר. מה הצעד הראשון שלנו?",
+    "task_heb": "יש לנו לקוח ראשון, והוא רוצה שלט עץ מותאם אישית. אני לבד היום בסטודיו, מה הדבר הראשון לעשות?",
     "option_a_code": "r",
     "option_a_asset": "studio_06_a",
     "option_a_tooltip_heb": "מסור חשמלי",
