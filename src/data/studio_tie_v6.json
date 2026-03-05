@@ -83,7 +83,7 @@
     "pair_sequence": 1,
     "quest_id": "studio_tie_06",
     "bg_override": "gallery_main_stylized_white_v1",
-    "task_heb": "קיבלנו בקשה לעיצוב פסיכי שעוד לא נעשה. עם מה נתחיל?",
+    "task_heb": "לקוח חדש רוצה יצירה שלא עשינו בעבר. מה הצעד הראשון שלנו?",
     "option_a_code": "i",
     "option_a_asset": "studio_tie_06_a",
     "option_a_tooltip_heb": "עמדת מיקרוסקופ",
