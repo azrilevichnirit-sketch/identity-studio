@@ -1127,8 +1127,12 @@ export function VisualPlayScreen({
           setLocalBgOverride({ ...targetBg, missionId: mission.mission_id });
         }
       } else {
-        const targetBg = getTargetBgForOption(option);
-        setLocalBgOverride({ ...targetBg, missionId: mission.mission_id });
+        // Desktop Tool B: use dedicated baked background
+        const m11bDeskBgKey = 'gallery_mission11b_desk_bg';
+        const m11bDeskBgImage = getBackgroundByName(m11bDeskBgKey);
+        if (m11bDeskBgImage) {
+          setLocalBgOverride({ key: m11bDeskBgKey, image: m11bDeskBgImage, missionId: mission.mission_id });
+        }
       }
     }
 
