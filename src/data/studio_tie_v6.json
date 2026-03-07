@@ -144,13 +144,13 @@
     "bg_override": "studio_in_storage_bg",
     "next_bg_override_a": "gallery_tie09a_bg",
     "next_bg_override_b": "gallery_tie09b_bg",
-    "task_heb": "משלוח גדול יוצא מחר. איך נוודא שהכל מושלם?",
+    "task_heb": "החלטנו לנסות משהו חדש, מכירה פומבית. אנחנו רוצים שזה שזה יצליח. מה יהפוך אותה לאגדית?",
     "option_a_code": "i",
     "option_a_asset": "studio_tie_09_a",
-    "option_a_tooltip_heb": "סורק ידני לבדיקת איכות",
+    "option_a_tooltip_heb": "ניתוח פרופיל אספנים",
     "option_b_code": "c",
     "option_b_asset": "studio_tie_09_b",
-    "option_b_tooltip_heb": "אזור אריזה"
+    "option_b_tooltip_heb": "תיוג ומחירון יצירות"
   },
   {
     "world": "studio",
