@@ -879,6 +879,27 @@ const mobilePortraitBackgrounds: Record<string, string> = {
    gallery_tie10b_mobile_bg: galleryTie10bMobileBg,
    gallery_tie10a_bg: galleryTie10aMobileBg,
    gallery_tie10b_bg: galleryTie10bMobileBg,
+   // Tie-breaker T11
+   gallery_tie11_desk_bg: galleryTie11MobileBg,
+   gallery_tie11_mobile_bg: galleryTie11MobileBg,
+   gallery_tie11a_mobile_bg: galleryTie11aMobileBg,
+   gallery_tie11b_mobile_bg: galleryTie11bMobileBg,
+   gallery_tie11a_bg: galleryTie11aMobileBg,
+   gallery_tie11b_bg: galleryTie11bMobileBg,
+   // Tie-breaker T12
+   gallery_tie12_desk_bg: galleryTie12MobileBg,
+   gallery_tie12_mobile_bg: galleryTie12MobileBg,
+   gallery_tie12a_mobile_bg: galleryTie12aMobileBg,
+   gallery_tie12b_mobile_bg: galleryTie12bMobileBg,
+   gallery_tie12a_bg: galleryTie12aMobileBg,
+   gallery_tie12b_bg: galleryTie12bMobileBg,
+   // Tie-breaker T13
+   gallery_tie13_desk_bg: galleryTie13MobileBg,
+   gallery_tie13_mobile_bg: galleryTie13MobileBg,
+   gallery_tie13a_mobile_bg: galleryTie13aMobileBg,
+   gallery_tie13b_mobile_bg: galleryTie13bMobileBg,
+   gallery_tie13a_bg: galleryTie13aMobileBg,
+   gallery_tie13b_bg: galleryTie13bMobileBg,
    // Tie-breaker T14
    gallery_tie14_desk_bg: galleryTie14MobileBg,
    gallery_tie14_mobile_bg: galleryTie14MobileBg,
