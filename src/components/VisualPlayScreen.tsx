@@ -276,18 +276,17 @@ export function VisualPlayScreen({
   const TIE_BREAKER_BG_KEY = 'gallery_main_stylized';
   
   const previousBgOverride = useMemo(() => {
-    // TIE-BREAKER MISSIONS: Use bg_override if defined, otherwise default to gallery
+    // TIE-BREAKER MISSIONS: All T1-T15 use platform-aware baked base backgrounds
     if (mission.phase === 'tb') {
-      // T14: platform-aware base background (baked)
-      if (mission.mission_id === 'studio_tie_14') {
-        const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 821;
-        return isDesktop ? 'gallery_tie14_desk_bg' : 'gallery_tie14_mobile_bg';
+      const tieNum = mission.mission_id.replace('studio_tie_', '');
+      const paddedNum = tieNum.padStart(2, '0');
+      const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 821;
+      const platformKey = isDesktop ? `gallery_tie${paddedNum}_desk_bg` : `gallery_tie${paddedNum}_mobile_bg`;
+      const platformImage = getBackgroundByName(platformKey);
+      if (platformImage) {
+        return platformKey;
       }
-      // T15: platform-aware base background (baked)
-      if (mission.mission_id === 'studio_tie_15') {
-        const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 821;
-        return isDesktop ? 'gallery_tie15_desk_bg' : 'gallery_tie15_mobile_bg';
-      }
+      // Fallback to raw bg_override if baked not found
       if (mission.bg_override) {
         return mission.bg_override;
       }
@@ -642,7 +641,7 @@ export function VisualPlayScreen({
     : isTieBreakerLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key // Tie-breaker per-tool bg switch (T4, T7, T8)
     : isTieBreakerLocked
-    ? (mission.bg_override || TIE_BREAKER_BG_KEY)
+    ? (previousBgOverride || mission.bg_override || TIE_BREAKER_BG_KEY)
     : isWhiteWallsLocked
     ? (mission.bg_override || PAINTED_WALLS_BG_KEY)
     : isBoxesBgLocked
@@ -706,7 +705,7 @@ export function VisualPlayScreen({
     : isTieBreakerLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isTieBreakerLocked
-    ? (getBackgroundByName(mission.bg_override || TIE_BREAKER_BG_KEY) || displayBg)
+    ? (getBackgroundByName(previousBgOverride || mission.bg_override || TIE_BREAKER_BG_KEY) || displayBg)
     : isWhiteWallsLocked
     ? (getBackgroundByName(mission.bg_override || PAINTED_WALLS_BG_KEY) || displayBg)
     : isBoxesBgLocked
@@ -1687,7 +1686,8 @@ export function VisualPlayScreen({
     const isM13Baked = localPlacement?.missionId === 'studio_13';
     const isM14Baked = localPlacement?.missionId === 'studio_14';
     const isM15Baked = localPlacement?.missionId === 'studio_15';
-    const isBakedMission = isDesktopBakedMainMission || isM11BakedB || isM11BakedA || isM1MobileBaked || isM2MobileBaked || isM3MobileBaked || isM4MobileBaked || isM5BakedB || isM6MobileBaked || isM7Baked || isM8Baked || isM9MobileBaked || isM12Baked || isM13Baked || isM14Baked || isM15Baked;
+    const isTieBreakerBaked = localPlacement?.missionId.includes('_tie_') ?? false;
+    const isBakedMission = isTieBreakerBaked || isDesktopBakedMainMission || isM11BakedB || isM11BakedA || isM1MobileBaked || isM2MobileBaked || isM3MobileBaked || isM4MobileBaked || isM5BakedB || isM6MobileBaked || isM7Baked || isM8Baked || isM9MobileBaked || isM12Baked || isM13Baked || isM14Baked || isM15Baked;
     if (localPlacement && localPlacement.missionId !== 'studio_10' && !isBakedMission) {
       placements.push({
         missionId: localPlacement.missionId,
