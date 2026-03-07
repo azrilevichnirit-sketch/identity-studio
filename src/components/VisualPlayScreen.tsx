@@ -1357,12 +1357,7 @@ export function VisualPlayScreen({
       }
     }
 
-    if (mission.phase === 'tb' && option.next_bg_override) {
-      const bgImage = getBackgroundByName(option.next_bg_override);
-      if (bgImage) {
-        setLocalBgOverride({ key: option.next_bg_override, image: bgImage, missionId: mission.mission_id });
-      }
-    }
+    // (Tie-breaker bg override handled above via getTargetBgForOption - platform-aware)
     setJustPlaced(null);
     setLockPulseKey(null);
     const isMission01Paint = false; // M01 no longer changes background
