@@ -809,6 +809,7 @@ const mobilePortraitBackgrounds: Record<string, string> = {
    gallery_mission15_mobile_bg: galleryMission15MobileBg,
    gallery_mission15a_mobile_bg: galleryMission15aMobileBg,
    gallery_mission15b_mobile_bg: galleryMission15bMobileBg,
+};
 
 export function getMobilePortraitBackground(bgKey: string): string | null {
   return mobilePortraitBackgrounds[bgKey] || null;
