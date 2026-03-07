@@ -87,30 +87,30 @@ import galleryTie06bDeskBg from '@/assets/backgrounds/gallery_tie06b_desk_bg.web
 import galleryTie07MobileBg from '@/assets/backgrounds/gallery_tie07_mobile_bg.webp';
 import galleryTie07aMobileBg from '@/assets/backgrounds/gallery_tie07a_mobile_bg.webp';
 import galleryTie07bMobileBg from '@/assets/backgrounds/gallery_tie07b_mobile_bg.webp';
-const galleryTie07DeskBg = galleryMainStylizedWhite;
+import galleryTie07DeskBg from '@/assets/backgrounds/gallery_tie07_desk_bg.webp';
 import galleryTie07aDeskBg from '@/assets/backgrounds/gallery_tie07a_desk_bg.webp';
 import galleryTie07bDeskBg from '@/assets/backgrounds/gallery_tie07b_desk_bg.webp';
-// Tie-breaker T8 baked backgrounds (mobile only)
+// Tie-breaker T8 baked backgrounds
 import galleryTie08MobileBg from '@/assets/backgrounds/gallery_tie08_mobile_bg.webp';
 import galleryTie08aMobileBg from '@/assets/backgrounds/gallery_tie08a_mobile_bg.webp';
 import galleryTie08bMobileBg from '@/assets/backgrounds/gallery_tie08b_mobile_bg.webp';
-const galleryTie08DeskBg = galleryMainStylizedWhite;
-const galleryTie08aDeskBg = galleryMainStylizedWhite;
-const galleryTie08bDeskBg = galleryMainStylizedWhite;
-// Tie-breaker T9 baked backgrounds (mobile only)
+import galleryTie08DeskBg from '@/assets/backgrounds/gallery_tie08_desk_bg.webp';
+import galleryTie08aDeskBg from '@/assets/backgrounds/gallery_tie08a_desk_bg.webp';
+import galleryTie08bDeskBg from '@/assets/backgrounds/gallery_tie08b_desk_bg.webp';
+// Tie-breaker T9 baked backgrounds
 import galleryTie09MobileBg from '@/assets/backgrounds/gallery_tie09_mobile_bg.webp';
 import galleryTie09aMobileBg from '@/assets/backgrounds/gallery_tie09a_mobile_bg.webp';
 import galleryTie09bMobileBg from '@/assets/backgrounds/gallery_tie09b_mobile_bg.webp';
-const galleryTie09DeskBg = studioStorageBg;
-const galleryTie09aDeskBg = studioStorageBg;
-const galleryTie09bDeskBg = studioStorageBg;
-// Tie-breaker T10 baked backgrounds (mobile only)
+import galleryTie09DeskBg from '@/assets/backgrounds/gallery_tie09_desk_bg.webp';
+import galleryTie09aDeskBg from '@/assets/backgrounds/gallery_tie09a_desk_bg.webp';
+import galleryTie09bDeskBg from '@/assets/backgrounds/gallery_tie09b_desk_bg.webp';
+// Tie-breaker T10 baked backgrounds
 import galleryTie10MobileBg from '@/assets/backgrounds/gallery_tie10_mobile_bg.webp';
 import galleryTie10aMobileBg from '@/assets/backgrounds/gallery_tie10a_mobile_bg.webp';
 import galleryTie10bMobileBg from '@/assets/backgrounds/gallery_tie10b_mobile_bg.webp';
-const galleryTie10DeskBg = galleryMainStylized;
-const galleryTie10aDeskBg = galleryMainStylized;
-const galleryTie10bDeskBg = galleryMainStylized;
+import galleryTie10DeskBg from '@/assets/backgrounds/gallery_tie10_desk_bg.webp';
+import galleryTie10aDeskBg from '@/assets/backgrounds/gallery_tie10a_desk_bg.webp';
+import galleryTie10bDeskBg from '@/assets/backgrounds/gallery_tie10b_desk_bg.webp';
 // Tie-breaker T11 baked backgrounds (mobile only)
 import galleryTie11MobileBg from '@/assets/backgrounds/gallery_tie11_mobile_bg.webp';
 import galleryTie11aMobileBg from '@/assets/backgrounds/gallery_tie11a_mobile_bg.webp';
