@@ -161,13 +161,13 @@
     "bg_override": "gallery_main_stylized",
     "next_bg_override_a": "gallery_tie10a_bg",
     "next_bg_override_b": "gallery_tie10b_bg",
-    "task_heb": "ערב הגאלה המקצועי שלנו כאן! מה יהיה ה-Wow של האירוע?",
+    "task_heb": "הסטודיו שלנו חוגג שנה - ואיזו שנה זו הייתה. אנחנו רוצים לעשות משהו מיוחד. יש המלצות?",
     "option_a_code": "a",
     "option_a_asset": "studio_tie_10_a",
     "option_a_tooltip_heb": "מיצב תאורה אמנותי",
     "option_b_code": "s",
     "option_b_asset": "studio_tie_10_b",
-    "option_b_tooltip_heb": "שולחנות בר  מרחב לנטוורקינג"
+    "option_b_tooltip_heb": "ציור משותף של תושבי העיר"
   },
   {
     "world": "studio",
