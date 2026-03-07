@@ -1205,6 +1205,14 @@ export function VisualPlayScreen({
       }
     }
 
+    // Tie-breaker missions with baked backgrounds (next_bg_override)
+    if (mission.phase === 'tb' && option.next_bg_override) {
+      const targetBg = getTargetBgForOption(option);
+      if (targetBg.image) {
+        setLocalBgOverride({ key: targetBg.key, image: targetBg.image, missionId: mission.mission_id });
+      }
+    }
+
     // Mission 12: Switch to baked background on tool selection (both mobile and desktop)
     if (mission.mission_id === 'studio_12') {
       const m12BgKey = isMobile
