@@ -247,6 +247,12 @@ export function useTelemetry() {
       tieTrace: Array<{ round: string; pair: string; winner: string }>,
       rank23TieTrace: Array<{ round: string; pair: string; winner: string; loser: string }>,
     ): Promise<{ success: boolean; resultText?: string }> => {
+      const answeredCount = Object.keys(finalPicksByMissionId).length;
+      if (answeredCount < 15) {
+        console.warn(`[Telemetry] Only ${answeredCount}/15 missions answered — blocking gameplay webhook send`);
+        return { success: false };
+      }
+
       if (gameplaySentRef.current) {
         console.log("[Telemetry] Gameplay already sent for this run, skipping duplicate send");
         return { success: true };
@@ -341,6 +347,12 @@ export function useTelemetry() {
 
   const sendCompletionPayload = useCallback(
     async (leadForm: LeadFormData): Promise<{ success: boolean; resultText?: string }> => {
+      const answeredCount = Object.keys(missionAnsweredAtByIdRef.current).length;
+      if (answeredCount < 15) {
+        console.warn(`[Telemetry] Only ${answeredCount}/15 missions answered — blocking completion webhook send`);
+        return { success: false };
+      }
+
       if (completionSentRef.current) {
         console.log("[Telemetry] Completion already sent for this run, skipping duplicate send");
         return { success: true };
@@ -408,6 +420,12 @@ export function useTelemetry() {
       identityCode: string,
       tieBreakersPlayed: number,
     ): Promise<{ success: boolean }> => {
+      const answeredCount = Object.keys(missionAnsweredAtByIdRef.current).length;
+      if (answeredCount < 15) {
+        console.warn(`[Telemetry] Only ${answeredCount}/15 missions answered — blocking behavioral webhook send`);
+        return { success: false };
+      }
+
       if (behavioralSentRef.current) {
         console.log("[Telemetry] Behavioral already sent for this run, skipping duplicate send");
         return { success: true };
