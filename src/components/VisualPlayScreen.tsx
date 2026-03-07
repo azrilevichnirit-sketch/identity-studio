@@ -655,7 +655,7 @@ export function VisualPlayScreen({
     : isMission6BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isMission6BgLocked
-    ? 'gallery_mission6_bg'
+    ? (isMobile ? 'gallery_mission6_mobile_bg' : 'gallery_mission6_bg')
     : isMission8BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isMission8BgLocked
