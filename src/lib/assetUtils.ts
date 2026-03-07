@@ -673,7 +673,6 @@ const mobilePortraitBackgrounds: Record<string, string> = {
    gallery_tie01b_mobile_bg: galleryTie01bMobileBg,
    gallery_tie01a_bg: galleryTie01aMobileBg,
    gallery_tie01b_bg: galleryTie01bMobileBg,
-   studio_in_storage_bg: galleryTie01MobileBg,
    // Tie-breaker T2
    gallery_tie02_desk_bg: galleryTie02MobileBg,
    gallery_tie02_mobile_bg: galleryTie02MobileBg,
