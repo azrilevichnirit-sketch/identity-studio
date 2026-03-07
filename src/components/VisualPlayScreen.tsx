@@ -723,7 +723,7 @@ export function VisualPlayScreen({
     : isMission6BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isMission6BgLocked
-    ? (getBackgroundByName('gallery_mission6_bg') || displayBg)
+    ? (getBackgroundByName(isMobile ? 'gallery_mission6_mobile_bg' : 'gallery_mission6_bg') || displayBg)
     : isMission8BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isMission8BgLocked
