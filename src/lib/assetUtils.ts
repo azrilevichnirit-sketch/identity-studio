@@ -391,9 +391,12 @@ const backgroundAssets: Record<string, string> = {
   studio_in_gallery_bg: galleryCrackedWalls,
   studio_entry_inside_bg: galleryCrackedWalls,
   gallery_main_stylized_v3: galleryCrackedWalls,
+  // Mission 01 mobile base bg (cracked walls mobile)
+  gallery_main_stylized_v5_mobile: galleryCrackedWallsMobile,
   
   // Mission 02: boxes/moving scene
   gallery_main_boxes_v1: galleryBoxesBg,
+  gallery_main_boxes_v1_mobile: galleryBoxesMobile,
   
   // Mission 01 Tool B result / Mission 02 (if B chosen) / M09, M12: main studio (finished)
   gallery_main_stylized: galleryMainStylized,
@@ -425,11 +428,15 @@ const backgroundAssets: Record<string, string> = {
 
   // Workshop (Mission 03, 04, 06, 07, 08, 10, 11)
   studio_in_workshop_bg: studioWorkshopBg,
+  // Mission 03 mobile base bg (workshop mobile)
+  gallery_mission3_mobile_bg: galleryMission3MobileBg,
   
   // Exterior (Mission 05)
   studio_exterior_bg: studioExteriorBg,
   studio_exterior_park_bg: studioExteriorBg,
   studio_exterior: studioExteriorBg,
+  // Mission 05 mobile base bg
+  gallery_mission5_mobile_bg: galleryMission5MobileBg,
   
   // Doorway park view (Mission 03, Tie-breaker T14)
   studio_doorway_park_view_bg: studioDoorwayParkBg,
