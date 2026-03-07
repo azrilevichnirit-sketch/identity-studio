@@ -63,7 +63,7 @@ export function AudioManager({ isPlaying }: AudioManagerProps) {
     };
   }, []);
 
-  const handleToggleMute = useCallback((e: any) => {
+  const handleToggleMute = useCallback((e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setMuted((prev) => !prev);
