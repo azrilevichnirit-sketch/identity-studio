@@ -133,19 +133,19 @@ const galleryTie13DeskBg = studioExteriorBg;
 const galleryTie13aDeskBg = studioExteriorBg;
 const galleryTie13bDeskBg = studioExteriorBg;
 // Tie-breaker T14 baked backgrounds
+import galleryTie14MobileBg from '@/assets/backgrounds/gallery_tie14_mobile_bg.webp';
 import galleryTie14aMobileBg from '@/assets/backgrounds/gallery_tie14a_mobile_bg.webp';
+import galleryTie14bMobileBg from '@/assets/backgrounds/gallery_tie14b_mobile_bg.webp';
 const galleryTie14DeskBg = studioDoorwayParkBg;
 const galleryTie14aDeskBg = studioDoorwayParkBg;
 const galleryTie14bDeskBg = studioDoorwayParkBg;
-const galleryTie14MobileBg = studioDoorwayParkBg;
-const galleryTie14bMobileBg = studioDoorwayParkBg;
-// Tie-breaker T15 baked backgrounds – placeholder aliases until real assets are uploaded
+// Tie-breaker T15 baked backgrounds
+import galleryTie15MobileBg from '@/assets/backgrounds/gallery_tie15_mobile_bg.webp';
+import galleryTie15aMobileBg from '@/assets/backgrounds/gallery_tie15a_mobile_bg.webp';
+import galleryTie15bMobileBg from '@/assets/backgrounds/gallery_tie15b_mobile_bg.webp';
 const galleryTie15DeskBg = galleryMainStylizedWhite;
 const galleryTie15aDeskBg = galleryMainStylizedWhite;
 const galleryTie15bDeskBg = galleryMainStylizedWhite;
-const galleryTie15MobileBg = galleryMainStylizedWhite;
-const galleryTie15aMobileBg = galleryMainStylizedWhite;
-const galleryTie15bMobileBg = galleryMainStylizedWhite;
 import galleryMission15aBg from '@/assets/backgrounds/gallery_mission15a_bg.webp';
 import galleryMission15bBg from '@/assets/backgrounds/gallery_mission15b_bg.webp';
 // Mission 15 mobile baked backgrounds
