@@ -592,6 +592,7 @@ const Index = () => {
           🐛
         </button>
       )}
+      <AudioManager isPlaying={['intro', 'main', 'tie', 'tie1', 'tie2'].includes(state.phase)} />
     </>
   );
 };
