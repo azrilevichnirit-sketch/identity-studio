@@ -178,13 +178,13 @@
     "bg_override": "gallery_main_stylized",
     "next_bg_override_a": "gallery_tie11a_bg",
     "next_bg_override_b": "gallery_tie11b_bg",
-    "task_heb": "לקוח רציני בפתח. איך נראה לו מי אנחנו באמת?",
+    "task_heb": "הסטודיו שלנו חוגג שנה — ואיזו שנה זו הייתה. אנחנו רוצים לעשות משהו מיוחד. יש המלצות?",
     "option_a_code": "a",
     "option_a_asset": "studio_tie_11_a",
-    "option_a_tooltip_heb": "ציור קיר מלא",
+    "option_a_tooltip_heb": "החלפת תערוכה",
     "option_b_code": "e",
     "option_b_asset": "studio_tie_11_b",
-    "option_b_tooltip_heb": "קיר 'ההצלחות שלנו'"
+    "option_b_tooltip_heb": "חנות פופאפ"
   },
   {
     "world": "studio",
@@ -195,13 +195,13 @@
     "bg_override": "gallery_main_stylized",
     "next_bg_override_a": "gallery_tie12a_bg",
     "next_bg_override_b": "gallery_tie12b_bg",
-    "task_heb": "הגיע הזמן לרענן את הסטודיו. מה נראה לך שכדי לעשות?",
+    "task_heb": "החלטנו לנסות משהו שמעולם לא עשינו — מכירה פומבית. איך נהפוך את זה לאירוע מצליח?",
     "option_a_code": "a",
     "option_a_asset": "studio_tie_12_a",
-    "option_a_tooltip_heb": "החלפת תערוכה בגלריה (קומה 2)",
+    "option_a_tooltip_heb": "הופעה חיה",
     "option_b_code": "c",
     "option_b_asset": "studio_tie_12_b",
-    "option_b_tooltip_heb": "לוח ציר זמן להצגת הדרך שעברנו."
+    "option_b_tooltip_heb": "תיוג ומחירון יצירות"
   },
   {
     "world": "studio",
@@ -212,13 +212,13 @@
     "bg_override": "studio_exterior_bg",
     "next_bg_override_a": "gallery_tie13a_bg",
     "next_bg_override_b": "gallery_tie13b_bg",
-    "task_heb": "החלטנו להתרחב מעבר לסטודיו! מה יהיה המהלך הבא שלנו?",
+    "task_heb": "הסטודיו שלנו חוגג שנה - ואיזו שנה זו הייתה. אנחנו רוצים לעשות משהו מיוחד. יש המלצות?",
     "option_a_code": "s",
     "option_a_asset": "studio_tie_13_a",
-    "option_a_tooltip_heb": "מיזם קהילתי בר-קיימה",
+    "option_a_tooltip_heb": "מרחב החלפה קהילתי",
     "option_b_code": "e",
     "option_b_asset": "studio_tie_13_b",
-    "option_b_tooltip_heb": "חנות דגל ממותגת"
+    "option_b_tooltip_heb": "חנות פופאפ"
   },
   {
     "world": "studio",
