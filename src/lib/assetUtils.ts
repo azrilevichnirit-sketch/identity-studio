@@ -111,13 +111,33 @@ import galleryTie10bMobileBg from '@/assets/backgrounds/gallery_tie10b_mobile_bg
 const galleryTie10DeskBg = galleryMainStylized;
 const galleryTie10aDeskBg = galleryMainStylized;
 const galleryTie10bDeskBg = galleryMainStylized;
-// Tie-breaker T14 baked backgrounds – placeholder aliases until real assets are uploaded
-// TODO: Replace these with actual T14 background imports once files are provided
+// Tie-breaker T11 baked backgrounds (mobile only)
+import galleryTie11MobileBg from '@/assets/backgrounds/gallery_tie11_mobile_bg.webp';
+import galleryTie11aMobileBg from '@/assets/backgrounds/gallery_tie11a_mobile_bg.webp';
+import galleryTie11bMobileBg from '@/assets/backgrounds/gallery_tie11b_mobile_bg.webp';
+const galleryTie11DeskBg = galleryMainStylized;
+const galleryTie11aDeskBg = galleryMainStylized;
+const galleryTie11bDeskBg = galleryMainStylized;
+// Tie-breaker T12 baked backgrounds (mobile only)
+import galleryTie12MobileBg from '@/assets/backgrounds/gallery_tie12_mobile_bg.webp';
+import galleryTie12aMobileBg from '@/assets/backgrounds/gallery_tie12a_mobile_bg.webp';
+import galleryTie12bMobileBg from '@/assets/backgrounds/gallery_tie12b_mobile_bg.webp';
+const galleryTie12DeskBg = galleryMainStylized;
+const galleryTie12aDeskBg = galleryMainStylized;
+const galleryTie12bDeskBg = galleryMainStylized;
+// Tie-breaker T13 baked backgrounds (mobile only)
+import galleryTie13MobileBg from '@/assets/backgrounds/gallery_tie13_mobile_bg.webp';
+import galleryTie13aMobileBg from '@/assets/backgrounds/gallery_tie13a_mobile_bg.webp';
+import galleryTie13bMobileBg from '@/assets/backgrounds/gallery_tie13b_mobile_bg.webp';
+const galleryTie13DeskBg = studioExteriorBg;
+const galleryTie13aDeskBg = studioExteriorBg;
+const galleryTie13bDeskBg = studioExteriorBg;
+// Tie-breaker T14 baked backgrounds
+import galleryTie14aMobileBg from '@/assets/backgrounds/gallery_tie14a_mobile_bg.webp';
 const galleryTie14DeskBg = studioDoorwayParkBg;
 const galleryTie14aDeskBg = studioDoorwayParkBg;
 const galleryTie14bDeskBg = studioDoorwayParkBg;
 const galleryTie14MobileBg = studioDoorwayParkBg;
-const galleryTie14aMobileBg = studioDoorwayParkBg;
 const galleryTie14bMobileBg = studioDoorwayParkBg;
 // Tie-breaker T15 baked backgrounds – placeholder aliases until real assets are uploaded
 const galleryTie15DeskBg = galleryMainStylizedWhite;
@@ -504,6 +524,33 @@ const backgroundAssets: Record<string, string> = {
   gallery_tie10_mobile_bg: galleryTie10MobileBg,
   gallery_tie10a_mobile_bg: galleryTie10aMobileBg,
   gallery_tie10b_mobile_bg: galleryTie10bMobileBg,
+  // Tie-breaker T11 baked backgrounds
+  gallery_tie11_desk_bg: galleryTie11DeskBg,
+  gallery_tie11a_desk_bg: galleryTie11aDeskBg,
+  gallery_tie11b_desk_bg: galleryTie11bDeskBg,
+  gallery_tie11a_bg: galleryTie11aDeskBg,
+  gallery_tie11b_bg: galleryTie11bDeskBg,
+  gallery_tie11_mobile_bg: galleryTie11MobileBg,
+  gallery_tie11a_mobile_bg: galleryTie11aMobileBg,
+  gallery_tie11b_mobile_bg: galleryTie11bMobileBg,
+  // Tie-breaker T12 baked backgrounds
+  gallery_tie12_desk_bg: galleryTie12DeskBg,
+  gallery_tie12a_desk_bg: galleryTie12aDeskBg,
+  gallery_tie12b_desk_bg: galleryTie12bDeskBg,
+  gallery_tie12a_bg: galleryTie12aDeskBg,
+  gallery_tie12b_bg: galleryTie12bDeskBg,
+  gallery_tie12_mobile_bg: galleryTie12MobileBg,
+  gallery_tie12a_mobile_bg: galleryTie12aMobileBg,
+  gallery_tie12b_mobile_bg: galleryTie12bMobileBg,
+  // Tie-breaker T13 baked backgrounds
+  gallery_tie13_desk_bg: galleryTie13DeskBg,
+  gallery_tie13a_desk_bg: galleryTie13aDeskBg,
+  gallery_tie13b_desk_bg: galleryTie13bDeskBg,
+  gallery_tie13a_bg: galleryTie13aDeskBg,
+  gallery_tie13b_bg: galleryTie13bDeskBg,
+  gallery_tie13_mobile_bg: galleryTie13MobileBg,
+  gallery_tie13a_mobile_bg: galleryTie13aMobileBg,
+  gallery_tie13b_mobile_bg: galleryTie13bMobileBg,
   // Tie-breaker T14 baked backgrounds
   gallery_tie14_desk_bg: galleryTie14DeskBg,
   gallery_tie14a_desk_bg: galleryTie14aDeskBg,
@@ -832,6 +879,27 @@ const mobilePortraitBackgrounds: Record<string, string> = {
    gallery_tie10b_mobile_bg: galleryTie10bMobileBg,
    gallery_tie10a_bg: galleryTie10aMobileBg,
    gallery_tie10b_bg: galleryTie10bMobileBg,
+   // Tie-breaker T11
+   gallery_tie11_desk_bg: galleryTie11MobileBg,
+   gallery_tie11_mobile_bg: galleryTie11MobileBg,
+   gallery_tie11a_mobile_bg: galleryTie11aMobileBg,
+   gallery_tie11b_mobile_bg: galleryTie11bMobileBg,
+   gallery_tie11a_bg: galleryTie11aMobileBg,
+   gallery_tie11b_bg: galleryTie11bMobileBg,
+   // Tie-breaker T12
+   gallery_tie12_desk_bg: galleryTie12MobileBg,
+   gallery_tie12_mobile_bg: galleryTie12MobileBg,
+   gallery_tie12a_mobile_bg: galleryTie12aMobileBg,
+   gallery_tie12b_mobile_bg: galleryTie12bMobileBg,
+   gallery_tie12a_bg: galleryTie12aMobileBg,
+   gallery_tie12b_bg: galleryTie12bMobileBg,
+   // Tie-breaker T13
+   gallery_tie13_desk_bg: galleryTie13MobileBg,
+   gallery_tie13_mobile_bg: galleryTie13MobileBg,
+   gallery_tie13a_mobile_bg: galleryTie13aMobileBg,
+   gallery_tie13b_mobile_bg: galleryTie13bMobileBg,
+   gallery_tie13a_bg: galleryTie13aMobileBg,
+   gallery_tie13b_bg: galleryTie13bMobileBg,
    // Tie-breaker T14
    gallery_tie14_desk_bg: galleryTie14MobileBg,
    gallery_tie14_mobile_bg: galleryTie14MobileBg,
