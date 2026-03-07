@@ -1,45 +1,33 @@
 
 
-## Deleting Unused Background Assets
+# Plan: Update T15 Tie-Breaker with Baked Backgrounds
 
-To reduce the application bundle size, we need to identify which background images are actually referenced in the code and data, then safely remove the rest.
+Same pattern as T14 — update text, tooltips, add baked background switching, clean up scene extras.
 
-### Current Situation
+## Changes
 
-The project has ~120+ background images in `src/assets/backgrounds/`. Many are older versions (v1, v2, v3...) where only the latest version is actually used. The app bundles ALL imported images, so unused imports add significant weight.
+### 1. `studio_tie_v6.json` — T15 entry
+- `task_heb` → `"סיימנו שנה מוצלחת ויש תקציב להתרחב. לאן ממשיכים?"`
+- `option_a_tooltip_heb` → `"מפה לפתיחת סניפים"`
+- `option_b_tooltip_heb` → `"גיליון תכנון תקציבי"`
+- Add `"next_bg_override_a": "gallery_tie15a_bg"`, `"next_bg_override_b": "gallery_tie15b_bg"`
 
-### Approach
+### 2. `assetUtils.ts`
+- Register 6 new T15 backgrounds (placeholder aliases like T14 until real files are uploaded):
+  - Desktop: `gallery_tie15_desk_bg`, `gallery_tie15a_desk_bg`, `gallery_tie15b_desk_bg`
+  - Mobile: `gallery_tie15_mobile_bg`, `gallery_tie15a_mobile_bg`, `gallery_tie15b_mobile_bg`
 
-1. **Audit all references** — scan every file that imports or references backgrounds:
-   - `src/lib/assetUtils.ts` (main asset registry)
-   - `src/data/studio_anchor_map.json` (anchor positioning)
-   - `src/data/studio_quests_v5.json` and `studio_tie_v6.json` (mission data)
-   - `src/components/VisualPlayScreen.tsx` (hardcoded references)
-   - `src/pages/BackgroundPreview.tsx` (preview page)
-   - `src/components/BackgroundCrossfade.tsx`
+### 3. `jsonDataLoader.ts`
+- Add `BG_KEY_ALIASES`: `gallery_tie15a_bg` ↔ `gallery_tie15a_desk_bg`, `gallery_tie15b_bg` ↔ `gallery_tie15b_desk_bg`
 
-2. **Build a "used" list** — every background filename that appears in any import or string reference.
+### 4. `VisualPlayScreen.tsx`
+- Add T15 to `previousBgOverride` platform-aware base bg block (same pattern as T14)
+- `getTargetBgForOption` already handles generic `next_bg_override` — no change needed
 
-3. **Identify safe deletions** — files in `src/assets/backgrounds/` NOT in the used list. Likely candidates:
-   - Old versions superseded by newer ones (e.g., `studio_in_workshop_v2.webp` if only `v3` is used)
-   - Preview-only variants not used in gameplay
-   - Stylized variants that were试 but replaced
+### 5. `studio_scene_extras.json`
+- Remove T15 coffee table extra (lines 114-127) — now baked into backgrounds
 
-4. **Delete files and clean imports** — remove the files and any leftover import statements (especially in `BackgroundPreview.tsx` which imports many unused variants).
-
-### How to Execute
-
-Since file deletion isn't something I can do directly through code edits, there are two paths:
-
-**Option A — I prepare the cleanup for you:**
-- I'll audit all references and produce a concrete list of files safe to delete
-- I'll update all source files to remove dead imports
-- You manually delete the listed files from the file browser (right-click → Delete)
-
-**Option B — You delete from the file browser:**
-- In the code editor, navigate to `src/assets/backgrounds/`
-- Right-click any file you want to remove and select "Delete"
-- I then clean up any broken imports
-
-I recommend **Option A** — I'll do the full audit and give you a definitive safe-to-delete list, then clean up all code references.
+### 6. Asset files (user to upload)
+- 6 backgrounds: `gallery_tie15[a|b]_[desk|mobile]_bg.webp`
+- 2 tools: `studio_tie_15_a.webp`, `studio_tie_15_b.webp` (replace existing)
 
