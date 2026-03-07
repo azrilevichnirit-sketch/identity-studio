@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, type MouseEvent } from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
 
 interface AudioManagerProps {
