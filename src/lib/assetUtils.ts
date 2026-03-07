@@ -585,6 +585,13 @@ const mobilePortraitBackgrounds: Record<string, string> = {
    gallery_mission15_mobile_bg: galleryMission15MobileBg,
    gallery_mission15a_mobile_bg: galleryMission15aMobileBg,
    gallery_mission15b_mobile_bg: galleryMission15bMobileBg,
+   // Tie-breaker T14
+   gallery_tie14_desk_bg: galleryTie14MobileBg,
+   gallery_tie14_mobile_bg: galleryTie14MobileBg,
+   gallery_tie14a_mobile_bg: galleryTie14aMobileBg,
+   gallery_tie14b_mobile_bg: galleryTie14bMobileBg,
+   gallery_tie14a_bg: galleryTie14aMobileBg,
+   gallery_tie14b_bg: galleryTie14bMobileBg,
 };
 
 export function getMobilePortraitBackground(bgKey: string): string | null {
