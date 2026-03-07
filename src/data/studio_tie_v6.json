@@ -178,13 +178,13 @@
     "bg_override": "gallery_main_stylized",
     "next_bg_override_a": "gallery_tie11a_bg",
     "next_bg_override_b": "gallery_tie11b_bg",
-    "task_heb": "לקוח רציני בפתח. איך נראה לו מי אנחנו באמת?",
+    "task_heb": "הסטודיו שלנו חוגג שנה — ואיזו שנה זו הייתה. אנחנו רוצים לעשות משהו מיוחד. יש המלצות?",
     "option_a_code": "a",
     "option_a_asset": "studio_tie_11_a",
-    "option_a_tooltip_heb": "ציור קיר מלא",
+    "option_a_tooltip_heb": "החלפת תערוכה",
     "option_b_code": "e",
     "option_b_asset": "studio_tie_11_b",
-    "option_b_tooltip_heb": "קיר 'ההצלחות שלנו'"
+    "option_b_tooltip_heb": "חנות פופאפ"
   },
   {
     "world": "studio",
