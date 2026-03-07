@@ -722,7 +722,6 @@ const panoramicBackgrounds: Record<string, string> = {
   studio_doorway_park_view_bg: studioDoorwayParkBg,
   studio_doorway_park_view_v5: studioDoorwayParkBg,
   gallery_mission4_bg: galleryMission4Bg,
-  gallery_mission4_mobile_bg: galleryMission4MobileBg,
   gallery_mission6_bg: galleryMission6Bg,
   gallery_mission8_bg: galleryMission8Bg,
   gallery_mission10_bg: galleryMission10Bg,
