@@ -759,7 +759,7 @@ export function VisualPlayScreen({
     : isCrackedWallsLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isCrackedWallsLocked
-    ? (getBackgroundByName(mission.bg_override || 'studio_entry_inside_bg') || displayBg)
+    ? (getBackgroundByName(isMobile ? 'gallery_mission1_mobile_bg' : (mission.bg_override || 'studio_entry_inside_bg')) || displayBg)
     : isExteriorLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isExteriorLocked
