@@ -40,6 +40,8 @@
     "pair_sequence": 1,
     "quest_id": "studio_tie_03",
     "bg_override": "gallery_main_stylized_white_v1",
+    "next_bg_override_a": "gallery_tie03a_bg",
+    "next_bg_override_b": "gallery_tie03b_bg",
     "task_heb": "אנחנו רוצים שמי שנכנס לסטודיו ירגיש מיד את האנרגיה שלנו. מה יהיה בלב המקום?",
     "option_a_code": "r",
     "option_a_asset": "studio_tie_03_a",
