@@ -714,6 +714,8 @@ export function VisualPlayScreen({
     ? (getBackgroundByName(previousBgOverride || mission.bg_override || TIE_BREAKER_BG_KEY) || displayBg)
     : isWhiteWallsLocked
     ? (getBackgroundByName(mission.bg_override || PAINTED_WALLS_BG_KEY) || displayBg)
+    : isBoxesBgLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.image
     : isBoxesBgLocked
     ? (getBackgroundByName('gallery_main_boxes_v1') || displayBg)
     : isMission4BgLocked && scopedLocalBgOverride
