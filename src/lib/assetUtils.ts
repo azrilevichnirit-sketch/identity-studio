@@ -41,6 +41,34 @@ import galleryMission14MobileBg from '@/assets/backgrounds/gallery_mission14_mob
 import galleryMission14aMobileBg from '@/assets/backgrounds/gallery_mission14a_mobile_bg.webp';
 import galleryMission14bMobileBg from '@/assets/backgrounds/gallery_mission14b_mobile_bg.webp';
 import galleryMainStylizedV4 from '@/assets/backgrounds/gallery_main_stylized_v4.webp';
+// Tie-breaker T1 baked backgrounds (mobile only for now, desktop uses existing bg)
+import galleryTie01MobileBg from '@/assets/backgrounds/gallery_tie01_mobile_bg.webp';
+import galleryTie01aMobileBg from '@/assets/backgrounds/gallery_tie01a_mobile_bg.webp';
+import galleryTie01bMobileBg from '@/assets/backgrounds/gallery_tie01b_mobile_bg.webp';
+const galleryTie01DeskBg = studioStorageBg;
+const galleryTie01aDeskBg = studioStorageBg;
+const galleryTie01bDeskBg = studioStorageBg;
+// Tie-breaker T2 baked backgrounds (mobile only for now)
+import galleryTie02MobileBg from '@/assets/backgrounds/gallery_tie02_mobile_bg.webp';
+import galleryTie02aMobileBg from '@/assets/backgrounds/gallery_tie02a_mobile_bg.webp';
+import galleryTie02bMobileBg from '@/assets/backgrounds/gallery_tie02b_mobile_bg.webp';
+const galleryTie02DeskBg = galleryMainStylizedWhite;
+const galleryTie02aDeskBg = galleryMainStylizedWhite;
+const galleryTie02bDeskBg = galleryMainStylizedWhite;
+// Tie-breaker T3 baked backgrounds (mobile only for now)
+import galleryTie03MobileBg from '@/assets/backgrounds/gallery_tie03_mobile_bg.webp';
+import galleryTie03aMobileBg from '@/assets/backgrounds/gallery_tie03a_mobile_bg.webp';
+import galleryTie03bMobileBg from '@/assets/backgrounds/gallery_tie03b_mobile_bg.webp';
+const galleryTie03DeskBg = galleryMainStylizedWhite;
+const galleryTie03aDeskBg = galleryMainStylizedWhite;
+const galleryTie03bDeskBg = galleryMainStylizedWhite;
+// Tie-breaker T4 baked backgrounds (partial mobile, desktop uses existing bg)
+import galleryTie04aMobileBg from '@/assets/backgrounds/gallery_tie04a_mobile_bg.webp';
+const galleryTie04DeskBg = galleryMainStylizedWhite;
+const galleryTie04aDeskBg = galleryMainStylizedWhite;
+const galleryTie04bDeskBg = galleryMainStylizedWhite;
+const galleryTie04MobileBg = galleryMainStylizedWhite;
+const galleryTie04bMobileBg = galleryMainStylizedWhite;
 // Tie-breaker T14 baked backgrounds – placeholder aliases until real assets are uploaded
 // TODO: Replace these with actual T14 background imports once files are provided
 const galleryTie14DeskBg = studioDoorwayParkBg;
