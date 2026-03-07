@@ -647,15 +647,15 @@ export function VisualPlayScreen({
     : isBoxesBgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isBoxesBgLocked
-    ? 'gallery_main_boxes_v1'
+    ? (isMobile ? 'gallery_main_boxes_v1_mobile' : 'gallery_main_boxes_v1')
     : isMission4BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isMission4BgLocked
-    ? 'gallery_mission4_bg'
+    ? (isMobile ? 'gallery_mission4_mobile_bg' : 'gallery_mission4_bg')
     : isMission6BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isMission6BgLocked
-    ? 'gallery_mission6_bg'
+    ? (isMobile ? 'gallery_mission6_mobile_bg' : 'gallery_mission6_bg')
     : isMission8BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isMission8BgLocked
@@ -691,15 +691,15 @@ export function VisualPlayScreen({
     : isCrackedWallsLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isCrackedWallsLocked
-    ? (mission.bg_override || 'studio_entry_inside_bg')
+    ? (isMobile ? 'gallery_mission1_mobile_bg' : (mission.bg_override || 'studio_entry_inside_bg'))
     : isExteriorLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isExteriorLocked
-    ? 'studio_exterior_bg'
+    ? (isMobile ? 'gallery_mission5_mobile_bg' : 'studio_exterior_bg')
     : scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isWorkshopLocked && !isCalibrationBgOverrideMode
-    ? 'studio_in_workshop_bg'
+    ? (isMobile ? 'gallery_mission3_mobile_bg' : 'studio_in_workshop_bg')
     : displayBgKey;
 
   const lockedBg = isCalibrationBgOverrideMode && m7CalibrationBg
@@ -715,15 +715,15 @@ export function VisualPlayScreen({
     : isBoxesBgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isBoxesBgLocked
-    ? (getBackgroundByName('gallery_main_boxes_v1') || displayBg)
+    ? (getBackgroundByName(isMobile ? 'gallery_main_boxes_v1_mobile' : 'gallery_main_boxes_v1') || displayBg)
     : isMission4BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isMission4BgLocked
-    ? (getBackgroundByName('gallery_mission4_bg') || displayBg)
+    ? (getBackgroundByName(isMobile ? 'gallery_mission4_mobile_bg' : 'gallery_mission4_bg') || displayBg)
     : isMission6BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isMission6BgLocked
-    ? (getBackgroundByName('gallery_mission6_bg') || displayBg)
+    ? (getBackgroundByName(isMobile ? 'gallery_mission6_mobile_bg' : 'gallery_mission6_bg') || displayBg)
     : isMission8BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isMission8BgLocked
@@ -759,15 +759,15 @@ export function VisualPlayScreen({
     : isCrackedWallsLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isCrackedWallsLocked
-    ? (getBackgroundByName(mission.bg_override || 'studio_entry_inside_bg') || displayBg)
+    ? (getBackgroundByName(isMobile ? 'gallery_mission1_mobile_bg' : (mission.bg_override || 'studio_entry_inside_bg')) || displayBg)
     : isExteriorLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isExteriorLocked
-    ? (getBackgroundByName('studio_exterior_bg') || displayBg)
+    ? (getBackgroundByName(isMobile ? 'gallery_mission5_mobile_bg' : 'studio_exterior_bg') || displayBg)
     : scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isWorkshopLocked && !isCalibrationBgOverrideMode
-    ? (getBackgroundByName('studio_in_workshop_bg') || displayBg)
+    ? (getBackgroundByName(isMobile ? 'gallery_mission3_mobile_bg' : 'studio_in_workshop_bg') || displayBg)
     : displayBg;
 
   // ==================== MOBILE PORTRAIT BACKGROUNDS ====================
