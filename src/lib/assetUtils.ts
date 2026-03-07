@@ -353,6 +353,15 @@ const backgroundAssets: Record<string, string> = {
   gallery_tie14_mobile_bg: galleryTie14MobileBg,
   gallery_tie14a_mobile_bg: galleryTie14aMobileBg,
   gallery_tie14b_mobile_bg: galleryTie14bMobileBg,
+  // Tie-breaker T15 baked backgrounds
+  gallery_tie15_desk_bg: galleryTie15DeskBg,
+  gallery_tie15a_desk_bg: galleryTie15aDeskBg,
+  gallery_tie15b_desk_bg: galleryTie15bDeskBg,
+  gallery_tie15a_bg: galleryTie15aDeskBg,
+  gallery_tie15b_bg: galleryTie15bDeskBg,
+  gallery_tie15_mobile_bg: galleryTie15MobileBg,
+  gallery_tie15a_mobile_bg: galleryTie15aMobileBg,
+  gallery_tie15b_mobile_bg: galleryTie15bMobileBg,
   
   // Mission 04 background
   gallery_mission4_bg: galleryMission4Bg,
