@@ -1373,13 +1373,14 @@ export function VisualPlayScreen({
     
     // ===== TIMING SEQUENCE =====
     // Tool -> Lock pulse -> Advance to next mission
-    // The player MUST see the tool placed for ~1s before advancing.
-    // Mission 01 Paint:  600ms lock -> 1000ms beat -> 2200ms advance
-    // Mission 01 Tool B: 200ms lock -> 1600ms advance
-    // Mission 02:        80ms lock -> 1600ms advance 
-    // Mission 07/11:     80ms lock -> 2200ms advance (bg fixation)
-    // Mission 08 B:     80ms lock -> 2900ms advance (visitors appear + viewing)
-    // Regular:           80ms lock -> 1400ms advance (visible ~1.3s)
+    // The crossfade takes 800ms, so the player must wait at least 800ms + viewing time.
+    // Minimum: 800ms crossfade + 1200ms viewing = 2000ms
+    // Mission 01 Paint:  600ms lock -> 1000ms beat -> 2800ms advance
+    // Mission 01 Tool B: 200ms lock -> 2200ms advance
+    // Mission 02:        80ms lock -> 2200ms advance 
+    // Mission 07/11:     80ms lock -> 2800ms advance (bg fixation)
+    // Mission 08 B:     80ms lock -> 3200ms advance (visitors appear + viewing)
+    // Regular:           80ms lock -> 2200ms advance (800ms fade + ~1.3s viewing)
     // ===============================================
     
     const lockDelayMs = isMission01Paint ? 600 : (isMission01ToolB ? 200 : 80);
@@ -1425,21 +1426,21 @@ export function VisualPlayScreen({
     const isMission08ToolB = mission.mission_id === 'studio_08' && variant === 'b';
     const isMission11ToolA = mission.mission_id === 'studio_11' && variant === 'a';
     const isMission11ToolB = mission.mission_id === 'studio_11' && variant === 'b';
-    const advanceDelay = isMission01Paint ? 2200 
-      : isMission01ToolB ? 1600 
-      : isMission02 ? 1600
-      : isMission03ToolB ? 3600  // tables appear first, then visitors fade-in + viewing time
-      : (isMission11ToolA || isMission11ToolB) ? 2200  // keep brief viewing time for M11 branch result
-      : (isMission07 || isMission11) ? 2200
-      : isMission06ToolA ? 2400  // extra time for prop spawn + tool appear
-      : (mission.mission_id === 'studio_10') ? 1500  // faster handoff so M11 bubble appears quickly
-      : (mission.mission_id === 'studio_13') ? 2200  // baked bg crossfade (800ms) + viewing time
-      : (mission.mission_id === 'studio_14') ? 2200  // baked bg crossfade + viewing time
-      : (mission.mission_id === 'studio_15') ? 2200  // baked bg crossfade + viewing time
-      : isMission05ToolA ? 2400  // extra 1s viewing time for M05 tool A
-      : isMission05ToolB ? 2900  // visitors fade-in + 1.5s viewing time
-      : isMission08ToolB ? 2900  // visitors fade-in + 1.5s viewing time
-      : 1400;
+    const advanceDelay = isMission01Paint ? 2800 
+      : isMission01ToolB ? 2200 
+      : isMission02 ? 2200
+      : isMission03ToolB ? 3800  // tables appear first, then visitors fade-in + viewing time
+      : (isMission11ToolA || isMission11ToolB) ? 2800  // keep viewing time for M11 branch result
+      : (isMission07 || isMission11) ? 2800
+      : isMission06ToolA ? 3000  // extra time for prop spawn + tool appear
+      : (mission.mission_id === 'studio_10') ? 2200  // crossfade + brief viewing before M11
+      : (mission.mission_id === 'studio_13') ? 2800  // baked bg crossfade (800ms) + viewing time
+      : (mission.mission_id === 'studio_14') ? 2800  // baked bg crossfade + viewing time
+      : (mission.mission_id === 'studio_15') ? 2800  // baked bg crossfade + viewing time
+      : isMission05ToolA ? 3000  // extra viewing time for M05 tool A
+      : isMission05ToolB ? 3200  // visitors fade-in + viewing time
+      : isMission08ToolB ? 3200  // visitors fade-in + viewing time
+      : 2200;
     const advanceId = window.setTimeout(() => {
       // For Mission 01 Tool B: DON'T clear localPlacement before onSelect
       // This prevents the tool from disappearing before it's added to placedProps
