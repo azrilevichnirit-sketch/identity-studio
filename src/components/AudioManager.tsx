@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
 
 interface AudioManagerProps {
@@ -8,6 +8,12 @@ interface AudioManagerProps {
 export function AudioManager({ isPlaying }: AudioManagerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [muted, setMuted] = useState(false);
+  const mutedRef = useRef(false);
+
+  // Keep ref in sync
+  useEffect(() => {
+    mutedRef.current = muted;
+  }, [muted]);
 
   useEffect(() => {
     if (!audioRef.current) {
@@ -21,8 +27,11 @@ export function AudioManager({ isPlaying }: AudioManagerProps) {
 
     if (isPlaying && !muted) {
       audio.play().catch(() => {
+        // Autoplay blocked — unlock on next user gesture
         const unlock = () => {
-          if (!muted) audio.play().catch(() => {});
+          if (!mutedRef.current && audioRef.current) {
+            audioRef.current.play().catch(() => {});
+          }
           document.removeEventListener('click', unlock);
           document.removeEventListener('touchstart', unlock);
         };
@@ -44,11 +53,16 @@ export function AudioManager({ isPlaying }: AudioManagerProps) {
     };
   }, []);
 
+  const handleToggle = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation(); // Don't trigger unlock listener
+    setMuted((m) => !m);
+  }, []);
+
   if (!isPlaying) return null;
 
   return (
     <button
-      onClick={() => setMuted((m) => !m)}
+      onClick={handleToggle}
       aria-label={muted ? 'Unmute music' : 'Mute music'}
       className="fixed top-3 left-3 z-[9999] w-10 h-10 flex items-center justify-center rounded-full shadow-lg transition-all active:scale-90"
       style={{
