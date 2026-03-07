@@ -136,16 +136,16 @@ import galleryTie13bDeskBg from '@/assets/backgrounds/gallery_tie13b_desk_bg.web
 import galleryTie14MobileBg from '@/assets/backgrounds/gallery_tie14_mobile_bg.webp';
 import galleryTie14aMobileBg from '@/assets/backgrounds/gallery_tie14a_mobile_bg.webp';
 import galleryTie14bMobileBg from '@/assets/backgrounds/gallery_tie14b_mobile_bg.webp';
-const galleryTie14DeskBg = studioDoorwayParkBg;
+import galleryTie14DeskBg from '@/assets/backgrounds/gallery_tie14_desk_bg.webp';
 import galleryTie14aDeskBg from '@/assets/backgrounds/gallery_tie14a_desk_bg.webp';
-const galleryTie14bDeskBg = studioDoorwayParkBg;
+import galleryTie14bDeskBg from '@/assets/backgrounds/gallery_tie14b_desk_bg.webp';
 // Tie-breaker T15 baked backgrounds
 import galleryTie15MobileBg from '@/assets/backgrounds/gallery_tie15_mobile_bg.webp';
 import galleryTie15aMobileBg from '@/assets/backgrounds/gallery_tie15a_mobile_bg.webp';
 import galleryTie15bMobileBg from '@/assets/backgrounds/gallery_tie15b_mobile_bg.webp';
-const galleryTie15DeskBg = galleryMainStylizedWhite;
-const galleryTie15aDeskBg = galleryMainStylizedWhite;
-const galleryTie15bDeskBg = galleryMainStylizedWhite;
+import galleryTie15DeskBg from '@/assets/backgrounds/gallery_tie15_desk_bg.webp';
+import galleryTie15aDeskBg from '@/assets/backgrounds/gallery_tie15a_desk_bg.webp';
+import galleryTie15bDeskBg from '@/assets/backgrounds/gallery_tie15b_desk_bg.webp';
 import galleryMission15aBg from '@/assets/backgrounds/gallery_mission15a_bg.webp';
 import galleryMission15bBg from '@/assets/backgrounds/gallery_mission15b_bg.webp';
 // Mission 15 mobile baked backgrounds
