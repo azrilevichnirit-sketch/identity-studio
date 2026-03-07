@@ -2767,15 +2767,13 @@ export function VisualPlayScreen({
     return () => window.removeEventListener('resize', checkWidth);
   }, []);
 
-  // Get mission number for display (1-15 for main, 16+ for tie-breakers)
+  // Get mission number for display (main missions keep their sequence, all tie-breakers are always 16)
   const missionDisplayNumber = useMemo(() => {
     if (mission.phase === 'main') {
       return mission.sequence;
     }
-    // Tie-breaker missions continue from main missions count
-    // currentIndex is passed as (mainMissions.length) for first tie, so +1 gives 16
-    return currentIndex + 1;
-  }, [mission.phase, mission.sequence, currentIndex]);
+    return 16;
+  }, [mission.phase, mission.sequence]);
 
   // Split task text after comma for better readability (tablet/mobile only)
   // Also prepend mission number in bold

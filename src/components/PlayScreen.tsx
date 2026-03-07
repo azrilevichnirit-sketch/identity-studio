@@ -29,7 +29,7 @@ export function PlayScreen({
         {/* Progress bar */}
         <div className="mb-6">
           <div className="flex justify-between text-xs text-muted-foreground mb-2">
-            <span>{isTieBreaker ? 'שובר שוויון' : `משימה ${currentIndex + 1} מתוך ${totalMissions}`}</span>
+            <span>{isTieBreaker ? 'משימה 16 מתוך 16' : `משימה ${currentIndex + 1} מתוך ${totalMissions}`}</span>
             <span>{Math.round(progress)}%</span>
           </div>
           <div className="progress-bar">
