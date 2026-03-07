@@ -276,18 +276,17 @@ export function VisualPlayScreen({
   const TIE_BREAKER_BG_KEY = 'gallery_main_stylized';
   
   const previousBgOverride = useMemo(() => {
-    // TIE-BREAKER MISSIONS: Use bg_override if defined, otherwise default to gallery
+    // TIE-BREAKER MISSIONS: All T1-T15 use platform-aware baked base backgrounds
     if (mission.phase === 'tb') {
-      // T14: platform-aware base background (baked)
-      if (mission.mission_id === 'studio_tie_14') {
-        const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 821;
-        return isDesktop ? 'gallery_tie14_desk_bg' : 'gallery_tie14_mobile_bg';
+      const tieNum = mission.mission_id.replace('studio_tie_', '');
+      const paddedNum = tieNum.padStart(2, '0');
+      const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 821;
+      const platformKey = isDesktop ? `gallery_tie${paddedNum}_desk_bg` : `gallery_tie${paddedNum}_mobile_bg`;
+      const platformImage = getBackgroundByName(platformKey);
+      if (platformImage) {
+        return platformKey;
       }
-      // T15: platform-aware base background (baked)
-      if (mission.mission_id === 'studio_tie_15') {
-        const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 821;
-        return isDesktop ? 'gallery_tie15_desk_bg' : 'gallery_tie15_mobile_bg';
-      }
+      // Fallback to raw bg_override if baked not found
       if (mission.bg_override) {
         return mission.bg_override;
       }
