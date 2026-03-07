@@ -763,7 +763,7 @@ export function VisualPlayScreen({
     : isExteriorLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isExteriorLocked
-    ? (getBackgroundByName('studio_exterior_bg') || displayBg)
+    ? (getBackgroundByName(isMobile ? 'gallery_mission5_mobile_bg' : 'studio_exterior_bg') || displayBg)
     : scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isWorkshopLocked && !isCalibrationBgOverrideMode
