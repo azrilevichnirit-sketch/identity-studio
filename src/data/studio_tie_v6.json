@@ -224,12 +224,14 @@
     "pair_sequence": 1,
     "quest_id": "studio_tie_15",
     "bg_override": "gallery_main_stylized_white_v1",
-    "task_heb": "לקוח ענק רוצה הוכחה שאנחנו אמינים. מה נציג לו?",
+    "task_heb": "סיימנו שנה מוצלחת ויש תקציב להתרחב. לאן ממשיכים?",
+    "next_bg_override_a": "gallery_tie15a_bg",
+    "next_bg_override_b": "gallery_tie15b_bg",
     "option_a_code": "e",
     "option_a_asset": "studio_tie_15_a",
-    "option_a_tooltip_heb": "מסך מדדי הצלחה ורווחיות",
+    "option_a_tooltip_heb": "מפה לפתיחת סניפים",
     "option_b_code": "c",
     "option_b_asset": "studio_tie_15_b",
-    "option_b_tooltip_heb": "קלסר תכנית עבודה מפורט"
+    "option_b_tooltip_heb": "גיליון תכנון תקציבי"
   }
 ]

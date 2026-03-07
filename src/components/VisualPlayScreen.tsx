@@ -283,6 +283,11 @@ export function VisualPlayScreen({
         const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 821;
         return isDesktop ? 'gallery_tie14_desk_bg' : 'gallery_tie14_mobile_bg';
       }
+      // T15: platform-aware base background (baked)
+      if (mission.mission_id === 'studio_tie_15') {
+        const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 821;
+        return isDesktop ? 'gallery_tie15_desk_bg' : 'gallery_tie15_mobile_bg';
+      }
       if (mission.bg_override) {
         return mission.bg_override;
       }
