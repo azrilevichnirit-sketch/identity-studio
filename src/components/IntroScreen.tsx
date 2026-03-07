@@ -44,10 +44,10 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
                 <p className="font-semibold text-sm">היי! איזה כיף להכיר אותך.</p>
                 <p className="text-xs leading-snug">אני {avatarName}, ואני איתך לאורך כל המסע הזה.</p>
                 <p className="text-xs leading-snug">
-                  כאן ניצור ביחד את ה{arenaName} שלך, צעד אחרי צעד - עם בחירות קטנות שמרכיבות עולם שלם.
+                  כאן ניצור ביחד את ה{arenaName} - צעד אחרי צעד, בחירה אחרי בחירה.
                 </p>
-                <p className="text-xs leading-snug">בכל שלב מחכה לך משימה ושתי אפשרויות, כל שעליך לעשות זה לבחור את הכלי שהכי מתאים לך.</p>
-                <p className="text-xs leading-snug">בסוף נראה יחד את התמונה שנוצרה מהבחירות שלך.</p>
+                <p className="text-xs leading-snug">בכל שלב מחכה משימה ושני כלים - מקליקים על הכלי, וממשיכים הלאה.</p>
+                <p className="text-xs leading-snug">בסוף נראה יחד את התמונה שנוצרה.</p>
               </div>
             </SpeechBubble>
           </div>
@@ -76,10 +76,10 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
               <p className="font-semibold text-base">היי! איזה כיף להכיר אותך.</p>
               <p className="text-sm leading-snug">אני {avatarName}, ואני איתך לאורך כל המסע הזה.</p>
               <p className="text-sm leading-snug">
-                כאן ניצור ביחד את ה{arenaName} שלך, צעד אחרי צעד - עם בחירות קטנות שמרכיבות עולם שלם.
+                כאן ניצור ביחד את ה{arenaName} - צעד אחרי צעד, בחירה אחרי בחירה.
               </p>
-              <p className="text-sm leading-snug">בכל שלב מחכה לך משימה ושתי אפשרויות, כל שעליך לעשות זה לבחור את הכלי שהכי מתאים לך.</p>
-              <p className="text-sm leading-snug">בסוף נראה יחד את התמונה שנוצרה מהבחירות שלך.</p>
+              <p className="text-sm leading-snug">בכל שלב מחכה משימה ושני כלים - מקליקים על הכלי, וממשיכים הלאה.</p>
+              <p className="text-sm leading-snug">בסוף נראה יחד את התמונה שנוצרה.</p>
             </div>
           </SpeechBubble>
         </div>
