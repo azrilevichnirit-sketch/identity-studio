@@ -347,6 +347,12 @@ export function useTelemetry() {
 
   const sendCompletionPayload = useCallback(
     async (leadForm: LeadFormData): Promise<{ success: boolean; resultText?: string }> => {
+      const answeredCount = Object.keys(missionAnsweredAtByIdRef.current).length;
+      if (answeredCount < 15) {
+        console.warn(`[Telemetry] Only ${answeredCount}/15 missions answered — blocking completion webhook send`);
+        return { success: false };
+      }
+
       if (completionSentRef.current) {
         console.log("[Telemetry] Completion already sent for this run, skipping duplicate send");
         return { success: true };
