@@ -767,7 +767,7 @@ export function VisualPlayScreen({
     : scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isWorkshopLocked && !isCalibrationBgOverrideMode
-    ? (getBackgroundByName('studio_in_workshop_bg') || displayBg)
+    ? (getBackgroundByName(isMobile ? 'gallery_mission3_mobile_bg' : 'studio_in_workshop_bg') || displayBg)
     : displayBg;
 
   // ==================== MOBILE PORTRAIT BACKGROUNDS ====================
