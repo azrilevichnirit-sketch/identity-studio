@@ -247,6 +247,12 @@ export function useTelemetry() {
       tieTrace: Array<{ round: string; pair: string; winner: string }>,
       rank23TieTrace: Array<{ round: string; pair: string; winner: string; loser: string }>,
     ): Promise<{ success: boolean; resultText?: string }> => {
+      const answeredCount = Object.keys(finalPicksByMissionId).length;
+      if (answeredCount < 15) {
+        console.warn(`[Telemetry] Only ${answeredCount}/15 missions answered — blocking gameplay webhook send`);
+        return { success: false };
+      }
+
       if (gameplaySentRef.current) {
         console.log("[Telemetry] Gameplay already sent for this run, skipping duplicate send");
         return { success: true };
