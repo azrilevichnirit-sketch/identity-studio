@@ -23,6 +23,8 @@
     "pair_sequence": 1,
     "quest_id": "studio_tie_02",
     "bg_override": "gallery_main_stylized_white_v1",
+    "next_bg_override_a": "gallery_tie02a_bg",
+    "next_bg_override_b": "gallery_tie02b_bg",
     "task_heb": "פרויקט חדש יוצא לדרך! מה הדבר הראשון שנביא לסטודיו כדי להתחיל?",
     "option_a_code": "r",
     "option_a_asset": "studio_tie_02_a",
