@@ -768,6 +768,8 @@ export function VisualPlayScreen({
     ? (getBackgroundByName('studio_exterior_bg') || displayBg)
     : scopedLocalBgOverride
     ? scopedLocalBgOverride.image
+    : isWorkshopLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.image
     : isWorkshopLocked && !isCalibrationBgOverrideMode
     ? (getBackgroundByName('studio_in_workshop_bg') || displayBg)
     : displayBg;
