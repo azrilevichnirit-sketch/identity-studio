@@ -461,9 +461,23 @@ export function VisualPlayScreen({
 
   // Get the target background for a tool option
   const getTargetBgForOption = useCallback((option: MissionOption) => {
-    // TIE-BREAKER MISSIONS: Stay on mission's bg_override, game ends after choice
-    // No background transition - the tool is placed and then we go to summary
+    // TIE-BREAKER MISSIONS: use next_bg_override if present (baked backgrounds)
     if (mission.phase === 'tb') {
+      if (option.next_bg_override) {
+        // Resolve to platform-aware variant (desk/mobile suffix)
+        const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 821;
+        const baseName = option.next_bg_override.replace(/_bg$/, '');
+        const platformKey = isDesktop ? `${baseName}_desk_bg` : `${baseName}_mobile_bg`;
+        const platformImage = getBackgroundByName(platformKey);
+        if (platformImage) {
+          return { key: platformKey, image: platformImage };
+        }
+        // Fallback to the raw key
+        const rawImage = getBackgroundByName(option.next_bg_override);
+        if (rawImage) {
+          return { key: option.next_bg_override, image: rawImage };
+        }
+      }
       const lockedKey = mission.bg_override || currentBgKey;
       const lockedImage = getBackgroundByName(lockedKey) || currentBg;
       return { key: lockedKey, image: lockedImage };
