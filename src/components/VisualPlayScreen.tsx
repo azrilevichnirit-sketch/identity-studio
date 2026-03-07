@@ -210,6 +210,15 @@ export function VisualPlayScreen({
       preloadBackground('gallery_mission14a_mobile_bg');
       preloadBackground('gallery_mission14b_mobile_bg');
     }
+    // Preload tie-breaker T14 baked backgrounds
+    if (mission.mission_id === 'studio_tie_14' || mission.mission_id === 'studio_tie_13') {
+      preloadBackground('gallery_tie14_desk_bg');
+      preloadBackground('gallery_tie14a_desk_bg');
+      preloadBackground('gallery_tie14b_desk_bg');
+      preloadBackground('gallery_tie14_mobile_bg');
+      preloadBackground('gallery_tie14a_mobile_bg');
+      preloadBackground('gallery_tie14b_mobile_bg');
+    }
   }, [mission.mission_id]);
 
   // Track if we're transitioning from Mission 7 (need to preserve bg during fixation)
@@ -260,6 +269,11 @@ export function VisualPlayScreen({
   const previousBgOverride = useMemo(() => {
     // TIE-BREAKER MISSIONS: Use bg_override if defined, otherwise default to gallery
     if (mission.phase === 'tb') {
+      // T14: platform-aware base background (baked)
+      if (mission.mission_id === 'studio_tie_14') {
+        const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 821;
+        return isDesktop ? 'gallery_tie14_desk_bg' : 'gallery_tie14_mobile_bg';
+      }
       if (mission.bg_override) {
         return mission.bg_override;
       }
@@ -461,9 +475,23 @@ export function VisualPlayScreen({
 
   // Get the target background for a tool option
   const getTargetBgForOption = useCallback((option: MissionOption) => {
-    // TIE-BREAKER MISSIONS: Stay on mission's bg_override, game ends after choice
-    // No background transition - the tool is placed and then we go to summary
+    // TIE-BREAKER MISSIONS: use next_bg_override if present (baked backgrounds)
     if (mission.phase === 'tb') {
+      if (option.next_bg_override) {
+        // Resolve to platform-aware variant (desk/mobile suffix)
+        const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 821;
+        const baseName = option.next_bg_override.replace(/_bg$/, '');
+        const platformKey = isDesktop ? `${baseName}_desk_bg` : `${baseName}_mobile_bg`;
+        const platformImage = getBackgroundByName(platformKey);
+        if (platformImage) {
+          return { key: platformKey, image: platformImage };
+        }
+        // Fallback to the raw key
+        const rawImage = getBackgroundByName(option.next_bg_override);
+        if (rawImage) {
+          return { key: option.next_bg_override, image: rawImage };
+        }
+      }
       const lockedKey = mission.bg_override || currentBgKey;
       const lockedImage = getBackgroundByName(lockedKey) || currentBg;
       return { key: lockedKey, image: lockedImage };
@@ -1034,7 +1062,8 @@ export function VisualPlayScreen({
       const isM7Baked = mission.mission_id === 'studio_07';
       const isM8Baked = mission.mission_id === 'studio_08';
       const isM9MobileBaked = mission.mission_id === 'studio_09' && isMobile;
-      if (!isDesktopBakedMainMission && !isM11BakedB && !isM11BakedA && !isM13Baked && !isM15Baked && !isM14Baked && !isM12Baked && !isM10Baked && !isM1MobileBaked && !isM2MobileBaked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7Baked && !isM8Baked && !isM9MobileBaked) {
+      const isTbBaked = mission.phase === 'tb' && !!option.next_bg_override;
+      if (!isDesktopBakedMainMission && !isM11BakedB && !isM11BakedA && !isM13Baked && !isM15Baked && !isM14Baked && !isM12Baked && !isM10Baked && !isM1MobileBaked && !isM2MobileBaked && !isM3MobileBaked && !isM4MobileBaked && !isM5MobileBakedB && !isM6MobileBaked && !isM7Baked && !isM8Baked && !isM9MobileBaked && !isTbBaked) {
         setLocalPlacement({
           missionId: mission.mission_id,
           key: variant,
@@ -1183,6 +1212,14 @@ export function VisualPlayScreen({
       const m15BgImage = getBackgroundByName(m15BgKey);
       if (m15BgImage) {
         setLocalBgOverride({ key: m15BgKey, image: m15BgImage, missionId: mission.mission_id });
+      }
+    }
+
+    // Tie-breaker missions with baked backgrounds (next_bg_override)
+    if (mission.phase === 'tb' && option.next_bg_override) {
+      const targetBg = getTargetBgForOption(option);
+      if (targetBg.image) {
+        setLocalBgOverride({ key: targetBg.key, image: targetBg.image, missionId: mission.mission_id });
       }
     }
 

@@ -41,6 +41,13 @@ import galleryMission14MobileBg from '@/assets/backgrounds/gallery_mission14_mob
 import galleryMission14aMobileBg from '@/assets/backgrounds/gallery_mission14a_mobile_bg.webp';
 import galleryMission14bMobileBg from '@/assets/backgrounds/gallery_mission14b_mobile_bg.webp';
 import galleryMainStylizedV4 from '@/assets/backgrounds/gallery_main_stylized_v4.webp';
+// Tie-breaker T14 baked backgrounds
+import galleryTie14DeskBg from '@/assets/backgrounds/gallery_tie14_desk_bg.webp';
+import galleryTie14aDeskBg from '@/assets/backgrounds/gallery_tie14a_desk_bg.webp';
+import galleryTie14bDeskBg from '@/assets/backgrounds/gallery_tie14b_desk_bg.webp';
+import galleryTie14MobileBg from '@/assets/backgrounds/gallery_tie14_mobile_bg.webp';
+import galleryTie14aMobileBg from '@/assets/backgrounds/gallery_tie14a_mobile_bg.webp';
+import galleryTie14bMobileBg from '@/assets/backgrounds/gallery_tie14b_mobile_bg.webp';
 import galleryMission15aBg from '@/assets/backgrounds/gallery_mission15a_bg.webp';
 import galleryMission15bBg from '@/assets/backgrounds/gallery_mission15b_bg.webp';
 // Mission 15 mobile baked backgrounds
@@ -329,6 +336,15 @@ const backgroundAssets: Record<string, string> = {
   // Doorway park view (Mission 03, Tie-breaker T14)
   studio_doorway_park_view_bg: studioDoorwayParkBg,
   studio_doorway_park_view_v5: studioDoorwayParkBg,
+  // Tie-breaker T14 baked backgrounds
+  gallery_tie14_desk_bg: galleryTie14DeskBg,
+  gallery_tie14a_desk_bg: galleryTie14aDeskBg,
+  gallery_tie14b_desk_bg: galleryTie14bDeskBg,
+  gallery_tie14a_bg: galleryTie14aDeskBg,
+  gallery_tie14b_bg: galleryTie14bDeskBg,
+  gallery_tie14_mobile_bg: galleryTie14MobileBg,
+  gallery_tie14a_mobile_bg: galleryTie14aMobileBg,
+  gallery_tie14b_mobile_bg: galleryTie14bMobileBg,
   
   // Mission 04 background
   gallery_mission4_bg: galleryMission4Bg,
@@ -569,6 +585,13 @@ const mobilePortraitBackgrounds: Record<string, string> = {
    gallery_mission15_mobile_bg: galleryMission15MobileBg,
    gallery_mission15a_mobile_bg: galleryMission15aMobileBg,
    gallery_mission15b_mobile_bg: galleryMission15bMobileBg,
+   // Tie-breaker T14
+   gallery_tie14_desk_bg: galleryTie14MobileBg,
+   gallery_tie14_mobile_bg: galleryTie14MobileBg,
+   gallery_tie14a_mobile_bg: galleryTie14aMobileBg,
+   gallery_tie14b_mobile_bg: galleryTie14bMobileBg,
+   gallery_tie14a_bg: galleryTie14aMobileBg,
+   gallery_tie14b_bg: galleryTie14bMobileBg,
 };
 
 export function getMobilePortraitBackground(bgKey: string): string | null {
