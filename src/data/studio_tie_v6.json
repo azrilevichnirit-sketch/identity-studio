@@ -212,13 +212,13 @@
     "bg_override": "studio_exterior_bg",
     "next_bg_override_a": "gallery_tie13a_bg",
     "next_bg_override_b": "gallery_tie13b_bg",
-    "task_heb": "החלטנו להתרחב מעבר לסטודיו! מה יהיה המהלך הבא שלנו?",
+    "task_heb": "הסטודיו שלנו חוגג שנה - ואיזו שנה זו הייתה. אנחנו רוצים לעשות משהו מיוחד. יש המלצות?",
     "option_a_code": "s",
     "option_a_asset": "studio_tie_13_a",
-    "option_a_tooltip_heb": "מיזם קהילתי בר-קיימה",
+    "option_a_tooltip_heb": "מרחב החלפה קהילתי",
     "option_b_code": "e",
     "option_b_asset": "studio_tie_13_b",
-    "option_b_tooltip_heb": "חנות דגל ממותגת"
+    "option_b_tooltip_heb": "חנות פופאפ"
   },
   {
     "world": "studio",
