@@ -210,6 +210,15 @@ export function VisualPlayScreen({
       preloadBackground('gallery_mission14a_mobile_bg');
       preloadBackground('gallery_mission14b_mobile_bg');
     }
+    // Preload tie-breaker T14 baked backgrounds
+    if (mission.mission_id === 'studio_tie_14' || mission.mission_id === 'studio_tie_13') {
+      preloadBackground('gallery_tie14_desk_bg');
+      preloadBackground('gallery_tie14a_desk_bg');
+      preloadBackground('gallery_tie14b_desk_bg');
+      preloadBackground('gallery_tie14_mobile_bg');
+      preloadBackground('gallery_tie14a_mobile_bg');
+      preloadBackground('gallery_tie14b_mobile_bg');
+    }
   }, [mission.mission_id]);
 
   // Track if we're transitioning from Mission 7 (need to preserve bg during fixation)
