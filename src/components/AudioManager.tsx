@@ -2,13 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
 
 interface AudioManagerProps {
-  /** Whether the game is in a phase where music should play */
   isPlaying: boolean;
 }
 
-/**
- * AudioManager - plays background music in a loop during gameplay with mute toggle.
- */
 export function AudioManager({ isPlaying }: AudioManagerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [muted, setMuted] = useState(false);
@@ -39,7 +35,6 @@ export function AudioManager({ isPlaying }: AudioManagerProps) {
     }
   }, [isPlaying, muted]);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (audioRef.current) {
@@ -55,9 +50,18 @@ export function AudioManager({ isPlaying }: AudioManagerProps) {
     <button
       onClick={() => setMuted((m) => !m)}
       aria-label={muted ? 'Unmute music' : 'Mute music'}
-      className="fixed top-4 left-4 z-50 p-2 rounded-full bg-black/40 backdrop-blur-sm text-white/80 hover:text-white hover:bg-black/60 transition-all"
+      className="fixed top-3 left-3 z-[9999] w-10 h-10 flex items-center justify-center rounded-full shadow-lg transition-all active:scale-90"
+      style={{
+        background: 'radial-gradient(circle at 30% 30%, #4a4a4a, #1a1a1a)',
+        border: '2px solid rgba(255,255,255,0.15)',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)',
+      }}
     >
-      {muted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+      {muted ? (
+        <VolumeX size={18} className="text-red-400 drop-shadow-sm" />
+      ) : (
+        <Volume2 size={18} className="text-white/90 drop-shadow-sm" />
+      )}
     </button>
   );
 }
