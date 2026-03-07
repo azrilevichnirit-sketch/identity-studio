@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Volume2, VolumeX } from 'lucide-react';
 
 interface AudioManagerProps {
   /** Whether the game is in a phase where music should play */
@@ -6,10 +7,11 @@ interface AudioManagerProps {
 }
 
 /**
- * AudioManager - plays background music in a loop during gameplay.
+ * AudioManager - plays background music in a loop during gameplay with mute toggle.
  */
 export function AudioManager({ isPlaying }: AudioManagerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [muted, setMuted] = useState(false);
 
   useEffect(() => {
     if (!audioRef.current) {
@@ -21,11 +23,10 @@ export function AudioManager({ isPlaying }: AudioManagerProps) {
 
     const audio = audioRef.current;
 
-    if (isPlaying) {
+    if (isPlaying && !muted) {
       audio.play().catch(() => {
-        // Autoplay blocked — will start on next user interaction
         const unlock = () => {
-          audio.play().catch(() => {});
+          if (!muted) audio.play().catch(() => {});
           document.removeEventListener('click', unlock);
           document.removeEventListener('touchstart', unlock);
         };
@@ -34,13 +35,9 @@ export function AudioManager({ isPlaying }: AudioManagerProps) {
       });
     } else {
       audio.pause();
-      audio.currentTime = 0;
+      if (!isPlaying) audio.currentTime = 0;
     }
-
-    return () => {
-      // cleanup only on unmount
-    };
-  }, [isPlaying]);
+  }, [isPlaying, muted]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -52,5 +49,15 @@ export function AudioManager({ isPlaying }: AudioManagerProps) {
     };
   }, []);
 
-  return null;
+  if (!isPlaying) return null;
+
+  return (
+    <button
+      onClick={() => setMuted((m) => !m)}
+      aria-label={muted ? 'Unmute music' : 'Mute music'}
+      className="fixed top-4 left-4 z-50 p-2 rounded-full bg-black/40 backdrop-blur-sm text-white/80 hover:text-white hover:bg-black/60 transition-all"
+    >
+      {muted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+    </button>
+  );
 }
