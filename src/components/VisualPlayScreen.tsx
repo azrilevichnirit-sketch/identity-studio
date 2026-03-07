@@ -699,7 +699,7 @@ export function VisualPlayScreen({
     : scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isWorkshopLocked && !isCalibrationBgOverrideMode
-    ? 'studio_in_workshop_bg'
+    ? (isMobile ? 'gallery_mission3_mobile_bg' : 'studio_in_workshop_bg')
     : displayBgKey;
 
   const lockedBg = isCalibrationBgOverrideMode && m7CalibrationBg
