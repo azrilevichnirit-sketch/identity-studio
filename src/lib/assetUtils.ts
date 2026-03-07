@@ -62,13 +62,34 @@ import galleryTie03bMobileBg from '@/assets/backgrounds/gallery_tie03b_mobile_bg
 const galleryTie03DeskBg = galleryMainStylizedWhite;
 const galleryTie03aDeskBg = galleryMainStylizedWhite;
 const galleryTie03bDeskBg = galleryMainStylizedWhite;
-// Tie-breaker T4 baked backgrounds (partial mobile, desktop uses existing bg)
+// Tie-breaker T4 baked backgrounds
+import galleryTie04MobileBg from '@/assets/backgrounds/gallery_tie04_mobile_bg.webp';
 import galleryTie04aMobileBg from '@/assets/backgrounds/gallery_tie04a_mobile_bg.webp';
+import galleryTie04bMobileBg from '@/assets/backgrounds/gallery_tie04b_mobile_bg.webp';
 const galleryTie04DeskBg = galleryMainStylizedWhite;
 const galleryTie04aDeskBg = galleryMainStylizedWhite;
 const galleryTie04bDeskBg = galleryMainStylizedWhite;
-const galleryTie04MobileBg = galleryMainStylizedWhite;
-const galleryTie04bMobileBg = galleryMainStylizedWhite;
+// Tie-breaker T5 baked backgrounds (mobile only for now)
+import galleryTie05MobileBg from '@/assets/backgrounds/gallery_tie05_mobile_bg.webp';
+import galleryTie05aMobileBg from '@/assets/backgrounds/gallery_tie05a_mobile_bg.webp';
+import galleryTie05bMobileBg from '@/assets/backgrounds/gallery_tie05b_mobile_bg.webp';
+const galleryTie05DeskBg = galleryMainStylizedWhite;
+const galleryTie05aDeskBg = galleryMainStylizedWhite;
+const galleryTie05bDeskBg = galleryMainStylizedWhite;
+// Tie-breaker T6 baked backgrounds (mobile only for now)
+import galleryTie06MobileBg from '@/assets/backgrounds/gallery_tie06_mobile_bg.webp';
+import galleryTie06aMobileBg from '@/assets/backgrounds/gallery_tie06a_mobile_bg.webp';
+import galleryTie06bMobileBg from '@/assets/backgrounds/gallery_tie06b_mobile_bg.webp';
+const galleryTie06DeskBg = galleryMainStylizedWhite;
+const galleryTie06aDeskBg = galleryMainStylizedWhite;
+const galleryTie06bDeskBg = galleryMainStylizedWhite;
+// Tie-breaker T7 baked backgrounds (mobile only, no base bg uploaded)
+import galleryTie07aMobileBg from '@/assets/backgrounds/gallery_tie07a_mobile_bg.webp';
+import galleryTie07bMobileBg from '@/assets/backgrounds/gallery_tie07b_mobile_bg.webp';
+const galleryTie07DeskBg = galleryMainStylizedWhite;
+const galleryTie07aDeskBg = galleryMainStylizedWhite;
+const galleryTie07bDeskBg = galleryMainStylizedWhite;
+const galleryTie07MobileBg = galleryMainStylizedWhite;
 // Tie-breaker T14 baked backgrounds – placeholder aliases until real assets are uploaded
 // TODO: Replace these with actual T14 background imports once files are provided
 const galleryTie14DeskBg = studioDoorwayParkBg;
