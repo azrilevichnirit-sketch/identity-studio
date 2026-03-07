@@ -453,7 +453,7 @@ const Index = () => {
 
   return (
     <>
-      <AudioManager isPlaying={['intro', 'main', 'tie', 'tie1', 'tie2'].includes(state.phase)} />
+      
       <GameStage>
         {state.phase === 'dimension' && (
           <DimensionSelect onSelect={handleDimensionSelect} />
