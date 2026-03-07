@@ -49,6 +49,13 @@ const galleryTie14bDeskBg = studioDoorwayParkBg;
 const galleryTie14MobileBg = studioDoorwayParkBg;
 const galleryTie14aMobileBg = studioDoorwayParkBg;
 const galleryTie14bMobileBg = studioDoorwayParkBg;
+// Tie-breaker T15 baked backgrounds – placeholder aliases until real assets are uploaded
+const galleryTie15DeskBg = galleryMainStylizedWhite;
+const galleryTie15aDeskBg = galleryMainStylizedWhite;
+const galleryTie15bDeskBg = galleryMainStylizedWhite;
+const galleryTie15MobileBg = galleryMainStylizedWhite;
+const galleryTie15aMobileBg = galleryMainStylizedWhite;
+const galleryTie15bMobileBg = galleryMainStylizedWhite;
 import galleryMission15aBg from '@/assets/backgrounds/gallery_mission15a_bg.webp';
 import galleryMission15bBg from '@/assets/backgrounds/gallery_mission15b_bg.webp';
 // Mission 15 mobile baked backgrounds
