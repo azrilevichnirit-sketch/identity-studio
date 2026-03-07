@@ -336,6 +336,15 @@ const backgroundAssets: Record<string, string> = {
   // Doorway park view (Mission 03, Tie-breaker T14)
   studio_doorway_park_view_bg: studioDoorwayParkBg,
   studio_doorway_park_view_v5: studioDoorwayParkBg,
+  // Tie-breaker T14 baked backgrounds
+  gallery_tie14_desk_bg: galleryTie14DeskBg,
+  gallery_tie14a_desk_bg: galleryTie14aDeskBg,
+  gallery_tie14b_desk_bg: galleryTie14bDeskBg,
+  gallery_tie14a_bg: galleryTie14aDeskBg,
+  gallery_tie14b_bg: galleryTie14bDeskBg,
+  gallery_tie14_mobile_bg: galleryTie14MobileBg,
+  gallery_tie14a_mobile_bg: galleryTie14aMobileBg,
+  gallery_tie14b_mobile_bg: galleryTie14bMobileBg,
   
   // Mission 04 background
   gallery_mission4_bg: galleryMission4Bg,
