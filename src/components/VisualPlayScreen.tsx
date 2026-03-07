@@ -260,6 +260,11 @@ export function VisualPlayScreen({
   const previousBgOverride = useMemo(() => {
     // TIE-BREAKER MISSIONS: Use bg_override if defined, otherwise default to gallery
     if (mission.phase === 'tb') {
+      // T14: platform-aware base background (baked)
+      if (mission.mission_id === 'studio_tie_14') {
+        const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 821;
+        return isDesktop ? 'gallery_tie14_desk_bg' : 'gallery_tie14_mobile_bg';
+      }
       if (mission.bg_override) {
         return mission.bg_override;
       }
