@@ -1686,7 +1686,8 @@ export function VisualPlayScreen({
     const isM13Baked = localPlacement?.missionId === 'studio_13';
     const isM14Baked = localPlacement?.missionId === 'studio_14';
     const isM15Baked = localPlacement?.missionId === 'studio_15';
-    const isBakedMission = isDesktopBakedMainMission || isM11BakedB || isM11BakedA || isM1MobileBaked || isM2MobileBaked || isM3MobileBaked || isM4MobileBaked || isM5BakedB || isM6MobileBaked || isM7Baked || isM8Baked || isM9MobileBaked || isM12Baked || isM13Baked || isM14Baked || isM15Baked;
+    const isTieBreakerBaked = localPlacement?.missionId.includes('_tie_') ?? false;
+    const isBakedMission = isTieBreakerBaked || isDesktopBakedMainMission || isM11BakedB || isM11BakedA || isM1MobileBaked || isM2MobileBaked || isM3MobileBaked || isM4MobileBaked || isM5BakedB || isM6MobileBaked || isM7Baked || isM8Baked || isM9MobileBaked || isM12Baked || isM13Baked || isM14Baked || isM15Baked;
     if (localPlacement && localPlacement.missionId !== 'studio_10' && !isBakedMission) {
       placements.push({
         missionId: localPlacement.missionId,
