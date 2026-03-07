@@ -698,8 +698,6 @@ export function VisualPlayScreen({
     ? 'studio_exterior_bg'
     : scopedLocalBgOverride
     ? scopedLocalBgOverride.key
-    : isWorkshopLocked && scopedLocalBgOverride
-    ? scopedLocalBgOverride.key
     : isWorkshopLocked && !isCalibrationBgOverrideMode
     ? 'studio_in_workshop_bg'
     : displayBgKey;
