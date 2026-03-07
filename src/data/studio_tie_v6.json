@@ -74,6 +74,8 @@
     "pair_sequence": 1,
     "quest_id": "studio_tie_05",
     "bg_override": "gallery_main_stylized_white_v1",
+    "next_bg_override_a": "gallery_tie05a_bg",
+    "next_bg_override_b": "gallery_tie05b_bg",
     "task_heb": "היום טס והמשימות נערמות. אני מרגיש קצת אבוד איך נחזיר את השליטה בסטודיו?",
     "option_a_code": "r",
     "option_a_asset": "studio_tie_05_a",
