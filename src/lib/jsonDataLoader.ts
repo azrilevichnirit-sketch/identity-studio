@@ -172,6 +172,11 @@ const BG_KEY_ALIASES: Record<string, string[]> = {
   gallery_main_stylized_v4: ['gallery_main_stylized'],
   gallery_mission15a_bg: ['gallery_main_stylized_v4', 'gallery_main_stylized'],
   gallery_mission15b_bg: ['gallery_main_stylized_v4', 'gallery_main_stylized'],
+  gallery_tie14a_bg: ['gallery_tie14a_desk_bg'],
+  gallery_tie14a_desk_bg: ['gallery_tie14a_bg'],
+  gallery_tie14b_bg: ['gallery_tie14b_desk_bg'],
+  gallery_tie14b_desk_bg: ['gallery_tie14b_bg'],
+  gallery_tie14_desk_bg: ['studio_doorway_park_view_bg', 'studio_doorway_park_view_v5'],
 };
 
 function getBgKeyCandidates(bgKey: string): string[] {
