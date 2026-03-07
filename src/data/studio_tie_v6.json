@@ -207,13 +207,15 @@
     "pair_sequence": 1,
     "quest_id": "studio_tie_14",
     "bg_override": "studio_doorway_park_view_bg",
-    "task_heb": "הסטודיו עמוס במבקרים ונוצר בלגן בחוץ. איך ננהל את זה?",
+    "task_heb": "עוד שעתיים יוצאים לסופ\"ש ארוך. מה עושים עד אז?",
+    "next_bg_override_a": "gallery_tie14a_bg",
+    "next_bg_override_b": "gallery_tie14b_bg",
     "option_a_code": "s",
     "option_a_asset": "studio_tie_14_a",
-    "option_a_tooltip_heb": "אזור ישיבה בדלפק הקבלה",
+    "option_a_tooltip_heb": "משחק כדורגל לצוות",
     "option_b_code": "c",
     "option_b_asset": "studio_tie_14_b",
-    "option_b_tooltip_heb": "אפליקציית ניהול תורים"
+    "option_b_tooltip_heb": "מערכת צ'קליסט"
   },
   {
     "world": "studio",
