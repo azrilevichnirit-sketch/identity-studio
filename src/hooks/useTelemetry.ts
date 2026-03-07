@@ -420,6 +420,12 @@ export function useTelemetry() {
       identityCode: string,
       tieBreakersPlayed: number,
     ): Promise<{ success: boolean }> => {
+      const answeredCount = Object.keys(missionAnsweredAtByIdRef.current).length;
+      if (answeredCount < 15) {
+        console.warn(`[Telemetry] Only ${answeredCount}/15 missions answered — blocking behavioral webhook send`);
+        return { success: false };
+      }
+
       if (behavioralSentRef.current) {
         console.log("[Telemetry] Behavioral already sent for this run, skipping duplicate send");
         return { success: true };
