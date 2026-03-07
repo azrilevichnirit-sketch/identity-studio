@@ -19,7 +19,7 @@ const PLACEMENT_BG: Record<string, { a: string; b: string }> = {
   studio_12: { a: "gallery_main_desktop", b: "gallery_main_desktop" },
   studio_13: { a: "gallery_main_stylized", b: "gallery_main_stylized" },
   studio_14: { a: "studio_in_storage_bg", b: "studio_in_storage_bg" },
-  studio_15: { a: "gallery_main_stylized", b: "gallery_main_stylized" },
+  studio_15: { a: "gallery_main_stylized_v4", b: "gallery_main_stylized_v4" },
 };
 
 // Deep parity base (mirrors VisualPlayScreen logic)
