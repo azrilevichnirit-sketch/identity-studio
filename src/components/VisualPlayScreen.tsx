@@ -641,7 +641,7 @@ export function VisualPlayScreen({
     : isTieBreakerLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key // Tie-breaker per-tool bg switch (T4, T7, T8)
     : isTieBreakerLocked
-    ? (mission.bg_override || TIE_BREAKER_BG_KEY)
+    ? (previousBgOverride || mission.bg_override || TIE_BREAKER_BG_KEY)
     : isWhiteWallsLocked
     ? (mission.bg_override || PAINTED_WALLS_BG_KEY)
     : isBoxesBgLocked
