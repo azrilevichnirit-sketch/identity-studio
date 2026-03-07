@@ -219,6 +219,15 @@ export function VisualPlayScreen({
       preloadBackground('gallery_tie14a_mobile_bg');
       preloadBackground('gallery_tie14b_mobile_bg');
     }
+    // Preload tie-breaker T15 baked backgrounds
+    if (mission.mission_id === 'studio_tie_15' || mission.mission_id === 'studio_tie_14') {
+      preloadBackground('gallery_tie15_desk_bg');
+      preloadBackground('gallery_tie15a_desk_bg');
+      preloadBackground('gallery_tie15b_desk_bg');
+      preloadBackground('gallery_tie15_mobile_bg');
+      preloadBackground('gallery_tie15a_mobile_bg');
+      preloadBackground('gallery_tie15b_mobile_bg');
+    }
   }, [mission.mission_id]);
 
   // Track if we're transitioning from Mission 7 (need to preserve bg during fixation)
@@ -273,6 +282,11 @@ export function VisualPlayScreen({
       if (mission.mission_id === 'studio_tie_14') {
         const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 821;
         return isDesktop ? 'gallery_tie14_desk_bg' : 'gallery_tie14_mobile_bg';
+      }
+      // T15: platform-aware base background (baked)
+      if (mission.mission_id === 'studio_tie_15') {
+        const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 821;
+        return isDesktop ? 'gallery_tie15_desk_bg' : 'gallery_tie15_mobile_bg';
       }
       if (mission.bg_override) {
         return mission.bg_override;

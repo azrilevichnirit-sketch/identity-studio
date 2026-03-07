@@ -49,6 +49,13 @@ const galleryTie14bDeskBg = studioDoorwayParkBg;
 const galleryTie14MobileBg = studioDoorwayParkBg;
 const galleryTie14aMobileBg = studioDoorwayParkBg;
 const galleryTie14bMobileBg = studioDoorwayParkBg;
+// Tie-breaker T15 baked backgrounds – placeholder aliases until real assets are uploaded
+const galleryTie15DeskBg = galleryMainStylizedWhite;
+const galleryTie15aDeskBg = galleryMainStylizedWhite;
+const galleryTie15bDeskBg = galleryMainStylizedWhite;
+const galleryTie15MobileBg = galleryMainStylizedWhite;
+const galleryTie15aMobileBg = galleryMainStylizedWhite;
+const galleryTie15bMobileBg = galleryMainStylizedWhite;
 import galleryMission15aBg from '@/assets/backgrounds/gallery_mission15a_bg.webp';
 import galleryMission15bBg from '@/assets/backgrounds/gallery_mission15b_bg.webp';
 // Mission 15 mobile baked backgrounds
@@ -346,6 +353,15 @@ const backgroundAssets: Record<string, string> = {
   gallery_tie14_mobile_bg: galleryTie14MobileBg,
   gallery_tie14a_mobile_bg: galleryTie14aMobileBg,
   gallery_tie14b_mobile_bg: galleryTie14bMobileBg,
+  // Tie-breaker T15 baked backgrounds
+  gallery_tie15_desk_bg: galleryTie15DeskBg,
+  gallery_tie15a_desk_bg: galleryTie15aDeskBg,
+  gallery_tie15b_desk_bg: galleryTie15bDeskBg,
+  gallery_tie15a_bg: galleryTie15aDeskBg,
+  gallery_tie15b_bg: galleryTie15bDeskBg,
+  gallery_tie15_mobile_bg: galleryTie15MobileBg,
+  gallery_tie15a_mobile_bg: galleryTie15aMobileBg,
+  gallery_tie15b_mobile_bg: galleryTie15bMobileBg,
   
   // Mission 04 background
   gallery_mission4_bg: galleryMission4Bg,
@@ -593,6 +609,13 @@ const mobilePortraitBackgrounds: Record<string, string> = {
    gallery_tie14b_mobile_bg: galleryTie14bMobileBg,
    gallery_tie14a_bg: galleryTie14aMobileBg,
    gallery_tie14b_bg: galleryTie14bMobileBg,
+   // Tie-breaker T15
+   gallery_tie15_desk_bg: galleryTie15MobileBg,
+   gallery_tie15_mobile_bg: galleryTie15MobileBg,
+   gallery_tie15a_mobile_bg: galleryTie15aMobileBg,
+   gallery_tie15b_mobile_bg: galleryTie15bMobileBg,
+   gallery_tie15a_bg: galleryTie15aMobileBg,
+   gallery_tie15b_bg: galleryTie15bMobileBg,
 };
 
 export function getMobilePortraitBackground(bgKey: string): string | null {
