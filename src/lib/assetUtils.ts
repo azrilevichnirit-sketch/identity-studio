@@ -724,6 +724,47 @@ const panoramicBackgrounds: Record<string, string> = {
   gallery_mission4a_mobile_bg: galleryMission4aMobileBg,
   gallery_mission4b_m_mobile_bg: galleryMission4bMMobileBg,
   gallery_mission4b_f_mobile_bg: galleryMission4bFMobileBg,
+  // Main mission baked mobile backgrounds (panoramic with panning)
+  gallery_mission1_mobile_bg: galleryMission1MobileBg,
+  gallery_mission1a_mobile_bg: galleryMission1aMobileBg,
+  gallery_mission1b_mobile_bg: galleryMission1bMobileBg,
+  gallery_mission2a_mobile_bg: galleryMission2aMobileBg,
+  gallery_mission2b_mobile_bg: galleryMission2bMobileBg,
+  gallery_mission3a_mobile_bg: galleryMission3aMobileBg,
+  gallery_mission3b_mobile_bg: galleryMission3bMobileBg,
+  gallery_mission5b_mobile_bg: galleryMission5bMobileBg,
+  gallery_mission6_mobile_bg: galleryMission6MobileBg,
+  gallery_mission6a_mobile_bg: galleryMission6aMobileBg,
+  gallery_mission6b_mobile_bg: galleryMission6bMobileBg,
+  gallery_mission7_mobile_bg: galleryMission7MobileBg,
+  gallery_mission7a_mobile_bg: galleryMission7aMobileBg,
+  gallery_mission7b_mobile_bg: galleryMission7bMobileBg,
+  gallery_mission8_mobile_bg: galleryMission8MobileBg,
+  gallery_mission8a_m_mobile_bg: galleryMission8aMMobileBg,
+  gallery_mission8a_f_mobile_bg: galleryMission8aFMobileBg,
+  gallery_mission8b_m_mobile_bg: galleryMission8bMMobileBg,
+  gallery_mission8b_f_mobile_bg: galleryMission8bFMobileBg,
+  gallery_mission9_mobile_bg: galleryMission9MobileBg,
+  gallery_mission9a_mobile_bg: galleryMission9aMobileBg,
+  gallery_mission9b_mobile_bg: galleryMission9bMobileBg,
+  gallery_mission10_mobile_bg: galleryMission10MobileBg,
+  gallery_mission10a_mobile_bg: galleryMission10aMobileBg,
+  gallery_mission10b_mobile_bg: galleryMission10bMobileBg,
+  gallery_mission11a_f_mobile_bg: galleryMission11aFMobileBg,
+  gallery_mission11a_m_mobile_bg: galleryMission11aMMobileBg,
+  gallery_mission11b_mobile_bg: galleryMission11bMobileBg,
+  gallery_mission12_mobile_bg: galleryMission12MobileBg,
+  gallery_mission12a_mobile_bg: galleryMission12aMobileBg,
+  gallery_mission12b_mobile_bg: galleryMission12bMobileBg,
+  gallery_mission13_mobile_bg: galleryMission13MobileBg,
+  gallery_mission13a_mobile_bg: galleryMission13aMobileBg,
+  gallery_mission13b_mobile_bg: galleryMission13bMobileBg,
+  gallery_mission14_mobile_bg: galleryMission14MobileBg,
+  gallery_mission14a_mobile_bg: galleryMission14aMobileBg,
+  gallery_mission14b_mobile_bg: galleryMission14bMobileBg,
+  gallery_mission15_mobile_bg: galleryMission15MobileBg,
+  gallery_mission15a_mobile_bg: galleryMission15aMobileBg,
+  gallery_mission15b_mobile_bg: galleryMission15bMobileBg,
   // Tie-breaker T1 panoramic
   gallery_tie01_desk_bg: galleryTie01MobileBg,
   gallery_tie01_mobile_bg: galleryTie01MobileBg,
@@ -835,85 +876,8 @@ export function getPanoramicBackground(bgKey: string): string | null {
   return panoramicBackgrounds[bgKey] || null;
 }
 
-// Portrait mobile backgrounds (3072x4096) — used instead of panoramic on mobile
-// When a portrait version exists, the mobile view uses it directly (no panning needed)
+// Portrait mobile backgrounds — currently empty; all mobile backgrounds use panoramic panning
 const mobilePortraitBackgrounds: Record<string, string> = {
-   // Mission 01: base portrait + baked results
-   gallery_main_stylized_v3: galleryCrackedWallsMobile,
-   gallery_main_stylized_v5: galleryCrackedWallsMobile,
-   studio_entry_inside_bg: galleryCrackedWallsMobile,
-   studio_front_bg: galleryCrackedWallsMobile,
-   studio_in_gallery_bg: galleryCrackedWallsMobile,
-   gallery_mission1_mobile_bg: galleryMission1MobileBg,
-   gallery_mission1a_mobile_bg: galleryMission1aMobileBg,
-   gallery_mission1b_mobile_bg: galleryMission1bMobileBg,
-   // Mission 02: base portrait + baked results
-   gallery_main_boxes_v1: galleryBoxesMobile,
-   gallery_mission2a_mobile_bg: galleryMission2aMobileBg,
-   gallery_mission2b_mobile_bg: galleryMission2bMobileBg,
-  // Mission 03: doorway park view
-  studio_doorway_park_view_bg: galleryMission3MobileBg,
-  studio_doorway_park_view_v5: galleryMission3MobileBg,
-  // Mission 03 baked results (mobile only)
-  gallery_mission3a_mobile_bg: galleryMission3aMobileBg,
-  gallery_mission3b_mobile_bg: galleryMission3bMobileBg,
-  // Mission 04: base portrait + baked results (mobile only)
-  gallery_mission4_bg: galleryMission4MobileBg,
-  gallery_mission4a_mobile_bg: galleryMission4aMobileBg,
-  gallery_mission4b_m_mobile_bg: galleryMission4bMMobileBg,
-  gallery_mission4b_f_mobile_bg: galleryMission4bFMobileBg,
-  // Mission 05: base portrait + baked Tool B result (mobile only)
-  studio_exterior_bg: galleryMission5MobileBg,
-  studio_exterior_park_bg: galleryMission5MobileBg,
-  gallery_mission5b_mobile_bg: galleryMission5bMobileBg,
-  // Mission 06: base portrait + baked results (mobile only)
-  gallery_mission6_bg: galleryMission6MobileBg,
-  gallery_mission6_mobile_bg: galleryMission6MobileBg,
-  gallery_mission6a_mobile_bg: galleryMission6aMobileBg,
-  gallery_mission6b_mobile_bg: galleryMission6bMobileBg,
-   // Mission 07: base portrait + baked results (mobile only)
-   studio_in_entrance_view_bg: galleryMission7MobileBg,
-   gallery_mission7_mobile_bg: galleryMission7MobileBg,
-   gallery_mission7a_mobile_bg: galleryMission7aMobileBg,
-   gallery_mission7b_mobile_bg: galleryMission7bMobileBg,
-   // Mission 08: base portrait + gender-specific baked results (mobile only)
-   gallery_mission8_bg: galleryMission8MobileBg,
-   gallery_mission8_mobile_bg: galleryMission8MobileBg,
-   gallery_mission8a_m_mobile_bg: galleryMission8aMMobileBg,
-   gallery_mission8a_f_mobile_bg: galleryMission8aFMobileBg,
-   gallery_mission8b_m_mobile_bg: galleryMission8bMMobileBg,
-    gallery_mission8b_f_mobile_bg: galleryMission8bFMobileBg,
-   // Mission 09: base portrait + baked results (mobile only)
-   gallery_mission9_mobile_bg: galleryMission9MobileBg,
-   gallery_mission9a_mobile_bg: galleryMission9aMobileBg,
-   gallery_mission9b_mobile_bg: galleryMission9bMobileBg,
-   // Mission 10: base portrait + baked results (mobile only)
-   gallery_mission10_bg: galleryMission10MobileBg,
-   gallery_mission10_mobile_bg: galleryMission10MobileBg,
-   gallery_mission10a_bg: galleryMission10aMobileBg,
-   gallery_mission10a_mobile_bg: galleryMission10aMobileBg,
-   gallery_mission10b_bg: galleryMission10bMobileBg,
-   gallery_mission10b_mobile_bg: galleryMission10bMobileBg,
-   // Mission 11: gender-specific Tool A + Tool B (mobile only)
-   gallery_mission11a_f_mobile_bg: galleryMission11aFMobileBg,
-   gallery_mission11a_m_mobile_bg: galleryMission11aMMobileBg,
-   gallery_mission11b_mobile_bg: galleryMission11bMobileBg,
-   // Mission 12
-   gallery_mission12_mobile_bg: galleryMission12MobileBg,
-   gallery_mission12a_mobile_bg: galleryMission12aMobileBg,
-   gallery_mission12b_mobile_bg: galleryMission12bMobileBg,
-   // Mission 13
-   gallery_mission13_mobile_bg: galleryMission13MobileBg,
-   gallery_mission13a_mobile_bg: galleryMission13aMobileBg,
-   gallery_mission13b_mobile_bg: galleryMission13bMobileBg,
-   // Mission 14
-   gallery_mission14_mobile_bg: galleryMission14MobileBg,
-   gallery_mission14a_mobile_bg: galleryMission14aMobileBg,
-   gallery_mission14b_mobile_bg: galleryMission14bMobileBg,
-   // Mission 15
-   gallery_mission15_mobile_bg: galleryMission15MobileBg,
-   gallery_mission15a_mobile_bg: galleryMission15aMobileBg,
-   gallery_mission15b_mobile_bg: galleryMission15bMobileBg,
 };
 
 export function getMobilePortraitBackground(bgKey: string): string | null {
