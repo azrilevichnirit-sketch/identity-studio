@@ -87,7 +87,7 @@ function splitByBoldHeadings(content: string): ParsedSection[] {
   return blocks.filter((b) => b.title && b.content);
 }
 
-function parseResultText(text: string): { intro: string; sectionHeader: string; sections: ParsedSection[] } {
+function parseResultText(text: string): { intro: string; sectionHeader: string; sections: ParsedSection[]; outro: string } {
   const normalized = text.replace(/\r\n/g, '\n').trim();
   const parts = normalized.split(/\n(?=##\s+(?!#))/);
 
@@ -96,6 +96,7 @@ function parseResultText(text: string): { intro: string; sectionHeader: string; 
 
   let sectionHeader = '';
   const sections: ParsedSection[] = [];
+  let outro = '';
 
   for (let i = 0; i < headingParts.length; i++) {
     const part = headingParts[i].trim();
@@ -129,6 +130,12 @@ function parseResultText(text: string): { intro: string; sectionHeader: string; 
       .filter((s) => s.title && s.content);
 
     if (h3Sections.length > 0) {
+      // Check if there's trailing content after the last ### section (outro)
+      const lastH3End = contentLines.lastIndexOf(h3Sections[h3Sections.length - 1].content) + h3Sections[h3Sections.length - 1].content.length;
+      const trailing = contentLines.substring(lastH3End).trim();
+      if (trailing) {
+        outro = trailing;
+      }
       sections.push(...h3Sections);
       continue;
     }
@@ -136,6 +143,13 @@ function parseResultText(text: string): { intro: string; sectionHeader: string; 
     // 2) Fallback: bold program headings (**...**)
     const boldSections = splitByBoldHeadings(contentLines);
     if (boldSections.length > 1) {
+      // Check for trailing content after the last bold section
+      const lastBoldContent = boldSections[boldSections.length - 1].content;
+      const lastBoldEnd = contentLines.lastIndexOf(lastBoldContent) + lastBoldContent.length;
+      const trailing = contentLines.substring(lastBoldEnd).trim();
+      if (trailing) {
+        outro = trailing;
+      }
       sections.push(...boldSections);
       continue;
     }
@@ -155,7 +169,40 @@ function parseResultText(text: string): { intro: string; sectionHeader: string; 
     }
   }
 
-  return { intro, sectionHeader, sections };
+  // Also check: if the last section's content ends with a standalone paragraph
+  // that looks like a closing statement, extract it as outro
+  if (!outro && sections.length > 0) {
+    const lastSection = sections[sections.length - 1];
+    const contentLines = lastSection.content.split('\n');
+    // Find last non-empty paragraph block (separated by blank lines)
+    const paragraphs: string[][] = [];
+    let current: string[] = [];
+    for (const line of contentLines) {
+      if (line.trim() === '') {
+        if (current.length > 0) {
+          paragraphs.push(current);
+          current = [];
+        }
+      } else {
+        current.push(line);
+      }
+    }
+    if (current.length > 0) paragraphs.push(current);
+
+    // If the last paragraph doesn't contain list items or headers, and the section has multiple paragraphs
+    if (paragraphs.length >= 2) {
+      const lastParagraph = paragraphs[paragraphs.length - 1].join('\n').trim();
+      const isClosing = !lastParagraph.startsWith('-') && !lastParagraph.startsWith('*') && !lastParagraph.startsWith('#');
+      if (isClosing && lastParagraph.length > 20 && lastParagraph.length < 200) {
+        outro = lastParagraph;
+        // Remove the outro from the last section's content
+        const outroStart = lastSection.content.lastIndexOf(lastParagraph);
+        lastSection.content = lastSection.content.substring(0, outroStart).trim();
+      }
+    }
+  }
+
+  return { intro, sectionHeader, sections, outro };
 }
 
 export function SummaryScreen({ state, countsFinal, leaders, resultText }: SummaryScreenProps) {
