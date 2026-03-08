@@ -311,7 +311,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
                                   {displayTitle}
                                 </span>
                                 {displaySubtitle && (
-                                  <span className="text-sm text-gray-500 line-clamp-1 group-has-[[data-state=open]]:hidden">
+                                  <span className="text-sm text-gray-500 line-clamp-1 group-data-[state=open]:hidden">
                                     {displaySubtitle}
                                   </span>
                                 )}
