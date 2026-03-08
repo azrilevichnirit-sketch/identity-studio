@@ -2592,6 +2592,7 @@ export function VisualPlayScreen({
               variant="a"
               isInfoActive={activeTooltip === 'a'}
               tooltipText={optionA.tooltip_heb || 'MISSING: option_a_tooltip_heb'}
+              showRing={showMissionFlash}
             />
             <ClickableToolTile
               key={`b-${mission.mission_id}`}
@@ -2601,6 +2602,7 @@ export function VisualPlayScreen({
               variant="b"
               isInfoActive={activeTooltip === 'b'}
               tooltipText={optionB.tooltip_heb || 'MISSING: option_b_tooltip_heb'}
+              showRing={showMissionFlash}
             />
           </div>
 
