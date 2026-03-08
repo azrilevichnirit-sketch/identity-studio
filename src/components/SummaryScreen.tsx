@@ -303,7 +303,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
                         <Accordion key={idx} type="multiple">
                           <AccordionItem
                             value={`program-${idx}`}
-                            className="border rounded-xl px-4 bg-white shadow-sm"
+                            className="border rounded-xl px-4 bg-white shadow-sm group"
                           >
                             <AccordionTrigger className="text-right hover:no-underline py-4">
                               <div className="flex flex-col items-start gap-1 text-right w-full">
@@ -311,7 +311,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
                                   {displayTitle}
                                 </span>
                                 {displaySubtitle && (
-                                  <span className="text-sm text-gray-500 line-clamp-1">
+                                  <span className="text-sm text-gray-500 line-clamp-1 group-has-[[data-state=open]]:hidden">
                                     {displaySubtitle}
                                   </span>
                                 )}
