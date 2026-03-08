@@ -234,8 +234,8 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
           style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 100px)' }}
         >
           {/* Logo */}
-          <div className="flex justify-start pt-2 px-4 md:px-8 w-full">
-            <img src={logoKinneret} alt="Kinneret Academy" className="h-24 md:h-28 object-contain" />
+          <div className="flex justify-start pt-1 px-4 md:px-8 w-full">
+            <img src={logoKinneret} alt="Kinneret Academy" className="h-28 md:h-32 object-contain" />
           </div>
 
           {/* Main card */}
