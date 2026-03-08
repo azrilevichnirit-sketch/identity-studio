@@ -97,7 +97,12 @@ const Index = () => {
   // Run starts when user actually begins gameplay (Start button)
   // so each new playthrough gets a fresh runId.
 
-
+  // Demo mode: jump straight to summary screen
+  useEffect(() => {
+    if (isDemoSummary) {
+      setPhase('summary');
+    }
+  }, [isDemoSummary, setPhase]);
   // Track mission shown when currentMission changes
   const lastTrackedMissionRef = useRef<string | null>(null);
   useEffect(() => {
