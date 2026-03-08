@@ -1381,16 +1381,15 @@ export function VisualPlayScreen({
     // ===== TIMING SEQUENCE =====
     // Tool -> Lock pulse -> Advance to next mission
     // The crossfade takes 800ms, so the player must wait at least 800ms + viewing time.
-    // Minimum: 800ms crossfade + 1200ms viewing = 2000ms
-    // Mission 01 Paint:  600ms lock -> 1000ms beat -> 2800ms advance
-    // Mission 01 Tool B: 200ms lock -> 2200ms advance
+    // All baked-bg missions: 80ms lock -> 2500ms advance
+    // Mission 01 Tool B: 200ms lock -> 2500ms advance
     // Mission 02:        80ms lock -> 2200ms advance 
-    // Mission 07/11:     80ms lock -> 2800ms advance (bg fixation)
-    // Mission 08 B:     80ms lock -> 3200ms advance (visitors appear + viewing)
+    // Mission 07/11:     80ms lock -> 2500ms advance (bg fixation)
+    // Mission 08 B:     80ms lock -> 3000ms advance (visitors appear + viewing)
     // Regular:           80ms lock -> 2200ms advance (800ms fade + ~1.3s viewing)
     // ===============================================
     
-    const lockDelayMs = isMission01Paint ? 600 : (isMission01ToolB ? 200 : 80);
+    const lockDelayMs = isMission01ToolB ? 200 : 80;
     const lockOnId = window.setTimeout(() => {
       setJustPlaced(`${mission.mission_id}-${variant}`);
       setLockPulseKey(`${mission.mission_id}-${variant}`);
