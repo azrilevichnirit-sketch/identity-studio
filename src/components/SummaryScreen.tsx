@@ -359,7 +359,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
 
                 {/* Program cards */}
                 {parsed.sections.length > 0 && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 items-start">
                     {parsed.sections.map((section, idx) => {
                       const isSameAsHeader = section.title === parsed.sectionHeader;
                       const displaySection = isSameAsHeader
