@@ -56,9 +56,8 @@ export function SpeechBubble({
     }
   }, [missionKey]);
 
-  // Handle idle reminder (desktop only)
+  // Handle idle reminder
   useEffect(() => {
-    if (isMobile) return;
     
     // Clear existing timer
     if (idleTimerRef.current) {
