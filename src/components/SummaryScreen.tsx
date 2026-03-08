@@ -25,7 +25,7 @@ const MD_COMPONENTS = {
   strong: ({ children }: any) => <strong className="font-bold">{children}</strong>,
   em: ({ children }: any) => <em className="italic">{children}</em>,
   blockquote: ({ children }: any) => (
-    <blockquote className="border-r-4 pr-4 my-3 italic" style={{ borderColor: '#E8A54B', color: '#6B5B3E' }}>
+    <blockquote className="border-r-4 pr-4 my-3 italic" style={{ borderColor: '#2D7BE5', color: '#3A4A5E' }}>
       {children}
     </blockquote>
   ),
