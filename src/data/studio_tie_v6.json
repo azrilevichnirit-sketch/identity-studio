@@ -127,13 +127,13 @@
     "bg_override": "gallery_main_stylized_white_v1",
     "next_bg_override_a": "gallery_tie08a_bg",
     "next_bg_override_b": "gallery_tie08b_bg",
-    "task_heb": "ההמצאה שלנו מוכנה לפריצה לעולם! איך נכריז עליה?",
+    "task_heb": "הפרויקט הכי גדול שלנו מוכן. מה אנחנו צריכים לעשות בשביל לחשוף אותו?",
     "option_a_code": "i",
     "option_a_asset": "studio_tie_08_a",
-    "option_a_tooltip_heb": "אב-טיפוס בתיבת זכוכית",
+    "option_a_tooltip_heb": "מערכת לניתוח קהל יעד",
     "option_b_code": "e",
     "option_b_asset": "studio_tie_08_b",
-    "option_b_tooltip_heb": "פודיום למסיבת עיתונאים"
+    "option_b_tooltip_heb": "שילוט חוצות"
   },
   {
     "world": "studio",
