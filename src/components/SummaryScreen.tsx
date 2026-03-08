@@ -198,7 +198,7 @@ function ProgramCard({ section, index }: { section: ParsedSection; index: number
             {section.title}
           </h3>
           {!isOpen && section.subtitle && (
-            <p className="text-sm mt-0.5 line-clamp-1" style={{ color: '#8B7D6B' }}>
+            <p className="text-sm mt-0.5 line-clamp-1" style={{ color: '#7A8FA6' }}>
               {section.subtitle}...
             </p>
           )}
