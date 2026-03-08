@@ -56,9 +56,8 @@ export function SpeechBubble({
     }
   }, [missionKey]);
 
-  // Handle idle reminder (desktop only)
+  // Handle idle reminder
   useEffect(() => {
-    if (isMobile) return;
     
     // Clear existing timer
     if (idleTimerRef.current) {
@@ -129,21 +128,7 @@ export function SpeechBubble({
             </div>
           </div>
           
-          {/* Tail - rendered as a sibling with proper stacking */}
-          <div
-            style={{
-              position: 'absolute',
-              width: '20px',
-              height: '20px',
-              background: '#FFFDF8',
-              borderRadius: '4px',
-              bottom: '20px',
-              ...(tailDirection === 'right' 
-                ? { right: '-7px', transform: 'rotate(45deg)' }
-                : { left: '-7px', transform: 'rotate(45deg)' }
-              ),
-            }}
-          />
+          {/* Tail removed - bubble is fully rounded */}
         </div>
       </div>
     </div>

@@ -114,17 +114,11 @@
 
 .speech-bubble-frame {
   border-radius: 20px;
+  border: 3px solid rgba(210, 170, 90, 0.5);
+  box-shadow: 
+    inset 0 0 0 1px rgba(255, 250, 240, 0.4),
+    0 4px 12px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
-}
-
-/* Desktop only: visible golden frame border */
-@media (min-width: 821px) {
-  .speech-bubble-frame {
-    border: 3px solid rgba(210, 170, 90, 0.5);
-    box-shadow: 
-      inset 0 0 0 1px rgba(255, 250, 240, 0.4),
-      0 4px 12px rgba(0, 0, 0, 0.15);
-  }
 }
 
 .speech-bubble-frame.new-mission {
