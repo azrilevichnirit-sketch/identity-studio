@@ -2563,59 +2563,8 @@ export function VisualPlayScreen({
       {/* Mission 3 Tool B visitors - baked into backgrounds on both mobile and desktop */}
       {/* No dynamic rendering needed - all visitors are pre-rendered in baked backgrounds */}
 
-      {/* Mission 5 Tool B visitors - appear with fade-in when tool B is placed */}
-      {(() => {
-        const m05ToolBPlaced = localPlacement?.missionId === 'studio_05' && localPlacement?.key === 'b'
-          || displayedPlacement.some(p => p.missionId === 'studio_05' && p.key === 'b');
-        const isOnM05 = mission.mission_id === 'studio_05';
-        
-        if (!m05ToolBPlaced || !isOnM05) return null;
-        // On mobile, visitors are baked into the portrait background
-        if (isMobile) return null;
-        
-        const visitors = [
-          { img: visitorM05_01, anchor: 'm05_visitor_01' },
-          { img: visitorM05_02, anchor: 'm05_visitor_02' },
-          { img: visitorM05_03, anchor: 'm05_visitor_03' },
-        ];
-        
-        return visitors.map((v, i) => {
-          const pos = getAnchorPosition(lockedBgKey, v.anchor as AnchorRef);
-          if (!pos) return null;
-          const zIdx = zIndexForAnchorLayer(pos.z_layer);
-          return (
-            <div
-              key={`m05-visitor-${i}`}
-              className="absolute pointer-events-none"
-              style={{
-                left: `${getRenderX(pos.x)}%`,
-                top: `${pos.y}%`,
-                transform: 'translate(-50%, -100%)',
-                zIndex: zIdx,
-              }}
-            >
-              <div
-                style={{
-                  opacity: 0,
-                  animation: `scale-in 0.6s ease-out ${i * 150}ms forwards`,
-                }}
-              >
-                <img
-                  src={v.img}
-                  alt=""
-                  className="object-contain"
-                  style={{
-                    width: `${getSpriteBasePx('normal')}px`,
-                    height: `${getSpriteBasePx('normal')}px`,
-                    filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.4))',
-                    transform: getSpriteTransform(pos.scale, pos.flipX, 'visitor'),
-                  }}
-                />
-              </div>
-            </div>
-          );
-        });
-      })()}
+      {/* Mission 5 Tool B visitors - baked into backgrounds on both mobile and desktop */}
+      {/* No dynamic rendering needed - all visitors are pre-rendered in baked backgrounds */}
 
       {/* Mission 11 Tool A avatar - appears with fade-in when tool A is placed */}
       {(() => {
