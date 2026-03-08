@@ -347,6 +347,13 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
                     })}
                   </div>
                 )}
+
+                {/* Outro / closing statement */}
+                {parsed.outro && (
+                  <div className="prose prose-base max-w-none mt-6" style={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
+                    <ReactMarkdown components={MD_COMPONENTS}>{parsed.outro}</ReactMarkdown>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="text-center">
