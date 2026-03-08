@@ -1347,12 +1347,12 @@
     background-position: center center;
   }
 
-  /* Mobile: Tool panel inner - fully transparent */
+  /* Mobile: Tool panel inner - semi-transparent */
   .mobile-layout .layout-tool-panel-inner {
     padding: 0.5rem 0.75rem;
-    background: transparent;
-    backdrop-filter: none;
-    border: none;
+    background: hsl(var(--toolpanel-bg) / 0.15);
+    backdrop-filter: blur(6px);
+    border: 1px solid hsl(var(--toolpanel-border) / 0.04);
     box-shadow: none;
   }
 }
@@ -1456,14 +1456,14 @@
     transform: none;
   }
 
-  /* Mobile: panel styling - fully transparent background */
+  /* Mobile: panel styling - semi-transparent to let background show through */
   .mobile-layout .layout-tool-panel-inner {
     padding: 6px 8px;
     border-radius: 10px;
     gap: 0;
-    background: transparent;
-    backdrop-filter: none;
-    border: none;
+    background: hsl(var(--toolpanel-bg) / 0.15);
+    backdrop-filter: blur(6px);
+    border: 1px solid hsl(var(--toolpanel-border) / 0.04);
     box-shadow: none;
     transition: opacity 180ms ease, transform 180ms ease;
     will-change: opacity, transform;
