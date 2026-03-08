@@ -2987,16 +2987,6 @@ const ClickableToolTile = React.forwardRef<HTMLDivElement, ClickableToolTileProp
         onClick={onClick}
         className="clickable-tool group relative overflow-visible transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer tool-tile"
       >
-        {/* Subtle ring pulse when mission changes - appears on BOTH tools */}
-        {showRing && (
-          <div
-            className="absolute inset-[-6px] rounded-full pointer-events-none"
-            style={{
-              border: '2px solid hsl(170 70% 50% / 0.5)',
-              animation: 'tool-ring-pulse 1.2s ease-out forwards',
-            }}
-          />
-        )}
         {/* Tool image - transparent PNG with subtle shadow */}
         <div className="absolute inset-0 flex items-center justify-center">
           {image ? (
