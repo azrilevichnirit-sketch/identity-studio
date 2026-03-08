@@ -100,7 +100,7 @@ const Index = () => {
   // Demo mode: jump straight to summary screen
   useEffect(() => {
     if (isDemoSummary) {
-      setLeadForm({ fullName: 'דמו', phone: '0500000000', email: 'demo@test.com', acceptedTerms: true });
+      setLeadForm({ fullName: 'דמו', email: 'demo@test.com' });
       setPhase('summary');
     }
   }, [isDemoSummary, setPhase, setLeadForm]);
