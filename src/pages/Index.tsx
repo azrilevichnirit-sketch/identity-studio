@@ -564,7 +564,7 @@ const Index = () => {
             countsFinal={countsFinal}
             leaders={leaders}
             historyLength={historyLength}
-            currentMission={tournament.currentMission || currentMission}
+            currentMission={(state.phase === 'tie1' || state.phase === 'tie2') ? tournament.currentMission || currentMission : currentMission}
             onToolEditModeChange={setToolEditMode}
             onJumpToMission={jumpToMission}
             onJumpToTieMission={jumpToTieMission}
