@@ -1468,6 +1468,7 @@
     width: fit-content;
     max-width: min(72vw, 360px);
     transform: none;
+    overflow: visible;
   }
 
   /* Mobile: panel styling - semi-transparent to let background show through */
