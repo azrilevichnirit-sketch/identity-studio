@@ -76,9 +76,15 @@ export function AudioManager({ isPlaying }: AudioManagerProps) {
       type="button"
       onClick={handleToggleMute}
       aria-label={muted ? 'Unmute music' : 'Mute music'}
-      className="fixed bottom-3 right-3 z-[9999] inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-gradient-to-b from-muted to-card text-foreground shadow-lg transition-transform active:scale-95"
+      className="fixed bottom-3 right-3 z-[9999] inline-flex items-center justify-center rounded-full transition-transform active:scale-95 h-8 w-8 md:h-11 md:w-11"
+      style={{
+        background: 'rgba(0, 0, 0, 0.35)',
+        backdropFilter: 'blur(6px)',
+        WebkitBackdropFilter: 'blur(6px)',
+        border: '1px solid rgba(255,255,255,0.15)',
+      }}
     >
-      {muted ? <VolumeX size={18} className="text-destructive" /> : <Volume2 size={18} />}
+      {muted ? <VolumeX className="text-white/80 w-3.5 h-3.5 md:w-[18px] md:h-[18px]" /> : <Volume2 className="text-white/80 w-3.5 h-3.5 md:w-[18px] md:h-[18px]" />}
     </button>
   );
 }

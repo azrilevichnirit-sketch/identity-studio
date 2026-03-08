@@ -60,20 +60,7 @@ export function ProcessingScreen({ estimatedTimeMs = 5000 }: ProcessingScreenPro
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-black/50" />
       
-      {/* Logo - top right */}
-      <div 
-        className="absolute z-20"
-        style={{
-          top: 'max(env(safe-area-inset-top, 16px), 20px)',
-          right: 'max(env(safe-area-inset-right, 16px), 20px)',
-        }}
-      >
-        <img 
-          src={logoKinneret} 
-          alt="Kinneret Academy" 
-          className="h-14 md:h-16 object-contain"
-        />
-      </div>
+      {/* Logo removed per design - only shown on summary screen */}
       
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center animate-fade-in">

@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import type { AvatarGender } from "@/types/identity";
-import { getAvatarImage } from "@/lib/assetUtils";
+import { getAvatarImage, preloadBackground } from "@/lib/assetUtils";
 // Intro screen uses cracked walls (same as Mission 01 starting point)
 import galleryCrackedWallsBg from "@/assets/backgrounds/gallery_main_stylized_v5.webp";
 import { SpeechBubble } from "./SpeechBubble";
@@ -21,6 +22,19 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
   const avatarImage = getAvatarImage(avatarGender, "idle");
   const avatarName = avatarGender ? AVATAR_NAMES[avatarGender] : "המדריך שלך";
   const arenaName = "סטודיו";
+
+  // Preload first mission backgrounds so there's no black flash when transitioning
+  useEffect(() => {
+    // Desktop M01 base
+    preloadBackground('gallery_main_stylized_v3');
+    // Mobile M01 baked base
+    preloadBackground('gallery_mission1_mobile_bg');
+    // Mobile cracked walls
+    preloadBackground('gallery_main_stylized_v5_mobile');
+    // Also preload M01 tool result backgrounds
+    preloadBackground('gallery_main_stylized_white_v1');
+    preloadBackground('gallery_main_stylized');
+  }, []);
 
   return (
     <GameStage backgroundImage={galleryCrackedWallsBg} enhanceBackground className="welcomeScreen">

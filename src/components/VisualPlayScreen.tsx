@@ -929,6 +929,9 @@ export function VisualPlayScreen({
   const [showMissionFlash, setShowMissionFlash] = useState(false);
   
   useEffect(() => {
+    // Close any open tooltip from the previous mission
+    setActiveTooltip(null);
+
     // Tool-swap cue to help the player notice that the mission advanced.
     // Skip first mount to avoid flashing on initial load.
     if (!didMountRef.current) {
@@ -2589,6 +2592,7 @@ export function VisualPlayScreen({
               variant="a"
               isInfoActive={activeTooltip === 'a'}
               tooltipText={optionA.tooltip_heb || 'MISSING: option_a_tooltip_heb'}
+              showRing={showMissionFlash}
             />
             <ClickableToolTile
               key={`b-${mission.mission_id}`}
@@ -2598,6 +2602,7 @@ export function VisualPlayScreen({
               variant="b"
               isInfoActive={activeTooltip === 'b'}
               tooltipText={optionB.tooltip_heb || 'MISSING: option_b_tooltip_heb'}
+              showRing={showMissionFlash}
             />
           </div>
 
@@ -2963,6 +2968,7 @@ interface ClickableToolTileProps {
   variant: 'a' | 'b';
   isInfoActive: boolean;
   tooltipText: string;
+  showRing?: boolean;
 }
 
 const ClickableToolTile = React.forwardRef<HTMLDivElement, ClickableToolTileProps>(function ClickableToolTile({ 
@@ -2972,6 +2978,7 @@ const ClickableToolTile = React.forwardRef<HTMLDivElement, ClickableToolTileProp
   variant, 
   isInfoActive,
   tooltipText,
+  showRing = false,
 }, ref) {
   return (
     <div ref={ref} className="relative">
@@ -2980,6 +2987,16 @@ const ClickableToolTile = React.forwardRef<HTMLDivElement, ClickableToolTileProp
         onClick={onClick}
         className="clickable-tool group relative overflow-visible transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer tool-tile"
       >
+        {/* Subtle ring pulse when mission changes - appears on BOTH tools */}
+        {showRing && (
+          <div
+            className="absolute inset-[-6px] rounded-full pointer-events-none"
+            style={{
+              border: '2px solid hsl(170 70% 50% / 0.5)',
+              animation: 'tool-ring-pulse 1.2s ease-out forwards',
+            }}
+          />
+        )}
         {/* Tool image - transparent PNG with subtle shadow */}
         <div className="absolute inset-0 flex items-center justify-center">
           {image ? (

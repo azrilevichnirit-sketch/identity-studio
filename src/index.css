@@ -82,6 +82,22 @@
   }
 }
 
+/* Tool ring pulse when mission changes - both tools simultaneously */
+@keyframes tool-ring-pulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+}
+
 /* Speech bubble idle reminder animation (desktop only) */
 @keyframes bubble-idle-pulse {
   0%, 100% {
