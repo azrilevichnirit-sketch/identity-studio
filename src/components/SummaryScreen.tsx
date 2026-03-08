@@ -383,9 +383,9 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
               <div className="text-center py-12">
                 <div
                   className="w-12 h-12 rounded-full mx-auto mb-4 animate-pulse"
-                  style={{ background: 'linear-gradient(135deg, #F0E6D6, #E8DCC8)' }}
-                />
-                <p className="text-sm" style={{ color: '#8B7D6B', fontFamily: "'Rubik', sans-serif" }}>
+                   style={{ background: 'linear-gradient(135deg, #D6E3F0, #C4D6EA)' }}
+                 />
+                 <p className="text-sm" style={{ color: '#7A8FA6', fontFamily: "'Rubik', sans-serif" }}>
                   הניתוח יישלח אליך בקרוב
                 </p>
               </div>
