@@ -18,6 +18,27 @@ import { TieBreakDebugPanel } from '@/components/TieBreakDebugPanel';
 import { toast } from 'sonner';
 import type { Dimension, HollandCode, MissionOption, LeadFormData } from '@/types/identity';
 
+// Demo mode: check for ?demo=summary URL parameter
+const isDemoSummary = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('demo') === 'summary';
+
+const DEMO_RESULT_TEXT = `## היי דמו,
+
+### התוכניות שהכי מתאימות לך
+
+**הנדסת תוכנה** 
+תוכנית שמשלבת חשיבה אנליטית עם יצירתיות טכנולוגית. תלמדי לפתח מערכות מורכבות, לכתוב קוד ולעצב פתרונות חדשניים.
+
+**מדעי הנתונים**
+עולם הנתונים הוא העתיד - ותתאימי לו מצוין. שילוב של מתמטיקה, סטטיסטיקה ותכנות שיאפשר לך להפוך מידע גולמי לתובנות.
+
+**עיצוב חוויית משתמש (UX)**
+אם את אוהבת לחשוב על אנשים ועל איך דברים עובדים, עיצוב UX משלב פסיכולוגיה, עיצוב וטכנולוגיה.
+
+**ניהול מערכות מידע**
+תוכנית שמחברת בין עולם העסקים לעולם הטכנולוגי - ניהול פרויקטים, הובלת צוותים ויישום פתרונות דיגיטליים.
+
+יש בך כמה מנועים חזקים שמושכים אותך לכיוונים שונים, וזה בדיוק מה שהופך אותך למעניינת.`;
+
 const Index = () => {
   const [toolEditMode, setToolEditMode] = useState(false);
   
@@ -25,7 +46,7 @@ const Index = () => {
   const isPreviewEnv = typeof window !== 'undefined' && !window.location.hostname.includes('identitygame.lovable.app');
   const [showDebug, setShowDebug] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [resultText, setResultText] = useState<string | null>(null);
+  const [resultText, setResultText] = useState<string | null>(isDemoSummary ? DEMO_RESULT_TEXT : null);
   const resultTextRef = useRef<string | null>(null);
   const pendingLeadFormRef = useRef<LeadFormData | null>(null);
   
