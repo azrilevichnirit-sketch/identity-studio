@@ -929,6 +929,9 @@ export function VisualPlayScreen({
   const [showMissionFlash, setShowMissionFlash] = useState(false);
   
   useEffect(() => {
+    // Close any open tooltip from the previous mission
+    setActiveTooltip(null);
+
     // Tool-swap cue to help the player notice that the mission advanced.
     // Skip first mount to avoid flashing on initial load.
     if (!didMountRef.current) {
