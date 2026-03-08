@@ -226,7 +226,7 @@ function ProgramCard({ section, index }: { section: ParsedSection; index: number
         <div className="px-4 md:px-5 pb-5 pt-0">
           <div
             className="h-px mb-4"
-            style={{ background: 'linear-gradient(to left, transparent, #E8A54B40, transparent)' }}
+            style={{ background: 'linear-gradient(to left, transparent, #2D7BE540, transparent)' }}
           />
           <div
             className="prose prose-sm max-w-none text-right"
