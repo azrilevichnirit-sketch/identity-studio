@@ -25,7 +25,7 @@ const MD_COMPONENTS = {
   strong: ({ children }: any) => <strong className="font-bold">{children}</strong>,
   em: ({ children }: any) => <em className="italic">{children}</em>,
   blockquote: ({ children }: any) => (
-    <blockquote className="border-r-4 pr-4 my-3 italic" style={{ borderColor: '#E8A54B', color: '#6B5B3E' }}>
+    <blockquote className="border-r-4 pr-4 my-3 italic" style={{ borderColor: '#2D7BE5', color: '#3A4A5E' }}>
       {children}
     </blockquote>
   ),
@@ -169,11 +169,11 @@ function ProgramCard({ section, index }: { section: ParsedSection; index: number
       className="group rounded-2xl transition-all duration-300 cursor-pointer overflow-hidden"
       style={{
         background: isOpen
-          ? 'linear-gradient(135deg, #FFF8EE 0%, #FFF3E0 100%)'
-          : 'linear-gradient(135deg, #FFFCF7 0%, #FFF9F0 100%)',
-        border: isOpen ? '1.5px solid #E8A54B' : '1.5px solid #F0E6D6',
+          ? 'linear-gradient(135deg, #EEF4FC 0%, #E3EEFB 100%)'
+          : 'linear-gradient(135deg, #F7FAFF 0%, #F0F5FC 100%)',
+        border: isOpen ? '1.5px solid #2D7BE5' : '1.5px solid #D6E3F0',
         boxShadow: isOpen
-          ? '0 8px 24px rgba(232, 165, 75, 0.15)'
+          ? '0 8px 24px rgba(45, 123, 229, 0.15)'
           : '0 2px 8px rgba(0,0,0,0.04)',
       }}
       onClick={() => setIsOpen(!isOpen)}
@@ -185,9 +185,9 @@ function ProgramCard({ section, index }: { section: ParsedSection; index: number
           className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
           style={{
             background: isOpen
-              ? 'linear-gradient(135deg, #E8A54B, #D4943A)'
-              : 'linear-gradient(135deg, #F0E6D6, #E8DCC8)',
-            color: isOpen ? '#FFF' : '#9B8A6E',
+              ? 'linear-gradient(135deg, #2D7BE5, #1A5FC4)'
+              : 'linear-gradient(135deg, #D6E3F0, #C4D6EA)',
+            color: isOpen ? '#FFF' : '#6B8AAE',
           }}
         >
           {index + 1}
@@ -198,7 +198,7 @@ function ProgramCard({ section, index }: { section: ParsedSection; index: number
             {section.title}
           </h3>
           {!isOpen && section.subtitle && (
-            <p className="text-sm mt-0.5 line-clamp-1" style={{ color: '#8B7D6B' }}>
+            <p className="text-sm mt-0.5 line-clamp-1" style={{ color: '#7A8FA6' }}>
               {section.subtitle}...
             </p>
           )}
@@ -207,7 +207,7 @@ function ProgramCard({ section, index }: { section: ParsedSection; index: number
         <ChevronDown
           className="flex-shrink-0 transition-transform duration-300"
           style={{
-            color: isOpen ? '#E8A54B' : '#C4B59B',
+            color: isOpen ? '#2D7BE5' : '#9BB3CC',
             transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
             width: 20,
             height: 20,
@@ -226,7 +226,7 @@ function ProgramCard({ section, index }: { section: ParsedSection; index: number
         <div className="px-4 md:px-5 pb-5 pt-0">
           <div
             className="h-px mb-4"
-            style={{ background: 'linear-gradient(to left, transparent, #E8A54B40, transparent)' }}
+            style={{ background: 'linear-gradient(to left, transparent, #2D7BE540, transparent)' }}
           />
           <div
             className="prose prose-sm max-w-none text-right"
@@ -264,7 +264,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
           {/* Gradient fade into content */}
           <div
             className="absolute bottom-0 left-0 right-0 h-16"
-            style={{ background: 'linear-gradient(to top, #FFFCF7, transparent)' }}
+            style={{ background: 'linear-gradient(to top, #F7FAFF, transparent)' }}
           />
         </div>
 
@@ -272,14 +272,14 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
         <div
           className="flex flex-col gap-0 animate-fade-in w-full items-center"
           style={{
-            background: 'linear-gradient(180deg, #FFFCF7 0%, #FFFFFF 30%)',
+            background: 'linear-gradient(180deg, #F7FAFF 0%, #FFFFFF 30%)',
             paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 80px)',
           }}
         >
           {/* Logo + Title row */}
           <div className="w-full px-4 md:px-8 pt-2" style={{ maxWidth: 'min(860px, 96vw)' }}>
             <div className="flex justify-start mb-2">
-              <img src={logoKinneret} alt="Kinneret Academy" className="h-24 md:h-32 object-contain" />
+              <img src={logoKinneret} alt="Kinneret Academy" className="h-32 md:h-40 object-contain" />
             </div>
 
             {/* Title with decorative line */}
@@ -294,7 +294,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
                 className="mt-3 h-1 rounded-full"
                 style={{
                   width: '60px',
-                  background: 'linear-gradient(to left, #E8A54B, #D4943A)',
+                  background: 'linear-gradient(to left, #2D7BE5, #1A5FC4)',
                 }}
               />
             </div>
@@ -340,7 +340,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
                   <div className="flex items-center gap-3 mb-5 mt-2">
                     <div
                       className="w-1 h-7 rounded-full flex-shrink-0"
-                      style={{ background: 'linear-gradient(to bottom, #E8A54B, #D4943A)' }}
+                      style={{ background: 'linear-gradient(to bottom, #2D7BE5, #1A5FC4)' }}
                     />
                     <h2
                       className="text-xl md:text-2xl font-bold"
@@ -369,8 +369,8 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
                   <div
                     className="mt-8 p-5 rounded-2xl text-center"
                     style={{
-                      background: 'linear-gradient(135deg, #FFF8EE 0%, #FFF3E0 100%)',
-                      border: '1px solid #F0E6D6',
+                       background: 'linear-gradient(135deg, #EEF4FC 0%, #E3EEFB 100%)',
+                       border: '1px solid #D6E3F0',
                     }}
                   >
                     <div className="prose prose-base max-w-none" style={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap', color: '#4A3D2E' }}>
@@ -383,9 +383,9 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
               <div className="text-center py-12">
                 <div
                   className="w-12 h-12 rounded-full mx-auto mb-4 animate-pulse"
-                  style={{ background: 'linear-gradient(135deg, #F0E6D6, #E8DCC8)' }}
-                />
-                <p className="text-sm" style={{ color: '#8B7D6B', fontFamily: "'Rubik', sans-serif" }}>
+                   style={{ background: 'linear-gradient(135deg, #D6E3F0, #C4D6EA)' }}
+                 />
+                 <p className="text-sm" style={{ color: '#7A8FA6', fontFamily: "'Rubik', sans-serif" }}>
                   הניתוח יישלח אליך בקרוב
                 </p>
               </div>
