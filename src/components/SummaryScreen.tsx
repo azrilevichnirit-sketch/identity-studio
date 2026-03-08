@@ -369,8 +369,8 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
                   <div
                     className="mt-8 p-5 rounded-2xl text-center"
                     style={{
-                      background: 'linear-gradient(135deg, #FFF8EE 0%, #FFF3E0 100%)',
-                      border: '1px solid #F0E6D6',
+                       background: 'linear-gradient(135deg, #EEF4FC 0%, #E3EEFB 100%)',
+                       border: '1px solid #D6E3F0',
                     }}
                   >
                     <div className="prose prose-base max-w-none" style={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap', color: '#4A3D2E' }}>
