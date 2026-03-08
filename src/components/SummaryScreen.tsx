@@ -272,7 +272,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
         <div
           className="flex flex-col gap-0 animate-fade-in w-full items-center"
           style={{
-            background: 'linear-gradient(180deg, #FFFCF7 0%, #FFFFFF 30%)',
+            background: 'linear-gradient(180deg, #F7FAFF 0%, #FFFFFF 30%)',
             paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 80px)',
           }}
         >
