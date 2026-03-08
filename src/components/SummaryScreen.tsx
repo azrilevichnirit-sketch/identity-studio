@@ -320,24 +320,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
                             <AccordionContent>
                               <div className="prose prose-sm max-w-none" style={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
                                 <ReactMarkdown components={MD_COMPONENTS}>
-                                  {/* Remove duplicate first line that matches subtitle */}
-                                  {(() => {
-                                    const lines = section.content.split('\n');
-                                    const firstContentIdx = lines.findIndex((l) => l.trim().length > 0);
-                                    if (firstContentIdx >= 0 && displaySubtitle) {
-                                      const firstLine = lines[firstContentIdx]
-                                        .replace(/^[#*\->\s]+/, '')
-                                        .replace(/\*\*/g, '')
-                                        .replace(/\*/g, '')
-                                        .trim();
-                                      if (displaySubtitle.startsWith(firstLine.substring(0, 40)) || firstLine.startsWith(displaySubtitle.substring(0, 40))) {
-                                        const filtered = [...lines];
-                                        filtered.splice(firstContentIdx, 1);
-                                        return filtered.join('\n').trim();
-                                      }
-                                    }
-                                    return section.content;
-                                  })()}
+                                  {section.content}
                                 </ReactMarkdown>
                               </div>
                             </AccordionContent>
