@@ -302,7 +302,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
 
            {/* Main content card */}
            <div
-             className="w-full px-6 md:px-12"
+             className="w-full pl-6 pr-8 md:pl-12 md:pr-16"
              style={{ maxWidth: 'min(860px, 96vw)' }}
            >
              {/* Greeting */}
