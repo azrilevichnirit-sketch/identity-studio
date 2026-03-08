@@ -104,8 +104,10 @@ const Index = () => {
     if (isDemoSummary) {
       setLeadForm({ fullName: 'דמו', email: 'demo@test.com', phone: '0500000000', wantsUpdates: false });
       setPhase('summary');
+    } else if (isDemoProcessing) {
+      setPhase('processing');
     }
-  }, [isDemoSummary, setPhase, setLeadForm]);
+  }, [isDemoSummary, isDemoProcessing, setPhase, setLeadForm]);
   // Track mission shown when currentMission changes
   const lastTrackedMissionRef = useRef<string | null>(null);
   useEffect(() => {
