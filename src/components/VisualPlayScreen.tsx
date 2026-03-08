@@ -1430,20 +1430,20 @@ export function VisualPlayScreen({
     const isMission08ToolB = mission.mission_id === 'studio_08' && variant === 'b';
     const isMission11ToolA = mission.mission_id === 'studio_11' && variant === 'a';
     const isMission11ToolB = mission.mission_id === 'studio_11' && variant === 'b';
-    const advanceDelay = isMission01Paint ? 2800 
+    const advanceDelay = isMission01Paint ? 2500 
       : isMission01ToolB ? 2200 
       : isMission02 ? 2200
-      : isMission03ToolB ? 3800  // tables appear first, then visitors fade-in + viewing time
-      : (isMission11ToolA || isMission11ToolB) ? 2800  // keep viewing time for M11 branch result
-      : (isMission07 || isMission11) ? 2800
-      : isMission06ToolA ? 3000  // extra time for prop spawn + tool appear
-      : (mission.mission_id === 'studio_10') ? 2200  // crossfade + brief viewing before M11
-      : (mission.mission_id === 'studio_13') ? 2800  // baked bg crossfade (800ms) + viewing time
-      : (mission.mission_id === 'studio_14') ? 2800  // baked bg crossfade + viewing time
-      : (mission.mission_id === 'studio_15') ? 2800  // baked bg crossfade + viewing time
-      : isMission05ToolA ? 3000  // extra viewing time for M05 tool A
-      : isMission05ToolB ? 3200  // visitors fade-in + viewing time
-      : isMission08ToolB ? 3200  // visitors fade-in + viewing time
+      : isMission03ToolB ? 3000  // tables appear first, then visitors fade-in
+      : (isMission11ToolA || isMission11ToolB) ? 2500  // baked bg viewing
+      : (isMission07 || isMission11) ? 2500
+      : isMission06ToolA ? 2800  // prop spawn + tool appear
+      : (mission.mission_id === 'studio_10') ? 2200  // fast crossfade + brief viewing
+      : (mission.mission_id === 'studio_13') ? 2500  // baked bg crossfade + viewing
+      : (mission.mission_id === 'studio_14') ? 2500  // baked bg crossfade + viewing
+      : (mission.mission_id === 'studio_15') ? 2500  // baked bg crossfade + viewing
+      : isMission05ToolA ? 2800  // animated GIF viewing time
+      : isMission05ToolB ? 3000  // visitors fade-in + viewing
+      : isMission08ToolB ? 3000  // visitors fade-in + viewing
       : 2200;
     const advanceId = window.setTimeout(() => {
       // For Mission 01 Tool B: DON'T clear localPlacement before onSelect
