@@ -371,7 +371,8 @@ export function VisualPlayScreen({
     
     // Mission 08: Dedicated gallery background
     if (mission.phase === 'main' && mission.mission_id === 'studio_08') {
-      return 'gallery_mission8_bg';
+      const isDesktopM8 = typeof window !== 'undefined' && window.innerWidth >= 821;
+      return isDesktopM8 ? 'gallery_mission8_desk_bg' : 'gallery_mission8_mobile_bg';
     }
     
     // Mission 10: Dedicated workshop background
