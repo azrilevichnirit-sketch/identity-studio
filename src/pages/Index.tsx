@@ -127,6 +127,14 @@ const Index = () => {
     }
   }, [leaders, tournament, setPhase, setRank1Code, setRank2Code, setRank3Code]);
 
+  // Handle phase transitions after main missions complete — show scores first
+  useEffect(() => {
+    if (state.phase === 'main' && isMainComplete) {
+      console.log('[Index] Main complete. Proceeding to tie-breaking logic.');
+      handleScoresContinue();
+    }
+  }, [state.phase, isMainComplete, handleScoresContinue]);
+
   // Handle 2-way tie for Rank 1 using legacy tie system (phase: 'tie')
   // This is for backward compatibility with existing 2-way tie missions
   useEffect(() => {
