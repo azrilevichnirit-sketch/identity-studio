@@ -1474,9 +1474,21 @@ export function VisualPlayScreen({
   }, [mission.mission_id, mission.phase, mission.sequence, optionA, optionB, onSelect, hasDraggedOnce, getTargetBgForOption, PAINTED_WALLS_BG_KEY, currentBg, getTargetAnchor, getToolPlacementFromAnchorMap, isMobile, isPanoramic, lockedBgKey, toolEditMode]);
 
   // Click-to-place: immediately place the selected tool
+  // Guard: prevent double-tap from restarting the advance sequence
+  const isAdvancingRef = useRef(false);
+
+  // Reset guard when mission changes
+  useEffect(() => {
+    isAdvancingRef.current = false;
+  }, [mission.mission_id]);
+
   const handleToolClick = useCallback((variant: 'a' | 'b', e: React.PointerEvent | React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    // Block clicks if an advance is already in progress
+    if (isAdvancingRef.current) return;
+    isAdvancingRef.current = true;
     
     // Immediately place the tool - no dragging required
     completePlacement(variant);
