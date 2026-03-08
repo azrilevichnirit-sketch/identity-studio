@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import type { AvatarGender } from "@/types/identity";
-import { getAvatarImage } from "@/lib/assetUtils";
+import { getAvatarImage, preloadBackground } from "@/lib/assetUtils";
 // Intro screen uses cracked walls (same as Mission 01 starting point)
 import galleryCrackedWallsBg from "@/assets/backgrounds/gallery_main_stylized_v5.webp";
 import { SpeechBubble } from "./SpeechBubble";
