@@ -169,11 +169,11 @@ function ProgramCard({ section, index }: { section: ParsedSection; index: number
       className="group rounded-2xl transition-all duration-300 cursor-pointer overflow-hidden"
       style={{
         background: isOpen
-          ? 'linear-gradient(135deg, #FFF8EE 0%, #FFF3E0 100%)'
-          : 'linear-gradient(135deg, #FFFCF7 0%, #FFF9F0 100%)',
-        border: isOpen ? '1.5px solid #E8A54B' : '1.5px solid #F0E6D6',
+          ? 'linear-gradient(135deg, #EEF4FC 0%, #E3EEFB 100%)'
+          : 'linear-gradient(135deg, #F7FAFF 0%, #F0F5FC 100%)',
+        border: isOpen ? '1.5px solid #2D7BE5' : '1.5px solid #D6E3F0',
         boxShadow: isOpen
-          ? '0 8px 24px rgba(232, 165, 75, 0.15)'
+          ? '0 8px 24px rgba(45, 123, 229, 0.15)'
           : '0 2px 8px rgba(0,0,0,0.04)',
       }}
       onClick={() => setIsOpen(!isOpen)}
