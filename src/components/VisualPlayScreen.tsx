@@ -2966,6 +2966,7 @@ interface ClickableToolTileProps {
   variant: 'a' | 'b';
   isInfoActive: boolean;
   tooltipText: string;
+  showRing?: boolean;
 }
 
 const ClickableToolTile = React.forwardRef<HTMLDivElement, ClickableToolTileProps>(function ClickableToolTile({ 
@@ -2975,6 +2976,7 @@ const ClickableToolTile = React.forwardRef<HTMLDivElement, ClickableToolTileProp
   variant, 
   isInfoActive,
   tooltipText,
+  showRing = false,
 }, ref) {
   return (
     <div ref={ref} className="relative">
