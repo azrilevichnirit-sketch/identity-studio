@@ -59,10 +59,10 @@
     "bg_override": "gallery_main_stylized_white_v1",
     "next_bg_override_a": "gallery_tie04a_bg",
     "next_bg_override_b": "gallery_tie04b_bg",
-    "task_heb": "הסטודיו מתרחב! מה הצעד המקצועי הבא שהכי חשוב לנו להוסיף עכשיו?",
+    "task_heb": "הסטודיו מתרחב ויש להחליט מה הצעד הבא שייקח אותנו קדימה. מה מוסיפים?",
     "option_a_code": "r",
     "option_a_asset": "studio_tie_04_a",
-    "option_a_tooltip_heb": "מכונת CNC תעשייתית",
+    "option_a_tooltip_heb": "מכונת חיתוך מדויק",
     "option_b_code": "e",
     "option_b_asset": "studio_tie_04_b",
     "option_b_tooltip_heb": "חלל פרזנטציה יוקרתי"
