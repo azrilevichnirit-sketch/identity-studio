@@ -18,8 +18,10 @@ import { TieBreakDebugPanel } from '@/components/TieBreakDebugPanel';
 import { toast } from 'sonner';
 import type { Dimension, HollandCode, MissionOption, LeadFormData } from '@/types/identity';
 
-// Demo mode: check for ?demo=summary URL parameter
-const isDemoSummary = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('demo') === 'summary';
+// Demo mode: check for ?demo= URL parameter
+const demoParam = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('demo') : null;
+const isDemoSummary = demoParam === 'summary';
+const isDemoProcessing = demoParam === 'processing';
 
 const DEMO_RESULT_TEXT = `על סמך הבחירות שלך במשחק, ניתן לראות שיש לך נטייה חזקה לחשיבה אנליטית לצד יצירתיות ועניין באנשים. השילוב הזה פותח בפניך כיוונים מגוונים ומרתקים.
 
@@ -102,8 +104,10 @@ const Index = () => {
     if (isDemoSummary) {
       setLeadForm({ fullName: 'דמו', email: 'demo@test.com', phone: '0500000000', wantsUpdates: false });
       setPhase('summary');
+    } else if (isDemoProcessing) {
+      setPhase('processing');
     }
-  }, [isDemoSummary, setPhase, setLeadForm]);
+  }, [isDemoSummary, isDemoProcessing, setPhase, setLeadForm]);
   // Track mission shown when currentMission changes
   const lastTrackedMissionRef = useRef<string | null>(null);
   useEffect(() => {
