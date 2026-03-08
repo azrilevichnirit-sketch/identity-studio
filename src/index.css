@@ -1347,12 +1347,12 @@
     background-position: center center;
   }
 
-  /* Mobile: Tool panel inner - fully transparent */
+  /* Mobile: Tool panel inner - semi-transparent */
   .mobile-layout .layout-tool-panel-inner {
     padding: 0.5rem 0.75rem;
-    background: transparent;
-    backdrop-filter: none;
-    border: none;
+    background: hsl(var(--toolpanel-bg) / 0.15);
+    backdrop-filter: blur(6px);
+    border: 1px solid hsl(var(--toolpanel-border) / 0.04);
     box-shadow: none;
   }
 }
