@@ -264,7 +264,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
           {/* Gradient fade into content */}
           <div
             className="absolute bottom-0 left-0 right-0 h-16"
-            style={{ background: 'linear-gradient(to top, #FFFCF7, transparent)' }}
+            style={{ background: 'linear-gradient(to top, #F7FAFF, transparent)' }}
           />
         </div>
 
