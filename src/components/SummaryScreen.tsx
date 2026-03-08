@@ -207,7 +207,7 @@ function ProgramCard({ section, index }: { section: ParsedSection; index: number
         <ChevronDown
           className="flex-shrink-0 transition-transform duration-300"
           style={{
-            color: isOpen ? '#E8A54B' : '#C4B59B',
+            color: isOpen ? '#2D7BE5' : '#9BB3CC',
             transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
             width: 20,
             height: 20,
