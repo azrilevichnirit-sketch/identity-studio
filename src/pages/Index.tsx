@@ -564,6 +564,7 @@ const Index = () => {
             countsFinal={countsFinal}
             leaders={leaders}
             historyLength={historyLength}
+            currentMission={tournament.currentMission || currentMission}
             onToolEditModeChange={setToolEditMode}
             onJumpToMission={jumpToMission}
             onJumpToTieMission={jumpToTieMission}
