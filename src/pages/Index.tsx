@@ -93,13 +93,7 @@ const Index = () => {
     }
   }, [currentMission, tournament.currentMission, state.phase, trackMissionShown]);
 
-  // Handle phase transitions after main missions complete — show scores first
-  useEffect(() => {
-    if (state.phase === 'main' && isMainComplete) {
-      console.log('[Index] Main complete. Proceeding to tie-breaking logic.');
-      handleScoresContinue();
-    }
-  }, [state.phase, isMainComplete, setPhase]);
+  // Handle phase transitions after main missions complete — handled after handleScoresContinue definition
 
   // Handle scores phase → trigger tie-breaking logic
   const handleScoresContinue = useCallback(() => {
@@ -132,6 +126,14 @@ const Index = () => {
       }
     }
   }, [leaders, tournament, setPhase, setRank1Code, setRank2Code, setRank3Code]);
+
+  // Handle phase transitions after main missions complete — show scores first
+  useEffect(() => {
+    if (state.phase === 'main' && isMainComplete) {
+      console.log('[Index] Main complete. Proceeding to tie-breaking logic.');
+      handleScoresContinue();
+    }
+  }, [state.phase, isMainComplete, handleScoresContinue]);
 
   // Handle 2-way tie for Rank 1 using legacy tie system (phase: 'tie')
   // This is for backward compatibility with existing 2-way tie missions
