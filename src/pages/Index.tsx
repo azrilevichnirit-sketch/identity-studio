@@ -99,7 +99,7 @@ const Index = () => {
       console.log('[Index] Main complete. Proceeding to tie-breaking logic.');
       handleScoresContinue();
     }
-  }, [state.phase, isMainComplete, setPhase]);
+  }, [state.phase, isMainComplete, handleScoresContinue]);
 
   // Handle scores phase → trigger tie-breaking logic
   const handleScoresContinue = useCallback(() => {
