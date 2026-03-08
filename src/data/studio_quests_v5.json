@@ -204,7 +204,7 @@
     "view": "in",
     "bg_override": "studio_in_entrance_view_bg",
     "zone_id": null,
-    "task_heb": "הסטודיו מפוצץ בעבודות גמורות ואנחנו לא מוצאים כלום. מה עושים?",
+    "task_heb": "יש לנו 20 עבודות גמורות ועוד 15 בדרך. המקום מפוצץ ואי אפשר למצוא פה כלום. מה נעשה?",
     "option_a_code": "c",
     "option_a_asset": "studio_07_a",
     "option_a_tooltip_heb": "ארון תיוק ומגירות אמן",
