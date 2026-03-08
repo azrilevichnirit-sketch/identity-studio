@@ -340,7 +340,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
                   <div className="flex items-center gap-3 mb-5 mt-2">
                     <div
                       className="w-1 h-7 rounded-full flex-shrink-0"
-                      style={{ background: 'linear-gradient(to bottom, #E8A54B, #D4943A)' }}
+                      style={{ background: 'linear-gradient(to bottom, #2D7BE5, #1A5FC4)' }}
                     />
                     <h2
                       className="text-xl md:text-2xl font-bold"
