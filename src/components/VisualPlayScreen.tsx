@@ -371,7 +371,8 @@ export function VisualPlayScreen({
     
     // Mission 08: Dedicated gallery background
     if (mission.phase === 'main' && mission.mission_id === 'studio_08') {
-      return 'gallery_mission8_bg';
+      const isDesktopM8 = typeof window !== 'undefined' && window.innerWidth >= 821;
+      return isDesktopM8 ? 'gallery_mission8_desk_bg' : 'gallery_mission8_mobile_bg';
     }
     
     // Mission 10: Dedicated workshop background
@@ -662,7 +663,7 @@ export function VisualPlayScreen({
     : isMission8BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isMission8BgLocked
-    ? (isMobile ? 'gallery_mission8_bg' : 'gallery_mission8_desk_bg')
+    ? (isMobile ? 'gallery_mission8_mobile_bg' : 'gallery_mission8_desk_bg')
     : isMission9BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isMission9BgLocked
@@ -730,7 +731,7 @@ export function VisualPlayScreen({
     : isMission8BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isMission8BgLocked
-    ? (getBackgroundByName(isMobile ? 'gallery_mission8_bg' : 'gallery_mission8_desk_bg') || displayBg)
+    ? (getBackgroundByName(isMobile ? 'gallery_mission8_mobile_bg' : 'gallery_mission8_desk_bg') || displayBg)
     : isMission9BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isMission9BgLocked
