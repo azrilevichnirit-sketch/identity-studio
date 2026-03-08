@@ -279,7 +279,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
           {/* Logo + Title row */}
           <div className="w-full px-4 md:px-8 pt-2" style={{ maxWidth: 'min(860px, 96vw)' }}>
             <div className="flex justify-start mb-2">
-              <img src={logoKinneret} alt="Kinneret Academy" className="h-24 md:h-32 object-contain" />
+              <img src={logoKinneret} alt="Kinneret Academy" className="h-32 md:h-40 object-contain" />
             </div>
 
             {/* Title with decorative line */}
