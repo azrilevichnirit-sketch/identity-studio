@@ -332,9 +332,10 @@ export function VisualPlayScreen({
       }
 
       const m10Pick = placedProps.find(p => p.missionId === 'studio_10');
-      if (m10Pick?.key === 'a') return 'gallery_mission10a_bg';
-      if (m10Pick?.key === 'b') return 'gallery_mission10b_bg';
-      return 'gallery_mission10a_bg'; // fallback
+      const isDesktopM11 = typeof window !== 'undefined' && window.innerWidth >= 821;
+      if (m10Pick?.key === 'a') return isDesktopM11 ? 'gallery_mission10a_bg' : 'gallery_mission10a_mobile_bg';
+      if (m10Pick?.key === 'b') return isDesktopM11 ? 'gallery_mission10b_bg' : 'gallery_mission10b_mobile_bg';
+      return isDesktopM11 ? 'gallery_mission10a_bg' : 'gallery_mission10a_mobile_bg'; // fallback
     }
     
     // Mission 07: use mission-defined background (entrance view) as base scene.
