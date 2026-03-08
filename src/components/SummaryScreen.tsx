@@ -248,7 +248,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
             {/* Title */}
             <h1
               className="text-2xl md:text-3xl font-bold mb-2 text-center"
-              style={{ color: '#111', fontFamily: "'Rubik', sans-serif" }}
+              style={{ color: '#111', fontFamily: "'Rubik', sans-serif", marginTop: '0' }}
             >
               החותמת האישית שלך
             </h1>
