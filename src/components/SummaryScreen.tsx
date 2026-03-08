@@ -234,8 +234,8 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
           style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 100px)' }}
         >
           {/* Logo */}
-          <div className="flex justify-start pt-1 px-4 md:px-8 w-full">
-            <img src={logoKinneret} alt="Kinneret Academy" className="h-28 md:h-32 object-contain" />
+          <div className="flex justify-start pt-0 px-4 md:px-8 w-full" style={{ marginBottom: '-12px' }}>
+            <img src={logoKinneret} alt="Kinneret Academy" className="h-20 md:h-24 object-contain" />
           </div>
 
           {/* Main card */}
@@ -303,7 +303,8 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
                         <Accordion key={idx} type="multiple">
                           <AccordionItem
                             value={`program-${idx}`}
-                            className="border rounded-xl px-4 bg-white shadow-sm group"
+                            className="border rounded-xl px-4 shadow-sm group"
+                            style={{ backgroundColor: '#FFF9F0' }}
                           >
                             <AccordionTrigger className="text-right hover:no-underline py-4">
                               <div className="flex flex-col items-start gap-1 text-right w-full">
