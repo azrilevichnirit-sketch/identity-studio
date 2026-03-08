@@ -113,10 +113,10 @@
     "task_heb": "פיתחנו טכניקה שלא קיימת בשום מקום אחר, אנחנו חייבים לתעד ולשמור. אבל יש לנו קצת ויכוחים איך הכי כדי, יש לך המלצה?",
     "option_a_code": "i",
     "option_a_asset": "studio_tie_07_a",
-    "option_a_tooltip_heb": "ארון שרתים לשמירה על הדאטה והידע הדיגיטלי.",
+    "option_a_tooltip_heb": "שרת גיבוי ואחסון",
     "option_b_code": "s",
     "option_b_asset": "studio_tie_07_b",
-    "option_b_tooltip_heb": "לוח טיפים שיתופי לשיתוף ידע"
+    "option_b_tooltip_heb": "לוח שיתוף ידע צוותי"
   },
   {
     "world": "studio",
