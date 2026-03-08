@@ -300,20 +300,26 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
             </div>
           </div>
 
-          {/* Main content card */}
-          <div
-            className="w-full px-4 md:px-8"
-            style={{ maxWidth: 'min(860px, 96vw)' }}
-          >
-            {/* Greeting */}
-            {firstName && (
-              <p
-                className="text-lg mb-5 text-right font-medium"
-                style={{ color: '#4A3D2E', fontFamily: "'Rubik', sans-serif" }}
-              >
-                היי {firstName},
-              </p>
-            )}
+           {/* Main content card */}
+           <div
+             className="w-full px-4 md:px-8"
+             style={{ maxWidth: 'min(860px, 96vw)' }}
+           >
+             {/* Greeting */}
+             {firstName && (
+               <div className="flex items-center gap-2 mb-5">
+                 <div
+                   className="w-1 h-6 rounded-full flex-shrink-0"
+                   style={{ background: 'linear-gradient(to bottom, #2D7BE5, #1A5FC4)' }}
+                 />
+                 <p
+                   className="text-lg font-medium"
+                   style={{ color: '#4A3D2E', fontFamily: "'Rubik', sans-serif" }}
+                 >
+                   היי {firstName},
+                 </p>
+               </div>
+             )}
 
             {parsed ? (
               <div
