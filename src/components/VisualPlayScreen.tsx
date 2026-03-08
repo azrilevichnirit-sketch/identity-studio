@@ -1413,8 +1413,7 @@ export function VisualPlayScreen({
     const isMission08ToolB = mission.mission_id === 'studio_08' && variant === 'b';
     const isMission11ToolA = mission.mission_id === 'studio_11' && variant === 'a';
     const isMission11ToolB = mission.mission_id === 'studio_11' && variant === 'b';
-    const advanceDelay = isMission01Paint ? 2500 
-      : isMission01ToolB ? 2200 
+    const advanceDelay = isMission01 ? 2500  // baked bg crossfade + viewing (same as other baked missions)
       : isMission02 ? 2200
       : isMission03ToolB ? 3000  // tables appear first, then visitors fade-in
       : (isMission11ToolA || isMission11ToolB) ? 2500  // baked bg viewing
