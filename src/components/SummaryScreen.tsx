@@ -294,7 +294,7 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
                 className="mt-3 h-1 rounded-full"
                 style={{
                   width: '60px',
-                  background: 'linear-gradient(to left, #E8A54B, #D4943A)',
+                  background: 'linear-gradient(to left, #2D7BE5, #1A5FC4)',
                 }}
               />
             </div>
