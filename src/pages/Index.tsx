@@ -100,9 +100,10 @@ const Index = () => {
   // Demo mode: jump straight to summary screen
   useEffect(() => {
     if (isDemoSummary) {
+      setLeadForm({ fullName: 'דמו', email: 'demo@test.com', phone: '0500000000', wantsUpdates: false });
       setPhase('summary');
     }
-  }, [isDemoSummary, setPhase]);
+  }, [isDemoSummary, setPhase, setLeadForm]);
   // Track mission shown when currentMission changes
   const lastTrackedMissionRef = useRef<string | null>(null);
   useEffect(() => {
