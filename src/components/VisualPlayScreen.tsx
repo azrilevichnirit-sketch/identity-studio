@@ -1367,8 +1367,8 @@ export function VisualPlayScreen({
     // (Tie-breaker bg override handled above via getTargetBgForOption - platform-aware)
     setJustPlaced(null);
     setLockPulseKey(null);
-    const isMission01Paint = false; // M01 no longer changes background
-    const isMission01ToolB = mission.mission_id === 'studio_01' && variant === 'b';
+    const isMission01 = mission.mission_id === 'studio_01';
+    const isMission01ToolB = isMission01 && variant === 'b';
 
     // In Tool Edit mode we freeze progression after placement so calibration/debug
     // can inspect exact landing location without mission auto-advance.
