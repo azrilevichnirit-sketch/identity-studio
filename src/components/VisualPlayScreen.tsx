@@ -340,7 +340,9 @@ export function VisualPlayScreen({
     
     // Mission 07: use mission-defined background (entrance view) as base scene.
     if (mission.phase === 'main' && mission.mission_id === 'studio_07') {
-      return mission.bg_override || 'studio_in_entrance_view_bg';
+      const isDesktopM7 = typeof window !== 'undefined' && window.innerWidth >= 821;
+      if (isDesktopM7) return mission.bg_override || 'studio_in_entrance_view_bg';
+      return 'gallery_mission7_mobile_bg';
     }
     
     // Mission 09: Doorway park view
