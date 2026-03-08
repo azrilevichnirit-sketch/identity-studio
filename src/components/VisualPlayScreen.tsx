@@ -1404,26 +1404,7 @@ export function VisualPlayScreen({
     }, lockDelayMs + lockPulseDuration);
     timeoutsRef.current.push(lockOffId);
 
-    // Step 2: "Painted walls" beat before transitioning (only for Tool A paint scenario, NOT for Tool B)
-    const allowBgBeat = mission.phase === 'main' && mission.sequence < 2;
-    const hasBgBeat = allowBgBeat && (!!option.next_bg_override || isMission01Paint);
-    if (hasBgBeat && !isMission01ToolB) {
-      const beatDelay = isMission01Paint ? 1000 : 600;
-      const clearDelay = isMission01Paint ? 1500 : 1100;
-      const paintTarget = isMission01Paint
-        ? { key: PAINTED_WALLS_BG_KEY, image: getBackgroundByName(PAINTED_WALLS_BG_KEY) || currentBg }
-        : getTargetBgForOption(option);
-
-      const beatId = window.setTimeout(() => {
-         setLocalBgOverride({ ...paintTarget, missionId: mission.mission_id });
-      }, beatDelay);
-      timeoutsRef.current.push(beatId);
-
-      const clearId = window.setTimeout(() => {
-        setLocalPlacement(null);
-      }, clearDelay);
-      timeoutsRef.current.push(clearId);
-    }
+    // (Legacy "painted walls" beat removed — Mission 01 now uses baked backgrounds)
     
     // Step 3: Advance to next mission
     const isMission02 = mission.mission_id === 'studio_02';
