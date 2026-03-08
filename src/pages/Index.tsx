@@ -93,13 +93,7 @@ const Index = () => {
     }
   }, [currentMission, tournament.currentMission, state.phase, trackMissionShown]);
 
-  // Handle phase transitions after main missions complete — show scores first
-  useEffect(() => {
-    if (state.phase === 'main' && isMainComplete) {
-      console.log('[Index] Main complete. Proceeding to tie-breaking logic.');
-      handleScoresContinue();
-    }
-  }, [state.phase, isMainComplete, handleScoresContinue]);
+  // Handle phase transitions after main missions complete — handled after handleScoresContinue definition
 
   // Handle scores phase → trigger tie-breaking logic
   const handleScoresContinue = useCallback(() => {
