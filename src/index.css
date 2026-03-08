@@ -923,6 +923,10 @@
 .tool-tile {
   width: 155px;
   height: 155px;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
 }
 
 /* Tooltip - speech bubble style matching game bubbles */
