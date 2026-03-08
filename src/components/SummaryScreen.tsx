@@ -185,9 +185,9 @@ function ProgramCard({ section, index }: { section: ParsedSection; index: number
           className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
           style={{
             background: isOpen
-              ? 'linear-gradient(135deg, #E8A54B, #D4943A)'
-              : 'linear-gradient(135deg, #F0E6D6, #E8DCC8)',
-            color: isOpen ? '#FFF' : '#9B8A6E',
+              ? 'linear-gradient(135deg, #2D7BE5, #1A5FC4)'
+              : 'linear-gradient(135deg, #D6E3F0, #C4D6EA)',
+            color: isOpen ? '#FFF' : '#6B8AAE',
           }}
         >
           {index + 1}
