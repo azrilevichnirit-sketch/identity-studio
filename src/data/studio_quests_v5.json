@@ -306,7 +306,7 @@
     "task_heb": "מישהו התקשר אלי עכשיו, הוא מצא בעליית הגג של סבתו חמישה ציורים ישנים ובלויים - ולפי מה שתיאר, ייתכן שמדובר במשהו נדיר. הוא בדרך אלינו. מה נכין עד שהוא יגיע?",
     "option_a_code": "r",
     "option_a_asset": "studio_10_a",
-    "option_a_tooltip_heb": "ערכה לשימור יצירות",
+    "option_a_tooltip_heb": "ערכת בדיקה ושימור",
     "option_a_view": "in",
     "next_view_a": "in",
     "next_bg_override_a": "gallery_mission10a_bg",
