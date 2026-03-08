@@ -518,7 +518,7 @@ const Index = () => {
         )}
 
         {/* Tournament Phases (Rank 1 or 2 only — Rank 3 never needs a mission) */}
-        {(state.phase === 'tie1' || state.phase === 'tie2') && tournamentMission && (
+        {(state.phase === 'tie1' || state.phase === 'tie2') && tournamentMission && !tournament.isComplete && (
           <VisualPlayScreen
             mission={tournamentMission}
             currentIndex={tournamentMissionNumber - 1}
