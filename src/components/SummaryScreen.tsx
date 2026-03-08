@@ -303,7 +303,8 @@ export function SummaryScreen({ state, countsFinal, leaders, resultText }: Summa
                         <Accordion key={idx} type="multiple">
                           <AccordionItem
                             value={`program-${idx}`}
-                            className="border rounded-xl px-4 bg-white shadow-sm group"
+                            className="border rounded-xl px-4 shadow-sm group"
+                            style={{ backgroundColor: '#FFF9F0' }}
                           >
                             <AccordionTrigger className="text-right hover:no-underline py-4">
                               <div className="flex flex-col items-start gap-1 text-right w-full">
