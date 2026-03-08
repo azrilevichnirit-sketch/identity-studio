@@ -63,16 +63,23 @@ export function BackgroundCrossfade({
   const [current, setCurrent] = useState(src);
   const [previous, setPrevious] = useState<string | null>(null);
   const [fadeOutPrev, setFadeOutPrev] = useState(false);
+  // Track whether the initial image has loaded (for fade-in on first render)
+  const [initialReady, setInitialReady] = useState(() => preloadedImages.has(src));
   const cleanupRef = useRef<number | null>(null);
   const pendingSrcRef = useRef<string | null>(null);
   // Use a ref to always have the latest `current` value, avoiding stale closures
   const currentRef = useRef(current);
   currentRef.current = current;
 
-  // Preload initial image on mount
+  // Preload initial image on mount and fade in when ready
   useEffect(() => {
-    preloadImage(src);
-  }, []);
+    if (initialReady) return;
+    preloadImage(src).then((loaded) => {
+      if (loaded) {
+        requestAnimationFrame(() => setInitialReady(true));
+      }
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (src === currentRef.current) return;
@@ -126,12 +133,14 @@ export function BackgroundCrossfade({
 
   return (
     <div className={cn("absolute inset-0", className)} style={{ zIndex }}>
-      {/* Current (new) background - always rendered at bottom of stack */}
+      {/* Current (new) background - fades in on first load */}
       <div
         className="absolute inset-0"
         style={{
           ...baseStyle,
           backgroundImage: `url(${current})`,
+          opacity: initialReady ? 1 : 0,
+          transition: `opacity ${durationMs}ms ease-in-out`,
         }}
       />
 
