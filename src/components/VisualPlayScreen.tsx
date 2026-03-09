@@ -1320,8 +1320,11 @@ export function VisualPlayScreen({
         ? (variant === 'a' ? 'gallery_mission1a_mobile_bg' : 'gallery_mission1b_mobile_bg')
         : (variant === 'a' ? 'gallery_mission1a_desk_bg' : 'gallery_mission1b_desk_bg');
       const m1BgImage = getBackgroundByName(m1BgKey);
+      console.log(`[BG-DEBUG] M01 tool ${variant}: bgKey=${m1BgKey}, found=${!!m1BgImage}, isMobile=${isMobile}`);
       if (m1BgImage) {
         setLocalBgOverride({ key: m1BgKey, image: m1BgImage, missionId: mission.mission_id });
+      } else {
+        console.error(`[BG-DEBUG] M01 MISSING baked bg: ${m1BgKey}`);
       }
     }
 
@@ -1331,8 +1334,11 @@ export function VisualPlayScreen({
         ? (variant === 'a' ? 'gallery_mission2a_mobile_bg' : 'gallery_mission2b_mobile_bg')
         : (variant === 'a' ? 'gallery_mission2a_desk_bg' : 'gallery_mission2b_desk_bg');
       const m2BgImage = getBackgroundByName(m2BgKey);
+      console.log(`[BG-DEBUG] M02 tool ${variant}: bgKey=${m2BgKey}, found=${!!m2BgImage}, isMobile=${isMobile}`);
       if (m2BgImage) {
         setLocalBgOverride({ key: m2BgKey, image: m2BgImage, missionId: mission.mission_id });
+      } else {
+        console.error(`[BG-DEBUG] M02 MISSING baked bg: ${m2BgKey}`);
       }
     }
 
