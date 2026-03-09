@@ -18,7 +18,7 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume, soft
   const isProcessingRef = useRef(isProcessing);
 
   const MAIN_VOL = 0.3;
-  constsoftVolume ??  PROC_VOL = 0.3;
+  const PROC_VOL = softVolume ?? 0.3;
   const PROC_START = 21;
   const FADE_STEP = 0.008; // Slow smooth fade
   const FADE_INTERVAL = 25; // ~1.5s total fade
