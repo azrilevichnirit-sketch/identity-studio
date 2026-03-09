@@ -58,6 +58,7 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
       const audio = new Audio('/audio/processing-music.mp3');
       audio.volume = 0;
       audio.loop = false;
+      audio.preload = 'auto';
       procAudioRef.current = audio;
       // Custom loop back to start point
       audio.addEventListener('ended', () => {
@@ -68,12 +69,18 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
     return procAudioRef.current;
   }, []);
 
+  // Preload processing track for smooth transition on lead screen
+  useEffect(() => {
+    ensureProc();
+  }, [ensureProc]);
+
   // === Main background music ===
   useEffect(() => {
     if (!audioRef.current) {
       const audio = new Audio('/audio/bg-music.mp3');
       audio.loop = true;
       audio.volume = MAIN_VOL;
+      audio.preload = 'auto';
       audio.muted = muted;
       audioRef.current = audio;
     }
@@ -108,8 +115,8 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
       } else {
         audio.volume = 0;
       }
-    } else {
-      // Fade out, then pause
+    } else if (!isProcessing) {
+      // Fade out, then pause (only when leaving music mode outside processing track flow)
       if (!audio.paused) {
         fadeAudio(audio, 0, mainFadeRef, () => {
           audio.pause();
