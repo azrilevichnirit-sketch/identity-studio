@@ -1334,7 +1334,7 @@ export function VisualPlayScreen({
         ? (variant === 'a' ? 'gallery_mission9a_mobile_bg' : 'gallery_mission9b_mobile_bg')
         : (variant === 'a' ? 'gallery_mission9a_desk_bg' : 'gallery_mission9b_desk_bg');
       const m9BgImage = getBackgroundByName(m9BgKey);
-      console.log('[M9 BAKED BG DEBUG]', { m9BgKey, hasImage: !!m9BgImage, isMobile, variant });
+      
       if (m9BgImage) {
         setLocalBgOverride({ key: m9BgKey, image: m9BgImage, missionId: mission.mission_id });
       }
