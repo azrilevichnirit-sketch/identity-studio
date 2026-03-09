@@ -129,7 +129,7 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
 
   // === Processing music ===
   useEffect(() => {
-    const wantProc = isProcessing && !muted;
+    const wantProc = isProcessing;
 
     if (wantProc) {
       const pAudio = ensureProc();
