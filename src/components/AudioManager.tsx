@@ -18,7 +18,7 @@ const FADE_STEP = 0.01;
 const FADE_INTERVAL = 20;
 
 export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(function AudioManager(
-  { isPlaying, isProcessing = false, softVolume },
+  { phase, isPlaying, isProcessing = false, softVolume },
   ref
 ) {
   const mainAudioRef = useRef<HTMLAudioElement | null>(null);
