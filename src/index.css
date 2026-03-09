@@ -1464,7 +1464,7 @@
     position: fixed;
     z-index: 70;
     left: calc(env(safe-area-inset-left, 0px) + 8px);
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
     width: fit-content;
     max-width: min(72vw, 360px);
     transform: none;
