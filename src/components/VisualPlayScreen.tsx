@@ -449,6 +449,8 @@ export function VisualPlayScreen({
     mission.phase === 'main' && mission.mission_id === 'studio_06';
   const isMission8BgLocked =
     mission.phase === 'main' && mission.mission_id === 'studio_08';
+  const isMission3BgLocked =
+    mission.phase === 'main' && mission.mission_id === 'studio_03';
   const isMission9BgLocked =
     mission.phase === 'main' && mission.mission_id === 'studio_09';
   const isCrackedWallsLocked =
