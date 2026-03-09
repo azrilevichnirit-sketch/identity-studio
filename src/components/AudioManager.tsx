@@ -69,6 +69,11 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
     return procAudioRef.current;
   }, []);
 
+  // Preload processing track for smooth transition on lead screen
+  useEffect(() => {
+    ensureProc();
+  }, [ensureProc]);
+
   // === Main background music ===
   useEffect(() => {
     if (!audioRef.current) {
