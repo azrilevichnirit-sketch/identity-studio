@@ -85,6 +85,7 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
     const wantMain = isPlaying && !isProcessing;
 
     if (wantMain) {
+      audio.muted = muted;
       if (audio.paused) {
         audio.volume = 0;
         audio.play().catch(() => {
@@ -102,8 +103,11 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
           document.addEventListener('touchstart', unlock, { once: true });
         });
       }
-      // Fade up to full
-      fadeAudio(audio, MAIN_VOL, mainFadeRef);
+      if (!muted) {
+        fadeAudio(audio, MAIN_VOL, mainFadeRef);
+      } else {
+        audio.volume = 0;
+      }
     } else {
       // Fade out, then pause
       if (!audio.paused) {
