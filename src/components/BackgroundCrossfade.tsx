@@ -70,7 +70,7 @@ export function BackgroundCrossfade({
   backgroundPosition,
   backgroundRepeat = "no-repeat",
   filter,
-  durationMs = 800,
+  durationMs = 500,
   zIndex = 0,
 }: BackgroundCrossfadeProps) {
   const [current, setCurrent] = useState(src);
