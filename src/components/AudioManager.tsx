@@ -16,8 +16,6 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
   const mutedRef = useRef(false);
   const isPlayingRef = useRef(isPlaying);
   const isProcessingRef = useRef(isProcessing);
-  const prevIsProcessingRef = useRef(isProcessing);
-
   const MAIN_VOL = 0.3;
   const PROC_VOL = softVolume ?? 0.3;
   const PROC_START = 21;
@@ -55,7 +53,6 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
     }, FADE_INTERVAL);
   }, [clearFadeTimer]);
 
-  // Preload processing track
   const ensureProc = useCallback(() => {
     if (!procAudioRef.current) {
       const audio = new Audio('/audio/processing-music.mp3');
@@ -73,7 +70,6 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
 
   useEffect(() => { ensureProc(); }, [ensureProc]);
 
-  // Ensure main audio element exists
   const ensureMain = useCallback(() => {
     if (!audioRef.current) {
       const audio = new Audio('/audio/bg-music.mp3');
@@ -85,99 +81,18 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
     return audioRef.current;
   }, []);
 
-  // === Single unified music controller ===
+  // === Unified music controller (no overlap, deterministic transitions) ===
   useEffect(() => {
     const mainAudio = ensureMain();
     const procAudio = ensureProc();
-    
+
     mainAudio.muted = muted;
     procAudio.muted = muted;
 
-    const justEnteredProcessing = isProcessing && !prevIsProcessingRef.current;
-    const justLeftProcessing = !isProcessing && prevIsProcessingRef.current;
-    prevIsProcessingRef.current = isProcessing;
+    const mainTargetVol = muted ? 0 : MAIN_VOL;
+    const procTargetVol = muted ? 0 : PROC_VOL;
 
-    // STATE 1: Processing mode (lead / processing / summary)
-    if (isProcessing) {
-      // If just entered processing — crossfade from main to proc
-      if (justEnteredProcessing) {
-        if (!mainAudio.paused && mainAudio.volume > 0.001) {
-          // Crossfade: fade out main, then start proc
-          fadeAudio(mainAudio, 0, mainFadeRef, () => {
-            mainAudio.pause();
-            mainAudio.currentTime = 0;
-            mainAudio.volume = MAIN_VOL;
-
-            // Start processing track
-            procAudio.currentTime = PROC_START;
-            procAudio.volume = 0;
-            procAudio.play().catch(() => {
-              const unlock = () => {
-                if (!mutedRef.current && isProcessingRef.current && procAudioRef.current) {
-                  procAudioRef.current.currentTime = PROC_START;
-                  procAudioRef.current.volume = 0;
-                  procAudioRef.current.play().then(() => {
-                    fadeAudio(procAudioRef.current!, PROC_VOL, procFadeRef);
-                  }).catch(() => {});
-                }
-                document.removeEventListener('click', unlock);
-                document.removeEventListener('touchstart', unlock);
-              };
-              document.addEventListener('click', unlock, { once: true });
-              document.addEventListener('touchstart', unlock, { once: true });
-            });
-            if (!mutedRef.current) {
-              fadeAudio(procAudio, PROC_VOL, procFadeRef);
-            }
-          });
-        } else {
-          // Main isn't playing, just start proc directly
-          mainAudio.pause();
-          mainAudio.currentTime = 0;
-          
-          procAudio.currentTime = PROC_START;
-          procAudio.volume = 0;
-          procAudio.play().catch(() => {
-            const unlock = () => {
-              if (!mutedRef.current && isProcessingRef.current && procAudioRef.current) {
-                procAudioRef.current.currentTime = PROC_START;
-                procAudioRef.current.volume = 0;
-                procAudioRef.current.play().then(() => {
-                  fadeAudio(procAudioRef.current!, PROC_VOL, procFadeRef);
-                }).catch(() => {});
-              }
-              document.removeEventListener('click', unlock);
-              document.removeEventListener('touchstart', unlock);
-            };
-            document.addEventListener('click', unlock, { once: true });
-            document.addEventListener('touchstart', unlock, { once: true });
-          });
-          if (!muted) {
-            fadeAudio(procAudio, PROC_VOL, procFadeRef);
-          }
-        }
-      } else {
-        // Already in processing mode — just adjust volume (e.g. lead→summary)
-        if (!procAudio.paused && !muted) {
-          fadeAudio(procAudio, PROC_VOL, procFadeRef);
-        } else if (muted) {
-          procAudio.volume = 0;
-        }
-      }
-      return;
-    }
-
-    // STATE 2: Normal play mode (game phases)
-    if (justLeftProcessing) {
-      // Fade out proc track
-      if (!procAudio.paused) {
-        fadeAudio(procAudio, 0, procFadeRef, () => {
-          procAudio.pause();
-        });
-      }
-    }
-
-    if (isPlaying) {
+    const startMainTrack = () => {
       if (mainAudio.paused) {
         mainAudio.volume = 0;
         mainAudio.play().catch(() => {
@@ -195,18 +110,70 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
           document.addEventListener('touchstart', unlock, { once: true });
         });
       }
-      if (!muted) {
-        fadeAudio(mainAudio, MAIN_VOL, mainFadeRef);
+      fadeAudio(mainAudio, mainTargetVol, mainFadeRef);
+    };
+
+    const startProcTrack = () => {
+      if (procAudio.paused) {
+        procAudio.currentTime = PROC_START;
+        procAudio.volume = 0;
+        procAudio.play().catch(() => {
+          const unlock = () => {
+            if (!mutedRef.current && isProcessingRef.current && procAudioRef.current) {
+              procAudioRef.current.currentTime = PROC_START;
+              procAudioRef.current.volume = 0;
+              procAudioRef.current.play().then(() => {
+                fadeAudio(procAudioRef.current!, PROC_VOL, procFadeRef);
+              }).catch(() => {});
+            }
+            document.removeEventListener('click', unlock);
+            document.removeEventListener('touchstart', unlock);
+          };
+          document.addEventListener('click', unlock, { once: true });
+          document.addEventListener('touchstart', unlock, { once: true });
+        });
+      }
+      fadeAudio(procAudio, procTargetVol, procFadeRef);
+    };
+
+    if (isProcessing) {
+      // lead / processing / summary => processing track only
+      if (!mainAudio.paused && mainAudio.volume > 0.001) {
+        fadeAudio(mainAudio, 0, mainFadeRef, () => {
+          mainAudio.pause();
+          mainAudio.currentTime = 0;
+          mainAudio.volume = MAIN_VOL;
+          startProcTrack();
+        });
       } else {
-        mainAudio.volume = 0;
+        mainAudio.pause();
+        mainAudio.currentTime = 0;
+        mainAudio.volume = MAIN_VOL;
+        startProcTrack();
+      }
+    } else if (isPlaying) {
+      // game phases => main track only
+      if (!procAudio.paused && procAudio.volume > 0.001) {
+        fadeAudio(procAudio, 0, procFadeRef, () => {
+          procAudio.pause();
+          startMainTrack();
+        });
+      } else {
+        procAudio.pause();
+        startMainTrack();
       }
     } else {
-      // Not playing, not processing — silence everything
+      // silence everything
       if (!mainAudio.paused) {
         fadeAudio(mainAudio, 0, mainFadeRef, () => {
           mainAudio.pause();
           mainAudio.currentTime = 0;
           mainAudio.volume = MAIN_VOL;
+        });
+      }
+      if (!procAudio.paused) {
+        fadeAudio(procAudio, 0, procFadeRef, () => {
+          procAudio.pause();
         });
       }
     }
