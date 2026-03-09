@@ -326,6 +326,12 @@ export function VisualPlayScreen({
       return 'gallery_mission7_mobile_bg';
     }
     
+    // Mission 03: doorway park view (desktop) / dedicated portrait bg (mobile)
+    if (mission.phase === 'main' && mission.mission_id === 'studio_03') {
+      const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 821;
+      return isDesktop ? (mission.bg_override || 'studio_doorway_park_view_v5') : 'gallery_mission3_mobile_bg';
+    }
+    
     // Mission 09: Doorway park view
     if (mission.phase === 'main' && mission.mission_id === 'studio_09') {
       return 'studio_doorway_park_view_bg';
