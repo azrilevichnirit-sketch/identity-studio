@@ -124,8 +124,20 @@ export function BackgroundCrossfade({
 
     // Transition ONLY after the new image is actually loaded.
     // This prevents black flashes on slow/large background swaps.
+    // IMPORTANT: Use a timeout fallback so the transition still happens even if
+    // preloading is slow (e.g., mobile with many concurrent preloads).
+    const fallbackTimer = window.setTimeout(() => {
+      doTransition();
+    }, 400); // Max wait 400ms, then transition anyway (previous layer stays visible)
+
     preloadImage(src).then((loaded) => {
-      if (!loaded) return;
+      clearTimeout(fallbackTimer);
+      if (!loaded) {
+        // Even on failure, do the transition - browser will show broken image
+        // but at least the state won't be stuck
+        doTransition();
+        return;
+      }
       doTransition();
     });
 
