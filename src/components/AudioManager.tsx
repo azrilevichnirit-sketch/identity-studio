@@ -4,6 +4,7 @@ import { Volume2, VolumeX } from 'lucide-react';
 interface AudioManagerProps {
   isPlaying: boolean;
   isProcessing?: boolean;
+  softVolume?: number;
 }
 
 export function AudioManager({ isPlaying, isProcessing = false }: AudioManagerProps) {
