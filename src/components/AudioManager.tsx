@@ -58,6 +58,7 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
       const audio = new Audio('/audio/processing-music.mp3');
       audio.volume = 0;
       audio.loop = false;
+      audio.preload = 'auto';
       procAudioRef.current = audio;
       // Custom loop back to start point
       audio.addEventListener('ended', () => {
