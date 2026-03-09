@@ -666,7 +666,7 @@
 }
 
 .animate-mission-flash {
-  animation: mission-flash 600ms ease-out forwards;
+  animation: mission-flash 400ms ease-out forwards;
 }
 
 /* NPC entrance animation - slide in from side */
