@@ -15,19 +15,6 @@ type BackgroundCrossfadeProps = {
 // Cache of preloaded images to avoid re-fetching
 const preloadedImages = new Set<string>();
 
-/** Check if an image URL is already in browser memory cache (synchronous) */
-function isImageCached(src: string): boolean {
-  if (preloadedImages.has(src)) return true;
-  // Probe browser cache synchronously
-  const probe = new Image();
-  probe.src = src;
-  if (probe.complete && probe.naturalWidth > 0) {
-    preloadedImages.add(src);
-    return true;
-  }
-  return false;
-}
-
 function preloadImage(src: string): Promise<boolean> {
   if (preloadedImages.has(src)) {
     return Promise.resolve(true);
@@ -59,9 +46,11 @@ export function markPreloaded(src: string) {
 }
 
 /**
- * Crossfades between background images using opacity.
- * IMPORTANT: Preloads new background before transitioning to prevent black screen flash.
- * Uses refs to avoid stale closure issues during rapid transitions.
+ * Crossfades between background images.
+ * 
+ * KEY PRINCIPLE: The previous layer sits ON TOP and only fades out AFTER the new
+ * image is confirmed loaded. This guarantees no black flash — the old image
+ * covers everything until the new one is ready to be revealed.
  */
 export function BackgroundCrossfade({
   src,
@@ -76,81 +65,60 @@ export function BackgroundCrossfade({
   const [current, setCurrent] = useState(src);
   const [previous, setPrevious] = useState<string | null>(null);
   const [fadeOutPrev, setFadeOutPrev] = useState(false);
-  // Track whether the initial image has loaded (for fade-in on first render)
-  // Use synchronous cache probe to avoid 1-frame black flash for cached images
-  const [initialReady, setInitialReady] = useState(() => isImageCached(src));
   const cleanupRef = useRef<number | null>(null);
-  const pendingSrcRef = useRef<string | null>(null);
-  // Use a ref to always have the latest `current` value, avoiding stale closures
+  // Track the latest desired src to handle rapid changes
+  const desiredSrcRef = useRef(src);
   const currentRef = useRef(current);
   currentRef.current = current;
 
-  // Preload initial image on mount and fade in when ready
   useEffect(() => {
-    if (initialReady) return;
-    preloadImage(src).then((loaded) => {
-      if (loaded) {
-        requestAnimationFrame(() => setInitialReady(true));
-      }
-    });
-    // Safety fallback: if image hasn't loaded within 500ms, show whatever we have
-    // This prevents permanent black screens on slow connections
-    const fallbackTimer = window.setTimeout(() => {
-      setInitialReady(true);
-    }, 500);
-    return () => window.clearTimeout(fallbackTimer);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    desiredSrcRef.current = src;
 
-  useEffect(() => {
     if (src === currentRef.current) return;
 
-    // Track the pending source to handle rapid changes
-    pendingSrcRef.current = src;
+    let cancelled = false;
 
-    let didTransition = false;
     const doTransition = () => {
-      if (didTransition) return;
-      didTransition = true;
-      // Only proceed if this src is still the one we want
-      if (pendingSrcRef.current !== src) return;
+      if (cancelled) return;
+      // Only proceed if this src is still the desired one
+      if (desiredSrcRef.current !== src) return;
 
-      // Use ref to get the LATEST current value (not a stale closure)
       setPrevious(currentRef.current);
       setCurrent(src);
       currentRef.current = src;
       setFadeOutPrev(false);
-      pendingSrcRef.current = null;
 
-      // Next frame: start fading out previous
-      requestAnimationFrame(() => setFadeOutPrev(true));
+      // Next frame: start fading out previous (new image is already loaded)
+      requestAnimationFrame(() => {
+        if (!cancelled) setFadeOutPrev(true);
+      });
 
       // Clean up previous layer after fade completes
       if (cleanupRef.current) window.clearTimeout(cleanupRef.current);
       cleanupRef.current = window.setTimeout(() => {
         setPrevious(null);
-      }, durationMs + 50);
+      }, durationMs + 100);
     };
 
-    // If the image is already cached, transition immediately (no delay)
-    if (isImageCached(src)) {
+    // If already cached, transition immediately
+    if (preloadedImages.has(src)) {
       doTransition();
       return;
     }
 
-    // Transition ONLY after the new image is actually loaded.
-    // This prevents black flashes on slow/large background swaps.
+    // Preload FIRST, transition AFTER — this is the key to no black flashes
     preloadImage(src).then((loaded) => {
-      if (!loaded) return;
+      if (cancelled || !loaded) return;
       doTransition();
     });
 
-    // Safety fallback: force transition after 400ms even if image hasn't loaded.
-    // This prevents stuck backgrounds where the crossfade never fires.
+    // Safety fallback: force transition after 3s (very generous, prevents stuck UI)
     const fallbackId = window.setTimeout(() => {
       doTransition();
-    }, 400);
+    }, 3000);
 
     return () => {
+      cancelled = true;
       window.clearTimeout(fallbackId);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -165,18 +133,16 @@ export function BackgroundCrossfade({
 
   return (
     <div className={cn("absolute inset-0", className)} style={{ zIndex }}>
-      {/* Current (new) background - fades in on first load */}
+      {/* Current (new) background — always rendered, always visible */}
       <div
         className="absolute inset-0"
         style={{
           ...baseStyle,
           backgroundImage: `url(${current})`,
-          opacity: initialReady ? 1 : 0,
-          transition: `opacity ${durationMs}ms ease-in-out`,
         }}
       />
 
-      {/* Previous background - fades out on top, hiding any loading delay */}
+      {/* Previous background — sits ON TOP, fades out only after new image is loaded */}
       {previous ? (
         <div
           className="absolute inset-0"
