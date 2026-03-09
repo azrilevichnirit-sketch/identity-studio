@@ -3,12 +3,10 @@ import { Volume2, VolumeX } from 'lucide-react';
 
 interface AudioManagerProps {
   isPlaying: boolean;
-  isProcessing?: boolean;
 }
 
-export function AudioManager({ isPlaying, isProcessing = false }: AudioManagerProps) {
+export function AudioManager({ isPlaying }: AudioManagerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const processingAudioRef = useRef<HTMLAudioElement | null>(null);
   const [muted, setMuted] = useState(false);
   const mutedRef = useRef(false);
   const isPlayingRef = useRef(isPlaying);
@@ -21,7 +19,6 @@ export function AudioManager({ isPlaying, isProcessing = false }: AudioManagerPr
     isPlayingRef.current = isPlaying;
   }, [isPlaying]);
 
-  // Main background music
   useEffect(() => {
     if (!audioRef.current) {
       const audio = new Audio('/audio/bg-music.mp3');
@@ -34,22 +31,7 @@ export function AudioManager({ isPlaying, isProcessing = false }: AudioManagerPr
     const audio = audioRef.current;
     audio.muted = muted;
 
-    if (!isPlaying || isProcessing) {
-      // Fade out smoothly if transitioning to processing
-      if (isProcessing && !muted && audio.volume > 0) {
-        let vol = audio.volume;
-        const fade = setInterval(() => {
-          vol = Math.max(0, vol - 0.02);
-          audio.volume = vol;
-          if (vol <= 0) {
-            clearInterval(fade);
-            audio.pause();
-            audio.currentTime = 0;
-            audio.volume = 0.3;
-          }
-        }, 30);
-        return () => clearInterval(fade);
-      }
+    if (!isPlaying) {
       audio.pause();
       audio.currentTime = 0;
       return;
@@ -67,85 +49,16 @@ export function AudioManager({ isPlaying, isProcessing = false }: AudioManagerPr
         }
         document.removeEventListener('click', unlock);
       };
+
       document.addEventListener('click', unlock, { once: true });
     });
-  }, [isPlaying, muted, isProcessing]);
-
-  // Processing music - starts at 21s with fade in
-  useEffect(() => {
-    if (!isProcessing) {
-      // Fade out and stop processing music
-      const pAudio = processingAudioRef.current;
-      if (pAudio) {
-        let vol = pAudio.volume;
-        const fade = setInterval(() => {
-          vol = Math.max(0, vol - 0.02);
-          try { pAudio.volume = vol; } catch {}
-          if (vol <= 0) {
-            clearInterval(fade);
-            pAudio.pause();
-          }
-        }, 30);
-        return () => clearInterval(fade);
-      }
-      return;
-    }
-
-    if (muted) return;
-
-    if (!processingAudioRef.current) {
-      const audio = new Audio('/audio/processing-music.mp3');
-      audio.loop = true;
-      audio.volume = 0;
-      audio.currentTime = 21;
-      processingAudioRef.current = audio;
-    }
-
-    const pAudio = processingAudioRef.current;
-    pAudio.currentTime = 21;
-    pAudio.volume = 0;
-    pAudio.muted = muted;
-
-    // Handle looping back to 21s instead of 0
-    const handleTimeUpdate = () => {
-      if (pAudio.currentTime >= pAudio.duration - 0.5) {
-        pAudio.currentTime = 21;
-      }
-    };
-    pAudio.addEventListener('timeupdate', handleTimeUpdate);
-
-    pAudio.play().then(() => {
-      // Fade in smoothly
-      let vol = 0;
-      const fade = setInterval(() => {
-        vol = Math.min(0.3, vol + 0.01);
-        pAudio.volume = vol;
-        if (vol >= 0.3) clearInterval(fade);
-      }, 30);
-    }).catch(() => {
-      const unlock = () => {
-        if (!mutedRef.current && processingAudioRef.current) {
-          processingAudioRef.current.play().catch(() => {});
-        }
-        document.removeEventListener('click', unlock);
-      };
-      document.addEventListener('click', unlock, { once: true });
-    });
-
-    return () => {
-      pAudio.removeEventListener('timeupdate', handleTimeUpdate);
-    };
-  }, [isProcessing, muted]);
+  }, [isPlaying, muted]);
 
   useEffect(() => {
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current = null;
-      }
-      if (processingAudioRef.current) {
-        processingAudioRef.current.pause();
-        processingAudioRef.current = null;
       }
     };
   }, []);
@@ -156,7 +69,7 @@ export function AudioManager({ isPlaying, isProcessing = false }: AudioManagerPr
     setMuted((prev) => !prev);
   }, []);
 
-  if (!isPlaying && !isProcessing) return null;
+  if (!isPlaying) return null;
 
   return (
     <button
