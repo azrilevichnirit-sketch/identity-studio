@@ -234,6 +234,7 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
 
   return (
     <button
+      ref={ref}
       type="button"
       onClick={handleToggleMute}
       aria-label={muted ? 'Unmute music' : 'Mute music'}
@@ -250,4 +251,6 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
         : <Volume2 className="text-white/80 w-3.5 h-3.5 md:w-[18px] md:h-[18px]" />}
     </button>
   );
-}
+});
+
+AudioManager.displayName = 'AudioManager';
