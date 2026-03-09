@@ -30,6 +30,9 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
   const unlockedRef = useRef(false);
   // Track desired mode so we can retry after unlock
   const desiredModeRef = useRef<AudioMode>('none');
+  // Ref for softVolume so watchdog can access latest value without re-registering listeners
+  const softVolumeRef = useRef(softVolume);
+  softVolumeRef.current = softVolume;
 
   const [muted, setMuted] = useState(false);
 
