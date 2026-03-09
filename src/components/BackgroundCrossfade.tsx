@@ -64,7 +64,18 @@ export function BackgroundCrossfade({
   const [previous, setPrevious] = useState<string | null>(null);
   const [fadeOutPrev, setFadeOutPrev] = useState(false);
   // Track whether the initial image has loaded (for fade-in on first render)
-  const [initialReady, setInitialReady] = useState(() => preloadedImages.has(src));
+  // Check both our preload cache AND browser's native cache (img.complete) to avoid black screen
+  const [initialReady, setInitialReady] = useState(() => {
+    if (preloadedImages.has(src)) return true;
+    // Synchronous browser cache check
+    const testImg = new Image();
+    testImg.src = src;
+    if (testImg.complete && testImg.naturalWidth > 0) {
+      preloadedImages.add(src);
+      return true;
+    }
+    return false;
+  });
   const cleanupRef = useRef<number | null>(null);
   const pendingSrcRef = useRef<string | null>(null);
   // Use a ref to always have the latest `current` value, avoiding stale closures
