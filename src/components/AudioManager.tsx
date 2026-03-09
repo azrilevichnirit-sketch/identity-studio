@@ -164,7 +164,7 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
     modeRef.current = mode;
 
     return () => clearFade();
-  }, [isPlaying, isProcessing, muted, softVolume, fadeVolumes, keepPlaying, clearFade]);
+  }, [phase, isProcessingPhase, isPlaying, isProcessing, muted, softVolume, fadeVolumes, keepPlaying, clearFade]);
 
   const handleToggleMute = useCallback((e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
