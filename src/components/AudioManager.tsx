@@ -29,6 +29,8 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
 
   const [muted, setMuted] = useState(false);
 
+  const isProcessingPhase = phase === 'lead' || phase === 'processing' || phase === 'summary';
+
   const clearFade = useCallback(() => {
     if (fadeTimerRef.current !== null) {
       clearInterval(fadeTimerRef.current);
