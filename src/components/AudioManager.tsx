@@ -2,6 +2,7 @@ import { forwardRef, useCallback, useEffect, useRef, useState, type MouseEvent }
 import { Volume2, VolumeX } from 'lucide-react';
 
 interface AudioManagerProps {
+  phase: string;
   isPlaying: boolean;
   isProcessing?: boolean;
   softVolume?: number;
@@ -17,16 +18,18 @@ const FADE_STEP = 0.01;
 const FADE_INTERVAL = 20;
 
 export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(function AudioManager(
-  { isPlaying, isProcessing = false, softVolume },
+  { phase, isPlaying, isProcessing = false, softVolume },
   ref
 ) {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const mainAudioRef = useRef<HTMLAudioElement | null>(null);
+  const procAudioRef = useRef<HTMLAudioElement | null>(null);
   const fadeTimerRef = useRef<number | null>(null);
-  const transitionIdRef = useRef(0);
-  const currentModeRef = useRef<AudioMode>('none');
-  const currentSrcRef = useRef<string | null>(null);
+  const unlockedRef = useRef(false);
+  const modeRef = useRef<AudioMode>('none');
 
   const [muted, setMuted] = useState(false);
+
+  const isProcessingPhase = phase === 'lead' || phase === 'processing' || phase === 'summary';
 
   const clearFade = useCallback(() => {
     if (fadeTimerRef.current !== null) {
@@ -35,151 +38,133 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
     }
   }, []);
 
-  const fadeTo = useCallback((audio: HTMLAudioElement, target: number, onDone?: () => void) => {
+  const fadeVolumes = useCallback((mainTarget: number, procTarget: number) => {
+    const main = mainAudioRef.current;
+    const proc = procAudioRef.current;
+    if (!main || !proc) return;
+
     clearFade();
 
     fadeTimerRef.current = window.setInterval(() => {
-      const current = audio.volume;
-      const diff = target - current;
+      const mainDiff = mainTarget - main.volume;
+      const procDiff = procTarget - proc.volume;
 
-      if (Math.abs(diff) <= FADE_STEP + 0.001) {
-        audio.volume = target;
-        clearFade();
-        onDone?.();
-        return;
+      const mainDone = Math.abs(mainDiff) <= FADE_STEP + 0.001;
+      const procDone = Math.abs(procDiff) <= FADE_STEP + 0.001;
+
+      if (mainDone) {
+        main.volume = mainTarget;
+      } else {
+        main.volume = main.volume + (mainDiff > 0 ? FADE_STEP : -FADE_STEP);
       }
 
-      audio.volume = current + (diff > 0 ? FADE_STEP : -FADE_STEP);
+      if (procDone) {
+        proc.volume = procTarget;
+      } else {
+        proc.volume = proc.volume + (procDiff > 0 ? FADE_STEP : -FADE_STEP);
+      }
+
+      if (mainDone && procDone) {
+        clearFade();
+      }
     }, FADE_INTERVAL);
   }, [clearFade]);
 
-  const playWithUnlock = useCallback((audio: HTMLAudioElement, onStarted?: () => void) => {
-    audio.play().then(() => {
-      onStarted?.();
-    }).catch(() => {
-      const unlock = () => {
-        audio.play().then(() => {
-          onStarted?.();
-        }).catch(() => {});
-      };
+  const keepPlaying = useCallback(() => {
+    const main = mainAudioRef.current;
+    const proc = procAudioRef.current;
+    if (!main || !proc || !unlockedRef.current) return;
 
-      document.addEventListener('click', unlock, { once: true });
-      document.addEventListener('touchstart', unlock, { once: true });
-    });
+    if (main.paused) {
+      main.play().catch(() => {});
+    }
+    if (proc.paused) {
+      proc.play().catch(() => {});
+    }
   }, []);
 
   useEffect(() => {
-    const audio = new Audio(MAIN_SRC);
-    audio.preload = 'auto';
-    audio.loop = true;
-    audio.volume = 0;
+    const main = new Audio(MAIN_SRC);
+    main.preload = 'auto';
+    main.loop = true;
+    main.volume = 0;
 
-    const handleEnded = () => {
-      if (currentModeRef.current !== 'proc') return;
-      audio.currentTime = PROC_START;
-      audio.play().catch(() => {});
+    const proc = new Audio(PROC_SRC);
+    proc.preload = 'auto';
+    proc.loop = false;
+    proc.volume = 0;
+
+    const handleProcEnded = () => {
+      proc.currentTime = PROC_START;
+      proc.play().catch(() => {});
     };
 
-    audio.addEventListener('ended', handleEnded);
-    audioRef.current = audio;
-    currentSrcRef.current = MAIN_SRC;
+    proc.addEventListener('ended', handleProcEnded);
+
+    mainAudioRef.current = main;
+    procAudioRef.current = proc;
+
+    const unlockAndPrime = () => {
+      if (unlockedRef.current) return;
+      unlockedRef.current = true;
+
+      main.play().catch(() => {});
+      if (proc.readyState >= 1) {
+        proc.currentTime = PROC_START;
+      }
+      proc.play().catch(() => {});
+    };
+
+    document.addEventListener('click', unlockAndPrime, { passive: true });
+    document.addEventListener('touchstart', unlockAndPrime, { passive: true });
 
     return () => {
+      document.removeEventListener('click', unlockAndPrime);
+      document.removeEventListener('touchstart', unlockAndPrime);
       clearFade();
-      audio.pause();
-      audio.removeEventListener('ended', handleEnded);
-      audioRef.current = null;
-      currentSrcRef.current = null;
-      currentModeRef.current = 'none';
+      main.pause();
+      proc.pause();
+      proc.removeEventListener('ended', handleProcEnded);
+      mainAudioRef.current = null;
+      procAudioRef.current = null;
+      unlockedRef.current = false;
+      modeRef.current = 'none';
     };
   }, [clearFade]);
 
   useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
+    const main = mainAudioRef.current;
+    const proc = procAudioRef.current;
+    if (!main || !proc) return;
 
-    const mode: AudioMode = isProcessing ? 'proc' : (isPlaying ? 'main' : 'none');
+    const mode: AudioMode = isProcessingPhase ? 'proc' : (isProcessing ? 'proc' : (isPlaying ? 'main' : 'none'));
     const procTargetVol = softVolume ?? 0.3;
-    const targetVolume = muted ? 0 : mode === 'main' ? MAIN_VOL : procTargetVol;
 
-    audio.muted = muted;
+    main.muted = muted;
+    proc.muted = muted;
 
-    transitionIdRef.current += 1;
-    const transitionId = transitionIdRef.current;
-    const isCurrentTransition = () => transitionId === transitionIdRef.current;
-
-    const desiredSrc = mode === 'main' ? MAIN_SRC : mode === 'proc' ? PROC_SRC : null;
-    const desiredLoop = mode === 'main';
-
-    const startTrack = (resetPosition: boolean) => {
-      if (!isCurrentTransition() || !desiredSrc) return;
-
-      const shouldSwapSrc = currentSrcRef.current !== desiredSrc;
-      if (shouldSwapSrc) {
-        audio.pause();
-        audio.src = desiredSrc;
-        audio.load();
-        currentSrcRef.current = desiredSrc;
-        audio.volume = 0;
-      }
-
-      audio.loop = desiredLoop;
-
-      if (resetPosition || shouldSwapSrc) {
-        if (mode === 'main') {
-          audio.currentTime = 0;
-        } else {
-          if (audio.readyState >= 1) {
-            audio.currentTime = PROC_START;
-          } else {
-            const seekToProcStart = () => {
-              audio.currentTime = PROC_START;
-              audio.removeEventListener('loadedmetadata', seekToProcStart);
-            };
-            audio.addEventListener('loadedmetadata', seekToProcStart, { once: true });
-          }
-        }
-      }
-
-      const afterPlay = () => {
-        if (!isCurrentTransition()) return;
-        fadeTo(audio, targetVolume);
-      };
-
-      if (audio.paused) {
-        playWithUnlock(audio, afterPlay);
+    if (modeRef.current !== 'proc' && mode === 'proc') {
+      if (proc.readyState >= 1) {
+        proc.currentTime = PROC_START;
       } else {
-        afterPlay();
+        const seekToProcStart = () => {
+          proc.currentTime = PROC_START;
+          proc.removeEventListener('loadedmetadata', seekToProcStart);
+        };
+        proc.addEventListener('loadedmetadata', seekToProcStart, { once: true });
       }
-    };
-
-    if (mode === 'none') {
-      fadeTo(audio, 0, () => {
-        if (!isCurrentTransition()) return;
-        audio.pause();
-      });
-      currentModeRef.current = 'none';
-      return () => clearFade();
     }
 
-    const previousMode = currentModeRef.current;
-    const shouldResetPosition = previousMode !== mode;
-    const shouldSwapSrc = desiredSrc !== currentSrcRef.current;
+    keepPlaying();
 
-    if (shouldSwapSrc && !audio.paused && audio.volume > 0.001) {
-      fadeTo(audio, 0, () => {
-        if (!isCurrentTransition()) return;
-        audio.pause();
-        startTrack(true);
-      });
-    } else {
-      startTrack(shouldResetPosition);
-    }
+    const mainTarget = muted ? 0 : mode === 'main' ? MAIN_VOL : 0;
+    const procTarget = muted ? 0 : mode === 'proc' ? procTargetVol : 0;
+    fadeVolumes(mainTarget, procTarget);
 
-    currentModeRef.current = mode;
+    modeRef.current = mode;
 
     return () => clearFade();
-  }, [isPlaying, isProcessing, muted, softVolume, fadeTo, playWithUnlock, clearFade]);
+  }, [phase, isProcessingPhase, isPlaying, isProcessing, muted, softVolume, fadeVolumes, keepPlaying, clearFade]);
 
   const handleToggleMute = useCallback((e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -187,7 +172,7 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
     setMuted((prev) => !prev);
   }, []);
 
-  if (!isPlaying && !isProcessing) return null;
+  if (!isProcessingPhase && !isPlaying && !isProcessing) return null;
 
   return (
     <button

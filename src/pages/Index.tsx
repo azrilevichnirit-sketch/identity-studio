@@ -627,6 +627,7 @@ const Index = () => {
         </button>
       )}
       <AudioManager
+        phase={state.phase}
         isPlaying={!['lead', 'processing', 'summary'].includes(state.phase)}
         isProcessing={['lead', 'processing', 'summary'].includes(state.phase)}
         softVolume={state.phase === 'summary' ? 0.08 : 0.3}
