@@ -955,10 +955,12 @@ export function VisualPlayScreen({
     // Skip if this is the first render or bg hasn't changed
     if (previousBgKeyRef.current === null) {
       previousBgKeyRef.current = lockedBgKey;
+      console.log(`[BG-DEBUG] Initial bg: ${lockedBgKey}, mission=${mission.mission_id}`);
       return;
     }
     
     if (previousBgKeyRef.current !== lockedBgKey) {
+      console.log(`[BG-DEBUG] BG changing: ${previousBgKeyRef.current} → ${lockedBgKey}, mission=${mission.mission_id}, lockedBg=${lockedBg ? 'found' : 'NULL'}`);
       // M10: same room with items appearing — skip UI hiding for seamless feel
       const isM10Transition = mission.mission_id === 'studio_10';
       if (!isM10Transition) {
