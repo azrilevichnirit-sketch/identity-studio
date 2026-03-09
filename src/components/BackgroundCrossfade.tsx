@@ -104,6 +104,7 @@ export function BackgroundCrossfade({
       didTransition = true;
       // Only proceed if this src is still the one we want
       if (pendingSrcRef.current !== src) return;
+      console.log(`[BGCrossfade] transition: ${currentRef.current.split('/').pop()} → ${src.split('/').pop()}`);
 
       // Use ref to get the LATEST current value (not a stale closure)
       setPrevious(currentRef.current);
