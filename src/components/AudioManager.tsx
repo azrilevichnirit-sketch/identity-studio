@@ -127,11 +127,10 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
     };
   }, [isPlaying, muted, isProcessing, fadeAudio]);
 
-  // === Processing music ===
   useEffect(() => {
     const wantProc = isProcessing;
 
-    if (wantProc) {
+    const startProcessingTrack = () => {
       const pAudio = ensureProc();
       pAudio.muted = muted;
 
@@ -154,11 +153,27 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
           document.addEventListener('touchstart', unlock, { once: true });
         });
       }
-      // Fade up or stay silent if muted
+
       if (!muted) {
         fadeAudio(pAudio, PROC_VOL, procFadeRef);
       } else {
         pAudio.volume = 0;
+      }
+    };
+
+    if (wantProc) {
+      const mainAudio = audioRef.current;
+
+      // Prevent overlap: only start processing track after main track fully fades out
+      if (mainAudio && !mainAudio.paused && mainAudio.volume > 0.001) {
+        fadeAudio(mainAudio, 0, mainFadeRef, () => {
+          mainAudio.pause();
+          mainAudio.currentTime = 0;
+          mainAudio.volume = MAIN_VOL;
+          startProcessingTrack();
+        });
+      } else {
+        startProcessingTrack();
       }
     } else {
       const pAudio = procAudioRef.current;
