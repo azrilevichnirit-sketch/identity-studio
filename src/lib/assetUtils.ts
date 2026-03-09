@@ -1,6 +1,7 @@
 // Asset utilities for loading backgrounds, tools, and avatars
 
 import type { AvatarGender, Mission } from '@/types/identity';
+import { markPreloaded } from '@/components/BackgroundCrossfade';
 
 // Background imports - 6 backgrounds used:
 // 1. Mission 01 STARTING: cracked walls (before paint) - gallery_main_stylized_v3
