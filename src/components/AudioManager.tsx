@@ -7,7 +7,7 @@ interface AudioManagerProps {
   softVolume?: number;
 }
 
-export function AudioManager({ isPlaying, isProcessing = false, softVolume }: AudioManagerProps) {
+export function AudioManager({ isPlaying, isProcessing = false, softVolume, softVolume }: AudioManagerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const procAudioRef = useRef<HTMLAudioElement | null>(null);
   const mainFadeRef = useRef<number | null>(null);
@@ -18,7 +18,7 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
   const isProcessingRef = useRef(isProcessing);
 
   const MAIN_VOL = 0.3;
-  const PROC_VOL = 0.3;
+  constsoftVolume ??  PROC_VOL = 0.3;
   const PROC_START = 21;
   const FADE_STEP = 0.008; // Slow smooth fade
   const FADE_INTERVAL = 25; // ~1.5s total fade
