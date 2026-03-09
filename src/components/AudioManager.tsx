@@ -183,11 +183,12 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
       }
 
       fadeAudio(main, 0, mainFadeRef, () => {
-        if (!isCurrentTransition()) return;
+        // Always pause when fade completes - even if a newer transition started.
+        // Skipping this was causing dual-music bugs when transitions overlap.
         main.pause();
         main.currentTime = 0;
         main.volume = 0;
-        onDone?.();
+        if (isCurrentTransition()) onDone?.();
       });
     };
 
@@ -201,11 +202,11 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
       }
 
       fadeAudio(proc, 0, procFadeRef, () => {
-        if (!isCurrentTransition()) return;
+        // Always pause when fade completes - even if a newer transition started.
         proc.pause();
         proc.currentTime = 0;
         proc.volume = 0;
-        onDone?.();
+        if (isCurrentTransition()) onDone?.();
       });
     };
 
@@ -275,6 +276,20 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
     return () => {
       clearFade(mainFadeRef);
       clearFade(procFadeRef);
+      // Safety: force-pause whichever audio shouldn't be playing for the current mode.
+      // This prevents dual-music when effects re-run mid-fade.
+      if (mode === 'proc' && !main.paused) {
+        main.pause();
+        main.volume = 0;
+      }
+      if (mode === 'main' && !proc.paused) {
+        proc.pause();
+        proc.volume = 0;
+      }
+      if (mode === 'none') {
+        if (!main.paused) { main.pause(); main.volume = 0; }
+        if (!proc.paused) { proc.pause(); proc.volume = 0; }
+      }
     };
   }, [phase, isPlaying, muted, softVolume, clearFade, fadeAudio]);
 
