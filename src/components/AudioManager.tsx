@@ -15,6 +15,7 @@ const PROC_SRC = '/audio/processing-music.mp3';
 const MAIN_VOL = 0.3;
 const FADE_STEP = 0.008;
 const FADE_INTERVAL = 25;
+const PROC_LOOP_START = 21; // Loop processing music from second 21
 
 export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(function AudioManager(
   { phase, isPlaying, isProcessing = false, softVolume },
@@ -26,6 +27,9 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
   const procFadeRef = useRef<number | null>(null);
   const transitionIdRef = useRef(0);
   const prevModeRef = useRef<AudioMode>('none');
+  const unlockedRef = useRef(false);
+  // Track desired mode so we can retry after unlock
+  const desiredModeRef = useRef<AudioMode>('none');
 
   const [muted, setMuted] = useState(false);
 
@@ -58,34 +62,7 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
     }, FADE_INTERVAL);
   }, [clearFade]);
 
-  const playWithUnlock = useCallback((
-    audio: HTMLAudioElement,
-    onStarted?: () => void,
-    canStart?: () => boolean
-  ) => {
-    const finishStart = () => {
-      if (canStart && !canStart()) {
-        audio.pause();
-        audio.currentTime = 0;
-        audio.volume = 0;
-        return;
-      }
-      onStarted?.();
-    };
-
-    if (canStart && !canStart()) return;
-
-    audio.play().then(finishStart).catch(() => {
-      const unlock = () => {
-        if (canStart && !canStart()) return;
-        audio.play().then(finishStart).catch(() => {});
-      };
-
-      document.addEventListener('click', unlock, { once: true });
-      document.addEventListener('touchstart', unlock, { once: true });
-    });
-  }, []);
-
+  // Create audio elements once
   useEffect(() => {
     const main = new Audio(MAIN_SRC);
     main.loop = true;
@@ -93,9 +70,17 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
     main.volume = 0;
 
     const proc = new Audio(PROC_SRC);
-    proc.loop = true;
+    proc.loop = false; // Manual loop from second 21
     proc.preload = 'auto';
     proc.volume = 0;
+
+    // Manual loop: when processing music ends, restart from second 21
+    const handleProcEnded = () => {
+      console.log(`[AudioManager] proc ended, looping from ${PROC_LOOP_START}s`);
+      proc.currentTime = PROC_LOOP_START;
+      proc.play().catch(() => {});
+    };
+    proc.addEventListener('ended', handleProcEnded);
 
     mainAudioRef.current = main;
     procAudioRef.current = proc;
@@ -103,6 +88,7 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
     return () => {
       clearFade(mainFadeRef);
       clearFade(procFadeRef);
+      proc.removeEventListener('ended', handleProcEnded);
       main.pause();
       proc.pause();
       mainAudioRef.current = null;
@@ -111,6 +97,76 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
     };
   }, [clearFade]);
 
+  // Unlock both audio elements on first user interaction (critical for iOS/mobile)
+  useEffect(() => {
+    if (unlockedRef.current) return;
+
+    const unlockAll = () => {
+      if (unlockedRef.current) return;
+      unlockedRef.current = true;
+
+      const main = mainAudioRef.current;
+      const proc = procAudioRef.current;
+
+      // Unlock each element by doing a silent play
+      [main, proc].forEach(audio => {
+        if (!audio) return;
+        const savedVol = audio.volume;
+        audio.volume = 0;
+        const p = audio.play();
+        if (p) p.then(() => {
+          audio.pause();
+          audio.currentTime = 0;
+          audio.volume = savedVol;
+        }).catch(() => {});
+      });
+
+      console.log('[AudioManager] Audio unlocked via user gesture, desired mode:', desiredModeRef.current);
+
+      // After unlocking, if we have a desired mode that failed before, re-trigger
+      // by bumping a dummy state. We do this via a small timeout to let the unlock settle.
+      setTimeout(() => {
+        const desired = desiredModeRef.current;
+        if (desired !== 'none') {
+          const audio = desired === 'main' ? mainAudioRef.current : procAudioRef.current;
+          if (audio && audio.paused) {
+            console.log('[AudioManager] Post-unlock: starting', desired);
+            audio.volume = 0;
+            audio.play().then(() => {
+              // Fade in
+              const target = desired === 'main' ? MAIN_VOL : 0.3;
+              const timerRef = desired === 'main' ? mainFadeRef : procFadeRef;
+              // Simple inline fade
+              const id = window.setInterval(() => {
+                if (audio.volume >= target - 0.01) {
+                  audio.volume = target;
+                  clearInterval(id);
+                  return;
+                }
+                audio.volume = Math.min(target, audio.volume + FADE_STEP);
+              }, FADE_INTERVAL);
+            }).catch(() => {});
+          }
+        }
+      }, 100);
+
+      document.removeEventListener('click', unlockAll, true);
+      document.removeEventListener('touchstart', unlockAll, true);
+      document.removeEventListener('pointerdown', unlockAll, true);
+    };
+
+    document.addEventListener('click', unlockAll, { capture: true });
+    document.addEventListener('touchstart', unlockAll, { capture: true });
+    document.addEventListener('pointerdown', unlockAll, { capture: true });
+
+    return () => {
+      document.removeEventListener('click', unlockAll, true);
+      document.removeEventListener('touchstart', unlockAll, true);
+      document.removeEventListener('pointerdown', unlockAll, true);
+    };
+  }, []);
+
+  // Main transition effect
   useEffect(() => {
     const main = mainAudioRef.current;
     const proc = procAudioRef.current;
@@ -120,7 +176,10 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
     const mode: AudioMode = isProcPhase ? 'proc' : (isPlaying ? 'main' : 'none');
     const prevMode = prevModeRef.current;
 
-    console.log(`[AudioManager] phase=${phase}, mode=${mode}, prevMode=${prevMode}, muted=${muted}`);
+    // Store desired mode for post-unlock retry
+    desiredModeRef.current = mode;
+
+    console.log(`[AudioManager] phase=${phase}, mode=${mode}, prevMode=${prevMode}, muted=${muted}, unlocked=${unlockedRef.current}`);
 
     const targetMain = muted ? 0 : MAIN_VOL;
     const targetProc = muted ? 0 : (softVolume ?? 0.3);
@@ -168,15 +227,25 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
       });
     };
 
+    const tryPlay = (audio: HTMLAudioElement, onSuccess: () => void) => {
+      if (!isCurrentTransition()) return;
+      audio.play().then(() => {
+        if (!isCurrentTransition()) { audio.pause(); return; }
+        onSuccess();
+      }).catch(() => {
+        console.log('[AudioManager] play() blocked - will retry after user gesture');
+      });
+    };
+
     const startMain = () => {
       if (!isCurrentTransition()) return;
       if (main.paused) {
         main.currentTime = 0;
         main.volume = 0;
-        playWithUnlock(main, () => {
+        tryPlay(main, () => {
           if (!isCurrentTransition()) return;
           fadeAudio(main, targetMain, mainFadeRef);
-        }, isCurrentTransition);
+        });
       } else {
         fadeAudio(main, targetMain, mainFadeRef);
       }
@@ -184,27 +253,21 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
 
     const startProc = (resetFromStart: boolean) => {
       if (!isCurrentTransition()) return;
-      console.log(`[AudioManager] startProc called, resetFromStart=${resetFromStart}, paused=${proc.paused}, readyState=${proc.readyState}`);
 
       if (resetFromStart) {
         if (proc.readyState >= 1) {
           proc.currentTime = 0;
         } else {
-          const seekToStart = () => {
-            proc.currentTime = 0;
-            proc.removeEventListener('loadedmetadata', seekToStart);
-          };
-          proc.addEventListener('loadedmetadata', seekToStart, { once: true });
+          proc.addEventListener('loadedmetadata', () => { proc.currentTime = 0; }, { once: true });
         }
       }
 
       if (proc.paused) {
         proc.volume = 0;
-        playWithUnlock(proc, () => {
+        tryPlay(proc, () => {
           if (!isCurrentTransition()) return;
-          console.log(`[AudioManager] proc playing, fading to ${targetProc}`);
           fadeAudio(proc, targetProc, procFadeRef);
-        }, isCurrentTransition);
+        });
       } else {
         fadeAudio(proc, targetProc, procFadeRef);
       }
@@ -231,7 +294,7 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
       clearFade(mainFadeRef);
       clearFade(procFadeRef);
     };
-  }, [phase, isPlaying, muted, softVolume, clearFade, fadeAudio, playWithUnlock]);
+  }, [phase, isPlaying, muted, softVolume, clearFade, fadeAudio]);
 
   const handleToggleMute = useCallback((e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
