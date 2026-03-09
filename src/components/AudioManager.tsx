@@ -154,8 +154,12 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
           document.addEventListener('touchstart', unlock, { once: true });
         });
       }
-      // Fade up
-      fadeAudio(pAudio, PROC_VOL, procFadeRef);
+      // Fade up or stay silent if muted
+      if (!muted) {
+        fadeAudio(pAudio, PROC_VOL, procFadeRef);
+      } else {
+        pAudio.volume = 0;
+      }
     } else {
       const pAudio = procAudioRef.current;
       if (pAudio && !pAudio.paused) {
