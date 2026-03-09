@@ -82,7 +82,7 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
     audio.muted = muted;
 
     // Should main music be audible?
-    const wantMain = isPlaying && !isProcessing && !muted;
+    const wantMain = isPlaying && !isProcessing;
 
     if (wantMain) {
       if (audio.paused) {
