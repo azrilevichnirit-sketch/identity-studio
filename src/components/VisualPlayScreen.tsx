@@ -186,51 +186,93 @@ export function VisualPlayScreen({
     }
   }, [avatarGender]);
 
-  // Mission 10: prewarm M10 result AND M11 starting backgrounds
-  // so both transitions (M10 pick → M10 result, M10 result → M11 start) are instant.
+  // Prewarm baked background assets for the CURRENT mission so they're ready
+  // when the user clicks a tool. Without this, BackgroundCrossfade waits for
+  // the image to load, and the advance timer may fire before it's ready,
+  // causing the baked background to never appear.
   useEffect(() => {
-    if (mission.mission_id === 'studio_10') {
-      preloadBackground('gallery_mission10a_bg');
-      preloadBackground('gallery_mission10b_bg');
-      preloadBackground('gallery_mission11a_bg');
-      preloadBackground('gallery_mission11b_bg');
+    const id = mission.mission_id;
+    const preloads: string[] = [];
+
+    // Mission-specific baked backgrounds (both desktop and mobile variants)
+    if (id === 'studio_01') {
+      preloads.push('gallery_mission1a_desk_bg', 'gallery_mission1b_desk_bg',
+        'gallery_mission1a_mobile_bg', 'gallery_mission1b_mobile_bg');
     }
-    if (mission.mission_id === 'studio_13' || mission.mission_id === 'studio_12') {
-      preloadBackground('gallery_mission13a_bg');
-      preloadBackground('gallery_mission13b_bg');
-      preloadBackground('gallery_mission13a_mobile_bg');
-      preloadBackground('gallery_mission13b_mobile_bg');
+    if (id === 'studio_02') {
+      preloads.push('gallery_mission2a_desk_bg', 'gallery_mission2b_desk_bg',
+        'gallery_mission2a_mobile_bg', 'gallery_mission2b_mobile_bg');
     }
-    if (mission.mission_id === 'studio_15' || mission.mission_id === 'studio_14') {
-      preloadBackground('gallery_mission15a_bg');
-      preloadBackground('gallery_mission15b_bg');
-      preloadBackground('gallery_mission15_mobile_bg');
-      preloadBackground('gallery_mission15a_mobile_bg');
-      preloadBackground('gallery_mission15b_mobile_bg');
-      preloadBackground('gallery_mission14a_desk_bg');
-      preloadBackground('gallery_mission14b_desk_bg');
-      preloadBackground('gallery_mission14_mobile_bg');
-      preloadBackground('gallery_mission14a_mobile_bg');
-      preloadBackground('gallery_mission14b_mobile_bg');
+    if (id === 'studio_03') {
+      preloads.push('gallery_mission3a_desk_bg', 'gallery_mission3b_desk_bg',
+        'gallery_mission3a_mobile_bg', 'gallery_mission3b_mobile_bg');
     }
-    // Preload tie-breaker T14 baked backgrounds
-    if (mission.mission_id === 'studio_tie_14' || mission.mission_id === 'studio_tie_13') {
-      preloadBackground('gallery_tie14_desk_bg');
-      preloadBackground('gallery_tie14a_desk_bg');
-      preloadBackground('gallery_tie14b_desk_bg');
-      preloadBackground('gallery_tie14_mobile_bg');
-      preloadBackground('gallery_tie14a_mobile_bg');
-      preloadBackground('gallery_tie14b_mobile_bg');
+    if (id === 'studio_04') {
+      preloads.push('gallery_mission4a_desk_bg', 'gallery_mission4a_mobile_bg',
+        'gallery_mission4b_m_desk_bg', 'gallery_mission4b_f_desk_bg',
+        'gallery_mission4b_m_mobile_bg', 'gallery_mission4b_f_mobile_bg');
     }
-    // Preload tie-breaker T15 baked backgrounds
-    if (mission.mission_id === 'studio_tie_15' || mission.mission_id === 'studio_tie_14') {
-      preloadBackground('gallery_tie15_desk_bg');
-      preloadBackground('gallery_tie15a_desk_bg');
-      preloadBackground('gallery_tie15b_desk_bg');
-      preloadBackground('gallery_tie15_mobile_bg');
-      preloadBackground('gallery_tie15a_mobile_bg');
-      preloadBackground('gallery_tie15b_mobile_bg');
+    if (id === 'studio_05') {
+      preloads.push('gallery_mission5b_desk_bg', 'gallery_mission5b_mobile_bg');
     }
+    if (id === 'studio_06') {
+      preloads.push('gallery_mission6a_desk_bg', 'gallery_mission6b_desk_bg',
+        'gallery_mission6a_mobile_bg', 'gallery_mission6b_mobile_bg');
+    }
+    if (id === 'studio_07') {
+      preloads.push('gallery_mission7a_bg', 'gallery_mission7b_bg',
+        'gallery_mission7a_mobile_bg', 'gallery_mission7b_mobile_bg');
+    }
+    if (id === 'studio_08') {
+      preloads.push('gallery_mission8a_m_desk_bg', 'gallery_mission8a_f_desk_bg',
+        'gallery_mission8b_m_desk_bg', 'gallery_mission8b_f_desk_bg',
+        'gallery_mission8a_m_mobile_bg', 'gallery_mission8a_f_mobile_bg',
+        'gallery_mission8b_m_mobile_bg', 'gallery_mission8b_f_mobile_bg');
+    }
+    if (id === 'studio_09') {
+      preloads.push('gallery_mission9a_desk_bg', 'gallery_mission9b_desk_bg',
+        'gallery_mission9a_mobile_bg', 'gallery_mission9b_mobile_bg');
+    }
+    if (id === 'studio_10') {
+      preloads.push('gallery_mission10a_bg', 'gallery_mission10b_bg',
+        'gallery_mission10a_desk_bg', 'gallery_mission10b_desk_bg',
+        'gallery_mission10a_mobile_bg', 'gallery_mission10b_mobile_bg',
+        'gallery_mission11a_bg', 'gallery_mission11b_bg');
+    }
+    if (id === 'studio_11') {
+      preloads.push('gallery_mission11a_f_desk_bg', 'gallery_mission11a_m_desk_bg',
+        'gallery_mission11b_desk_bg',
+        'gallery_mission11a_f_mobile_bg', 'gallery_mission11a_m_mobile_bg',
+        'gallery_mission11b_mobile_bg');
+    }
+    if (id === 'studio_12') {
+      preloads.push('gallery_mission12a_desk_bg', 'gallery_mission12b_desk_bg',
+        'gallery_mission12a_mobile_bg', 'gallery_mission12b_mobile_bg',
+        'gallery_mission13a_bg', 'gallery_mission13b_bg',
+        'gallery_mission13a_mobile_bg', 'gallery_mission13b_mobile_bg');
+    }
+    if (id === 'studio_13') {
+      preloads.push('gallery_mission13a_bg', 'gallery_mission13b_bg',
+        'gallery_mission13a_mobile_bg', 'gallery_mission13b_mobile_bg');
+    }
+    if (id === 'studio_14' || id === 'studio_15') {
+      preloads.push('gallery_mission14a_desk_bg', 'gallery_mission14b_desk_bg',
+        'gallery_mission14a_mobile_bg', 'gallery_mission14b_mobile_bg',
+        'gallery_mission15a_bg', 'gallery_mission15b_bg',
+        'gallery_mission15a_mobile_bg', 'gallery_mission15b_mobile_bg');
+    }
+
+    // Tie-breaker baked backgrounds
+    if (id.startsWith('studio_tie_')) {
+      const tieNum = id.replace('studio_tie_', '');
+      const paddedNum = tieNum.padStart(2, '0');
+      preloads.push(
+        `gallery_tie${paddedNum}a_desk_bg`, `gallery_tie${paddedNum}b_desk_bg`,
+        `gallery_tie${paddedNum}a_mobile_bg`, `gallery_tie${paddedNum}b_mobile_bg`
+      );
+    }
+
+    preloads.forEach(key => preloadBackground(key));
   }, [mission.mission_id]);
 
   // Eagerly preload the NEXT mission's background so it's ready instantly on transition
