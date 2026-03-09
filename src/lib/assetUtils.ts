@@ -965,8 +965,7 @@ export function getAvatarImage(gender: AvatarGender, state: 'idle' | 'walk' = 'i
 }
 
 // Preload backgrounds for smooth transitions
-// Uses static import of markPreloaded to avoid async race conditions
-import { markPreloaded } from '@/components/BackgroundCrossfade';
+// Uses static import of markPreloaded (imported at top) to avoid async race conditions
 
 export function preloadBackground(bgName: string): void {
   const bg = backgroundAssets[bgName];
