@@ -77,6 +77,8 @@ interface VisualPlayScreenProps {
   toolEditMode?: boolean;
   /** Called when editor "Save & Next" is clicked - selects Tool A and advances */
   onEditorNextMission?: () => void;
+  /** Next mission to eagerly preload its background */
+  nextMission?: Mission | null;
 }
 
 export function VisualPlayScreen({
@@ -91,6 +93,7 @@ export function VisualPlayScreen({
   onUndo,
   toolEditMode = false,
   onEditorNextMission,
+  nextMission,
 }: VisualPlayScreenProps) {
   const [showUndoDialog, setShowUndoDialog] = useState(false);
   const [draggingTool, setDraggingTool] = useState<'a' | 'b' | null>(null);
@@ -229,6 +232,28 @@ export function VisualPlayScreen({
       preloadBackground('gallery_tie15b_mobile_bg');
     }
   }, [mission.mission_id]);
+
+  // Eagerly preload the NEXT mission's background so it's ready instantly on transition
+  useEffect(() => {
+    if (!nextMission) return;
+    const nextBgKey = getBackgroundKey(nextMission);
+    if (nextBgKey) {
+      preloadBackground(nextBgKey);
+    }
+    if (nextMission.bg_override) {
+      preloadBackground(nextMission.bg_override);
+    }
+    // Preload next mission's tool images eagerly
+    nextMission.options?.forEach((opt) => {
+      if (opt.asset) {
+        const toolImg = getToolImage(opt.asset);
+        if (toolImg) {
+          const img = new Image();
+          img.src = toolImg;
+        }
+      }
+    });
+  }, [nextMission]);
 
   // Track if we're transitioning from Mission 7 (need to preserve bg during fixation)
   const m7TransitionRef = useRef<{ active: boolean; bgKey: string | null }>({ active: false, bgKey: null });

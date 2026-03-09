@@ -120,6 +120,8 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
     const mode: AudioMode = isProcPhase ? 'proc' : (isPlaying ? 'main' : 'none');
     const prevMode = prevModeRef.current;
 
+    console.log(`[AudioManager] phase=${phase}, mode=${mode}, prevMode=${prevMode}, muted=${muted}`);
+
     const targetMain = muted ? 0 : MAIN_VOL;
     const targetProc = muted ? 0 : (softVolume ?? 0.3);
 
@@ -182,6 +184,7 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
 
     const startProc = (resetFromStart: boolean) => {
       if (!isCurrentTransition()) return;
+      console.log(`[AudioManager] startProc called, resetFromStart=${resetFromStart}, paused=${proc.paused}, readyState=${proc.readyState}`);
 
       if (resetFromStart) {
         if (proc.readyState >= 1) {
@@ -199,6 +202,7 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
         proc.volume = 0;
         playWithUnlock(proc, () => {
           if (!isCurrentTransition()) return;
+          console.log(`[AudioManager] proc playing, fading to ${targetProc}`);
           fadeAudio(proc, targetProc, procFadeRef);
         }, isCurrentTransition);
       } else {
