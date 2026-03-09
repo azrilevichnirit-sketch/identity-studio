@@ -9,7 +9,7 @@ interface AudioManagerProps {
 
 type AudioMode = 'main' | 'proc' | 'none';
 
-export function AudioManager({ isPlaying, isProcessing = false, softVolume }: AudioManagerProps) {
+export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(function AudioManager({ isPlaying, isProcessing = false, softVolume }, ref) {
   const mainAudioRef = useRef<HTMLAudioElement | null>(null);
   const procAudioRef = useRef<HTMLAudioElement | null>(null);
   const mainFadeRef = useRef<number | null>(null);
