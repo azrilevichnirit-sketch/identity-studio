@@ -175,7 +175,7 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
         procFadeRef.current = null;
       }
     };
-  }, [isProcessing, muted, ensureProc, fadeAudio]);
+  }, [isProcessing, muted, ensureProc, fadeAudio, PROC_VOL]);
 
   // Cleanup
   useEffect(() => {
