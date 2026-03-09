@@ -172,7 +172,7 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
     setMuted((prev) => !prev);
   }, []);
 
-  if (!isPlaying && !isProcessing) return null;
+  if (!isProcessingPhase && !isPlaying && !isProcessing) return null;
 
   return (
     <button
