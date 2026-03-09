@@ -75,6 +75,7 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
       const audio = new Audio('/audio/bg-music.mp3');
       audio.loop = true;
       audio.volume = MAIN_VOL;
+      audio.preload = 'auto';
       audio.muted = muted;
       audioRef.current = audio;
     }
