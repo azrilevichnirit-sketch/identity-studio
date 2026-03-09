@@ -137,7 +137,7 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
     const proc = procAudioRef.current;
     if (!main || !proc) return;
 
-    const mode: AudioMode = isProcessing ? 'proc' : (isPlaying ? 'main' : 'none');
+    const mode: AudioMode = isProcessingPhase ? 'proc' : (isProcessing ? 'proc' : (isPlaying ? 'main' : 'none'));
     const procTargetVol = softVolume ?? 0.3;
 
     main.muted = muted;
