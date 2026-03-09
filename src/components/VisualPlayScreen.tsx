@@ -93,6 +93,7 @@ export function VisualPlayScreen({
   onUndo,
   toolEditMode = false,
   onEditorNextMission,
+  nextMission,
 }: VisualPlayScreenProps) {
   const [showUndoDialog, setShowUndoDialog] = useState(false);
   const [draggingTool, setDraggingTool] = useState<'a' | 'b' | null>(null);
