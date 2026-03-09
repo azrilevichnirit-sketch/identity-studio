@@ -12,7 +12,6 @@ type AudioMode = 'main' | 'proc' | 'none';
 
 const MAIN_SRC = '/audio/bg-music.mp3';
 const PROC_SRC = '/audio/processing-music.mp3';
-const PROC_START = 21;
 const MAIN_VOL = 0.3;
 const FADE_STEP = 0.008;
 const FADE_INTERVAL = 25;
@@ -59,14 +58,27 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
     }, FADE_INTERVAL);
   }, [clearFade]);
 
-  const playWithUnlock = useCallback((audio: HTMLAudioElement, onStarted?: () => void) => {
-    audio.play().then(() => {
+  const playWithUnlock = useCallback((
+    audio: HTMLAudioElement,
+    onStarted?: () => void,
+    canStart?: () => boolean
+  ) => {
+    const finishStart = () => {
+      if (canStart && !canStart()) {
+        audio.pause();
+        audio.currentTime = 0;
+        audio.volume = 0;
+        return;
+      }
       onStarted?.();
-    }).catch(() => {
+    };
+
+    if (canStart && !canStart()) return;
+
+    audio.play().then(finishStart).catch(() => {
       const unlock = () => {
-        audio.play().then(() => {
-          onStarted?.();
-        }).catch(() => {});
+        if (canStart && !canStart()) return;
+        audio.play().then(finishStart).catch(() => {});
       };
 
       document.addEventListener('click', unlock, { once: true });
@@ -81,17 +93,9 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
     main.volume = 0;
 
     const proc = new Audio(PROC_SRC);
-    proc.loop = false;
+    proc.loop = true;
     proc.preload = 'auto';
     proc.volume = 0;
-
-    const handleProcEnded = () => {
-      if (procAudioRef.current !== proc) return;
-      proc.currentTime = PROC_START;
-      proc.play().catch(() => {});
-    };
-
-    proc.addEventListener('ended', handleProcEnded);
 
     mainAudioRef.current = main;
     procAudioRef.current = proc;
@@ -101,7 +105,6 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
       clearFade(procFadeRef);
       main.pause();
       proc.pause();
-      proc.removeEventListener('ended', handleProcEnded);
       mainAudioRef.current = null;
       procAudioRef.current = null;
       prevModeRef.current = 'none';
@@ -113,8 +116,8 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
     const proc = procAudioRef.current;
     if (!main || !proc) return;
 
-    const isProcessingPhase = phase === 'lead' || phase === 'processing' || phase === 'summary';
-    const mode: AudioMode = isProcessingPhase ? 'proc' : (isProcessing ? 'proc' : (isPlaying ? 'main' : 'none'));
+    const isProcPhase = phase === 'lead' || phase === 'processing' || phase === 'summary';
+    const mode: AudioMode = isProcPhase ? 'proc' : (isPlaying ? 'main' : 'none');
     const prevMode = prevModeRef.current;
 
     const targetMain = muted ? 0 : MAIN_VOL;
@@ -148,6 +151,7 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
     const stopProc = (onDone?: () => void) => {
       if (proc.paused || proc.volume <= 0.001) {
         proc.pause();
+        proc.currentTime = 0;
         proc.volume = 0;
         onDone?.();
         return;
@@ -156,6 +160,7 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
       fadeAudio(proc, 0, procFadeRef, () => {
         if (!isCurrentTransition()) return;
         proc.pause();
+        proc.currentTime = 0;
         proc.volume = 0;
         onDone?.();
       });
@@ -169,23 +174,24 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
         playWithUnlock(main, () => {
           if (!isCurrentTransition()) return;
           fadeAudio(main, targetMain, mainFadeRef);
-        });
+        }, isCurrentTransition);
       } else {
         fadeAudio(main, targetMain, mainFadeRef);
       }
     };
 
-    const startProc = (resetStartPoint: boolean) => {
+    const startProc = (resetFromStart: boolean) => {
       if (!isCurrentTransition()) return;
-      if (resetStartPoint) {
+
+      if (resetFromStart) {
         if (proc.readyState >= 1) {
-          proc.currentTime = PROC_START;
+          proc.currentTime = 0;
         } else {
-          const seekToProcStart = () => {
-            proc.currentTime = PROC_START;
-            proc.removeEventListener('loadedmetadata', seekToProcStart);
+          const seekToStart = () => {
+            proc.currentTime = 0;
+            proc.removeEventListener('loadedmetadata', seekToStart);
           };
-          proc.addEventListener('loadedmetadata', seekToProcStart, { once: true });
+          proc.addEventListener('loadedmetadata', seekToStart, { once: true });
         }
       }
 
@@ -194,7 +200,7 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
         playWithUnlock(proc, () => {
           if (!isCurrentTransition()) return;
           fadeAudio(proc, targetProc, procFadeRef);
-        });
+        }, isCurrentTransition);
       } else {
         fadeAudio(proc, targetProc, procFadeRef);
       }
@@ -221,7 +227,7 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
       clearFade(mainFadeRef);
       clearFade(procFadeRef);
     };
-  }, [phase, isPlaying, isProcessing, muted, softVolume, clearFade, fadeAudio, playWithUnlock]);
+  }, [phase, isPlaying, muted, softVolume, clearFade, fadeAudio, playWithUnlock]);
 
   const handleToggleMute = useCallback((e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
