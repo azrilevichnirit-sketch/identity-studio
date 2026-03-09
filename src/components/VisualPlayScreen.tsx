@@ -326,6 +326,12 @@ export function VisualPlayScreen({
       return 'gallery_mission7_mobile_bg';
     }
     
+    // Mission 03: doorway park view (desktop) / dedicated portrait bg (mobile)
+    if (mission.phase === 'main' && mission.mission_id === 'studio_03') {
+      const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 821;
+      return isDesktop ? (mission.bg_override || 'studio_doorway_park_view_v5') : 'gallery_mission3_mobile_bg';
+    }
+    
     // Mission 09: Doorway park view
     if (mission.phase === 'main' && mission.mission_id === 'studio_09') {
       return 'studio_doorway_park_view_bg';
@@ -443,6 +449,8 @@ export function VisualPlayScreen({
     mission.phase === 'main' && mission.mission_id === 'studio_06';
   const isMission8BgLocked =
     mission.phase === 'main' && mission.mission_id === 'studio_08';
+  const isMission3BgLocked =
+    mission.phase === 'main' && mission.mission_id === 'studio_03';
   const isMission9BgLocked =
     mission.phase === 'main' && mission.mission_id === 'studio_09';
   const isCrackedWallsLocked =
@@ -466,7 +474,7 @@ export function VisualPlayScreen({
     mission.phase === 'main' && mission.mission_id === 'studio_15';
   const isWorkshopLocked =
     mission.phase === 'main' &&
-    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission && !isMission4BgLocked && !isMission6BgLocked && !isMission8BgLocked && !isMission9BgLocked && !isMission10BgLocked && !isMission11BgLocked && !isMission12BgLocked && !isMission13BgLocked && !isMission14BgLocked && !isMission15BgLocked) &&
+    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission && !isMission3BgLocked && !isMission4BgLocked && !isMission6BgLocked && !isMission8BgLocked && !isMission9BgLocked && !isMission10BgLocked && !isMission11BgLocked && !isMission12BgLocked && !isMission13BgLocked && !isMission14BgLocked && !isMission15BgLocked) &&
     (!mission.bg_override || mission.bg_override === 'studio_in_workshop_bg');
 
   const taskText = mission.task_heb || `MISSING: task_heb`;
@@ -633,6 +641,10 @@ export function VisualPlayScreen({
     ? scopedLocalBgOverride.key
     : isBoxesBgLocked
     ? (isMobile ? 'gallery_main_boxes_v1_mobile' : 'gallery_main_boxes_v1')
+    : isMission3BgLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.key
+    : isMission3BgLocked
+    ? (isMobile ? 'gallery_mission3_mobile_bg' : 'studio_doorway_park_view_v5')
     : isMission4BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isMission4BgLocked
@@ -701,6 +713,10 @@ export function VisualPlayScreen({
     ? scopedLocalBgOverride.image
     : isBoxesBgLocked
     ? (getBackgroundByName(isMobile ? 'gallery_main_boxes_v1_mobile' : 'gallery_main_boxes_v1') || displayBg)
+    : isMission3BgLocked && scopedLocalBgOverride
+    ? scopedLocalBgOverride.image
+    : isMission3BgLocked
+    ? (getBackgroundByName(isMobile ? 'gallery_mission3_mobile_bg' : 'studio_doorway_park_view_v5') || displayBg)
     : isMission4BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isMission4BgLocked
