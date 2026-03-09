@@ -516,6 +516,7 @@ const Index = () => {
             onSelect={handleSelect}
             onUndo={handleUndo}
             toolEditMode={toolEditMode}
+            nextMission={state.mainIndex + 1 < mainMissions.length ? mainMissions[state.mainIndex + 1] : null}
             onEditorNextMission={() => {
               const optionA = currentMission.options.find(o => o.key === 'a');
               if (optionA) {
