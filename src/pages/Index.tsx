@@ -516,7 +516,6 @@ const Index = () => {
             onSelect={handleSelect}
             onUndo={handleUndo}
             toolEditMode={toolEditMode}
-            nextMission={state.mainIndex + 1 < mainMissions.length ? mainMissions[state.mainIndex + 1] : null}
             onEditorNextMission={() => {
               const optionA = currentMission.options.find(o => o.key === 'a');
               if (optionA) {
@@ -627,12 +626,7 @@ const Index = () => {
           🐛
         </button>
       )}
-      <AudioManager
-        phase={state.phase}
-        isPlaying={!['lead', 'processing', 'summary'].includes(state.phase)}
-        isProcessing={['lead', 'processing', 'summary'].includes(state.phase)}
-        softVolume={state.phase === 'summary' ? 0.08 : 0.3}
-      />
+      <AudioManager isPlaying={!['lead', 'processing', 'summary'].includes(state.phase)} isProcessing={state.phase === 'lead' || state.phase === 'processing'} />
     </>
   );
 };

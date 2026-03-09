@@ -77,8 +77,6 @@ interface VisualPlayScreenProps {
   toolEditMode?: boolean;
   /** Called when editor "Save & Next" is clicked - selects Tool A and advances */
   onEditorNextMission?: () => void;
-  /** Next mission to eagerly preload its background */
-  nextMission?: Mission | null;
 }
 
 export function VisualPlayScreen({
@@ -93,7 +91,6 @@ export function VisualPlayScreen({
   onUndo,
   toolEditMode = false,
   onEditorNextMission,
-  nextMission,
 }: VisualPlayScreenProps) {
   const [showUndoDialog, setShowUndoDialog] = useState(false);
   const [draggingTool, setDraggingTool] = useState<'a' | 'b' | null>(null);
@@ -186,30 +183,52 @@ export function VisualPlayScreen({
     }
   }, [avatarGender]);
 
-  // Note: preloadAllBackgrounds() above handles all asset preloading.
-  // Per-mission preloading removed to avoid interference with BackgroundCrossfade.
-
-  // Eagerly preload the NEXT mission's background so it's ready instantly on transition
+  // Mission 10: prewarm M10 result AND M11 starting backgrounds
+  // so both transitions (M10 pick → M10 result, M10 result → M11 start) are instant.
   useEffect(() => {
-    if (!nextMission) return;
-    const nextBgKey = getBackgroundKey(nextMission);
-    if (nextBgKey) {
-      preloadBackground(nextBgKey);
+    if (mission.mission_id === 'studio_10') {
+      preloadBackground('gallery_mission10a_bg');
+      preloadBackground('gallery_mission10b_bg');
+      preloadBackground('gallery_mission11a_bg');
+      preloadBackground('gallery_mission11b_bg');
     }
-    if (nextMission.bg_override) {
-      preloadBackground(nextMission.bg_override);
+    if (mission.mission_id === 'studio_13' || mission.mission_id === 'studio_12') {
+      preloadBackground('gallery_mission13a_bg');
+      preloadBackground('gallery_mission13b_bg');
+      preloadBackground('gallery_mission13a_mobile_bg');
+      preloadBackground('gallery_mission13b_mobile_bg');
     }
-    // Preload next mission's tool images eagerly
-    nextMission.options?.forEach((opt) => {
-      if (opt.asset) {
-        const toolImg = getToolImage(opt.asset);
-        if (toolImg) {
-          const img = new Image();
-          img.src = toolImg;
-        }
-      }
-    });
-  }, [nextMission]);
+    if (mission.mission_id === 'studio_15' || mission.mission_id === 'studio_14') {
+      preloadBackground('gallery_mission15a_bg');
+      preloadBackground('gallery_mission15b_bg');
+      preloadBackground('gallery_mission15_mobile_bg');
+      preloadBackground('gallery_mission15a_mobile_bg');
+      preloadBackground('gallery_mission15b_mobile_bg');
+      preloadBackground('gallery_mission14a_desk_bg');
+      preloadBackground('gallery_mission14b_desk_bg');
+      preloadBackground('gallery_mission14_mobile_bg');
+      preloadBackground('gallery_mission14a_mobile_bg');
+      preloadBackground('gallery_mission14b_mobile_bg');
+    }
+    // Preload tie-breaker T14 baked backgrounds
+    if (mission.mission_id === 'studio_tie_14' || mission.mission_id === 'studio_tie_13') {
+      preloadBackground('gallery_tie14_desk_bg');
+      preloadBackground('gallery_tie14a_desk_bg');
+      preloadBackground('gallery_tie14b_desk_bg');
+      preloadBackground('gallery_tie14_mobile_bg');
+      preloadBackground('gallery_tie14a_mobile_bg');
+      preloadBackground('gallery_tie14b_mobile_bg');
+    }
+    // Preload tie-breaker T15 baked backgrounds
+    if (mission.mission_id === 'studio_tie_15' || mission.mission_id === 'studio_tie_14') {
+      preloadBackground('gallery_tie15_desk_bg');
+      preloadBackground('gallery_tie15a_desk_bg');
+      preloadBackground('gallery_tie15b_desk_bg');
+      preloadBackground('gallery_tie15_mobile_bg');
+      preloadBackground('gallery_tie15a_mobile_bg');
+      preloadBackground('gallery_tie15b_mobile_bg');
+    }
+  }, [mission.mission_id]);
 
   // Track if we're transitioning from Mission 7 (need to preserve bg during fixation)
   const m7TransitionRef = useRef<{ active: boolean; bgKey: string | null }>({ active: false, bgKey: null });
@@ -324,12 +343,6 @@ export function VisualPlayScreen({
       const isDesktopM7 = typeof window !== 'undefined' && window.innerWidth >= 821;
       if (isDesktopM7) return mission.bg_override || 'studio_in_entrance_view_bg';
       return 'gallery_mission7_mobile_bg';
-    }
-    
-    // Mission 03: doorway park view (desktop) / dedicated portrait bg (mobile)
-    if (mission.phase === 'main' && mission.mission_id === 'studio_03') {
-      const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 821;
-      return isDesktop ? (mission.bg_override || 'studio_doorway_park_view_v5') : 'gallery_mission3_mobile_bg';
     }
     
     // Mission 09: Doorway park view
@@ -449,8 +462,6 @@ export function VisualPlayScreen({
     mission.phase === 'main' && mission.mission_id === 'studio_06';
   const isMission8BgLocked =
     mission.phase === 'main' && mission.mission_id === 'studio_08';
-  const isMission3BgLocked =
-    mission.phase === 'main' && mission.mission_id === 'studio_03';
   const isMission9BgLocked =
     mission.phase === 'main' && mission.mission_id === 'studio_09';
   const isCrackedWallsLocked =
@@ -474,7 +485,7 @@ export function VisualPlayScreen({
     mission.phase === 'main' && mission.mission_id === 'studio_15';
   const isWorkshopLocked =
     mission.phase === 'main' &&
-    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission && !isMission3BgLocked && !isMission4BgLocked && !isMission6BgLocked && !isMission8BgLocked && !isMission9BgLocked && !isMission10BgLocked && !isMission11BgLocked && !isMission12BgLocked && !isMission13BgLocked && !isMission14BgLocked && !isMission15BgLocked) &&
+    ((mission.mission_id === 'studio_03' || mission.sequence >= 3) && !isExteriorLocked && !isGalleryMission && !isMission4BgLocked && !isMission6BgLocked && !isMission8BgLocked && !isMission9BgLocked && !isMission10BgLocked && !isMission11BgLocked && !isMission12BgLocked && !isMission13BgLocked && !isMission14BgLocked && !isMission15BgLocked) &&
     (!mission.bg_override || mission.bg_override === 'studio_in_workshop_bg');
 
   const taskText = mission.task_heb || `MISSING: task_heb`;
@@ -641,10 +652,6 @@ export function VisualPlayScreen({
     ? scopedLocalBgOverride.key
     : isBoxesBgLocked
     ? (isMobile ? 'gallery_main_boxes_v1_mobile' : 'gallery_main_boxes_v1')
-    : isMission3BgLocked && scopedLocalBgOverride
-    ? scopedLocalBgOverride.key
-    : isMission3BgLocked
-    ? (isMobile ? 'gallery_mission3_mobile_bg' : 'studio_doorway_park_view_v5')
     : isMission4BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.key
     : isMission4BgLocked
@@ -713,10 +720,6 @@ export function VisualPlayScreen({
     ? scopedLocalBgOverride.image
     : isBoxesBgLocked
     ? (getBackgroundByName(isMobile ? 'gallery_main_boxes_v1_mobile' : 'gallery_main_boxes_v1') || displayBg)
-    : isMission3BgLocked && scopedLocalBgOverride
-    ? scopedLocalBgOverride.image
-    : isMission3BgLocked
-    ? (getBackgroundByName(isMobile ? 'gallery_mission3_mobile_bg' : 'studio_doorway_park_view_v5') || displayBg)
     : isMission4BgLocked && scopedLocalBgOverride
     ? scopedLocalBgOverride.image
     : isMission4BgLocked
@@ -1306,7 +1309,6 @@ export function VisualPlayScreen({
         ? (variant === 'a' ? 'gallery_mission9a_mobile_bg' : 'gallery_mission9b_mobile_bg')
         : (variant === 'a' ? 'gallery_mission9a_desk_bg' : 'gallery_mission9b_desk_bg');
       const m9BgImage = getBackgroundByName(m9BgKey);
-      
       if (m9BgImage) {
         setLocalBgOverride({ key: m9BgKey, image: m9BgImage, missionId: mission.mission_id });
       }
@@ -1404,9 +1406,27 @@ export function VisualPlayScreen({
     // (Legacy "painted walls" beat removed — Mission 01 now uses baked backgrounds)
     
     // Step 3: Advance to next mission
+    const isMission02 = mission.mission_id === 'studio_02';
+    const isMission03ToolB = mission.mission_id === 'studio_03' && variant === 'b';
     const isMission05ToolA = mission.mission_id === 'studio_05' && variant === 'a';
-    const advanceDelay = isMission05ToolA ? 2800  // animated GIF viewing time
-      : 2500;  // all other missions: unified timing
+    const isMission05ToolB = mission.mission_id === 'studio_05' && variant === 'b';
+    const isMission08ToolB = mission.mission_id === 'studio_08' && variant === 'b';
+    const isMission11ToolA = mission.mission_id === 'studio_11' && variant === 'a';
+    const isMission11ToolB = mission.mission_id === 'studio_11' && variant === 'b';
+    const advanceDelay = isMission01 ? 2500  // baked bg crossfade + viewing (same as other baked missions)
+      : isMission02 ? 2200
+      : isMission03ToolB ? 3000  // tables appear first, then visitors fade-in
+      : (isMission11ToolA || isMission11ToolB) ? 2500  // baked bg viewing
+      : (isMission07 || isMission11) ? 2500
+      : isMission06ToolA ? 2800  // prop spawn + tool appear
+      : (mission.mission_id === 'studio_10') ? 2200  // fast crossfade + brief viewing
+      : (mission.mission_id === 'studio_13') ? 2500  // baked bg crossfade + viewing
+      : (mission.mission_id === 'studio_14') ? 2500  // baked bg crossfade + viewing
+      : (mission.mission_id === 'studio_15') ? 2500  // baked bg crossfade + viewing
+      : isMission05ToolA ? 2800  // animated GIF viewing time
+      : isMission05ToolB ? 3000  // visitors fade-in + viewing
+      : isMission08ToolB ? 3000  // visitors fade-in + viewing
+      : 2200;
     const advanceId = window.setTimeout(() => {
       // For Mission 01 Tool B: DON'T clear localPlacement before onSelect
       // This prevents the tool from disappearing before it's added to placedProps

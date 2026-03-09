@@ -64,18 +64,7 @@ export function BackgroundCrossfade({
   const [previous, setPrevious] = useState<string | null>(null);
   const [fadeOutPrev, setFadeOutPrev] = useState(false);
   // Track whether the initial image has loaded (for fade-in on first render)
-  // Check both our preload cache AND browser's native cache (img.complete) to avoid black screen
-  const [initialReady, setInitialReady] = useState(() => {
-    if (preloadedImages.has(src)) return true;
-    // Synchronous browser cache check
-    const testImg = new Image();
-    testImg.src = src;
-    if (testImg.complete && testImg.naturalWidth > 0) {
-      preloadedImages.add(src);
-      return true;
-    }
-    return false;
-  });
+  const [initialReady, setInitialReady] = useState(() => preloadedImages.has(src));
   const cleanupRef = useRef<number | null>(null);
   const pendingSrcRef = useRef<string | null>(null);
   // Use a ref to always have the latest `current` value, avoiding stale closures
@@ -104,7 +93,6 @@ export function BackgroundCrossfade({
       didTransition = true;
       // Only proceed if this src is still the one we want
       if (pendingSrcRef.current !== src) return;
-      console.log(`[BGCrossfade] transition: ${currentRef.current.split('/').pop()} → ${src.split('/').pop()}`);
 
       // Use ref to get the LATEST current value (not a stale closure)
       setPrevious(currentRef.current);
@@ -113,32 +101,20 @@ export function BackgroundCrossfade({
       setFadeOutPrev(false);
       pendingSrcRef.current = null;
 
-      // Start fading out previous on next frame
+      // Next frame: start fading out previous
       requestAnimationFrame(() => setFadeOutPrev(true));
 
       // Clean up previous layer after fade completes
       if (cleanupRef.current) window.clearTimeout(cleanupRef.current);
       cleanupRef.current = window.setTimeout(() => {
         setPrevious(null);
-      }, durationMs + 100);
+      }, durationMs + 50);
     };
 
     // Transition ONLY after the new image is actually loaded.
     // This prevents black flashes on slow/large background swaps.
-    // IMPORTANT: Use a timeout fallback so the transition still happens even if
-    // preloading is slow (e.g., mobile with many concurrent preloads).
-    const fallbackTimer = window.setTimeout(() => {
-      doTransition();
-    }, 400); // Max wait 400ms, then transition anyway (previous layer stays visible)
-
     preloadImage(src).then((loaded) => {
-      clearTimeout(fallbackTimer);
-      if (!loaded) {
-        // Even on failure, do the transition - browser will show broken image
-        // but at least the state won't be stuck
-        doTransition();
-        return;
-      }
+      if (!loaded) return;
       doTransition();
     });
 
