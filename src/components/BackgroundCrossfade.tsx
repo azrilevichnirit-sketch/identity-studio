@@ -104,6 +104,7 @@ export function BackgroundCrossfade({
       didTransition = true;
       // Only proceed if this src is still the one we want
       if (pendingSrcRef.current !== src) return;
+      console.log(`[BGCrossfade] transition: ${currentRef.current.split('/').pop()} → ${src.split('/').pop()}`);
 
       // Use ref to get the LATEST current value (not a stale closure)
       setPrevious(currentRef.current);
@@ -112,21 +113,14 @@ export function BackgroundCrossfade({
       setFadeOutPrev(false);
       pendingSrcRef.current = null;
 
-      // Wait for the browser to paint the new background-image before fading out
-      // the previous layer. A single rAF isn't enough on real mobile devices —
-      // the CSS background may not be composited yet. Two frames + a small safety
-      // timeout ensures the new image is visible before the old one disappears.
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          window.setTimeout(() => setFadeOutPrev(true), 30);
-        });
-      });
+      // Start fading out previous on next frame
+      requestAnimationFrame(() => setFadeOutPrev(true));
 
       // Clean up previous layer after fade completes
       if (cleanupRef.current) window.clearTimeout(cleanupRef.current);
       cleanupRef.current = window.setTimeout(() => {
         setPrevious(null);
-      }, durationMs + 50);
+      }, durationMs + 100);
     };
 
     // Transition ONLY after the new image is actually loaded.

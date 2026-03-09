@@ -1404,13 +1404,7 @@ export function VisualPlayScreen({
     // (Legacy "painted walls" beat removed — Mission 01 now uses baked backgrounds)
     
     // Step 3: Advance to next mission
-    const isMission02 = mission.mission_id === 'studio_02';
-    const isMission03ToolB = mission.mission_id === 'studio_03' && variant === 'b';
     const isMission05ToolA = mission.mission_id === 'studio_05' && variant === 'a';
-    const isMission05ToolB = mission.mission_id === 'studio_05' && variant === 'b';
-    const isMission08ToolB = mission.mission_id === 'studio_08' && variant === 'b';
-    const isMission11ToolA = mission.mission_id === 'studio_11' && variant === 'a';
-    const isMission11ToolB = mission.mission_id === 'studio_11' && variant === 'b';
     const advanceDelay = isMission05ToolA ? 2800  // animated GIF viewing time
       : 2500;  // all other missions: unified timing
     const advanceId = window.setTimeout(() => {
