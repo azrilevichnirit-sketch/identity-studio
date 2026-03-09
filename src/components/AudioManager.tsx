@@ -137,11 +137,21 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
   useEffect(() => {
     const wantProc = isProcessing;
 
-    const startProcessingTrack = () => {
+    if (wantProc) {
       const pAudio = ensureProc();
       pAudio.muted = muted;
 
-      if (pAudio.paused) {
+      // Already playing — just adjust volume (e.g. lead→summary transition)
+      if (!pAudio.paused) {
+        if (!muted) {
+          fadeAudio(pAudio, PROC_VOL, procFadeRef);
+        } else {
+          pAudio.volume = 0;
+        }
+        return;
+      }
+
+      const startProcessingTrack = () => {
         pAudio.currentTime = PROC_START;
         pAudio.volume = 0;
         pAudio.play().catch(() => {
@@ -159,19 +169,16 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
           document.addEventListener('click', unlock, { once: true });
           document.addEventListener('touchstart', unlock, { once: true });
         });
-      }
 
-      if (!muted) {
-        fadeAudio(pAudio, PROC_VOL, procFadeRef);
-      } else {
-        pAudio.volume = 0;
-      }
-    };
+        if (!muted) {
+          fadeAudio(pAudio, PROC_VOL, procFadeRef);
+        } else {
+          pAudio.volume = 0;
+        }
+      };
 
-    if (wantProc) {
       const mainAudio = audioRef.current;
-
-      // Prevent overlap: only start processing track after main track fully fades out
+      // Crossfade: fade out main first, then start processing
       if (mainAudio && !mainAudio.paused && mainAudio.volume > 0.001) {
         fadeAudio(mainAudio, 0, mainFadeRef, () => {
           mainAudio.pause();
