@@ -9,18 +9,20 @@ interface AudioManagerProps {
 export function AudioManager({ isPlaying, isProcessing = false }: AudioManagerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const procAudioRef = useRef<HTMLAudioElement | null>(null);
+  const fadeRef = useRef<number | null>(null);
   const [muted, setMuted] = useState(false);
   const mutedRef = useRef(false);
   const isPlayingRef = useRef(isPlaying);
   const isProcessingRef = useRef(isProcessing);
 
   const PROC_START = 21;
+  const PROC_VOLUME = 0.08; // Very soft during processing
 
   useEffect(() => { mutedRef.current = muted; }, [muted]);
   useEffect(() => { isPlayingRef.current = isPlaying; }, [isPlaying]);
   useEffect(() => { isProcessingRef.current = isProcessing; }, [isProcessing]);
 
-  // === Main background music (original working logic) ===
+  // === Main background music — plays during gameplay AND continues softly into processing ===
   useEffect(() => {
     if (!audioRef.current) {
       const audio = new Audio('/audio/bg-music.mp3');
@@ -33,9 +35,18 @@ export function AudioManager({ isPlaying, isProcessing = false }: AudioManagerPr
     const audio = audioRef.current;
     audio.muted = muted;
 
-    if (!isPlaying || isProcessing) {
+    // Clear any ongoing fade
+    if (fadeRef.current) {
+      clearInterval(fadeRef.current);
+      fadeRef.current = null;
+    }
+
+    const shouldStop = !isPlaying && !isProcessing;
+
+    if (shouldStop) {
       audio.pause();
       audio.currentTime = 0;
+      audio.volume = 0.3;
       return;
     }
 
@@ -44,61 +55,46 @@ export function AudioManager({ isPlaying, isProcessing = false }: AudioManagerPr
       return;
     }
 
-    audio.play().catch(() => {
-      const unlock = () => {
-        if (!mutedRef.current && isPlayingRef.current && !isProcessingRef.current && audioRef.current) {
-          audioRef.current.play().catch(() => {});
-        }
-        document.removeEventListener('click', unlock);
-        document.removeEventListener('touchstart', unlock);
-      };
-      document.addEventListener('click', unlock, { once: true });
-      document.addEventListener('touchstart', unlock, { once: true });
-    });
-  }, [isPlaying, muted, isProcessing]);
-
-  // === Processing music (lead form + processing screen) ===
-  useEffect(() => {
-    if (!isProcessing) {
-      // Stop processing music
-      const pAudio = procAudioRef.current;
-      if (pAudio && !pAudio.paused) {
-        pAudio.pause();
-      }
-      return;
-    }
-
-    if (muted) {
-      if (procAudioRef.current && !procAudioRef.current.paused) {
-        procAudioRef.current.pause();
-      }
-      return;
-    }
-
-    if (!procAudioRef.current) {
-      const audio = new Audio('/audio/processing-music.mp3');
-      audio.volume = 0.3;
-      audio.loop = false;
-      procAudioRef.current = audio;
-
-      // Custom loop back to 21s
-      audio.addEventListener('ended', () => {
-        audio.currentTime = PROC_START;
+    // If processing: fade down to very soft
+    if (isProcessing) {
+      const targetVol = PROC_VOLUME;
+      if (audio.paused) {
+        // Already playing from gameplay — shouldn't be paused, but just in case
+        audio.volume = targetVol;
         audio.play().catch(() => {});
-      });
+      } else {
+        // Smooth fade down
+        fadeRef.current = window.setInterval(() => {
+          const newVol = Math.max(targetVol, audio.volume - 0.015);
+          audio.volume = newVol;
+          if (newVol <= targetVol) {
+            if (fadeRef.current) clearInterval(fadeRef.current);
+            fadeRef.current = null;
+          }
+        }, 30);
+      }
+      return;
     }
 
-    const pAudio = procAudioRef.current;
-    pAudio.muted = muted;
+    // Normal gameplay: fade up to full volume
+    if (!audio.paused && audio.volume < 0.3) {
+      fadeRef.current = window.setInterval(() => {
+        const newVol = Math.min(0.3, audio.volume + 0.015);
+        audio.volume = newVol;
+        if (newVol >= 0.3) {
+          if (fadeRef.current) clearInterval(fadeRef.current);
+          fadeRef.current = null;
+        }
+      }, 30);
+    } else {
+      audio.volume = 0.3;
+    }
 
-    if (pAudio.paused) {
-      pAudio.currentTime = PROC_START;
-      pAudio.volume = 0.3;
-      pAudio.play().catch(() => {
+    if (audio.paused) {
+      audio.play().catch(() => {
         const unlock = () => {
-          if (!mutedRef.current && isProcessingRef.current && procAudioRef.current) {
-            procAudioRef.current.currentTime = PROC_START;
-            procAudioRef.current.play().catch(() => {});
+          if (!mutedRef.current && isPlayingRef.current && audioRef.current) {
+            audioRef.current.play().catch(() => {});
           }
           document.removeEventListener('click', unlock);
           document.removeEventListener('touchstart', unlock);
@@ -107,7 +103,14 @@ export function AudioManager({ isPlaying, isProcessing = false }: AudioManagerPr
         document.addEventListener('touchstart', unlock, { once: true });
       });
     }
-  }, [isProcessing, muted]);
+
+    return () => {
+      if (fadeRef.current) {
+        clearInterval(fadeRef.current);
+        fadeRef.current = null;
+      }
+    };
+  }, [isPlaying, muted, isProcessing]);
 
   // Cleanup
   useEffect(() => {
@@ -116,9 +119,9 @@ export function AudioManager({ isPlaying, isProcessing = false }: AudioManagerPr
         audioRef.current.pause();
         audioRef.current = null;
       }
-      if (procAudioRef.current) {
-        procAudioRef.current.pause();
-        procAudioRef.current = null;
+      if (fadeRef.current) {
+        clearInterval(fadeRef.current);
+        fadeRef.current = null;
       }
     };
   }, []);
