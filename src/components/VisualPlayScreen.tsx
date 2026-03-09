@@ -1411,20 +1411,8 @@ export function VisualPlayScreen({
     const isMission08ToolB = mission.mission_id === 'studio_08' && variant === 'b';
     const isMission11ToolA = mission.mission_id === 'studio_11' && variant === 'a';
     const isMission11ToolB = mission.mission_id === 'studio_11' && variant === 'b';
-    const advanceDelay = isMission01 ? 2500  // baked bg crossfade + viewing (same as other baked missions)
-      : isMission02 ? 2200
-      : isMission03ToolB ? 3000  // tables appear first, then visitors fade-in
-      : (isMission11ToolA || isMission11ToolB) ? 2500  // baked bg viewing
-      : (isMission07 || isMission11) ? 2500
-      : isMission06ToolA ? 2800  // prop spawn + tool appear
-      : (mission.mission_id === 'studio_10') ? 2200  // fast crossfade + brief viewing
-      : (mission.mission_id === 'studio_13') ? 2500  // baked bg crossfade + viewing
-      : (mission.mission_id === 'studio_14') ? 2500  // baked bg crossfade + viewing
-      : (mission.mission_id === 'studio_15') ? 2500  // baked bg crossfade + viewing
-      : isMission05ToolA ? 2800  // animated GIF viewing time
-      : isMission05ToolB ? 3000  // visitors fade-in + viewing
-      : isMission08ToolB ? 3000  // visitors fade-in + viewing
-      : 2200;
+    const advanceDelay = isMission05ToolA ? 2800  // animated GIF viewing time
+      : 2500;  // all other missions: unified timing
     const advanceId = window.setTimeout(() => {
       // For Mission 01 Tool B: DON'T clear localPlacement before onSelect
       // This prevents the tool from disappearing before it's added to placedProps
