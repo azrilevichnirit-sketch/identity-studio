@@ -131,6 +131,12 @@ export function BackgroundCrossfade({
       }, durationMs + 50);
     };
 
+    // If the image is already cached, transition immediately (no delay)
+    if (isImageCached(src)) {
+      doTransition();
+      return;
+    }
+
     // Transition ONLY after the new image is actually loaded.
     // This prevents black flashes on slow/large background swaps.
     preloadImage(src).then((loaded) => {
@@ -138,11 +144,11 @@ export function BackgroundCrossfade({
       doTransition();
     });
 
-    // Safety fallback: force transition after 600ms even if image hasn't loaded.
+    // Safety fallback: force transition after 400ms even if image hasn't loaded.
     // This prevents stuck backgrounds where the crossfade never fires.
     const fallbackId = window.setTimeout(() => {
       doTransition();
-    }, 600);
+    }, 400);
 
     return () => {
       window.clearTimeout(fallbackId);
