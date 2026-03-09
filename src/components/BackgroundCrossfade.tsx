@@ -77,7 +77,8 @@ export function BackgroundCrossfade({
   const [previous, setPrevious] = useState<string | null>(null);
   const [fadeOutPrev, setFadeOutPrev] = useState(false);
   // Track whether the initial image has loaded (for fade-in on first render)
-  const [initialReady, setInitialReady] = useState(() => preloadedImages.has(src));
+  // Use synchronous cache probe to avoid 1-frame black flash for cached images
+  const [initialReady, setInitialReady] = useState(() => isImageCached(src));
   const cleanupRef = useRef<number | null>(null);
   const pendingSrcRef = useRef<string | null>(null);
   // Use a ref to always have the latest `current` value, avoiding stale closures
@@ -92,6 +93,12 @@ export function BackgroundCrossfade({
         requestAnimationFrame(() => setInitialReady(true));
       }
     });
+    // Safety fallback: if image hasn't loaded within 500ms, show whatever we have
+    // This prevents permanent black screens on slow connections
+    const fallbackTimer = window.setTimeout(() => {
+      setInitialReady(true);
+    }, 500);
+    return () => window.clearTimeout(fallbackTimer);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
