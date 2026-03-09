@@ -138,8 +138,14 @@ export function BackgroundCrossfade({
       doTransition();
     });
 
+    // Safety fallback: force transition after 600ms even if image hasn't loaded.
+    // This prevents stuck backgrounds where the crossfade never fires.
+    const fallbackId = window.setTimeout(() => {
+      doTransition();
+    }, 600);
+
     return () => {
-      // Don't clear cleanupRef here - let the fade-out complete even if src changes again
+      window.clearTimeout(fallbackId);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [src, durationMs]);
