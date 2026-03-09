@@ -24,14 +24,33 @@ export function IntroScreen({ avatarGender, onStart }: IntroScreenProps) {
   const arenaName = "סטודיו";
 
   // Preload first mission backgrounds so there's no black flash when transitioning
+  // Includes M01-M03 base AND baked (tool-selected) backgrounds for both platforms
   useEffect(() => {
-    // Desktop M01 base
+    // M01 base backgrounds
     preloadBackground('gallery_main_stylized_v3');
-    // Mobile M01 baked base
+    preloadBackground('studio_entry_inside_bg');
     preloadBackground('gallery_mission1_mobile_bg');
-    // Mobile cracked walls
     preloadBackground('gallery_main_stylized_v5_mobile');
-    // Also preload M01 tool result backgrounds
+    // M01 baked tool backgrounds (desktop + mobile)
+    preloadBackground('gallery_mission1a_desk_bg');
+    preloadBackground('gallery_mission1b_desk_bg');
+    preloadBackground('gallery_mission1a_mobile_bg');
+    preloadBackground('gallery_mission1b_mobile_bg');
+    // M02 base + baked
+    preloadBackground('gallery_main_boxes_v1');
+    preloadBackground('gallery_main_boxes_v1_mobile');
+    preloadBackground('gallery_mission2a_desk_bg');
+    preloadBackground('gallery_mission2b_desk_bg');
+    preloadBackground('gallery_mission2a_mobile_bg');
+    preloadBackground('gallery_mission2b_mobile_bg');
+    // M03 base + baked
+    preloadBackground('studio_doorway_park_view_v5');
+    preloadBackground('gallery_mission3_mobile_bg');
+    preloadBackground('gallery_mission3a_desk_bg');
+    preloadBackground('gallery_mission3b_desk_bg');
+    preloadBackground('gallery_mission3a_mobile_bg');
+    preloadBackground('gallery_mission3b_mobile_bg');
+    // Legacy keys
     preloadBackground('gallery_main_stylized_white_v1');
     preloadBackground('gallery_main_stylized');
   }, []);

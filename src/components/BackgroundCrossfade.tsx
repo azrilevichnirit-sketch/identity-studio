@@ -15,6 +15,19 @@ type BackgroundCrossfadeProps = {
 // Cache of preloaded images to avoid re-fetching
 const preloadedImages = new Set<string>();
 
+/** Check if an image URL is already in browser memory cache (synchronous) */
+function isImageCached(src: string): boolean {
+  if (preloadedImages.has(src)) return true;
+  // Probe browser cache synchronously
+  const probe = new Image();
+  probe.src = src;
+  if (probe.complete && probe.naturalWidth > 0) {
+    preloadedImages.add(src);
+    return true;
+  }
+  return false;
+}
+
 function preloadImage(src: string): Promise<boolean> {
   if (preloadedImages.has(src)) {
     return Promise.resolve(true);
@@ -64,7 +77,8 @@ export function BackgroundCrossfade({
   const [previous, setPrevious] = useState<string | null>(null);
   const [fadeOutPrev, setFadeOutPrev] = useState(false);
   // Track whether the initial image has loaded (for fade-in on first render)
-  const [initialReady, setInitialReady] = useState(() => preloadedImages.has(src));
+  // Use synchronous cache probe to avoid 1-frame black flash for cached images
+  const [initialReady, setInitialReady] = useState(() => isImageCached(src));
   const cleanupRef = useRef<number | null>(null);
   const pendingSrcRef = useRef<string | null>(null);
   // Use a ref to always have the latest `current` value, avoiding stale closures
@@ -79,6 +93,12 @@ export function BackgroundCrossfade({
         requestAnimationFrame(() => setInitialReady(true));
       }
     });
+    // Safety fallback: if image hasn't loaded within 500ms, show whatever we have
+    // This prevents permanent black screens on slow connections
+    const fallbackTimer = window.setTimeout(() => {
+      setInitialReady(true);
+    }, 500);
+    return () => window.clearTimeout(fallbackTimer);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -118,8 +138,14 @@ export function BackgroundCrossfade({
       doTransition();
     });
 
+    // Safety fallback: force transition after 600ms even if image hasn't loaded.
+    // This prevents stuck backgrounds where the crossfade never fires.
+    const fallbackId = window.setTimeout(() => {
+      doTransition();
+    }, 600);
+
     return () => {
-      // Don't clear cleanupRef here - let the fade-out complete even if src changes again
+      window.clearTimeout(fallbackId);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [src, durationMs]);
