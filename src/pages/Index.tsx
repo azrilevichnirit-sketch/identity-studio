@@ -626,7 +626,7 @@ const Index = () => {
           🐛
         </button>
       )}
-      <AudioManager isPlaying={!['processing', 'summary'].includes(state.phase)} isProcessing={state.phase === 'processing'} />
+      <AudioManager isPlaying={!['lead', 'processing', 'summary'].includes(state.phase)} isProcessing={state.phase === 'lead' || state.phase === 'processing'} />
     </>
   );
 };
