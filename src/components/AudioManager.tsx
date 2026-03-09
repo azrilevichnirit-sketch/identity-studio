@@ -257,18 +257,23 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
     };
 
     if (mode === 'main') {
-      stopProc(() => {
-        if (!isCurrentTransition()) return;
-        startMain();
-      });
+      // HARD KILL: immediately silence proc before doing anything else
+      clearFade(procFadeRef);
+      proc.pause();
+      proc.volume = 0;
+      startMain();
     } else if (mode === 'proc') {
-      stopMain(() => {
-        if (!isCurrentTransition()) return;
-        startProc(prevMode !== 'proc');
-      });
+      // HARD KILL: immediately silence main before doing anything else
+      clearFade(mainFadeRef);
+      main.pause();
+      main.volume = 0;
+      main.currentTime = 0;
+      startProc(prevMode !== 'proc');
     } else {
-      stopMain();
-      stopProc();
+      clearFade(mainFadeRef);
+      clearFade(procFadeRef);
+      main.pause(); main.volume = 0;
+      proc.pause(); proc.volume = 0;
     }
 
     prevModeRef.current = mode;
