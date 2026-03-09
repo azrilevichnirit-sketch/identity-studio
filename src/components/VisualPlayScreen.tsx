@@ -940,8 +940,8 @@ export function VisualPlayScreen({
     }
     setShowToolSwapCue(true);
     setShowMissionFlash(true);
-    const toolId = window.setTimeout(() => setShowToolSwapCue(false), 420);
-    const flashId = window.setTimeout(() => setShowMissionFlash(false), 600);
+    const toolId = window.setTimeout(() => setShowToolSwapCue(false), 300);
+    const flashId = window.setTimeout(() => setShowMissionFlash(false), 400);
     return () => {
       window.clearTimeout(toolId);
       window.clearTimeout(flashId);
