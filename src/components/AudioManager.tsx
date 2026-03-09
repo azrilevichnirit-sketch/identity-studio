@@ -82,9 +82,10 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
     audio.muted = muted;
 
     // Should main music be audible?
-    const wantMain = isPlaying && !isProcessing && !muted;
+    const wantMain = isPlaying && !isProcessing;
 
     if (wantMain) {
+      audio.muted = muted;
       if (audio.paused) {
         audio.volume = 0;
         audio.play().catch(() => {
@@ -102,8 +103,11 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
           document.addEventListener('touchstart', unlock, { once: true });
         });
       }
-      // Fade up to full
-      fadeAudio(audio, MAIN_VOL, mainFadeRef);
+      if (!muted) {
+        fadeAudio(audio, MAIN_VOL, mainFadeRef);
+      } else {
+        audio.volume = 0;
+      }
     } else {
       // Fade out, then pause
       if (!audio.paused) {
@@ -125,7 +129,7 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
 
   // === Processing music ===
   useEffect(() => {
-    const wantProc = isProcessing && !muted;
+    const wantProc = isProcessing;
 
     if (wantProc) {
       const pAudio = ensureProc();
@@ -150,8 +154,12 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
           document.addEventListener('touchstart', unlock, { once: true });
         });
       }
-      // Fade up
-      fadeAudio(pAudio, PROC_VOL, procFadeRef);
+      // Fade up or stay silent if muted
+      if (!muted) {
+        fadeAudio(pAudio, PROC_VOL, procFadeRef);
+      } else {
+        pAudio.volume = 0;
+      }
     } else {
       const pAudio = procAudioRef.current;
       if (pAudio && !pAudio.paused) {
