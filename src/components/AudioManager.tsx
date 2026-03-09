@@ -7,7 +7,7 @@ interface AudioManagerProps {
   softVolume?: number;
 }
 
-export function AudioManager({ isPlaying, isProcessing = false, softVolume, softVolume }: AudioManagerProps) {
+export function AudioManager({ isPlaying, isProcessing = false, softVolume }: AudioManagerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const procAudioRef = useRef<HTMLAudioElement | null>(null);
   const mainFadeRef = useRef<number | null>(null);
