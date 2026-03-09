@@ -110,8 +110,8 @@ export function AudioManager({ isPlaying, isProcessing = false, softVolume }: Au
       } else {
         audio.volume = 0;
       }
-    } else {
-      // Fade out, then pause
+    } else if (!isProcessing) {
+      // Fade out, then pause (only when leaving music mode outside processing track flow)
       if (!audio.paused) {
         fadeAudio(audio, 0, mainFadeRef, () => {
           audio.pause();
