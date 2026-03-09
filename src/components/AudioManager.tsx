@@ -7,186 +7,200 @@ interface AudioManagerProps {
 }
 
 /**
- * Cross-fades between main bg music and processing music.
- * Uses Web Audio API GainNodes for reliable mobile volume control
- * (iOS Safari ignores HTMLAudioElement.volume).
+ * Manages two audio tracks with crossfade:
+ * 1. Main bg music (during gameplay)
+ * 2. Processing music (during lead form + processing screen, starts at 21s)
+ *
+ * Mobile-safe: unlocks audio on first touch/click, uses Web Audio API
+ * GainNodes for volume control (iOS ignores HTMLAudioElement.volume).
  */
 export function AudioManager({ isPlaying, isProcessing = false }: AudioManagerProps) {
-  const ctxRef = useRef<AudioContext | null>(null);
-
-  const mainAudioRef = useRef<HTMLAudioElement | null>(null);
-  const mainSourceRef = useRef<MediaElementAudioSourceNode | null>(null);
-  const mainGainRef = useRef<GainNode | null>(null);
-
-  const procAudioRef = useRef<HTMLAudioElement | null>(null);
-  const procSourceRef = useRef<MediaElementAudioSourceNode | null>(null);
-  const procGainRef = useRef<GainNode | null>(null);
-
   const [muted, setMuted] = useState(false);
+
+  // Refs for state access inside callbacks
   const mutedRef = useRef(false);
-  const userInteractedRef = useRef(false);
+  const isPlayingRef = useRef(isPlaying);
+  const isProcessingRef = useRef(isProcessing);
+
+  // Audio infrastructure
+  const ctxRef = useRef<AudioContext | null>(null);
+  const unlockedRef = useRef(false);
+
+  // Main music refs
+  const mainAudioRef = useRef<HTMLAudioElement | null>(null);
+  const mainGainRef = useRef<GainNode | null>(null);
+  const mainConnectedRef = useRef(false);
+
+  // Processing music refs
+  const procAudioRef = useRef<HTMLAudioElement | null>(null);
+  const procGainRef = useRef<GainNode | null>(null);
+  const procConnectedRef = useRef(false);
 
   const MAIN_VOL = 0.3;
   const PROC_VOL = 0.3;
-  const FADE_MS = 800;
-  const PROC_START_SEC = 21;
+  const FADE_SEC = 0.8;
+  const PROC_START = 21;
 
+  // Keep refs in sync
   useEffect(() => { mutedRef.current = muted; }, [muted]);
+  useEffect(() => { isPlayingRef.current = isPlaying; }, [isPlaying]);
+  useEffect(() => { isProcessingRef.current = isProcessing; }, [isProcessing]);
 
-  // Ensure AudioContext exists (created on first user gesture)
-  const ensureCtx = useCallback(() => {
-    if (ctxRef.current) return ctxRef.current;
-    try {
-      const ctx = new AudioContext();
-      ctxRef.current = ctx;
-      return ctx;
-    } catch {
-      return null;
-    }
-  }, []);
-
-  // Resume AudioContext (needed after user gesture on mobile)
-  const resumeCtx = useCallback(() => {
-    const ctx = ctxRef.current;
-    if (ctx && ctx.state === 'suspended') {
-      ctx.resume().catch(() => {});
-    }
-  }, []);
-
-  // Setup main audio element + Web Audio nodes
-  const ensureMain = useCallback(() => {
-    const ctx = ensureCtx();
-    if (!ctx) return;
-
+  // Create audio elements eagerly (no AudioContext yet)
+  useEffect(() => {
     if (!mainAudioRef.current) {
-      const audio = new Audio('/audio/bg-music.mp3');
-      audio.loop = true;
-      audio.crossOrigin = 'anonymous';
-      // Keep html volume at max; control via GainNode
-      audio.volume = 1;
-      mainAudioRef.current = audio;
-
-      const source = ctx.createMediaElementSource(audio);
-      const gain = ctx.createGain();
-      gain.gain.value = 0;
-      source.connect(gain);
-      gain.connect(ctx.destination);
-      mainSourceRef.current = source;
-      mainGainRef.current = gain;
+      const a = new Audio('/audio/bg-music.mp3');
+      a.loop = true;
+      a.preload = 'auto';
+      mainAudioRef.current = a;
     }
-  }, [ensureCtx]);
-
-  // Setup processing audio element + Web Audio nodes
-  const ensureProc = useCallback(() => {
-    const ctx = ensureCtx();
-    if (!ctx) return;
-
     if (!procAudioRef.current) {
-      const audio = new Audio('/audio/processing-music.mp3');
-      audio.crossOrigin = 'anonymous';
-      audio.volume = 1;
-      procAudioRef.current = audio;
+      const a = new Audio('/audio/processing-music.mp3');
+      a.preload = 'auto';
+      // Don't set loop — we handle custom looping back to 21s
+      a.loop = false;
+      procAudioRef.current = a;
 
-      const source = ctx.createMediaElementSource(audio);
-      const gain = ctx.createGain();
-      gain.gain.value = 0;
-      source.connect(gain);
-      gain.connect(ctx.destination);
-      procSourceRef.current = source;
-      procGainRef.current = gain;
-
-      // Loop back to PROC_START_SEC instead of beginning
-      audio.addEventListener('ended', () => {
-        audio.currentTime = PROC_START_SEC;
-        audio.play().catch(() => {});
+      a.addEventListener('ended', () => {
+        a.currentTime = PROC_START;
+        a.play().catch(() => {});
       });
     }
-  }, [ensureCtx]);
+  }, []);
 
-  // Fade a GainNode to target value
+  // Unlock audio on mobile: must happen inside a user gesture
+  const unlock = useCallback(() => {
+    if (unlockedRef.current) return;
+    unlockedRef.current = true;
+
+    // Create AudioContext on gesture
+    if (!ctxRef.current) {
+      ctxRef.current = new AudioContext();
+    }
+    const ctx = ctxRef.current;
+    if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+
+    // "Unlock" both audio elements for iOS by playing them briefly
+    [mainAudioRef.current, procAudioRef.current].forEach(audio => {
+      if (!audio) return;
+      audio.muted = true;
+      const p = audio.play();
+      if (p) {
+        p.then(() => {
+          audio.pause();
+          audio.currentTime = 0;
+          audio.muted = false;
+        }).catch(() => {
+          audio.muted = false;
+        });
+      }
+    });
+
+    // Connect to Web Audio API for gain control
+    if (mainAudioRef.current && !mainConnectedRef.current) {
+      try {
+        const source = ctx.createMediaElementSource(mainAudioRef.current);
+        const gain = ctx.createGain();
+        gain.gain.value = 0;
+        source.connect(gain);
+        gain.connect(ctx.destination);
+        mainGainRef.current = gain;
+        mainConnectedRef.current = true;
+      } catch {}
+    }
+    if (procAudioRef.current && !procConnectedRef.current) {
+      try {
+        const source = ctx.createMediaElementSource(procAudioRef.current);
+        const gain = ctx.createGain();
+        gain.gain.value = 0;
+        source.connect(gain);
+        gain.connect(ctx.destination);
+        procGainRef.current = gain;
+        procConnectedRef.current = true;
+      } catch {}
+    }
+
+    // Now apply current desired state
+    applyState();
+  }, []);
+
+  // Register unlock listeners
+  useEffect(() => {
+    const events = ['click', 'touchstart', 'touchend', 'keydown'];
+    const handler = () => {
+      unlock();
+      events.forEach(e => document.removeEventListener(e, handler));
+    };
+    events.forEach(e => document.addEventListener(e, handler, { passive: true }));
+    return () => {
+      events.forEach(e => document.removeEventListener(e, handler));
+    };
+  }, [unlock]);
+
+  // Fade gain to target
   const fadeTo = useCallback((gain: GainNode | null, target: number) => {
     if (!gain || !ctxRef.current) return;
     const now = ctxRef.current.currentTime;
     gain.gain.cancelScheduledValues(now);
     gain.gain.setValueAtTime(gain.gain.value, now);
-    gain.gain.linearRampToValueAtTime(target, now + FADE_MS / 1000);
+    gain.gain.linearRampToValueAtTime(target, now + FADE_SEC);
   }, []);
 
-  // Play helper that handles autoplay restrictions
-  const safePlay = useCallback((audio: HTMLAudioElement) => {
-    const promise = audio.play();
-    if (promise) {
-      promise.catch(() => {
-        // Will retry on next user interaction
-        if (!userInteractedRef.current) {
-          const unlock = () => {
-            userInteractedRef.current = true;
-            resumeCtx();
-            audio.play().catch(() => {});
-            document.removeEventListener('touchstart', unlock);
-            document.removeEventListener('click', unlock);
-          };
-          document.addEventListener('touchstart', unlock, { once: true });
-          document.addEventListener('click', unlock, { once: true });
+  // Core state application — decides what should play/stop
+  const applyState = useCallback(() => {
+    const ctx = ctxRef.current;
+    const mainAudio = mainAudioRef.current;
+    const procAudio = procAudioRef.current;
+    const mainGain = mainGainRef.current;
+    const procGain = procGainRef.current;
+    const isMuted = mutedRef.current;
+
+    // If not unlocked yet, nothing to do (will apply after unlock)
+    if (!unlockedRef.current || !ctx) return;
+    if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+
+    // --- Main music ---
+    const wantMain = isPlayingRef.current && !isProcessingRef.current && !isMuted;
+    if (mainAudio) {
+      if (wantMain) {
+        if (mainAudio.paused) mainAudio.play().catch(() => {});
+        if (mainGain) fadeTo(mainGain, MAIN_VOL);
+        else mainAudio.volume = MAIN_VOL; // fallback
+      } else {
+        if (mainGain) {
+          fadeTo(mainGain, 0);
+          setTimeout(() => { if (!isPlayingRef.current || isProcessingRef.current || mutedRef.current) mainAudio.pause(); }, (FADE_SEC * 1000) + 50);
+        } else {
+          mainAudio.pause();
         }
-      });
-    }
-  }, [resumeCtx]);
-
-  // Main music control
-  useEffect(() => {
-    ensureMain();
-    const audio = mainAudioRef.current;
-    const gain = mainGainRef.current;
-    if (!audio || !gain) return;
-
-    resumeCtx();
-
-    const shouldPlay = isPlaying && !isProcessing && !muted;
-
-    if (shouldPlay) {
-      safePlay(audio);
-      fadeTo(gain, MAIN_VOL);
-    } else {
-      // Fade out, then pause to save resources
-      fadeTo(gain, 0);
-      const pauseTimer = setTimeout(() => {
-        if (!audio.paused) {
-          audio.pause();
-        }
-      }, FADE_MS + 50);
-      return () => clearTimeout(pauseTimer);
-    }
-  }, [isPlaying, isProcessing, muted, ensureMain, resumeCtx, fadeTo, safePlay]);
-
-  // Processing music control
-  useEffect(() => {
-    ensureProc();
-    const audio = procAudioRef.current;
-    const gain = procGainRef.current;
-    if (!audio || !gain) return;
-
-    resumeCtx();
-
-    const shouldPlay = isProcessing && !muted;
-
-    if (shouldPlay) {
-      // Only reset to start position if not already playing
-      if (audio.paused) {
-        audio.currentTime = PROC_START_SEC;
       }
-      safePlay(audio);
-      fadeTo(gain, PROC_VOL);
-    } else {
-      fadeTo(gain, 0);
-      const pauseTimer = setTimeout(() => {
-        if (!audio.paused) {
-          audio.pause();
-        }
-      }, FADE_MS + 50);
-      return () => clearTimeout(pauseTimer);
     }
-  }, [isProcessing, muted, ensureProc, resumeCtx, fadeTo, safePlay]);
+
+    // --- Processing music ---
+    const wantProc = isProcessingRef.current && !isMuted;
+    if (procAudio) {
+      if (wantProc) {
+        if (procAudio.paused) {
+          procAudio.currentTime = PROC_START;
+          procAudio.play().catch(() => {});
+        }
+        if (procGain) fadeTo(procGain, PROC_VOL);
+        else procAudio.volume = PROC_VOL;
+      } else {
+        if (procGain) {
+          fadeTo(procGain, 0);
+          setTimeout(() => { if (!isProcessingRef.current || mutedRef.current) { procAudio.pause(); } }, (FADE_SEC * 1000) + 50);
+        } else {
+          procAudio.pause();
+        }
+      }
+    }
+  }, [fadeTo]);
+
+  // React to prop/state changes
+  useEffect(() => {
+    applyState();
+  }, [isPlaying, isProcessing, muted, applyState]);
 
   // Cleanup
   useEffect(() => {
@@ -194,19 +208,15 @@ export function AudioManager({ isPlaying, isProcessing = false }: AudioManagerPr
       mainAudioRef.current?.pause();
       procAudioRef.current?.pause();
       ctxRef.current?.close().catch(() => {});
-      mainAudioRef.current = null;
-      procAudioRef.current = null;
-      ctxRef.current = null;
     };
   }, []);
 
   const handleToggleMute = useCallback((e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    userInteractedRef.current = true;
-    resumeCtx();
-    setMuted((prev) => !prev);
-  }, [resumeCtx]);
+    unlock(); // Ensure unlocked on this gesture
+    setMuted(prev => !prev);
+  }, [unlock]);
 
   if (!isPlaying && !isProcessing) return null;
 
