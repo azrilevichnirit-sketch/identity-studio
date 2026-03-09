@@ -111,15 +111,24 @@ export function BackgroundCrossfade({
       }, durationMs + 50);
     };
 
-    // Transition ONLY after the new image is actually loaded.
-    // This prevents black flashes on slow/large background swaps.
+    // Transition after the new image is loaded, with a fallback timeout
+    // to prevent the UI from getting stuck if preload fails.
+    let fallbackTimer: number | null = null;
+
     preloadImage(src).then((loaded) => {
-      if (!loaded) return;
+      if (fallbackTimer !== null) window.clearTimeout(fallbackTimer);
+      // Proceed even on failure - showing a potentially broken bg is better than being stuck
       doTransition();
     });
 
+    // Fallback: force transition after 400ms even if image hasn't loaded
+    fallbackTimer = window.setTimeout(() => {
+      fallbackTimer = null;
+      doTransition();
+    }, 400);
+
     return () => {
-      // Don't clear cleanupRef here - let the fade-out complete even if src changes again
+      if (fallbackTimer !== null) window.clearTimeout(fallbackTimer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [src, durationMs]);
