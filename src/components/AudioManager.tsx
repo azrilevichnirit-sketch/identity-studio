@@ -2,6 +2,7 @@ import { forwardRef, useCallback, useEffect, useRef, useState, type MouseEvent }
 import { Volume2, VolumeX } from 'lucide-react';
 
 interface AudioManagerProps {
+  phase: string;
   isPlaying: boolean;
   isProcessing?: boolean;
   softVolume?: number;
