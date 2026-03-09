@@ -120,6 +120,8 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
     const mode: AudioMode = isProcPhase ? 'proc' : (isPlaying ? 'main' : 'none');
     const prevMode = prevModeRef.current;
 
+    console.log(`[AudioManager] phase=${phase}, mode=${mode}, prevMode=${prevMode}, muted=${muted}`);
+
     const targetMain = muted ? 0 : MAIN_VOL;
     const targetProc = muted ? 0 : (softVolume ?? 0.3);
 

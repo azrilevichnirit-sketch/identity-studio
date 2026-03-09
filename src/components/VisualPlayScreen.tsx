@@ -77,6 +77,8 @@ interface VisualPlayScreenProps {
   toolEditMode?: boolean;
   /** Called when editor "Save & Next" is clicked - selects Tool A and advances */
   onEditorNextMission?: () => void;
+  /** Next mission to eagerly preload its background */
+  nextMission?: Mission | null;
 }
 
 export function VisualPlayScreen({
