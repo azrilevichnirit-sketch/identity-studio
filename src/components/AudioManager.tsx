@@ -97,74 +97,53 @@ export const AudioManager = forwardRef<HTMLButtonElement, AudioManagerProps>(fun
     };
   }, [clearFade]);
 
-  // Unlock both audio elements on first user interaction (critical for iOS/mobile)
+  // Persistent watchdog: on EVERY user interaction, check if the desired audio
+  // should be playing but isn't (because mobile blocked it), and retry.
+  // This is critical for iOS where each Audio element needs to be play()-ed
+  // during a user gesture, and the proc element might not have been loaded
+  // during the first gesture.
   useEffect(() => {
-    if (unlockedRef.current) return;
+    const onInteraction = () => {
+      const desired = desiredModeRef.current;
+      if (desired === 'none') return;
 
-    const unlockAll = () => {
-      if (unlockedRef.current) return;
-      unlockedRef.current = true;
+      const audio = desired === 'main' ? mainAudioRef.current : procAudioRef.current;
+      if (!audio || !audio.paused) return; // Already playing, nothing to do
 
-      const main = mainAudioRef.current;
-      const proc = procAudioRef.current;
+      const isMutedNow = audio.muted;
+      if (isMutedNow) return; // User muted, don't force play
 
-      // Unlock each element by doing a silent play
-      [main, proc].forEach(audio => {
-        if (!audio) return;
-        const savedVol = audio.volume;
-        audio.volume = 0;
-        const p = audio.play();
-        if (p) p.then(() => {
+      console.log(`[AudioManager] Watchdog: ${desired} should play but is paused, retrying in gesture context`);
+      audio.volume = 0;
+      audio.play().then(() => {
+        if (desiredModeRef.current !== desired) {
           audio.pause();
-          audio.currentTime = 0;
-          audio.volume = savedVol;
-        }).catch(() => {});
-      });
-
-      console.log('[AudioManager] Audio unlocked via user gesture, desired mode:', desiredModeRef.current);
-
-      // After unlocking, if we have a desired mode that failed before, re-trigger
-      // by bumping a dummy state. We do this via a small timeout to let the unlock settle.
-      setTimeout(() => {
-        const desired = desiredModeRef.current;
-        if (desired !== 'none') {
-          const audio = desired === 'main' ? mainAudioRef.current : procAudioRef.current;
-          if (audio && audio.paused) {
-            console.log('[AudioManager] Post-unlock: starting', desired);
-            audio.volume = 0;
-            audio.play().then(() => {
-              // Fade in
-              const target = desired === 'main' ? MAIN_VOL : 0.3;
-              const timerRef = desired === 'main' ? mainFadeRef : procFadeRef;
-              // Simple inline fade
-              const id = window.setInterval(() => {
-                if (audio.volume >= target - 0.01) {
-                  audio.volume = target;
-                  clearInterval(id);
-                  return;
-                }
-                audio.volume = Math.min(target, audio.volume + FADE_STEP);
-              }, FADE_INTERVAL);
-            }).catch(() => {});
-          }
+          return;
         }
-      }, 100);
-
-      document.removeEventListener('click', unlockAll, true);
-      document.removeEventListener('touchstart', unlockAll, true);
-      document.removeEventListener('pointerdown', unlockAll, true);
+        // Fade in
+        const target = desired === 'main' ? MAIN_VOL : (softVolumeRef.current ?? 0.3);
+        const timerRef = desired === 'main' ? mainFadeRef : procFadeRef;
+        clearFade(timerRef);
+        timerRef.current = window.setInterval(() => {
+          if (audio.volume >= target - 0.01) {
+            audio.volume = target;
+            if (timerRef.current !== null) clearInterval(timerRef.current);
+            timerRef.current = null;
+            return;
+          }
+          audio.volume = Math.min(target, audio.volume + FADE_STEP);
+        }, FADE_INTERVAL);
+      }).catch(() => {});
     };
 
-    document.addEventListener('click', unlockAll, { capture: true });
-    document.addEventListener('touchstart', unlockAll, { capture: true });
-    document.addEventListener('pointerdown', unlockAll, { capture: true });
+    document.addEventListener('click', onInteraction, { capture: true });
+    document.addEventListener('touchstart', onInteraction, { capture: true });
 
     return () => {
-      document.removeEventListener('click', unlockAll, true);
-      document.removeEventListener('touchstart', unlockAll, true);
-      document.removeEventListener('pointerdown', unlockAll, true);
+      document.removeEventListener('click', onInteraction, true);
+      document.removeEventListener('touchstart', onInteraction, true);
     };
-  }, []);
+  }, [clearFade]);
 
   // Main transition effect
   useEffect(() => {
