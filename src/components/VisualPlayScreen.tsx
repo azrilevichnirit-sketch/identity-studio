@@ -955,10 +955,12 @@ export function VisualPlayScreen({
     // Skip if this is the first render or bg hasn't changed
     if (previousBgKeyRef.current === null) {
       previousBgKeyRef.current = lockedBgKey;
+      console.log(`[BG-DEBUG] Initial bg: ${lockedBgKey}, mission=${mission.mission_id}`);
       return;
     }
     
     if (previousBgKeyRef.current !== lockedBgKey) {
+      console.log(`[BG-DEBUG] BG changing: ${previousBgKeyRef.current} → ${lockedBgKey}, mission=${mission.mission_id}, lockedBg=${lockedBg ? 'found' : 'NULL'}`);
       // M10: same room with items appearing — skip UI hiding for seamless feel
       const isM10Transition = mission.mission_id === 'studio_10';
       if (!isM10Transition) {
@@ -1268,8 +1270,11 @@ export function VisualPlayScreen({
         ? (variant === 'a' ? 'gallery_mission3a_mobile_bg' : 'gallery_mission3b_mobile_bg')
         : (variant === 'a' ? 'gallery_mission3a_desk_bg' : 'gallery_mission3b_desk_bg');
       const m3BgImage = getBackgroundByName(m3BgKey);
+      console.log(`[BG-DEBUG] M03 tool ${variant}: bgKey=${m3BgKey}, found=${!!m3BgImage}, isMobile=${isMobile}`);
       if (m3BgImage) {
         setLocalBgOverride({ key: m3BgKey, image: m3BgImage, missionId: mission.mission_id });
+      } else {
+        console.error(`[BG-DEBUG] M03 MISSING baked bg: ${m3BgKey}`);
       }
     }
 
@@ -1320,8 +1325,11 @@ export function VisualPlayScreen({
         ? (variant === 'a' ? 'gallery_mission1a_mobile_bg' : 'gallery_mission1b_mobile_bg')
         : (variant === 'a' ? 'gallery_mission1a_desk_bg' : 'gallery_mission1b_desk_bg');
       const m1BgImage = getBackgroundByName(m1BgKey);
+      console.log(`[BG-DEBUG] M01 tool ${variant}: bgKey=${m1BgKey}, found=${!!m1BgImage}, isMobile=${isMobile}`);
       if (m1BgImage) {
         setLocalBgOverride({ key: m1BgKey, image: m1BgImage, missionId: mission.mission_id });
+      } else {
+        console.error(`[BG-DEBUG] M01 MISSING baked bg: ${m1BgKey}`);
       }
     }
 
@@ -1331,8 +1339,11 @@ export function VisualPlayScreen({
         ? (variant === 'a' ? 'gallery_mission2a_mobile_bg' : 'gallery_mission2b_mobile_bg')
         : (variant === 'a' ? 'gallery_mission2a_desk_bg' : 'gallery_mission2b_desk_bg');
       const m2BgImage = getBackgroundByName(m2BgKey);
+      console.log(`[BG-DEBUG] M02 tool ${variant}: bgKey=${m2BgKey}, found=${!!m2BgImage}, isMobile=${isMobile}`);
       if (m2BgImage) {
         setLocalBgOverride({ key: m2BgKey, image: m2BgImage, missionId: mission.mission_id });
+      } else {
+        console.error(`[BG-DEBUG] M02 MISSING baked bg: ${m2BgKey}`);
       }
     }
 
