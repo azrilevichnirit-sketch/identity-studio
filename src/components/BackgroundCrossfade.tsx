@@ -15,6 +15,19 @@ type BackgroundCrossfadeProps = {
 // Cache of preloaded images to avoid re-fetching
 const preloadedImages = new Set<string>();
 
+/** Check if an image URL is already in browser memory cache (synchronous) */
+function isImageCached(src: string): boolean {
+  if (preloadedImages.has(src)) return true;
+  // Probe browser cache synchronously
+  const probe = new Image();
+  probe.src = src;
+  if (probe.complete && probe.naturalWidth > 0) {
+    preloadedImages.add(src);
+    return true;
+  }
+  return false;
+}
+
 function preloadImage(src: string): Promise<boolean> {
   if (preloadedImages.has(src)) {
     return Promise.resolve(true);
