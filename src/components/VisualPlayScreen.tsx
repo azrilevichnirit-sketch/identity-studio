@@ -1268,8 +1268,11 @@ export function VisualPlayScreen({
         ? (variant === 'a' ? 'gallery_mission3a_mobile_bg' : 'gallery_mission3b_mobile_bg')
         : (variant === 'a' ? 'gallery_mission3a_desk_bg' : 'gallery_mission3b_desk_bg');
       const m3BgImage = getBackgroundByName(m3BgKey);
+      console.log(`[BG-DEBUG] M03 tool ${variant}: bgKey=${m3BgKey}, found=${!!m3BgImage}, isMobile=${isMobile}`);
       if (m3BgImage) {
         setLocalBgOverride({ key: m3BgKey, image: m3BgImage, missionId: mission.mission_id });
+      } else {
+        console.error(`[BG-DEBUG] M03 MISSING baked bg: ${m3BgKey}`);
       }
     }
 
