@@ -950,7 +950,7 @@ export function VisualPlayScreen({
 
   // Track background changes and trigger transition state
   // This hides persisted tools AND mission UI during the crossfade
-  const CROSSFADE_DURATION = 800; // Must match bgCrossfadeDuration default
+  const CROSSFADE_DURATION = 500; // Must match bgCrossfadeDuration default
   useEffect(() => {
     // Skip if this is the first render or bg hasn't changed
     if (previousBgKeyRef.current === null) {
