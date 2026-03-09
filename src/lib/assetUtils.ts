@@ -964,38 +964,28 @@ export function getAvatarImage(gender: AvatarGender, state: 'idle' | 'walk' = 'i
 }
 
 // Preload backgrounds for smooth transitions
+// Uses static import of markPreloaded to avoid async race conditions
+import { markPreloaded } from '@/components/BackgroundCrossfade';
+
 export function preloadBackground(bgName: string): void {
   const bg = backgroundAssets[bgName];
   if (bg) {
     const img = new Image();
     img.onload = () => {
-      import('@/components/BackgroundCrossfade').then(({ markPreloaded }) => {
-        markPreloaded(bg);
-      }).catch(() => {});
+      markPreloaded(bg);
     };
     img.src = bg;
     if (img.complete && img.naturalWidth > 0) {
-      import('@/components/BackgroundCrossfade').then(({ markPreloaded }) => {
-        markPreloaded(bg);
-      }).catch(() => {});
+      markPreloaded(bg);
     }
   }
 }
 
 export function preloadAllBackgrounds(): void {
-  // Dynamically import markPreloaded to register with BackgroundCrossfade's cache
-  import('@/components/BackgroundCrossfade').then(({ markPreloaded }) => {
-    Object.entries(backgroundAssets).forEach(([_key, src]) => {
-      const img = new Image();
-      img.onload = () => markPreloaded(src);
-      img.src = src;
-      if (img.complete) markPreloaded(src);
-    });
-  }).catch(() => {
-    // Fallback: just preload into browser cache
-    Object.values(backgroundAssets).forEach(src => {
-      const img = new Image();
-      img.src = src;
-    });
+  Object.entries(backgroundAssets).forEach(([_key, src]) => {
+    const img = new Image();
+    img.onload = () => markPreloaded(src);
+    img.src = src;
+    if (img.complete) markPreloaded(src);
   });
 }
